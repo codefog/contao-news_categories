@@ -9,6 +9,7 @@
  * @link    http://codefog.pl
  * @author  Webcontext <http://webcontext.com>
  * @author  Kamil Kuzminski <kamil.kuzminski@codefog.pl>
+ * @translation  (fr) lionel-m <https://github.com/lionel-m>
  * @license LGPL
  */
 
