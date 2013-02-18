@@ -4,6 +4,9 @@ news_categories Changelog
 Version 1.0.2 stable (2013-02-??)
 ---------------------------------
 
+### Improved
+- Added the French translation (thanks to Lionel Maccaud)
+
 ### Fixed
 - Added the missing labels
 
