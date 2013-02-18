@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 1.0.2 stable (2013-02-??)
+---------------------------------
+
+### Fixed
+- Added the missing labels
+
+
 Version 1.0.1 stable (2013-02-12)
 ---------------------------------
 
