@@ -36,3 +36,4 @@ $GLOBALS['TL_LANG']['tl_news_category']['show']   = array('Szczegóły kategorii
 $GLOBALS['TL_LANG']['tl_news_category']['edit']   = array('Edytuj kategorię', 'Edytuj kategorię ID %s');
 $GLOBALS['TL_LANG']['tl_news_category']['copy']   = array('Duplikuj kategorię', 'Duplikuj kategorię ID %s');
 $GLOBALS['TL_LANG']['tl_news_category']['delete'] = array('Usuń kategorię', 'Usuń kategorię ID %s');
+$GLOBALS['TL_LANG']['tl_news_category']['toggle'] = array('Publikuj/ukryj kategorię', 'Publikuj/ukryj kategorię ID %s');

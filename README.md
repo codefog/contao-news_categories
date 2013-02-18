@@ -11,5 +11,6 @@ Demo page http://www.webcontext.info/de/news-kategorien.html
 
 ### Available languages
 - English
+- French
 - German
 - Polish
