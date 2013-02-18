@@ -32,10 +32,11 @@ class NewsModel extends \Contao\NewsModel
 	 * @param boolean $blnFeatured If true, return only featured news, if false, return only unfeatured news
 	 * @param integer $intLimit    An optional limit
 	 * @param integer $intOffset   An optional offset
+	 * @param array   $arrOptions  An optional options array
 	 * 
-	 * @return \Model_Collection|null A collection of models or null if there are no news
+	 * @return \Model\Collection|null A collection of models or null if there are no news
 	 */
-	public static function findPublishedByPids($arrPids, $blnFeatured=null, $intLimit=0, $intOffset=0)
+	public static function findPublishedByPids($arrPids, $blnFeatured=null, $intLimit=0, $intOffset=0, array $arrOptions=array())
 	{
 		if (!is_array($arrPids) || empty($arrPids))
 		{
@@ -92,10 +93,11 @@ class NewsModel extends \Contao\NewsModel
 	 * 
 	 * @param array   $arrPids     An array of news archive IDs
 	 * @param boolean $blnFeatured If true, return only featured news, if false, return only unfeatured news
+	 * @param array   $arrOptions  An optional options array
 	 * 
 	 * @return integer The number of news items
 	 */
-	public static function countPublishedByPids($arrPids, $blnFeatured=null)
+	public static function countPublishedByPids($arrPids, $blnFeatured=null, array $arrOptions=array())
 	{
 		if (!is_array($arrPids) || empty($arrPids))
 		{
