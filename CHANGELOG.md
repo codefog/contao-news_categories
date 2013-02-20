@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 1.0.4 stable (2013-02-20)
+---------------------------------
+
+### Improved
+- Added the XHTML template
+
+
 Version 1.0.3 stable (2013-02-19)
 ---------------------------------
 
