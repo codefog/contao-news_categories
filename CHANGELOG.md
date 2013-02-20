@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 1.0.3 stable (2013-02-19)
+---------------------------------
+
+### Fixed
+- Added the missing icon
+
+
 Version 1.0.2 stable (2013-02-18)
 ---------------------------------
 
