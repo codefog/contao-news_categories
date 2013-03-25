@@ -33,6 +33,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterCategories'] = array
 	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_filterCategories'],
 	'exclude'                 => true,
 	'inputType'               => 'checkbox',
+	'eval'                    => array('tl_class'=>'w50 m12'),
 	'sql'                     => "char(1) NOT NULL default ''"
 );
 
@@ -42,7 +43,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterDefault'] = array
 	'exclude'                 => true,
 	'inputType'               => 'select',
 	'foreignKey'              => 'tl_news_category.title',
-	'eval'                    => array('includeBlankOption'=>true),
+	'eval'                    => array('includeBlankOption'=>true, 'tl_class'=>'w50'),
 	'sql'                     => "int(10) NOT NULL default '0'"
 );
 
