@@ -63,6 +63,13 @@ class NewsModel extends \Contao\NewsModel
 
 		$intCategory = null;
 
+		// Use the default filter
+		if ($GLOBALS['NEWS_FILTER_DEFAULT'])
+		{
+			$arrColumns['category'] = "$t.id IN (SELECT news_id FROM tl_news_categories WHERE category_id=?)";
+			$intCategory = $GLOBALS['NEWS_FILTER_DEFAULT'];
+		}
+
 		// Try to find by category
 		if ($GLOBALS['NEWS_FILTER_CATEGORIES'] && \Input::get('category'))
 		{
@@ -73,7 +80,7 @@ class NewsModel extends \Contao\NewsModel
 				return null;
 			}
 
-			$arrColumns[] = "$t.id IN (SELECT news_id FROM tl_news_categories WHERE category_id=?)";
+			$arrColumns['category'] = "$t.id IN (SELECT news_id FROM tl_news_categories WHERE category_id=?)";
 			$intCategory = $objCategory->id;
 		}
 
@@ -124,6 +131,13 @@ class NewsModel extends \Contao\NewsModel
 
 		$intCategory = null;
 
+		// Use the default filter
+		if ($GLOBALS['NEWS_FILTER_DEFAULT'])
+		{
+			$arrColumns['category'] = "$t.id IN (SELECT news_id FROM tl_news_categories WHERE category_id=?)";
+			$intCategory = $GLOBALS['NEWS_FILTER_DEFAULT'];
+		}
+
 		// Try to find by category
 		if ($GLOBALS['NEWS_FILTER_CATEGORIES'] && \Input::get('category'))
 		{
@@ -134,7 +148,7 @@ class NewsModel extends \Contao\NewsModel
 				return null;
 			}
 
-			$arrColumns[] = "$t.id IN (SELECT news_id FROM tl_news_categories WHERE category_id=?)";
+			$arrColumns['category'] = "$t.id IN (SELECT news_id FROM tl_news_categories WHERE category_id=?)";
 			$intCategory = $objCategory->id;
 		}
 
