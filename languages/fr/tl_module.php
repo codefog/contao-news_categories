@@ -18,4 +18,5 @@
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_module']['news_filterCategories'] = array('Filtrer par catégorie', 'Filtrer la liste des actualités par catégorie.');
+$GLOBALS['TL_LANG']['tl_module']['news_filterDefault']    = array('Filtre par défaut', 'Ici, vous pouvez choisir le filtre par défaut qui sera appliqué à la liste des actualités.');
 $GLOBALS['TL_LANG']['tl_module']['news_resetCategories']  = array('Lien "Toutes les catégories"', 'Ajouter un lien pour remettre le filtre dans son état initial.');
