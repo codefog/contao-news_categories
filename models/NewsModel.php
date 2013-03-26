@@ -64,10 +64,9 @@ class NewsModel extends \Contao\NewsModel
 		$intCategory = null;
 
 		// Use the default filter
-		if ($GLOBALS['NEWS_FILTER_DEFAULT'])
+		if (is_array($GLOBALS['NEWS_FILTER_DEFAULT']) && !empty($GLOBALS['NEWS_FILTER_DEFAULT']))
 		{
-			$arrColumns['category'] = "$t.id IN (SELECT news_id FROM tl_news_categories WHERE category_id=?)";
-			$intCategory = $GLOBALS['NEWS_FILTER_DEFAULT'];
+			$arrColumns['category'] = "$t.id IN (SELECT news_id FROM tl_news_categories WHERE category_id IN (" . implode(',', array_map('intval', $GLOBALS['NEWS_FILTER_DEFAULT'])) . "))";
 		}
 
 		// Try to find by category
@@ -132,10 +131,9 @@ class NewsModel extends \Contao\NewsModel
 		$intCategory = null;
 
 		// Use the default filter
-		if ($GLOBALS['NEWS_FILTER_DEFAULT'])
+		if (is_array($GLOBALS['NEWS_FILTER_DEFAULT']) && !empty($GLOBALS['NEWS_FILTER_DEFAULT']))
 		{
-			$arrColumns['category'] = "$t.id IN (SELECT news_id FROM tl_news_categories WHERE category_id=?)";
-			$intCategory = $GLOBALS['NEWS_FILTER_DEFAULT'];
+			$arrColumns['category'] = "$t.id IN (SELECT news_id FROM tl_news_categories WHERE category_id IN (" . implode(',', array_map('intval', $GLOBALS['NEWS_FILTER_DEFAULT'])) . "))";
 		}
 
 		// Try to find by category
