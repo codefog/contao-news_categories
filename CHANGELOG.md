@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 1.0.6 stable (2013-03-26)
+---------------------------------
+
+### Improved
+- Changed the default filter to checkbox list
+
+
 Version 1.0.5 stable (2013-03-26)
 ---------------------------------
 
