@@ -32,7 +32,7 @@ class ModuleNewsList extends \Contao\ModuleNewsList
 	public function generate()
 	{
 		$GLOBALS['NEWS_FILTER_CATEGORIES'] = $this->news_filterCategories ? true : false;
-		$GLOBALS['NEWS_FILTER_DEFAULT'] = $this->news_filterDefault;
+		$GLOBALS['NEWS_FILTER_DEFAULT'] = deserialize($this->news_filterDefault, true);
 
 		return parent::generate();
 	}
