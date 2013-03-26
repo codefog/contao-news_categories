@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 1.0.5 stable (2013-03-26)
+---------------------------------
+
+### Improved
+- Added the default filter feature
+
+
 Version 1.0.4 stable (2013-02-20)
 ---------------------------------
 

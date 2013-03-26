@@ -17,4 +17,5 @@
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_module']['news_filterCategories'] = array('Filter by categories', 'Filter the news list by categories.');
+$GLOBALS['TL_LANG']['tl_module']['news_filterDefault']    = array('Default filter', 'Here you can choose the default filter that will be applied to the newslist.');
 $GLOBALS['TL_LANG']['tl_module']['news_resetCategories']  = array('Reset categories link', 'Add a link to reset categories filter.');
