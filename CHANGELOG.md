@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 1.0.7 stable (2013-05-23)
+---------------------------------
+
+### Improved
+- It is now possilbe to filter news by category in the back end
+
+
 Version 1.0.6 stable (2013-03-26)
 ---------------------------------
 
