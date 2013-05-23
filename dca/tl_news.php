@@ -33,6 +33,7 @@ $GLOBALS['TL_DCA']['tl_news']['fields']['categories'] = array
 (
 	'label'                   => &$GLOBALS['TL_LANG']['tl_news']['categories'],
 	'exclude'                 => true,
+	'filter'                  => true,
 	'inputType'               => 'checkbox',
 	'foreignKey'              => 'tl_news_category.title',
 	'eval'                    => array('multiple'=>true),
