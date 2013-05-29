@@ -26,6 +26,29 @@ class NewsModel extends \Contao\NewsModel
 {
 
 	/**
+	 * Get the categories cache and return it as array
+	 * @return array
+	 */
+	public static function getCategoriesCache()
+	{
+		static $arrCache;
+
+		if (!is_array($arrCache))
+		{
+			$arrCache = array();
+			$objCategories = \Database::getInstance()->execute("SELECT * FROM tl_news_categories");
+
+			while ($objCategories->next())
+			{
+				$arrCache[$objCategories->category_id][] = $objCategories->news_id;
+			}
+		}
+
+		return $arrCache;
+	}
+
+
+	/**
 	 * Find published news items by their parent ID
 	 * 
 	 * @param array   $arrPids     An array of news archive IDs
@@ -61,12 +84,23 @@ class NewsModel extends \Contao\NewsModel
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
 
-		$intCategory = null;
-
 		// Use the default filter
 		if (is_array($GLOBALS['NEWS_FILTER_DEFAULT']) && !empty($GLOBALS['NEWS_FILTER_DEFAULT']))
 		{
-			$arrColumns['category'] = "$t.id IN (SELECT news_id FROM tl_news_categories WHERE category_id IN (" . implode(',', array_map('intval', $GLOBALS['NEWS_FILTER_DEFAULT'])) . "))";
+			$arrCategories = static::getCategoriesCache();
+
+			if (!empty($arrCategories))
+			{
+				$arrIds = array();
+
+				// Get the news IDs for particular categories
+				foreach ($GLOBALS['NEWS_FILTER_DEFAULT'] as $intCategory)
+				{
+					$arrIds = array_merge($arrCategories[$intCategory], $arrIds);
+				}
+
+				$arrColumns['category'] = "$t.id IN (" . implode(',', array_unique($arrIds)) . ")";
+			}
 		}
 
 		// Try to find by category
@@ -79,8 +113,12 @@ class NewsModel extends \Contao\NewsModel
 				return null;
 			}
 
-			$arrColumns['category'] = "$t.id IN (SELECT news_id FROM tl_news_categories WHERE category_id=?)";
-			$intCategory = $objCategory->id;
+			$arrCategories = static::getCategoriesCache();
+
+			if (!empty($arrCategories))
+			{
+				$arrColumns['category'] = "$t.id IN (" . implode(',', $arrCategories[$objCategory->id]) . ")";
+			}
 		}
 
 		$arrOptions = array
@@ -90,7 +128,7 @@ class NewsModel extends \Contao\NewsModel
 			'offset' => $intOffset
 		);
 
-		return static::findBy($arrColumns, $intCategory, $arrOptions);
+		return static::findBy($arrColumns, null, $arrOptions);
 	}
 
 
@@ -128,12 +166,23 @@ class NewsModel extends \Contao\NewsModel
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
 
-		$intCategory = null;
-
 		// Use the default filter
 		if (is_array($GLOBALS['NEWS_FILTER_DEFAULT']) && !empty($GLOBALS['NEWS_FILTER_DEFAULT']))
 		{
-			$arrColumns['category'] = "$t.id IN (SELECT news_id FROM tl_news_categories WHERE category_id IN (" . implode(',', array_map('intval', $GLOBALS['NEWS_FILTER_DEFAULT'])) . "))";
+			$arrCategories = static::getCategoriesCache();
+
+			if (!empty($arrCategories))
+			{
+				$arrIds = array();
+
+				// Get the news IDs for particular categories
+				foreach ($GLOBALS['NEWS_FILTER_DEFAULT'] as $category)
+				{
+					$arrIds = array_merge($arrCategories[$category], $arrIds);
+				}
+
+				$arrColumns['category'] = "$t.id IN (" . implode(',', array_unique($arrIds)) . ")";
+			}
 		}
 
 		// Try to find by category
@@ -146,10 +195,14 @@ class NewsModel extends \Contao\NewsModel
 				return null;
 			}
 
-			$arrColumns['category'] = "$t.id IN (SELECT news_id FROM tl_news_categories WHERE category_id=?)";
-			$intCategory = $objCategory->id;
+			$arrCategories = static::getCategoriesCache();
+
+			if (!empty($arrCategories))
+			{
+				$arrColumns['category'] = "$t.id IN (" . implode(',', $arrCategories[$objCategory->id]) . ")";
+			}
 		}
 
-		return static::countBy($arrColumns, $intCategory);
+		return static::countBy($arrColumns, null);
 	}
 }
