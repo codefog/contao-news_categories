@@ -94,12 +94,20 @@ class NewsModel extends \Contao\NewsModel
 				$arrIds = array();
 
 				// Get the news IDs for particular categories
-				foreach ($GLOBALS['NEWS_FILTER_DEFAULT'] as $intCategory)
+				foreach ($GLOBALS['NEWS_FILTER_DEFAULT'] as $category)
 				{
-					$arrIds = array_merge($arrCategories[$intCategory], $arrIds);
+					if (isset($arrCategories[$category]))
+					{
+						$arrIds = array_merge($arrCategories[$category], $arrIds);
+					}
 				}
 
-				$arrColumns['category'] = "$t.id IN (" . implode(',', array_unique($arrIds)) . ")";
+				$arrIds = array_unique($arrIds);
+
+				if (!empty($arrIds))
+				{
+					$arrColumns['category'] = "$t.id IN (" . implode(',', $arrIds) . ")";
+				}
 			}
 		}
 
@@ -115,7 +123,7 @@ class NewsModel extends \Contao\NewsModel
 
 			$arrCategories = static::getCategoriesCache();
 
-			if (!empty($arrCategories))
+			if (isset($arrCategories[$objCategory->id]))
 			{
 				$arrColumns['category'] = "$t.id IN (" . implode(',', $arrCategories[$objCategory->id]) . ")";
 			}
@@ -178,10 +186,18 @@ class NewsModel extends \Contao\NewsModel
 				// Get the news IDs for particular categories
 				foreach ($GLOBALS['NEWS_FILTER_DEFAULT'] as $category)
 				{
-					$arrIds = array_merge($arrCategories[$category], $arrIds);
+					if (isset($arrCategories[$category]))
+					{
+						$arrIds = array_merge($arrCategories[$category], $arrIds);
+					}
 				}
 
-				$arrColumns['category'] = "$t.id IN (" . implode(',', array_unique($arrIds)) . ")";
+				$arrIds = array_unique($arrIds);
+
+				if (!empty($arrIds))
+				{
+					$arrColumns['category'] = "$t.id IN (" . implode(',', $arrIds) . ")";
+				}
 			}
 		}
 
@@ -197,7 +213,7 @@ class NewsModel extends \Contao\NewsModel
 
 			$arrCategories = static::getCategoriesCache();
 
-			if (!empty($arrCategories))
+			if (isset($arrCategories[$objCategory->id]))
 			{
 				$arrColumns['category'] = "$t.id IN (" . implode(',', $arrCategories[$objCategory->id]) . ")";
 			}
