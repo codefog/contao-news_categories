@@ -102,12 +102,7 @@ class NewsModel extends \Contao\NewsModel
 					}
 				}
 
-				$arrIds = array_unique($arrIds);
-
-				if (!empty($arrIds))
-				{
-					$arrColumns['category'] = "$t.id IN (" . implode(',', $arrIds) . ")";
-				}
+				$arrColumns['category'] = "$t.id IN (" . implode(',', (empty($arrIds) ? array(0) : array_unique($arrIds))) . ")";
 			}
 		}
 
@@ -122,11 +117,7 @@ class NewsModel extends \Contao\NewsModel
 			}
 
 			$arrCategories = static::getCategoriesCache();
-
-			if (isset($arrCategories[$objCategory->id]))
-			{
-				$arrColumns['category'] = "$t.id IN (" . implode(',', $arrCategories[$objCategory->id]) . ")";
-			}
+			$arrColumns['category'] = "$t.id IN (" . implode(',', (empty($arrCategories[$objCategory->id]) ? array(0) : $arrCategories[$objCategory->id])) . ")";
 		}
 
 		$arrOptions = array
@@ -192,12 +183,7 @@ class NewsModel extends \Contao\NewsModel
 					}
 				}
 
-				$arrIds = array_unique($arrIds);
-
-				if (!empty($arrIds))
-				{
-					$arrColumns['category'] = "$t.id IN (" . implode(',', $arrIds) . ")";
-				}
+				$arrColumns['category'] = "$t.id IN (" . implode(',', (empty($arrIds) ? array(0) : array_unique($arrIds))) . ")";
 			}
 		}
 
@@ -213,10 +199,8 @@ class NewsModel extends \Contao\NewsModel
 
 			$arrCategories = static::getCategoriesCache();
 
-			if (isset($arrCategories[$objCategory->id]))
-			{
-				$arrColumns['category'] = "$t.id IN (" . implode(',', $arrCategories[$objCategory->id]) . ")";
-			}
+			$arrCategories = static::getCategoriesCache();
+			$arrColumns['category'] = "$t.id IN (" . implode(',', (empty($arrCategories[$objCategory->id]) ? array(0) : $arrCategories[$objCategory->id])) . ")";
 		}
 
 		return static::countBy($arrColumns, null);
