@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 1.0.8 stable (2013-06-15)
+---------------------------------
+
+### Improved
+- Added a categories cache
+
+
 Version 1.0.7 stable (2013-05-23)
 ---------------------------------
 
