@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 1.0.9 stable (2013-08-??)
+---------------------------------
+
+### Improved
+- Now whole data of each category is passed to the template
+
+
 Version 1.0.8 stable (2013-06-15)
 ---------------------------------
 
