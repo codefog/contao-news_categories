@@ -2,9 +2,9 @@
 
 /**
  * news_categories extension for Contao Open Source CMS
- * 
+ *
  * Copyright (C) 2013 Codefog
- * 
+ *
  * @package news_categories
  * @link    http://codefog.pl
  * @author  Webcontext <http://webcontext.com>
@@ -100,7 +100,7 @@ class ModuleNewsCategories extends \ModuleNews
 		{
 			$arrCategories[] = array
 			(
-				'class' => 'first' . (($total == 1) ? ' last' : '') . ' even',
+				'class' => 'reset first' . (($total == 1) ? ' last' : '') . ' even',
 				'title' => specialchars($GLOBALS['TL_LANG']['MSC']['resetCategories'][1]),
 				'href' => ampersand(str_replace('/category/%s', '', $strUrl)),
 				'link' => $GLOBALS['TL_LANG']['MSC']['resetCategories'][0],
@@ -114,14 +114,12 @@ class ModuleNewsCategories extends \ModuleNews
 		// Generate the categories
 		while ($objCategories->next())
 		{
-			$arrCategories[] = array
-			(
-				'class' => trim(((++$count == 1) ? ' first' : '') . (($count == $total) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even')),
-				'title' => specialchars($objCategories->title),
-				'href' => ampersand(sprintf($strUrl, ($GLOBALS['TL_CONFIG']['disableAlias'] ? $objCategories->id : $objCategories->alias))),
-				'link' => $objCategories->title,
-				'isActive' => ((\Input::get('category') != '') && (\Input::get('category') == ($GLOBALS['TL_CONFIG']['disableAlias'] ? $objCategories->id : $objCategories->alias))) ? true : false
-			);
+			$arrCategories[$objCategories->id] = $objCategories->row();
+			$arrCategories[$objCategories->id]['class'] = trim(((++$count == 1) ? ' first' : '') . (($count == $total) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even'));
+			$arrCategories[$objCategories->id]['title'] = specialchars($objCategories->title);
+			$arrCategories[$objCategories->id]['href'] = ampersand(sprintf($strUrl, ($GLOBALS['TL_CONFIG']['disableAlias'] ? $objCategories->id : $objCategories->alias)));
+			$arrCategories[$objCategories->id]['link'] = $objCategories->title;
+			$arrCategories[$objCategories->id]['isActive'] = ((\Input::get('category') != '') && (\Input::get('category') == ($GLOBALS['TL_CONFIG']['disableAlias'] ? $objCategories->id : $objCategories->alias))) ? true : false;
 		}
 
 		$this->Template->categories = $arrCategories;
