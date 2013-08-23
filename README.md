@@ -14,4 +14,5 @@ Demo page http://www.webcontext.info/de/news-kategorien.html
 - English
 - French
 - German
+- Italian
 - Polish
