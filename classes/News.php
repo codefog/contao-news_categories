@@ -26,6 +26,40 @@ class News extends \Contao\News
 {
 
 	/**
+	 * Add the categories to the template
+	 * @param object
+	 * @param array
+	 */
+	public function addCategoriesToTemplate($objTemplate, $arrData)
+	{
+		if (isset($arrData['categories']))
+		{
+			$arrCategories = array();
+			$arrCategoriesList = array();
+			$categories = deserialize($arrData['categories']);
+
+			if (is_array($categories) && !empty($categories))
+			{
+				$objCategories = \NewsCategoryModel::findPublishedByIds($categories);
+
+				// Add the categories to template
+				if ($objCategories !== null)
+				{
+					while ($objCategories->next())
+					{
+						$arrCategories[$objCategories->id] = $objCategories->row();
+						$arrCategoriesList[$objCategories->id] = $objCategories->title;
+					}
+				}
+			}
+
+			$objTemplate->categories = $arrCategories;
+			$objTemplate->categoriesList = $arrCategoriesList;
+		}
+	}
+
+
+	/**
 	 * Set the news categories, if any
 	 * @param array
 	 */

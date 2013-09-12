@@ -2,9 +2,9 @@
 
 /**
  * news_categories extension for Contao Open Source CMS
- * 
+ *
  * Copyright (C) 2013 Codefog
- * 
+ *
  * @package news_categories
  * @link    http://codefog.pl
  * @author  Webcontext <http://webcontext.com>
@@ -34,9 +34,9 @@ class NewsCategoryModel extends \Model
 
 	/**
 	 * Find published news categories by their archives
-	 * 
+	 *
 	 * @param array $arrPids An array of archives
-	 * 
+	 *
 	 * @return \Model|null The NewsModelCategpry or null if there are no categories
 	 */
 	public static function findPublishedByParent($arrPids)
@@ -61,9 +61,9 @@ class NewsCategoryModel extends \Model
 
 	/**
 	 * Find published category by ID or alias
-	 * 
+	 *
 	 * @param mixed $varId The numeric ID or alias name
-	 * 
+	 *
 	 * @return \Model|null The NewsCategoryModel or null if there is no category
 	 */
 	public static function findPublishedByIdOrAlias($varId)
@@ -78,5 +78,31 @@ class NewsCategoryModel extends \Model
 		}
 
 		return static::findBy($arrColumns, array((is_numeric($varId) ? $varId : 0), $varId));
+	}
+
+
+	/**
+	 * Find published categories by IDs
+	 *
+	 * @param array $arrIds An array of category IDs
+	 *
+	 * @return \Model|null The NewsCategoryModel or null if there is no category
+	 */
+	public static function findPublishedByIds($arrIds)
+	{
+		if (!is_array($arrIds) || empty($arrIds))
+		{
+			return null;
+		}
+
+		$t = static::$strTable;
+		$arrColumns = array("$t.id IN (" . implode(',', array_map('intval', $arrIds)) . ")");
+
+		if (!BE_USER_LOGGED_IN)
+		{
+			$arrColumns[] = "$t.published=1";
+		}
+
+		return static::findBy($arrColumns, null);
 	}
 }

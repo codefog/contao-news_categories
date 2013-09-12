@@ -31,3 +31,9 @@ $GLOBALS['BE_MOD']['content']['news']['stylesheet'] = 'system/modules/news_categ
  * Front end modules
  */
 $GLOBALS['FE_MOD']['news']['newscategories'] = 'ModuleNewsCategories';
+
+
+/**
+ * Hooks
+ */
+$GLOBALS['TL_HOOKS']['parseArticles'][] = array('News', 'addCategoriesToTemplate');
