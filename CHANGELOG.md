@@ -8,6 +8,7 @@ Version 1.1.0 stable (2013-??-??)
 - Added the Italian translation (thanks to Marco Damian)
 - Added the categories to RSS feeds (see #4)
 - Added the categories to news_ templates
+- Added the autoload.ini file
 
 
 Version 1.0.9 stable (2013-08-10)
