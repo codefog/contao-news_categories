@@ -9,6 +9,8 @@ Version 1.1.0 stable (2013-??-??)
 - Added the categories to RSS feeds (see #4)
 - Added the categories to news_ templates
 - Added the autoload.ini file
+- Updated the readme file
+- Updated the copyright information
 
 
 Version 1.0.9 stable (2013-08-10)
