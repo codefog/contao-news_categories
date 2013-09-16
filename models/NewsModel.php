@@ -2,20 +2,17 @@
 
 /**
  * news_categories extension for Contao Open Source CMS
- * 
- * Copyright (C) 2013 Codefog
- * 
+ *
+ * Copyright (C) 2013 Codefog Ltd
+ *
  * @package news_categories
  * @link    http://codefog.pl
  * @author  Webcontext <http://webcontext.com>
+ * @author  Codefog Ltd <info@codefog.pl>
  * @author  Kamil Kuzminski <kamil.kuzminski@codefog.pl>
  * @license LGPL
  */
 
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
 namespace NewsCategories;
 
 
@@ -50,13 +47,13 @@ class NewsModel extends \Contao\NewsModel
 
 	/**
 	 * Find published news items by their parent ID
-	 * 
+	 *
 	 * @param array   $arrPids     An array of news archive IDs
 	 * @param boolean $blnFeatured If true, return only featured news, if false, return only unfeatured news
 	 * @param integer $intLimit    An optional limit
 	 * @param integer $intOffset   An optional offset
 	 * @param array   $arrOptions  An optional options array
-	 * 
+	 *
 	 * @return \Model\Collection|null A collection of models or null if there are no news
 	 */
 	public static function findPublishedByPids($arrPids, $blnFeatured=null, $intLimit=0, $intOffset=0, array $arrOptions=array())
@@ -133,11 +130,11 @@ class NewsModel extends \Contao\NewsModel
 
 	/**
 	 * Count published news items by their parent ID
-	 * 
+	 *
 	 * @param array   $arrPids     An array of news archive IDs
 	 * @param boolean $blnFeatured If true, return only featured news, if false, return only unfeatured news
 	 * @param array   $arrOptions  An optional options array
-	 * 
+	 *
 	 * @return integer The number of news items
 	 */
 	public static function countPublishedByPids($arrPids, $blnFeatured=null, array $arrOptions=array())

@@ -10,12 +10,12 @@
  * @author  Webcontext <http://webcontext.com>
  * @author  Codefog Ltd <info@codefog.pl>
  * @author  Kamil Kuzminski <kamil.kuzminski@codefog.pl>
- * @author  Lionel Maccaud <https://github.com/lionel-m>
+ * @author  Marco Damian <info@zod.it>
  * @license LGPL
  */
 
 
 /**
- * Global operations
+ * Front end modules
  */
-$GLOBALS['TL_LANG']['tl_news_archive']['categories'] = array('Catégories', 'Ajouter et gérer des catégories d\'actualité');
+$GLOBALS['TL_LANG']['FMD']['newscategories'] = array('Lista categorie news', 'Aggiunge una lista di categorie news alla pagina.');

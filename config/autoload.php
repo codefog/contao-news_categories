@@ -2,12 +2,12 @@
 
 /**
  * news_categories extension for Contao Open Source CMS
- * 
- * Copyright (C) 2013 Codefog
- * 
+ *
+ * Copyright (C) 2013 Codefog Ltd
+ *
  * @package news_categories
- * @link    http://codefog.pl
  * @author  Webcontext <http://webcontext.com>
+ * @author  Codefog Ltd <info@codefog.pl>
  * @author  Kamil Kuzminski <kamil.kuzminski@codefog.pl>
  * @license LGPL
  */
@@ -24,6 +24,9 @@ ClassLoader::addNamespace('NewsCategories');
  */
 ClassLoader::addClasses(array
 (
+	// Classes
+	'NewsCategories\News'                 => 'system/modules/news_categories/classes/News.php',
+
 	// Models
 	'NewsCategories\NewsCategoryModel'    => 'system/modules/news_categories/models/NewsCategoryModel.php',
 	'NewsCategories\NewsModel'            => 'system/modules/news_categories/models/NewsModel.php',

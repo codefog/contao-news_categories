@@ -10,12 +10,12 @@
  * @author  Webcontext <http://webcontext.com>
  * @author  Codefog Ltd <info@codefog.pl>
  * @author  Kamil Kuzminski <kamil.kuzminski@codefog.pl>
- * @author  Lionel Maccaud <https://github.com/lionel-m>
+ * @author  Marco Damian <info@zod.it>
  * @license LGPL
  */
 
 
 /**
- * Global operations
+ * Miscellaneous
  */
-$GLOBALS['TL_LANG']['tl_news_archive']['categories'] = array('Catégories', 'Ajouter et gérer des catégories d\'actualité');
+$GLOBALS['TL_LANG']['MSC']['resetCategories'] = array('Tutte le categorie', 'Mostra tutte le news');

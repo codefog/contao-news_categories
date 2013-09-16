@@ -16,6 +16,6 @@
 
 
 /**
- * Global operations
+ * Fields
  */
-$GLOBALS['TL_LANG']['tl_news_archive']['categories'] = array('Catégories', 'Ajouter et gérer des catégories d\'actualité');
+$GLOBALS['TL_LANG']['tl_news_feed']['categories'] = array('Catégories', 'Ici, vous pouvez sélectionner une ou plusieurs catégories d\'actualité.');
