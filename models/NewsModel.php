@@ -99,7 +99,15 @@ class NewsModel extends \Contao\NewsModel
 					}
 				}
 
-				$arrColumns['category'] = "$t.id IN (" . implode(',', (empty($arrIds) ? array(0) : array_unique($arrIds))) . ")";
+				$strKey = 'category';
+
+				// Preserve the default category
+				if ($GLOBALS['NEWS_FILTER_PRESERVE'])
+				{
+					$strKey = 'category_default';
+				}
+
+				$arrColumns[$strKey] = "$t.id IN (" . implode(',', (empty($arrIds) ? array(0) : array_unique($arrIds))) . ")";
 			}
 		}
 
@@ -180,7 +188,15 @@ class NewsModel extends \Contao\NewsModel
 					}
 				}
 
-				$arrColumns['category'] = "$t.id IN (" . implode(',', (empty($arrIds) ? array(0) : array_unique($arrIds))) . ")";
+				$strKey = 'category';
+
+				// Preserve the default category
+				if ($GLOBALS['NEWS_FILTER_PRESERVE'])
+				{
+					$strKey = 'category_default';
+				}
+
+				$arrColumns[$strKey] = "$t.id IN (" . implode(',', (empty($arrIds) ? array(0) : array_unique($arrIds))) . ")";
 			}
 		}
 

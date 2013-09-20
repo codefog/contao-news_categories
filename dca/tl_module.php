@@ -22,7 +22,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},
 /**
  * Extend a tl_module palette
  */
-$GLOBALS['TL_DCA']['tl_module']['palettes']['newslist'] = str_replace('news_archives,', 'news_archives,news_filterCategories,news_filterDefault,', $GLOBALS['TL_DCA']['tl_module']['palettes']['newslist']);
+$GLOBALS['TL_DCA']['tl_module']['palettes']['newslist'] = str_replace('news_archives,', 'news_archives,news_filterCategories,news_filterDefault,news_filterPreserve,', $GLOBALS['TL_DCA']['tl_module']['palettes']['newslist']);
 
 
 /**
@@ -44,6 +44,14 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterDefault'] = array
 	'foreignKey'              => 'tl_news_category.title',
 	'eval'                    => array('multiple'=>true),
 	'sql'                     => "blob NULL"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['news_filterPreserve'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_filterPreserve'],
+	'exclude'                 => true,
+	'inputType'               => 'checkbox',
+	'sql'                     => "char(1) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_resetCategories'] = array
