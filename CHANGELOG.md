@@ -7,6 +7,7 @@ Version 1.1.1 stable (2013-??-??)
 ### Improved
 - Added the possiblity to preserve the default filters (see #6)
 - Added a unique class per each category in front end
+- Added a separate category title for front end (see #8)
 
 
 Version 1.1.0 stable (2013-09-16)

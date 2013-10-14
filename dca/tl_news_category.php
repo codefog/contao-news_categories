@@ -47,8 +47,8 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
 		),
 		'label' => array
 		(
-			'fields'                  => array('title'),
-			'format'                  => '%s'
+			'fields'                  => array('title', 'frontendTitle'),
+			'format'                  => '%s <span style="padding-left:3px;color:#b3b3b3;">[%s]</span>'
 		),
 		'global_operations' => array
 		(
@@ -100,7 +100,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
 	// Palettes
 	'palettes' => array
 	(
-		'default'                     => '{title_legend},title,alias;{publish_legend},published'
+		'default'                     => '{title_legend},title,frontendTitle,alias;{publish_legend},published'
 	),
 
 	// Fields
@@ -120,7 +120,16 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
-			'eval'                    => array('mandatory'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
+			'eval'                    => array('mandatory'=>true, 'maxlength'=>255, 'tl_class'=>'clr'),
+			'sql'                     => "varchar(255) NOT NULL default ''"
+		),
+		'frontendTitle' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_news_category']['frontendTitle'],
+			'exclude'                 => true,
+			'search'                  => true,
+			'inputType'               => 'text',
+			'eval'                    => array('maxlength'=>255, 'tl_class'=>'w50'),
 			'sql'                     => "varchar(255) NOT NULL default ''"
 		),
 		'alias' => array
@@ -166,7 +175,15 @@ class tl_news_category extends Backend
 		if (!strlen($varValue))
 		{
 			$autoAlias = true;
-			$varValue = standardize($this->restoreBasicEntities($dc->activeRecord->title));
+			$strTitle = $dc->activeRecord->title;
+
+			// Use the frontend title if available
+			if (strlen($dc->activeRecord->frontendTitle))
+			{
+				$strTitle = $dc->activeRecord->frontendTitle;
+			}
+
+			$varValue = standardize($this->restoreBasicEntities($strTitle));
 		}
 
 		$objAlias = $this->Database->prepare("SELECT id FROM tl_news_category WHERE alias=?")

@@ -111,11 +111,12 @@ class ModuleNewsCategories extends \ModuleNews
 		// Generate the categories
 		while ($objCategories->next())
 		{
+			$strTitle = $objCategories->frontendTitle ? $objCategories->frontendTitle : $objCategories->title;
 			$arrCategories[$objCategories->id] = $objCategories->row();
 			$arrCategories[$objCategories->id]['class'] = 'news_category_' . $objCategories->id . ((++$count == 1) ? ' first' : '') . (($count == $total) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even');
-			$arrCategories[$objCategories->id]['title'] = specialchars($objCategories->title);
+			$arrCategories[$objCategories->id]['title'] = specialchars($strTitle);
 			$arrCategories[$objCategories->id]['href'] = ampersand(sprintf($strUrl, ($GLOBALS['TL_CONFIG']['disableAlias'] ? $objCategories->id : $objCategories->alias)));
-			$arrCategories[$objCategories->id]['link'] = $objCategories->title;
+			$arrCategories[$objCategories->id]['link'] = $strTitle;
 			$arrCategories[$objCategories->id]['isActive'] = ((\Input::get('category') != '') && (\Input::get('category') == ($GLOBALS['TL_CONFIG']['disableAlias'] ? $objCategories->id : $objCategories->alias))) ? true : false;
 		}
 
