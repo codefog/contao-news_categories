@@ -8,6 +8,7 @@ Version 1.1.1 stable (2013-??-??)
 - Added the possiblity to preserve the default filters (see #6)
 - Added a unique class per each category in front end
 - Added a separate category title for front end (see #8)
+- Added the categories to news archive and news menu modules (see #5)
 
 
 Version 1.1.0 stable (2013-09-16)
