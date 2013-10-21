@@ -33,10 +33,11 @@ class NewsCategoryModel extends \Model
 	 * Find published news categories by their archives
 	 *
 	 * @param array $arrPids An array of archives
+	 * @param array $arrIds An array of categories
 	 *
 	 * @return \Model|null The NewsModelCategpry or null if there are no categories
 	 */
-	public static function findPublishedByParent($arrPids)
+	public static function findPublishedByParent($arrPids, $arrIds=array())
 	{
 		if (!is_array($arrPids) || empty($arrPids))
 		{
@@ -46,6 +47,12 @@ class NewsCategoryModel extends \Model
 		$time = time();
 		$t = static::$strTable;
 		$arrColumns = array("$t.id IN (SELECT category_id FROM tl_news_categories WHERE news_id IN (SELECT id FROM tl_news WHERE pid IN (" . implode(',', array_map('intval', $arrPids)) . ")" . (!BE_USER_LOGGED_IN ? " AND (tl_news.start='' OR tl_news.start<$time) AND (tl_news.stop='' OR tl_news.stop>$time) AND tl_news.published=1" : "") . "))");
+
+		// Filter by custom categories
+		if (is_array($arrIds) && !empty($arrIds))
+		{
+			$arrColumns[] = "$t.id IN (" . implode(',', array_map('intval', $arrIds)) . ")";
+		}
 
 		if (!BE_USER_LOGGED_IN)
 		{

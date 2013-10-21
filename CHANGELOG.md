@@ -1,7 +1,7 @@
 news_categories Changelog
 =========================
 
-Version 1.1.1 stable (2013-??-??)
+Version 1.2.0 stable (2013-??-??)
 ---------------------------------
 
 ### Improved
@@ -11,6 +11,7 @@ Version 1.1.1 stable (2013-??-??)
 - Added the categories to news archive and news menu modules (see #5)
 - Added the permissions to edit news categories (see #10)
 - Added the "news" module to the autoload.ini
+- Added the custom categories feature to the navigation module (see #9)
 
 
 Version 1.1.0 stable (2013-09-16)

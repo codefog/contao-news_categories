@@ -65,7 +65,7 @@ class ModuleNewsCategories extends \ModuleNews
 	 */
 	protected function compile()
 	{
-		$objCategories = \NewsCategoryModel::findPublishedByParent($this->news_archives);
+		$objCategories = \NewsCategoryModel::findPublishedByParent($this->news_archives, ($this->news_customCategories ? deserialize($this->news_categories) : null));
 
 		// Return if no categories are found
 		if ($objCategories === null)
