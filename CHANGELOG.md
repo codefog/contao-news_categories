@@ -10,6 +10,7 @@ Version 1.1.1 stable (2013-??-??)
 - Added a separate category title for front end (see #8)
 - Added the categories to news archive and news menu modules (see #5)
 - Added the permissions to edit news categories (see #10)
+- Added the "news" module to the autoload.ini
 
 
 Version 1.1.0 stable (2013-09-16)
