@@ -17,9 +17,9 @@ namespace NewsCategories;
 
 
 /**
- * Override the default front end module "news list".
+ * Override the default front end module "news archive".
  */
-class ModuleNewsList extends \Contao\ModuleNewsList
+class ModuleNewsArchive extends \Contao\ModuleNewsArchive
 {
 
 	/**

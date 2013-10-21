@@ -44,7 +44,7 @@ class News extends \Contao\News
 					while ($objCategories->next())
 					{
 						$arrCategories[$objCategories->id] = $objCategories->row();
-						$arrCategoriesList[$objCategories->id] = $objCategories->title;
+						$arrCategoriesList[$objCategories->id] = $objCategories->frontendTitle ? $objCategories->frontendTitle : $objCategories->title;
 					}
 				}
 			}

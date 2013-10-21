@@ -16,9 +16,10 @@
 /**
  * Fields
  */
-$GLOBALS['TL_LANG']['tl_news_category']['title']     = array('Title', 'Please enter a category title.');
-$GLOBALS['TL_LANG']['tl_news_category']['alias']     = array('News category', 'The category alias is a unique reference to the category which can be called instead of its numeric ID.');
-$GLOBALS['TL_LANG']['tl_news_category']['published'] = array('Publish category', 'Make the news category publicly visible on the website.');
+$GLOBALS['TL_LANG']['tl_news_category']['title']         = array('Title', 'Please enter a category title.');
+$GLOBALS['TL_LANG']['tl_news_category']['frontendTitle'] = array('Frontend title', 'Here you can enter a category title that will be displayed in front end.');
+$GLOBALS['TL_LANG']['tl_news_category']['alias']         = array('News category', 'The category alias is a unique reference to the category which can be called instead of its numeric ID.');
+$GLOBALS['TL_LANG']['tl_news_category']['published']     = array('Publish category', 'Make the news category publicly visible on the website.');
 
 
 /**

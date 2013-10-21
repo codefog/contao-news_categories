@@ -16,9 +16,10 @@
 /**
  * Fields
  */
-$GLOBALS['TL_LANG']['tl_news_category']['title']     = array('Tytuł', 'Wprowadź tytuł kategorii.');
-$GLOBALS['TL_LANG']['tl_news_category']['alias']     = array('Alias kategorii', 'Alias kategorii jest unikalnym odwołaniem do kategorii, do którego można się odwołać zamiast numerycznego ID.');
-$GLOBALS['TL_LANG']['tl_news_category']['published'] = array('Opublikuj kategorię', 'Opublikuj kategorię aktualności na stronie.');
+$GLOBALS['TL_LANG']['tl_news_category']['title']         = array('Tytuł', 'Wprowadź tytuł kategorii.');
+$GLOBALS['TL_LANG']['tl_news_category']['frontendTitle'] = array('Tytuł na stronie', 'Tutaj możesz wprowadzić tytuł kategorii, który będzie widoczny na stronie.');
+$GLOBALS['TL_LANG']['tl_news_category']['alias']         = array('Alias kategorii', 'Alias kategorii jest unikalnym odwołaniem do kategorii, do którego można się odwołać zamiast numerycznego ID.');
+$GLOBALS['TL_LANG']['tl_news_category']['published']     = array('Opublikuj kategorię', 'Opublikuj kategorię aktualności na stronie.');
 
 
 /**

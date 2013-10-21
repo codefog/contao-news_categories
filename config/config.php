@@ -16,7 +16,7 @@
 /**
  * Extension version
  */
-@define('NEWS_CATEGORIES_VERSION', '1.1');
+@define('NEWS_CATEGORIES_VERSION', '1.2');
 @define('NEWS_CATEGORIES_BUILD', '0');
 
 
@@ -37,3 +37,9 @@ $GLOBALS['FE_MOD']['news']['newscategories'] = 'ModuleNewsCategories';
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['parseArticles'][] = array('News', 'addCategoriesToTemplate');
+
+
+/**
+ * Add permissions
+ */
+$GLOBALS['TL_PERMISSIONS'][] = 'newscategories';

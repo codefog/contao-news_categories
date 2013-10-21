@@ -46,6 +46,63 @@ class NewsModel extends \Contao\NewsModel
 
 
 	/**
+	 * Filter the news by categories
+	 * @param array
+	 * @return array
+	 */
+	protected static function filterByCategories($arrColumns)
+	{
+		$t = static::$strTable;
+
+		// Use the default filter
+		if (is_array($GLOBALS['NEWS_FILTER_DEFAULT']) && !empty($GLOBALS['NEWS_FILTER_DEFAULT']))
+		{
+			$arrCategories = static::getCategoriesCache();
+
+			if (!empty($arrCategories))
+			{
+				$arrIds = array();
+
+				// Get the news IDs for particular categories
+				foreach ($GLOBALS['NEWS_FILTER_DEFAULT'] as $category)
+				{
+					if (isset($arrCategories[$category]))
+					{
+						$arrIds = array_merge($arrCategories[$category], $arrIds);
+					}
+				}
+
+				$strKey = 'category';
+
+				// Preserve the default category
+				if ($GLOBALS['NEWS_FILTER_PRESERVE'])
+				{
+					$strKey = 'category_default';
+				}
+
+				$arrColumns[$strKey] = "$t.id IN (" . implode(',', (empty($arrIds) ? array(0) : array_unique($arrIds))) . ")";
+			}
+		}
+
+		// Try to find by category
+		if ($GLOBALS['NEWS_FILTER_CATEGORIES'] && \Input::get('category'))
+		{
+			$objCategory = \NewsCategoryModel::findPublishedByIdOrAlias(\Input::get('category'));
+
+			if ($objCategory === null)
+			{
+				return null;
+			}
+
+			$arrCategories = static::getCategoriesCache();
+			$arrColumns['category'] = "$t.id IN (" . implode(',', (empty($arrCategories[$objCategory->id]) ? array(0) : $arrCategories[$objCategory->id])) . ")";
+		}
+
+		return $arrColumns;
+	}
+
+
+	/**
 	 * Find published news items by their parent ID
 	 *
 	 * @param array   $arrPids     An array of news archive IDs
@@ -81,41 +138,8 @@ class NewsModel extends \Contao\NewsModel
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
 
-		// Use the default filter
-		if (is_array($GLOBALS['NEWS_FILTER_DEFAULT']) && !empty($GLOBALS['NEWS_FILTER_DEFAULT']))
-		{
-			$arrCategories = static::getCategoriesCache();
-
-			if (!empty($arrCategories))
-			{
-				$arrIds = array();
-
-				// Get the news IDs for particular categories
-				foreach ($GLOBALS['NEWS_FILTER_DEFAULT'] as $category)
-				{
-					if (isset($arrCategories[$category]))
-					{
-						$arrIds = array_merge($arrCategories[$category], $arrIds);
-					}
-				}
-
-				$arrColumns['category'] = "$t.id IN (" . implode(',', (empty($arrIds) ? array(0) : array_unique($arrIds))) . ")";
-			}
-		}
-
-		// Try to find by category
-		if ($GLOBALS['NEWS_FILTER_CATEGORIES'] && \Input::get('category'))
-		{
-			$objCategory = \NewsCategoryModel::findPublishedByIdOrAlias(\Input::get('category'));
-
-			if ($objCategory === null)
-			{
-				return null;
-			}
-
-			$arrCategories = static::getCategoriesCache();
-			$arrColumns['category'] = "$t.id IN (" . implode(',', (empty($arrCategories[$objCategory->id]) ? array(0) : $arrCategories[$objCategory->id])) . ")";
-		}
+		// Filter by categories
+		$arrColumns = static::filterByCategories($arrColumns);
 
 		$arrOptions = array
 		(
@@ -162,44 +186,85 @@ class NewsModel extends \Contao\NewsModel
 			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
 		}
 
-		// Use the default filter
-		if (is_array($GLOBALS['NEWS_FILTER_DEFAULT']) && !empty($GLOBALS['NEWS_FILTER_DEFAULT']))
-		{
-			$arrCategories = static::getCategoriesCache();
-
-			if (!empty($arrCategories))
-			{
-				$arrIds = array();
-
-				// Get the news IDs for particular categories
-				foreach ($GLOBALS['NEWS_FILTER_DEFAULT'] as $category)
-				{
-					if (isset($arrCategories[$category]))
-					{
-						$arrIds = array_merge($arrCategories[$category], $arrIds);
-					}
-				}
-
-				$arrColumns['category'] = "$t.id IN (" . implode(',', (empty($arrIds) ? array(0) : array_unique($arrIds))) . ")";
-			}
-		}
-
-		// Try to find by category
-		if ($GLOBALS['NEWS_FILTER_CATEGORIES'] && \Input::get('category'))
-		{
-			$objCategory = \NewsCategoryModel::findPublishedByIdOrAlias(\Input::get('category'));
-
-			if ($objCategory === null)
-			{
-				return null;
-			}
-
-			$arrCategories = static::getCategoriesCache();
-
-			$arrCategories = static::getCategoriesCache();
-			$arrColumns['category'] = "$t.id IN (" . implode(',', (empty($arrCategories[$objCategory->id]) ? array(0) : $arrCategories[$objCategory->id])) . ")";
-		}
+		// Filter by categories
+		$arrColumns = static::filterByCategories($arrColumns);
 
 		return static::countBy($arrColumns, null);
+	}
+
+
+	/**
+	 * Find all published news items of a certain period of time by their parent ID
+	 *
+	 * @param integer $intFrom    The start date as Unix timestamp
+	 * @param integer $intTo      The end date as Unix timestamp
+	 * @param array   $arrPids    An array of news archive IDs
+	 * @param integer $intLimit   An optional limit
+	 * @param integer $intOffset  An optional offset
+	 * @param array   $arrOptions An optional options array
+	 *
+	 * @return \Model\Collection|null A collection of models or null if there are no news
+	 */
+	public static function findPublishedFromToByPids($intFrom, $intTo, $arrPids, $intLimit=0, $intOffset=0, array $arrOptions=array())
+	{
+		if (!is_array($arrPids) || empty($arrPids))
+		{
+			return null;
+		}
+
+		$t = static::$strTable;
+		$arrColumns = array("$t.date>=? AND $t.date<=? AND $t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
+
+		if (!BE_USER_LOGGED_IN)
+		{
+			$time = time();
+			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		}
+
+		// Filter by categories
+		$arrColumns = static::filterByCategories($arrColumns);
+
+		if (!isset($arrOptions['order']))
+		{
+			$arrOptions['order']  = "$t.date DESC";
+		}
+
+		$arrOptions['limit']  = $intLimit;
+		$arrOptions['offset'] = $intOffset;
+
+		return static::findBy($arrColumns, array($intFrom, $intTo), $arrOptions);
+	}
+
+
+	/**
+	 * Count all published news items of a certain period of time by their parent ID
+	 *
+	 * @param integer $intFrom    The start date as Unix timestamp
+	 * @param integer $intTo      The end date as Unix timestamp
+	 * @param array   $arrPids    An array of news archive IDs
+	 * @param array   $arrOptions An optional options array
+	 *
+	 * @return integer The number of news items
+	 */
+	public static function countPublishedFromToByPids($intFrom, $intTo, $arrPids, array $arrOptions=array())
+	{
+		if (!is_array($arrPids) || empty($arrPids))
+		{
+			return null;
+		}
+
+		$t = static::$strTable;
+		$arrColumns = array("$t.date>=? AND $t.date<=? AND $t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
+
+		if (!BE_USER_LOGGED_IN)
+		{
+			$time = time();
+			$arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+		}
+
+		// Filter by categories
+		$arrColumns = static::filterByCategories($arrColumns);
+
+		return static::countBy($arrColumns, array($intFrom, $intTo), $arrOptions);
 	}
 }
