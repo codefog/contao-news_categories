@@ -19,6 +19,7 @@
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_news_category']['title']     = array('Titolo', 'Nome della categoria per esteso.');
+$GLOBALS['TL_LANG']['tl_news_category']['frontendTitle'] = array('Titolo in Frontend', 'Puoi scegliere un titolo diverso da far apparire in front end.');
 $GLOBALS['TL_LANG']['tl_news_category']['alias']     = array('Alias', 'Testo univoco per il link, che può essere usato al posto dell\'ID.');
 $GLOBALS['TL_LANG']['tl_news_category']['published'] = array('Pubblica categoria', 'Rende attiva la categoria nel sito web.');
 
