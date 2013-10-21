@@ -37,3 +37,9 @@ $GLOBALS['FE_MOD']['news']['newscategories'] = 'ModuleNewsCategories';
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['parseArticles'][] = array('News', 'addCategoriesToTemplate');
+
+
+/**
+ * Add permissions
+ */
+$GLOBALS['TL_PERMISSIONS'][] = 'newscategories';

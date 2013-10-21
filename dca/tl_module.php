@@ -28,7 +28,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['newsmenu'] = str_replace('news_arch
 
 
 /**
- * Add a new field to tl_module
+ * Add new fields to tl_module
  */
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterCategories'] = array
 (

@@ -24,6 +24,10 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
 	(
 		'dataContainer'               => 'Table',
 		'enableVersioning'            => true,
+		'onload_callback' => array
+		(
+			array('tl_news_category', 'checkPermission')
+		),
 		'sql' => array
 		(
 			'keys' => array
@@ -159,6 +163,20 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
 
 class tl_news_category extends Backend
 {
+
+	/**
+	 * Check the permission
+	 */
+	public function checkPermission()
+	{
+		$this->import('BackendUser', 'User');
+
+		if (!$this->User->isAdmin && !$this->User->newscategories)
+		{
+			$this->redirect('contao/main.php?act=error');
+		}
+	}
+
 
 	/**
 	 * Auto-generate the category alias if it has not been set yet
