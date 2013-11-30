@@ -8,6 +8,7 @@ Version 1.2.1 stable (2013-??-??)
 - Updated the .htaccess file (see #12)
 - Improved the language labels a little
 - Updated the readme file and copyrights
+- Updated the autoload.ini file
 
 
 Version 1.2.0 stable (2013-10-21)
