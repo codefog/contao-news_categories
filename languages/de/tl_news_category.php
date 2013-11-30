@@ -3,11 +3,11 @@
 /**
  * news_categories extension for Contao Open Source CMS
  *
- * Copyright (C) 2013 Codefog Ltd
+ * Copyright (C) 2013 Codefog
  *
  * @package news_categories
  * @author  Webcontext <http://webcontext.com>
- * @author  Codefog Ltd <info@codefog.pl>
+ * @author  Codefog <info@codefog.pl>
  * @author  Kamil Kuzminski <kamil.kuzminski@codefog.pl>
  * @license LGPL
  */
@@ -17,6 +17,8 @@
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_news_category']['title']     = array('Titel', 'Bitte Kategorie-Titel eingeben.');
+$GLOBALS['TL_LANG']['tl_news_category']['frontendTitle'] = array('Frontend TiteL', 'Titel der im Frontend angezeigt wird.');
+
 $GLOBALS['TL_LANG']['tl_news_category']['alias']     = array('News-Kategorie-Alias', 'Der Kategorie-Alias ist eine eindeutige Referenz, die anstelle der numerischen ID aufgerufen werden kann.');
 $GLOBALS['TL_LANG']['tl_news_category']['published'] = array('Kategorie veröffentlichen', 'News-Kategorie veröffentlichen.');
 

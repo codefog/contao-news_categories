@@ -3,11 +3,11 @@
 /**
  * news_categories extension for Contao Open Source CMS
  *
- * Copyright (C) 2013 Codefog Ltd
+ * Copyright (C) 2013 Codefog
  *
  * @package news_categories
  * @author  Webcontext <http://webcontext.com>
- * @author  Codefog Ltd <info@codefog.pl>
+ * @author  Codefog <info@codefog.pl>
  * @author  Kamil Kuzminski <kamil.kuzminski@codefog.pl>
  * @license LGPL
  */
@@ -18,7 +18,7 @@
  */
 $GLOBALS['TL_LANG']['tl_news_category']['title']         = array('Title', 'Please enter a category title.');
 $GLOBALS['TL_LANG']['tl_news_category']['frontendTitle'] = array('Frontend title', 'Here you can enter a category title that will be displayed in front end.');
-$GLOBALS['TL_LANG']['tl_news_category']['alias']         = array('News category', 'The category alias is a unique reference to the category which can be called instead of its numeric ID.');
+$GLOBALS['TL_LANG']['tl_news_category']['alias']         = array('Category alias', 'The category alias is a unique reference to the category which can be called instead of its numeric ID.');
 $GLOBALS['TL_LANG']['tl_news_category']['published']     = array('Publish category', 'Make the news category publicly visible on the website.');
 
 

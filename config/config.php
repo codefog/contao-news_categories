@@ -3,11 +3,11 @@
 /**
  * news_categories extension for Contao Open Source CMS
  *
- * Copyright (C) 2013 Codefog Ltd
+ * Copyright (C) 2013 Codefog
  *
  * @package news_categories
  * @author  Webcontext <http://webcontext.com>
- * @author  Codefog Ltd <info@codefog.pl>
+ * @author  Codefog <info@codefog.pl>
  * @author  Kamil Kuzminski <kamil.kuzminski@codefog.pl>
  * @license LGPL
  */
@@ -17,7 +17,7 @@
  * Extension version
  */
 @define('NEWS_CATEGORIES_VERSION', '1.2');
-@define('NEWS_CATEGORIES_BUILD', '0');
+@define('NEWS_CATEGORIES_BUILD', '1');
 
 
 /**
