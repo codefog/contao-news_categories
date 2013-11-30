@@ -17,7 +17,7 @@
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_module']['news_categories']       = array('Kategorie aktualności', 'Wybierz kategorie aktualności.');
-$GLOBALS['TL_LANG']['tl_module']['news_customCategories'] = array('Własne kategorie', 'Wyświetl tylko wybrane kategorie.');
+$GLOBALS['TL_LANG']['tl_module']['news_customCategories'] = array('Ogranicz wyświetlanie kategorii', 'Wybierz, które kategorie mają zostać wyświetlone.');
 $GLOBALS['TL_LANG']['tl_module']['news_filterCategories'] = array('Filtruj przez kategorie', 'Filtruj listę aktualności przez moduł listy kategorii.');
 $GLOBALS['TL_LANG']['tl_module']['news_filterDefault']    = array('Domyślny filtr', 'Tutaj możesz wybrać domyślny filtr, który będzie użyty przez listę aktualności.');
 $GLOBALS['TL_LANG']['tl_module']['news_filterPreserve']   = array('Zachowaj domyślny filtr', 'Zachowaj domyślny filtr, gdy aktywna jest inna kategoria.');

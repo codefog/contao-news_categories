@@ -6,6 +6,7 @@ Version 1.2.1 stable (2013-??-??)
 
 ### Improved
 - Updated the .htaccess file (see #12)
+- Improved the language labels a little
 
 
 Version 1.2.0 stable (2013-10-21)
