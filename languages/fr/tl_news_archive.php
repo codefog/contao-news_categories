@@ -18,4 +18,4 @@
 /**
  * Global operations
  */
-$GLOBALS['TL_LANG']['tl_news_archive']['categories'] = array('Catégories', 'Ajouter et gérer des catégories d\'actualité');
+$GLOBALS['TL_LANG']['tl_news_archive']['categories'] = array('Catégories', 'Ajouter et gérer des catégories d\'actualités');

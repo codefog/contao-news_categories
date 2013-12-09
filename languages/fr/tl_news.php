@@ -18,10 +18,10 @@
 /**
  * Fields
  */
-$GLOBALS['TL_LANG']['tl_news']['categories'] = array('Catégories', 'Ici, vous pouvez sélectionner une ou plusieurs catégories d\'actualité.');
+$GLOBALS['TL_LANG']['tl_news']['categories'] = array('Catégories', 'Ici, vous pouvez sélectionner une ou plusieurs catégories d\'actualités.');
 
 
 /**
  * Legends
  */
-$GLOBALS['TL_LANG']['tl_news']['category_legend'] = 'Catégories d\'actualité';
+$GLOBALS['TL_LANG']['tl_news']['category_legend'] = 'Catégories d\'actualités';

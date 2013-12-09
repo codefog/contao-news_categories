@@ -6,7 +6,6 @@
  * Copyright (C) 2013 Codefog
  *
  * @package news_categories
- * @link    http://codefog.pl
  * @author  Webcontext <http://webcontext.com>
  * @author  Codefog <info@codefog.pl>
  * @author  Kamil Kuzminski <kamil.kuzminski@codefog.pl>
@@ -18,4 +17,4 @@
 /**
  * Fields
  */
-$GLOBALS['TL_LANG']['tl_news_feed']['categories'] = array('Catégories', 'Ici, vous pouvez sélectionner une ou plusieurs catégories d\'actualités.');
+$GLOBALS['TL_LANG']['tl_user']['newscategories'] = array('Gérer les catégories d\'actualités', 'Permettre à l\'utilisateur de gérer les catégories.');
