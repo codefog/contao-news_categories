@@ -18,4 +18,4 @@
 /**
  * Front end modules
  */
-$GLOBALS['TL_LANG']['FMD']['newscategories'] = array('Liste des catégories d\'actualité', 'Ajoute une liste des catégories à la page.');
+$GLOBALS['TL_LANG']['FMD']['newscategories'] = array('Liste des catégories d\'actualités', 'Ajoute une liste des catégories à la page.');
