@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 1.2.2 stable (2013-??-??)
+---------------------------------
+
+### Improved
+- Updated the French translation (see #15)
+
+
 Version 1.2.1 stable (2013-11-30)
 ---------------------------------
 
