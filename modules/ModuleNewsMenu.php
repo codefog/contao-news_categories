@@ -75,11 +75,19 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
 		// Update the links
 		foreach ($arrItems as $k => $v)
 		{
-			foreach ($v as $kk => $vv)
-			{
-				$params = explode('?', $vv['href']);
-				$arrItems[$k][$kk]['href'] = $strUrl . '?' . $params[1];
-			}
+            if (isset($v['href']))
+            {
+				$params = explode('?', $v['href']);
+				$arrItems[$k]['href'] = $strUrl . '?' . $params[1];
+            }
+            else
+            {
+    			foreach ($v as $kk => $vv)
+    			{
+    				$params = explode('?', $vv['href']);
+    				$arrItems[$k][$kk]['href'] = $strUrl . '?' . $params[1];
+    			}
+            }
 		}
 
 		$this->Template->items = $arrItems;

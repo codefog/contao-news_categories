@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 1.2.3 stable (2014-04-10)
+---------------------------------
+
+### Fixed
+- Fixed the news archive menu module (see #21)
+
+
 Version 1.2.2 stable (2014-04-10)
 ---------------------------------
 
