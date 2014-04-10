@@ -41,7 +41,7 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
 	 */
 	protected function compileYearlyMenu()
 	{
-		parent::compileMonthlyMenu();
+		parent::compileYearlyMenu();
 
 		if ($this->news_filterCategories)
 		{
