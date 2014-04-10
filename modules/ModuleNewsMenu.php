@@ -77,7 +77,7 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
 		{
             if (isset($v['href']))
             {
-				$params = explode('?', $vv['href']);
+				$params = explode('?', $v['href']);
 				$arrItems[$k]['href'] = $strUrl . '?' . $params[1];
             }
             else
