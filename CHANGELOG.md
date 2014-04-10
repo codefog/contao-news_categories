@@ -1,11 +1,18 @@
 news_categories Changelog
 =========================
 
-Version 1.2.2 stable (2013-??-??)
+Version 2.?.? stable (2014-??-??)
 ---------------------------------
 
 ### Improved
 - Updated the French translation (see #15)
+
+
+Version 1.2.2 stable (2014-04-10)
+---------------------------------
+
+### Fixed
+- Fixed the news archive menu module (see #21)
 
 
 Version 1.2.1 stable (2013-11-30)
