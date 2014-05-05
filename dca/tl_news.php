@@ -31,46 +31,46 @@ $GLOBALS['TL_DCA']['tl_news']['palettes']['default'] = str_replace('author;', 'a
  */
 $GLOBALS['TL_DCA']['tl_news']['fields']['categories'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_news']['categories'],
-	'exclude'                 => true,
-	'filter'                  => true,
-	'inputType'               => 'checkbox',
-	'foreignKey'              => 'tl_news_category.title',
-	'eval'                    => array('multiple'=>true),
-	'sql'                     => "blob NULL"
+    'label'                   => &$GLOBALS['TL_LANG']['tl_news']['categories'],
+    'exclude'                 => true,
+    'filter'                  => true,
+    'inputType'               => 'checkbox',
+    'foreignKey'              => 'tl_news_category.title',
+    'eval'                    => array('multiple'=>true),
+    'sql'                     => "blob NULL"
 );
 
 
 class tl_news_categories extends Backend
 {
 
-	/**
-	 * Update the category relations
-	 * @param DataContainer
-	 */
-	public function updateCategories(DataContainer $dc)
-	{
-		$this->deleteCategories($dc);
-		$arrCategories = deserialize($dc->activeRecord->categories);
+    /**
+     * Update the category relations
+     * @param DataContainer
+     */
+    public function updateCategories(DataContainer $dc)
+    {
+        $this->deleteCategories($dc);
+        $arrCategories = deserialize($dc->activeRecord->categories);
 
-		if (is_array($arrCategories) && !empty($arrCategories))
-		{
-			foreach ($arrCategories as $intCategory)
-			{
-				$this->Database->prepare("INSERT INTO tl_news_categories (category_id, news_id) VALUES (?, ?)")
-							   ->execute($intCategory, $dc->id);
-			}
-		}
-	}
+        if (is_array($arrCategories) && !empty($arrCategories))
+        {
+            foreach ($arrCategories as $intCategory)
+            {
+                $this->Database->prepare("INSERT INTO tl_news_categories (category_id, news_id) VALUES (?, ?)")
+                               ->execute($intCategory, $dc->id);
+            }
+        }
+    }
 
 
-	/**
-	 * Delete the category relations
-	 * @param DataContainer
-	 */
-	public function deleteCategories(DataContainer $dc)
-	{
-		$this->Database->prepare("DELETE FROM tl_news_categories WHERE news_id=?")
-					   ->execute($dc->id);
-	}
+    /**
+     * Delete the category relations
+     * @param DataContainer
+     */
+    public function deleteCategories(DataContainer $dc)
+    {
+        $this->Database->prepare("DELETE FROM tl_news_categories WHERE news_id=?")
+                       ->execute($dc->id);
+    }
 }

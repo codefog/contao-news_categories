@@ -24,11 +24,11 @@ $GLOBALS['TL_DCA']['tl_news_feed']['palettes']['default'] = str_replace('archive
  */
 $GLOBALS['TL_DCA']['tl_news_feed']['fields']['categories'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_news_feed']['categories'],
-	'exclude'                 => true,
-	'filter'                  => true,
-	'inputType'               => 'checkbox',
-	'foreignKey'              => 'tl_news_category.title',
-	'eval'                    => array('multiple'=>true),
-	'sql'                     => "blob NULL"
+    'label'                   => &$GLOBALS['TL_LANG']['tl_news_feed']['categories'],
+    'exclude'                 => true,
+    'filter'                  => true,
+    'inputType'               => 'checkbox',
+    'foreignKey'              => 'tl_news_category.title',
+    'eval'                    => array('multiple'=>true),
+    'sql'                     => "blob NULL"
 );

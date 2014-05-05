@@ -17,9 +17,9 @@ You can display the categories in your *news_* template:
 // Produces a list of categories
 <?php if ($this->categories): ?>
 <ul class="categories">
-	<?php foreach ($this->categories as $category): ?>
-	<li class="category_<?php echo $category['id']; ?>"><?php echo $category['frontendTitle'] ? $category['frontendTitle'] : $category['title']; ?></li>
-	<?php endforeach; ?>
+    <?php foreach ($this->categories as $category): ?>
+    <li class="category_<?php echo $category['id']; ?>"><?php echo $category['frontendTitle'] ? $category['frontendTitle'] : $category['title']; ?></li>
+    <?php endforeach; ?>
 </ul>
 <?php endif; ?>
 ```

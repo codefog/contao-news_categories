@@ -30,8 +30,8 @@ $GLOBALS['TL_DCA']['tl_user_group']['palettes']['default'] = str_replace('newsfe
  */
 $GLOBALS['TL_DCA']['tl_user_group']['fields']['newscategories'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_user']['newscategories'],
-	'exclude'                 => true,
-	'inputType'               => 'checkbox',
-	'sql'                     => "char(1) NOT NULL default ''"
+    'label'                   => &$GLOBALS['TL_LANG']['tl_user']['newscategories'],
+    'exclude'                 => true,
+    'inputType'               => 'checkbox',
+    'sql'                     => "char(1) NOT NULL default ''"
 );

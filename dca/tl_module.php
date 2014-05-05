@@ -34,53 +34,53 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['newsmenu'] = str_replace('news_arch
  */
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_categories'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_categories'],
-	'exclude'                 => true,
-	'inputType'               => 'checkbox',
-	'foreignKey'              => 'tl_news_category.title',
-	'eval'                    => array('mandatory'=>true, 'multiple'=>true),
-	'sql'                     => "blob NULL"
+    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_categories'],
+    'exclude'                 => true,
+    'inputType'               => 'checkbox',
+    'foreignKey'              => 'tl_news_category.title',
+    'eval'                    => array('mandatory'=>true, 'multiple'=>true),
+    'sql'                     => "blob NULL"
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_customCategories'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_customCategories'],
-	'exclude'                 => true,
-	'inputType'               => 'checkbox',
-	'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'clr'),
-	'sql'                     => "char(1) NOT NULL default ''"
+    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_customCategories'],
+    'exclude'                 => true,
+    'inputType'               => 'checkbox',
+    'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'clr'),
+    'sql'                     => "char(1) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterCategories'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_filterCategories'],
-	'exclude'                 => true,
-	'inputType'               => 'checkbox',
-	'sql'                     => "char(1) NOT NULL default ''"
+    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_filterCategories'],
+    'exclude'                 => true,
+    'inputType'               => 'checkbox',
+    'sql'                     => "char(1) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterDefault'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_filterDefault'],
-	'exclude'                 => true,
-	'inputType'               => 'checkbox',
-	'foreignKey'              => 'tl_news_category.title',
-	'eval'                    => array('multiple'=>true),
-	'sql'                     => "blob NULL"
+    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_filterDefault'],
+    'exclude'                 => true,
+    'inputType'               => 'checkbox',
+    'foreignKey'              => 'tl_news_category.title',
+    'eval'                    => array('multiple'=>true),
+    'sql'                     => "blob NULL"
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterPreserve'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_filterPreserve'],
-	'exclude'                 => true,
-	'inputType'               => 'checkbox',
-	'sql'                     => "char(1) NOT NULL default ''"
+    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_filterPreserve'],
+    'exclude'                 => true,
+    'inputType'               => 'checkbox',
+    'sql'                     => "char(1) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_resetCategories'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_resetCategories'],
-	'exclude'                 => true,
-	'inputType'               => 'checkbox',
-	'sql'                     => "char(1) NOT NULL default ''"
+    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_resetCategories'],
+    'exclude'                 => true,
+    'inputType'               => 'checkbox',
+    'sql'                     => "char(1) NOT NULL default ''"
 );

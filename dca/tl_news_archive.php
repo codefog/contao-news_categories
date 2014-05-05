@@ -24,29 +24,29 @@ $GLOBALS['TL_DCA']['tl_news_archive']['config']['onload_callback'][] = array('tl
  */
 array_insert($GLOBALS['TL_DCA']['tl_news_archive']['list']['global_operations'], 1, array
 (
-	'categories' => array
-	(
-		'label'               => &$GLOBALS['TL_LANG']['tl_news_archive']['categories'],
-		'href'                => 'table=tl_news_category',
-		'class'               => 'header_categories',
-		'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="c"'
-	)
+    'categories' => array
+    (
+        'label'               => &$GLOBALS['TL_LANG']['tl_news_archive']['categories'],
+        'href'                => 'table=tl_news_category',
+        'class'               => 'header_categories',
+        'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="c"'
+    )
 ));
 
 
 class tl_news_archive_categories extends Backend
 {
 
-	/**
-	 * Check the permission
-	 */
-	public function checkPermission()
-	{
-		$this->import('BackendUser', 'User');
+    /**
+     * Check the permission
+     */
+    public function checkPermission()
+    {
+        $this->import('BackendUser', 'User');
 
-		if (!$this->User->isAdmin && !$this->User->newscategories)
-		{
-			unset($GLOBALS['TL_DCA']['tl_news_archive']['list']['global_operations']['categories']);
-		}
-	}
+        if (!$this->User->isAdmin && !$this->User->newscategories)
+        {
+            unset($GLOBALS['TL_DCA']['tl_news_archive']['list']['global_operations']['categories']);
+        }
+    }
 }
