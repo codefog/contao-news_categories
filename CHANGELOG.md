@@ -6,6 +6,7 @@ Version 2.?.? stable (2014-??-??)
 
 ### Improved
 - Updated the French translation (see #15)
+- Dropped the backend.css file
 
 
 Version 1.2.3 stable (2014-04-10)

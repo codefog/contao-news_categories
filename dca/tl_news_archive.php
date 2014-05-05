@@ -28,7 +28,7 @@ array_insert($GLOBALS['TL_DCA']['tl_news_archive']['list']['global_operations'],
     (
         'label'               => &$GLOBALS['TL_LANG']['tl_news_archive']['categories'],
         'href'                => 'table=tl_news_category',
-        'class'               => 'header_categories',
+        'icon'                => 'system/modules/news_categories/assets/icon.png',
         'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="c"'
     )
 ));
