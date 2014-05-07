@@ -332,31 +332,31 @@ class tl_news_category extends Backend
      */
     public function toggleVisibility($intId, $blnVisible)
     {
-		$objVersions = new Versions('tl_news_category', $intId);
-		$objVersions->initialize();
+        $objVersions = new Versions('tl_news_category', $intId);
+        $objVersions->initialize();
 
-		// Trigger the save_callback
-		if (is_array($GLOBALS['TL_DCA']['tl_news_category']['fields']['published']['save_callback']))
-		{
-			foreach ($GLOBALS['TL_DCA']['tl_news_category']['fields']['published']['save_callback'] as $callback)
-			{
-				if (is_array($callback))
-				{
-					$this->import($callback[0]);
-					$blnVisible = $this->$callback[0]->$callback[1]($blnVisible, $this);
-				}
-				elseif (is_callable($callback))
-				{
-					$blnVisible = $callback($blnVisible, $this);
-				}
-			}
-		}
+        // Trigger the save_callback
+        if (is_array($GLOBALS['TL_DCA']['tl_news_category']['fields']['published']['save_callback']))
+        {
+            foreach ($GLOBALS['TL_DCA']['tl_news_category']['fields']['published']['save_callback'] as $callback)
+            {
+                if (is_array($callback))
+                {
+                    $this->import($callback[0]);
+                    $blnVisible = $this->$callback[0]->$callback[1]($blnVisible, $this);
+                }
+                elseif (is_callable($callback))
+                {
+                    $blnVisible = $callback($blnVisible, $this);
+                }
+            }
+        }
 
-		// Update the database
-		$this->Database->prepare("UPDATE tl_news_category SET tstamp=". time() .", published='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
-					   ->execute($intId);
+        // Update the database
+        $this->Database->prepare("UPDATE tl_news_category SET tstamp=". time() .", published='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
+                       ->execute($intId);
 
-		$objVersions->create();
-		$this->log('A new version of record "tl_news_category.id='.$intId.'" has been created'.$this->getParentEntries('tl_news_category', $intId), __METHOD__, TL_GENERAL);
+        $objVersions->create();
+        $this->log('A new version of record "tl_news_category.id='.$intId.'" has been created'.$this->getParentEntries('tl_news_category', $intId), __METHOD__, TL_GENERAL);
     }
 }
