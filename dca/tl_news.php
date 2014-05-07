@@ -34,9 +34,9 @@ $GLOBALS['TL_DCA']['tl_news']['fields']['categories'] = array
     'label'                   => &$GLOBALS['TL_LANG']['tl_news']['categories'],
     'exclude'                 => true,
     'filter'                  => true,
-    'inputType'               => 'checkbox',
+    'inputType'               => 'treePicker',
     'foreignKey'              => 'tl_news_category.title',
-    'eval'                    => array('multiple'=>true),
+    'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox', 'foreignTable'=>'tl_news_category', 'titleField'=>'title', 'searchField'=>'title', 'managerHref'=>'do=news&table=tl_news_category'),
     'sql'                     => "blob NULL"
 );
 

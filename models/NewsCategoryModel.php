@@ -32,21 +32,21 @@ class NewsCategoryModel extends \Model
     /**
      * Find published news categories by their archives
      *
-     * @param array $arrPids An array of archives
+     * @param array $arrArchives An array of archives
      * @param array $arrIds An array of categories
      *
      * @return \Model|null The NewsModelCategpry or null if there are no categories
      */
-    public static function findPublishedByParent($arrPids, $arrIds=array())
+    public static function findPublishedByParent($arrArchives, $arrIds=array())
     {
-        if (!is_array($arrPids) || empty($arrPids))
+        if (!is_array($arrArchives) || empty($arrArchives))
         {
             return null;
         }
 
         $time = time();
         $t = static::$strTable;
-        $arrColumns = array("$t.id IN (SELECT category_id FROM tl_news_categories WHERE news_id IN (SELECT id FROM tl_news WHERE pid IN (" . implode(',', array_map('intval', $arrPids)) . ")" . (!BE_USER_LOGGED_IN ? " AND (tl_news.start='' OR tl_news.start<$time) AND (tl_news.stop='' OR tl_news.stop>$time) AND tl_news.published=1" : "") . "))");
+        $arrColumns = array("$t.id IN (SELECT category_id FROM tl_news_categories WHERE news_id IN (SELECT id FROM tl_news WHERE pid IN (" . implode(',', array_map('intval', $arrArchives)) . ")" . (!BE_USER_LOGGED_IN ? " AND (tl_news.start='' OR tl_news.start<$time) AND (tl_news.stop='' OR tl_news.stop>$time) AND tl_news.published=1" : "") . "))");
 
         // Filter by custom categories
         if (is_array($arrIds) && !empty($arrIds))
@@ -59,7 +59,7 @@ class NewsCategoryModel extends \Model
             $arrColumns[] = "$t.published=1";
         }
 
-        return static::findBy($arrColumns, null);
+        return static::findBy($arrColumns, null, array('order'=>"$t.sorting"));
     }
 
 
@@ -77,7 +77,6 @@ class NewsCategoryModel extends \Model
 
         if (!BE_USER_LOGGED_IN)
         {
-            $time = time();
             $arrColumns[] = "$t.published=1";
         }
 
@@ -107,6 +106,33 @@ class NewsCategoryModel extends \Model
             $arrColumns[] = "$t.published=1";
         }
 
-        return static::findBy($arrColumns, null);
+        return static::findBy($arrColumns, null, array('order'=>"$t.sorting"));
+    }
+
+
+    /**
+     * Find published news categories by parent ID and IDs
+     *
+     * @param integer $intPid The parent ID
+     * @param array $arrIds An array of categories
+     *
+     * @return \Model|null The NewsModelCategpry or null if there are no categories
+     */
+    public static function findPublishedByPidAndIds($intPid, $arrIds)
+    {
+        if (!is_array($arrIds) || empty($arrIds))
+        {
+            return null;
+        }
+
+        $objCategories = \Database::getInstance()->prepare("SELECT c1.*, (SELECT COUNT(*) FROM tl_news_category c2 WHERE c2.pid=c1.id AND c2.id IN (" . implode(',', array_map('intval', $arrIds)) . ")" . (!BE_USER_LOGGED_IN ? " AND c2.published=1" : "") . ") AS subcategories FROM tl_news_category c1 WHERE c1.pid=? AND c1.id IN (" . implode(',', array_map('intval', $arrIds)) . ")" . (!BE_USER_LOGGED_IN ? " AND c1.published=1" : "") . " ORDER BY c1.sorting")
+                                                 ->execute($intPid);
+
+        if ($objCategories->numRows < 1)
+        {
+            return null;
+        }
+
+        return \Model\Collection::createFromDbResult($objCategories, static::$strTable);
     }
 }

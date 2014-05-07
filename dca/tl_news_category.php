@@ -14,6 +14,12 @@
 
 
 /**
+ * Load tl_news_archive language file
+ */
+\System::loadLanguageFile('tl_news_archive');
+
+
+/**
  * Table tl_news_category
  */
 $GLOBALS['TL_DCA']['tl_news_category'] = array
@@ -22,6 +28,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
     // Config
     'config' => array
     (
+        'label'                       => $GLOBALS['TL_LANG']['tl_news_archive']['categories'][0],
         'dataContainer'               => 'Table',
         'enableVersioning'            => true,
         'onload_callback' => array
@@ -33,7 +40,8 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
             'keys' => array
             (
                 'id' => 'primary',
-                'alias' => 'index'
+                'pid' => 'index',
+                'alias' => 'index',
             )
         ),
         'backlink'                    => 'do=news'
@@ -44,10 +52,10 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
     (
         'sorting' => array
         (
-            'mode'                    => 1,
-            'fields'                  => array('title'),
-            'flag'                    => 1,
-            'panelLayout'             => 'filter;search,limit'
+            'mode'                    => 5,
+            'icon'                    => 'system/modules/news_categories/assets/icon.png',
+            'paste_button_callback'   => array('tl_news_category', 'pasteCategory'),
+            'panelLayout'             => 'filter,search'
         ),
         'label' => array
         (
@@ -56,6 +64,12 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
         ),
         'global_operations' => array
         (
+            'toggleNodes' => array
+            (
+                'label'               => &$GLOBALS['TL_LANG']['MSC']['toggleAll'],
+                'href'                => 'ptg=all',
+                'class'               => 'header_toggle'
+            ),
             'all' => array
             (
                 'label'               => &$GLOBALS['TL_LANG']['MSC']['all'],
@@ -75,8 +89,23 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
             'copy' => array
             (
                 'label'               => &$GLOBALS['TL_LANG']['tl_news_category']['copy'],
-                'href'                => 'act=copy',
-                'icon'                => 'copy.gif'
+                'href'                => 'act=paste&amp;mode=copy',
+                'icon'                => 'copy.gif',
+                'attributes'          => 'onclick="Backend.getScrollOffset()"'
+            ),
+            'copyChilds' => array
+            (
+                'label'               => &$GLOBALS['TL_LANG']['tl_news_category']['copyChilds'],
+                'href'                => 'act=paste&amp;mode=copy&amp;childs=1',
+                'icon'                => 'copychilds.gif',
+                'attributes'          => 'onclick="Backend.getScrollOffset()"'
+            ),
+            'cut' => array
+            (
+                'label'               => &$GLOBALS['TL_LANG']['tl_news_category']['cut'],
+                'href'                => 'act=paste&amp;mode=cut',
+                'icon'                => 'cut.gif',
+                'attributes'          => 'onclick="Backend.getScrollOffset()"'
             ),
             'delete' => array
             (
@@ -113,6 +142,14 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
         'id' => array
         (
             'sql'                     => "int(10) unsigned NOT NULL auto_increment"
+        ),
+        'pid' => array
+        (
+            'sql'                     => "int(10) unsigned NOT NULL default '0'"
+        ),
+        'sorting' => array
+        (
+            'sql'                     => "int(10) unsigned NOT NULL default '0'"
         ),
         'tstamp' => array
         (
@@ -175,6 +212,42 @@ class tl_news_category extends Backend
         {
             $this->redirect('contao/main.php?act=error');
         }
+    }
+
+
+    /**
+     * Return the paste category button
+     * @param \DataContainer
+     * @param array
+     * @param string
+     * @param boolean
+     * @param array
+     * @return string
+     */
+    public function pasteCategory(DataContainer $dc, $row, $table, $cr, $arrClipboard=null)
+    {
+        $disablePA = false;
+        $disablePI = false;
+
+        // Disable all buttons if there is a circular reference
+        if ($arrClipboard !== false && ($arrClipboard['mode'] == 'cut' && ($cr == 1 || $arrClipboard['id'] == $row['id']) || $arrClipboard['mode'] == 'cutAll' && ($cr == 1 || in_array($row['id'], $arrClipboard['id']))))
+        {
+            $disablePA = true;
+            $disablePI = true;
+        }
+
+        $return = '';
+
+        // Return the buttons
+        $imagePasteAfter = Image::getHtml('pasteafter.gif', sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id']));
+        $imagePasteInto = Image::getHtml('pasteinto.gif', sprintf($GLOBALS['TL_LANG'][$table]['pasteinto'][1], $row['id']));
+
+        if ($row['id'] > 0)
+        {
+            $return = $disablePA ? Image::getHtml('pasteafter_.gif').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';
+        }
+
+        return $return.($disablePI ? Image::getHtml('pasteinto_.gif').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteinto'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto.'</a> ');
     }
 
 
@@ -259,22 +332,31 @@ class tl_news_category extends Backend
      */
     public function toggleVisibility($intId, $blnVisible)
     {
-        $this->createInitialVersion('tl_news_category', $intId);
+		$objVersions = new Versions('tl_news_category', $intId);
+		$objVersions->initialize();
 
-        // Trigger the save_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_news_category']['fields']['published']['save_callback']))
-        {
-            foreach ($GLOBALS['TL_DCA']['tl_news_category']['fields']['published']['save_callback'] as $callback)
-            {
-                $this->import($callback[0]);
-                $blnVisible = $this->$callback[0]->$callback[1]($blnVisible, $this);
-            }
-        }
+		// Trigger the save_callback
+		if (is_array($GLOBALS['TL_DCA']['tl_news_category']['fields']['published']['save_callback']))
+		{
+			foreach ($GLOBALS['TL_DCA']['tl_news_category']['fields']['published']['save_callback'] as $callback)
+			{
+				if (is_array($callback))
+				{
+					$this->import($callback[0]);
+					$blnVisible = $this->$callback[0]->$callback[1]($blnVisible, $this);
+				}
+				elseif (is_callable($callback))
+				{
+					$blnVisible = $callback($blnVisible, $this);
+				}
+			}
+		}
 
-        // Update the database
-        $this->Database->prepare("UPDATE tl_news_category SET tstamp=". time() .", published='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
-                       ->execute($intId);
+		// Update the database
+		$this->Database->prepare("UPDATE tl_news_category SET tstamp=". time() .", published='" . ($blnVisible ? 1 : '') . "' WHERE id=?")
+					   ->execute($intId);
 
-        $this->createNewVersion('tl_news_category', $intId);
+		$objVersions->create();
+		$this->log('A new version of record "tl_news_category.id='.$intId.'" has been created'.$this->getParentEntries('tl_news_category', $intId), __METHOD__, TL_GENERAL);
     }
 }

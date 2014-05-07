@@ -34,10 +34,20 @@ class NewsModel extends \Contao\NewsModel
         {
             $arrCache = array();
             $objCategories = \Database::getInstance()->execute("SELECT * FROM tl_news_categories");
+            $arrCategories = array();
 
             while ($objCategories->next())
             {
-                $arrCache[$objCategories->category_id][] = $objCategories->news_id;
+                // Include the parent IDs of each category
+                if (!isset($arrCategories[$objCategories->category_id]))
+                {
+                    $arrCategories[$objCategories->category_id] = \Database::getInstance()->getParentRecords($objCategories->category_id, 'tl_news_category');
+                }
+
+                foreach ($arrCategories[$objCategories->category_id] as $intParentCategory)
+                {
+                    $arrCache[$intParentCategory][] = $objCategories->news_id;
+                }
             }
         }
 

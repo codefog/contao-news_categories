@@ -28,6 +28,18 @@ class ModuleNewsCategories extends \ModuleNews
      */
     protected $strTemplate = 'mod_newscategories';
 
+    /**
+     * Active category
+     * @var object
+     */
+    protected $objActiveCategory = null;
+
+    /**
+     * Category trail
+     * @var array
+     */
+    protected $arrCategoryTrail = array();
+
 
     /**
      * Display a wildcard in the back end
@@ -70,7 +82,7 @@ class ModuleNewsCategories extends \ModuleNews
         // Return if no categories are found
         if ($objCategories === null)
         {
-            $this->Template->categories = array();
+            $this->Template->categories = '';
             return;
         }
 
@@ -88,38 +100,111 @@ class ModuleNewsCategories extends \ModuleNews
             }
         }
 
-        $count = 0;
-        $total = $objCategories->count();
+        $arrIds = array();
+
+        // Get the parent categories IDs
+        while ($objCategories->next())
+        {
+            $arrIds = array_merge($arrIds, $this->getParentRecords($objCategories->id, 'tl_news_category'));
+        }
+
+        // Get the active category
+        if (\Input::get('category') != '')
+        {
+            $this->objActiveCategory = \NewsCategoryModel::findPublishedByIdOrAlias(\Input::get('category'));
+
+            if ($this->objActiveCategory !== null)
+            {
+                $this->arrCategoryTrail = $this->getParentRecords($this->objActiveCategory->id, 'tl_news_category');
+
+                // Remove the current category from the trail
+                unset($this->arrCategoryTrail[array_search($this->objActiveCategory->id, $this->arrCategoryTrail)]);
+            }
+        }
+
+        $this->Template->categories = $this->renderNewsCategories(0, array_unique($arrIds), $strUrl);
+    }
+
+
+    /**
+     * Recursively compile the news categories and return it as HTML string
+     * @param integer
+     * @param integer
+     * @return string
+     */
+    protected function renderNewsCategories($intPid, $arrIds, $strUrl, $intLevel=1)
+    {
+        $objCategories = \NewsCategoryModel::findPublishedByPidAndIds($intPid, $arrIds);
+
+        if ($objCategories === null)
+        {
+            return '';
+        }
+
         $arrCategories = array();
 
-        // Add the reset categories link
-        if ($this->news_resetCategories)
+        // Layout template fallback
+        if ($this->navigationTpl == '')
+        {
+            $this->navigationTpl = 'nav_news_categories';
+        }
+
+        $objTemplate = new \FrontendTemplate($this->navigationTpl);
+        $objTemplate->type = get_class($this);
+        $objTemplate->cssID = $this->cssID;
+        $objTemplate->level = 'level_' . $intLevel;
+
+        $count = 0;
+        $total = $objCategories->count();
+
+        // Add the "reset categories" link
+        if ($this->news_resetCategories && $intLevel == 1)
         {
             $arrCategories[] = array
             (
+                'isActive' => \Input::get('category') ? false : true,
+                'subitems' => '',
                 'class' => 'reset first' . (($total == 1) ? ' last' : '') . ' even',
                 'title' => specialchars($GLOBALS['TL_LANG']['MSC']['resetCategories'][1]),
-                'href' => ampersand(str_replace('/category/%s', '', $strUrl)),
+                'linkTitle' => specialchars($GLOBALS['TL_LANG']['MSC']['resetCategories'][1]),
                 'link' => $GLOBALS['TL_LANG']['MSC']['resetCategories'][0],
-                'isActive' => !\Input::get('category') ? true : false
+                'href' => ampersand(str_replace('/category/%s', '', $strUrl)),
             );
 
             $count = 1;
             $total++;
         }
 
-        // Generate the categories
+        $intLevel++;
+
+        // Render categories
         while ($objCategories->next())
         {
-            $strTitle = $objCategories->frontendTitle ? $objCategories->frontendTitle : $objCategories->title;
-            $arrCategories[$objCategories->id] = $objCategories->row();
-            $arrCategories[$objCategories->id]['class'] = 'news_category_' . $objCategories->id . ((++$count == 1) ? ' first' : '') . (($count == $total) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even');
-            $arrCategories[$objCategories->id]['title'] = specialchars($strTitle);
-            $arrCategories[$objCategories->id]['href'] = ampersand(sprintf($strUrl, ($GLOBALS['TL_CONFIG']['disableAlias'] ? $objCategories->id : $objCategories->alias)));
-            $arrCategories[$objCategories->id]['link'] = $strTitle;
-            $arrCategories[$objCategories->id]['isActive'] = ((\Input::get('category') != '') && (\Input::get('category') == ($GLOBALS['TL_CONFIG']['disableAlias'] ? $objCategories->id : $objCategories->alias))) ? true : false;
+            $strSubcategories = '';
+
+            // Get the subcategories
+            if ($objCategories->subcategories)
+            {
+                $strSubcategories = $this->renderNewsCategories($objCategories->id, $arrIds, $strUrl, $intLevel);
+            }
+
+            $blnActive = ($this->objActiveCategory !== null) && ($this->objActiveCategory->id == $objCategories->id);
+            $strClass = 'news_category_' . $objCategories->id . ((++$count == 1) ? ' first' : '') . (($count == $total) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even') . ($blnActive ? ' active' : '') . (($strSubcategories != '') ? ' submenu' : '') . (in_array($objCategories->id, $this->arrCategoryTrail) ? ' trail' : '');
+            $strTitle = $objCategories->frontendTitle ?: $objCategories->title;
+
+            $arrRow = $objCategories->row();
+            $arrRow['isActive'] = $blnActive;
+            $arrRow['subitems'] = $strSubcategories;
+            $arrRow['class'] = $strClass;
+            $arrRow['title'] = specialchars($strTitle, true);
+            $arrRow['linkTitle'] = specialchars($strTitle, true);
+            $arrRow['link'] = $strTitle;
+            $arrRow['href'] = ampersand(sprintf($strUrl, ($GLOBALS['TL_CONFIG']['disableAlias'] ? $objCategories->id : $objCategories->alias)));
+
+            $arrCategories[] = $arrRow;
         }
 
-        $this->Template->categories = $arrCategories;
+        $objTemplate->items = $arrCategories;
+        return !empty($arrCategories) ? $objTemplate->parse() : '';
     }
 }

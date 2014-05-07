@@ -17,7 +17,7 @@
  * Add palettes to tl_module
  */
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'news_customCategories';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_resetCategories,news_customCategories;{redirect_legend:hide},jumpTo;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_resetCategories,news_customCategories;{redirect_legend:hide},jumpTo;{template_legend:hide},navigationTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_customCategories'] = 'news_categories';
 
 
@@ -36,9 +36,9 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_categories'] = array
 (
     'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_categories'],
     'exclude'                 => true,
-    'inputType'               => 'checkbox',
+    'inputType'               => 'treePicker',
     'foreignKey'              => 'tl_news_category.title',
-    'eval'                    => array('mandatory'=>true, 'multiple'=>true),
+    'eval'                    => array('mandatory'=>true, 'multiple'=>true, 'fieldType'=>'checkbox', 'foreignTable'=>'tl_news_category', 'titleField'=>'title', 'searchField'=>'title', 'managerHref'=>'do=news&table=tl_news_category'),
     'sql'                     => "blob NULL"
 );
 
@@ -63,9 +63,9 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterDefault'] = array
 (
     'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_filterDefault'],
     'exclude'                 => true,
-    'inputType'               => 'checkbox',
+    'inputType'               => 'treePicker',
     'foreignKey'              => 'tl_news_category.title',
-    'eval'                    => array('multiple'=>true),
+    'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox', 'foreignTable'=>'tl_news_category', 'titleField'=>'title', 'searchField'=>'title', 'managerHref'=>'do=news&table=tl_news_category'),
     'sql'                     => "blob NULL"
 );
 

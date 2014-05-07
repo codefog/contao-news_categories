@@ -44,5 +44,9 @@ ClassLoader::addClasses(array
  */
 TemplateLoader::addFiles(array
 (
-    'mod_newscategories' => 'system/modules/news_categories/templates'
+    // Modules
+    'mod_newscategories' => 'system/modules/news_categories/templates/modules',
+
+    // Navigation
+    'nav_newscategories' => 'system/modules/news_categories/templates/navigation',
 ));
