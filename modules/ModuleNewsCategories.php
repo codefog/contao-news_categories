@@ -153,6 +153,7 @@ class ModuleNewsCategories extends \ModuleNews
         $objTemplate->type = get_class($this);
         $objTemplate->cssID = $this->cssID;
         $objTemplate->level = 'level_' . $intLevel;
+        $objTemplate->showQuantity = $this->news_showQuantity;
 
         $count = 0;
         $total = $objCategories->count();
@@ -160,6 +161,14 @@ class ModuleNewsCategories extends \ModuleNews
         // Add the "reset categories" link
         if ($this->news_resetCategories && $intLevel == 1)
         {
+            $intNewsQuantity = 0;
+        
+            // Get the news quantity
+            if ($this->news_showQuantity)
+            {
+                $intNewsQuantity = \NewsModel::countPublishedByCategoryAndPids($this->news_archives);
+            }
+        
             $arrCategories[] = array
             (
                 'isActive' => \Input::get('category') ? false : true,
@@ -169,6 +178,7 @@ class ModuleNewsCategories extends \ModuleNews
                 'linkTitle' => specialchars($GLOBALS['TL_LANG']['MSC']['resetCategories'][1]),
                 'link' => $GLOBALS['TL_LANG']['MSC']['resetCategories'][0],
                 'href' => ampersand(str_replace('/category/%s', '', $strUrl)),
+                'quantity' => $intNewsQuantity
             );
 
             $count = 1;
@@ -200,6 +210,13 @@ class ModuleNewsCategories extends \ModuleNews
             $arrRow['linkTitle'] = specialchars($strTitle, true);
             $arrRow['link'] = $strTitle;
             $arrRow['href'] = ampersand(sprintf($strUrl, ($GLOBALS['TL_CONFIG']['disableAlias'] ? $objCategories->id : $objCategories->alias)));
+            $arrRow['quantity'] = 0;
+
+            // Get the news quantity
+            if ($this->news_showQuantity)
+            {
+                $arrRow['quantity'] = \NewsModel::countPublishedByCategoryAndPids($this->news_archives, $objCategories->id);
+            }
 
             $arrCategories[] = $arrRow;
         }

@@ -260,7 +260,7 @@ class NewsModel extends \Contao\NewsModel
     {
         if (!is_array($arrPids) || empty($arrPids))
         {
-            return null;
+            return 0;
         }
 
         $t = static::$strTable;
@@ -274,6 +274,50 @@ class NewsModel extends \Contao\NewsModel
 
         // Filter by categories
         $arrColumns = static::filterByCategories($arrColumns);
+
+        return static::countBy($arrColumns, array($intFrom, $intTo), $arrOptions);
+    }
+
+
+    /**
+     * Count all published news items of a certain category and their parent ID
+     *
+     * @param array   $arrPids     An array of news archive IDs
+     * @param integer $intCategory The category ID
+     * @param array   $arrOptions  An optional options array
+     *
+     * @return integer The number of news items
+     */
+    public static function countPublishedByCategoryAndPids($arrPids, $intCategory=null, array $arrOptions=array())
+    {
+        if (!is_array($arrPids) || empty($arrPids))
+        {
+            return 0;
+        }
+
+        $t = static::$strTable;
+        $arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
+
+        if (!BE_USER_LOGGED_IN)
+        {
+            $time = time();
+            $arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
+        }
+
+        // Filter by category
+        if ($intCategory)
+        {
+            $arrCategories = static::getCategoriesCache();
+
+            if ($arrCategories[$intCategory])
+            {
+                $arrColumns[] = "$t.id IN (" . implode(',', $arrCategories[$intCategory]) . ")";
+            }
+            else
+            {
+                $arrColumns[] = "$t.id=0";
+            }
+        }
 
         return static::countBy($arrColumns, array($intFrom, $intTo), $arrOptions);
     }

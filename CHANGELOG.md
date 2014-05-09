@@ -8,6 +8,7 @@ Version 2.?.? stable (2014-??-??)
 - Updated the French translation (see #15)
 - Dropped the backend.css file
 - Added support for subcategories (see #19)
+- Added feature to display the number of news items per each category (see #22)
 
 
 Version 1.2.3 stable (2014-04-10)
