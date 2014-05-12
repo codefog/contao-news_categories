@@ -10,6 +10,7 @@ Version 2.?.? stable (2014-??-??)
 - Added support for subcategories (see #19)
 - Added feature to display the number of news items per each category (see #22)
 - Added the multilingual titles (see #16)
+- Format the code according to PSR-2
 
 
 Version 1.2.3 stable (2014-04-10)
