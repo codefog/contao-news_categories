@@ -97,7 +97,8 @@ class NewsModel extends \Contao\NewsModel
         // Try to find by category
         if ($GLOBALS['NEWS_FILTER_CATEGORIES'] && \Input::get('category'))
         {
-            $objCategory = \NewsCategoryModel::findPublishedByIdOrAlias(\Input::get('category'));
+            $strClass = \NewsCategories\NewsCategories::getModelClass();
+            $objCategory = $strClass::findPublishedByIdOrAlias(\Input::get('category'));
 
             if ($objCategory === null)
             {

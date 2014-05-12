@@ -25,17 +25,19 @@ ClassLoader::addNamespace('NewsCategories');
 ClassLoader::addClasses(array
 (
     // Classes
-    'NewsCategories\News'                 => 'system/modules/news_categories/classes/News.php',
+    'NewsCategories\News'                          => 'system/modules/news_categories/classes/News.php',
+    'NewsCategories\NewsCategories'                => 'system/modules/news_categories/classes/NewsCategories.php',
 
     // Models
-    'NewsCategories\NewsCategoryModel'    => 'system/modules/news_categories/models/NewsCategoryModel.php',
-    'NewsCategories\NewsModel'            => 'system/modules/news_categories/models/NewsModel.php',
+    'NewsCategories\NewsCategoryModel'             => 'system/modules/news_categories/models/NewsCategoryModel.php',
+    'NewsCategories\NewsCategoryMultilingualModel' => 'system/modules/news_categories/models/NewsCategoryMultilingualModel.php',
+    'NewsCategories\NewsModel'                     => 'system/modules/news_categories/models/NewsModel.php',
 
     // Modules
-    'NewsCategories\ModuleNewsCategories' => 'system/modules/news_categories/modules/ModuleNewsCategories.php',
-    'NewsCategories\ModuleNewsArchive'    => 'system/modules/news_categories/modules/ModuleNewsArchive.php',
-    'NewsCategories\ModuleNewsList'       => 'system/modules/news_categories/modules/ModuleNewsList.php',
-    'NewsCategories\ModuleNewsMenu'       => 'system/modules/news_categories/modules/ModuleNewsMenu.php',
+    'NewsCategories\ModuleNewsCategories'          => 'system/modules/news_categories/modules/ModuleNewsCategories.php',
+    'NewsCategories\ModuleNewsArchive'             => 'system/modules/news_categories/modules/ModuleNewsArchive.php',
+    'NewsCategories\ModuleNewsList'                => 'system/modules/news_categories/modules/ModuleNewsList.php',
+    'NewsCategories\ModuleNewsMenu'                => 'system/modules/news_categories/modules/ModuleNewsMenu.php',
 ));
 
 

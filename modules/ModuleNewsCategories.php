@@ -77,7 +77,8 @@ class ModuleNewsCategories extends \ModuleNews
      */
     protected function compile()
     {
-        $objCategories = \NewsCategoryModel::findPublishedByParent($this->news_archives, ($this->news_customCategories ? deserialize($this->news_categories) : null));
+        $strClass = \NewsCategories\NewsCategories::getModelClass();
+        $objCategories = $strClass::findPublishedByParent($this->news_archives, ($this->news_customCategories ? deserialize($this->news_categories) : null));
 
         // Return if no categories are found
         if ($objCategories === null)
@@ -111,7 +112,7 @@ class ModuleNewsCategories extends \ModuleNews
         // Get the active category
         if (\Input::get('category') != '')
         {
-            $this->objActiveCategory = \NewsCategoryModel::findPublishedByIdOrAlias(\Input::get('category'));
+            $this->objActiveCategory = $strClass::findPublishedByIdOrAlias(\Input::get('category'));
 
             if ($this->objActiveCategory !== null)
             {
@@ -134,7 +135,8 @@ class ModuleNewsCategories extends \ModuleNews
      */
     protected function renderNewsCategories($intPid, $arrIds, $strUrl, $intLevel=1)
     {
-        $objCategories = \NewsCategoryModel::findPublishedByPidAndIds($intPid, $arrIds);
+        $strClass = \NewsCategories\NewsCategories::getModelClass();
+        $objCategories = $strClass::findPublishedByPidAndIds($intPid, $arrIds);
 
         if ($objCategories === null)
         {
@@ -162,13 +164,13 @@ class ModuleNewsCategories extends \ModuleNews
         if ($this->news_resetCategories && $intLevel == 1)
         {
             $intNewsQuantity = 0;
-        
+
             // Get the news quantity
             if ($this->news_showQuantity)
             {
                 $intNewsQuantity = \NewsModel::countPublishedByCategoryAndPids($this->news_archives);
             }
-        
+
             $arrCategories[] = array
             (
                 'isActive' => \Input::get('category') ? false : true,

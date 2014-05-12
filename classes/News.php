@@ -36,7 +36,8 @@ class News extends \Contao\News
 
             if (is_array($categories) && !empty($categories))
             {
-                $objCategories = \NewsCategoryModel::findPublishedByIds($categories);
+                $strClass = \NewsCategories\NewsCategories::getModelClass();
+                $objCategories = $strClass::findPublishedByIds($categories);
 
                 // Add the categories to template
                 if ($objCategories !== null)
