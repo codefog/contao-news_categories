@@ -19,30 +19,30 @@
 $GLOBALS['TL_DCA']['tl_news_categories'] = array
 (
 
-	// Config
-	'config' => array
-	(
-		'dataContainer'               => 'Table',
-		'sql' => array
-		(
-			'keys' => array
-			(
-				'category_id' => 'index',
-				'news_id' => 'index'
-			)
-		)
-	),
+    // Config
+    'config' => array
+    (
+        'dataContainer'               => 'Table',
+        'sql' => array
+        (
+            'keys' => array
+            (
+                'category_id' => 'index',
+                'news_id' => 'index'
+            )
+        )
+    ),
 
-	// Fields
-	'fields' => array
-	(
-		'category_id' => array
-		(
-			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		),
-		'news_id' => array
-		(
-			'sql'                     => "int(10) unsigned NOT NULL default '0'"
-		)
-	)
+    // Fields
+    'fields' => array
+    (
+        'category_id' => array
+        (
+            'sql'                     => "int(10) unsigned NOT NULL default '0'"
+        ),
+        'news_id' => array
+        (
+            'sql'                     => "int(10) unsigned NOT NULL default '0'"
+        )
+    )
 );

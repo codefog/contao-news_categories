@@ -32,9 +32,13 @@ $GLOBALS['TL_LANG']['tl_news_category']['publish_legend'] = 'Publish settings';
 /**
  * Buttons
  */
-$GLOBALS['TL_LANG']['tl_news_category']['new']    = array('New category', 'Create a new category');
-$GLOBALS['TL_LANG']['tl_news_category']['show']   = array('Category details', 'Show the details of category ID %s');
-$GLOBALS['TL_LANG']['tl_news_category']['edit']   = array('Edit category', 'Edit category ID %s');
-$GLOBALS['TL_LANG']['tl_news_category']['copy']   = array('Duplicate category', 'Duplicate category ID %s');
-$GLOBALS['TL_LANG']['tl_news_category']['delete'] = array('Delete category', 'Delete category ID %s');
-$GLOBALS['TL_LANG']['tl_news_category']['toggle'] = array('Publish/unpublish category', 'Publish/unpublish category ID %s');
+$GLOBALS['TL_LANG']['tl_news_category']['new']        = array('New category', 'Create a new category');
+$GLOBALS['TL_LANG']['tl_news_category']['show']       = array('Category details', 'Show the details of category ID %s');
+$GLOBALS['TL_LANG']['tl_news_category']['edit']       = array('Edit category', 'Edit category ID %s');
+$GLOBALS['TL_LANG']['tl_news_category']['cut']        = array('Move category', 'Move category ID %s');
+$GLOBALS['TL_LANG']['tl_news_category']['copy']       = array('Duplicate category', 'Duplicate category ID %s');
+$GLOBALS['TL_LANG']['tl_news_category']['copyChilds'] = array('Duplicate with subcategories', 'Duplicate category ID %s with its subcategories');
+$GLOBALS['TL_LANG']['tl_news_category']['delete']     = array('Delete category', 'Delete category ID %s');
+$GLOBALS['TL_LANG']['tl_news_category']['toggle']     = array('Publish/unpublish category', 'Publish/unpublish category ID %s');
+$GLOBALS['TL_LANG']['tl_news_category']['pasteafter'] = array('Paste after', 'Paste after category ID %s');
+$GLOBALS['TL_LANG']['tl_news_category']['pasteinto']  = array('Paste into', 'Paste into category ID %s');
