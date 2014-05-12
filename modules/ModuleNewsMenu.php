@@ -15,7 +15,6 @@
 
 namespace NewsCategories;
 
-
 /**
  * Override the default front end module "news menu".
  */
@@ -35,7 +34,6 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
         return parent::generate();
     }
 
-
     /**
      * Generate the yearly menu
      */
@@ -43,12 +41,10 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
     {
         parent::compileYearlyMenu();
 
-        if ($this->news_filterCategories)
-        {
+        if ($this->news_filterCategories) {
             $this->updateMenuLinks();
         }
     }
-
 
     /**
      * Generate the monthly menu
@@ -57,12 +53,10 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
     {
         parent::compileMonthlyMenu();
 
-        if ($this->news_filterCategories)
-        {
+        if ($this->news_filterCategories) {
             $this->updateMenuLinks();
         }
     }
-
 
     /**
      * Update the menu links by adding a category
@@ -73,17 +67,12 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
         $arrItems = $this->Template->items;
 
         // Update the links
-        foreach ($arrItems as $k => $v)
-        {
-            if (isset($v['href']))
-            {
+        foreach ($arrItems as $k => $v) {
+            if (isset($v['href'])) {
                 $params = explode('?', $v['href']);
                 $arrItems[$k]['href'] = $strUrl . '?' . $params[1];
-            }
-            else
-            {
-                foreach ($v as $kk => $vv)
-                {
+            } else {
+                foreach ($v as $kk => $vv) {
                     $params = explode('?', $vv['href']);
                     $arrItems[$k][$kk]['href'] = $strUrl . '?' . $params[1];
                 }
@@ -93,7 +82,6 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
         $this->Template->items = $arrItems;
     }
 
-
     /**
      * Generate the daily menu
      */
@@ -101,8 +89,7 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
     {
         parent::compileDailyMenu();
 
-        if ($this->news_filterCategories)
-        {
+        if ($this->news_filterCategories) {
             $prevParams = explode('?', $this->Template->prevHref);
             $this->Template->prevHref = $this->generateCategoryUrl() . '?' . $prevParams[1];
 
@@ -110,7 +97,6 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
             $this->Template->nextHref = $this->generateCategoryUrl() . '?' . $nextParams[1];
         }
     }
-
 
     /**
      * Return all weeks of the current month as array
@@ -123,7 +109,6 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
         return parent::compileWeeks($arrData, $this->generateCategoryUrl());
     }
 
-
     /**
      * Generate the menu URL with category
      * @return string
@@ -133,13 +118,11 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
         $strUrl = '';
 
         // Get the current "jumpTo" page
-        if (($objTarget = $this->objModel->getRelated('jumpTo')) !== null)
-        {
+        if (($objTarget = $this->objModel->getRelated('jumpTo')) !== null) {
             $varCategory = null;
 
             // Set the current category
-            if (\Input::get('category'))
-            {
+            if (\Input::get('category')) {
                 $varCategory = '/category/' . \Input::get('category');
             }
 

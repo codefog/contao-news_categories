@@ -15,7 +15,6 @@
 
 namespace NewsCategories;
 
-
 /**
  * Override the default front end module "news list".
  */

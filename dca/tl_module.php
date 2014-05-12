@@ -12,7 +12,6 @@
  * @license LGPL
  */
 
-
 /**
  * Add palettes to tl_module
  */
@@ -20,14 +19,12 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'news_customCate
 $GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_resetCategories,news_showQuantity,news_customCategories;{redirect_legend:hide},jumpTo;{template_legend:hide},navigationTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_customCategories'] = 'news_categories';
 
-
 /**
  * Extend tl_module palettes
  */
 $GLOBALS['TL_DCA']['tl_module']['palettes']['newslist'] = str_replace('news_archives,', 'news_archives,news_filterCategories,news_filterDefault,news_filterPreserve,', $GLOBALS['TL_DCA']['tl_module']['palettes']['newslist']);
 $GLOBALS['TL_DCA']['tl_module']['palettes']['newsarchive'] = str_replace('news_archives,', 'news_archives,news_filterCategories,news_filterDefault,news_filterPreserve,', $GLOBALS['TL_DCA']['tl_module']['palettes']['newsarchive']);
 $GLOBALS['TL_DCA']['tl_module']['palettes']['newsmenu'] = str_replace('news_archives,', 'news_archives,news_filterCategories,news_filterDefault,news_filterPreserve,', $GLOBALS['TL_DCA']['tl_module']['palettes']['newsmenu']);
-
 
 /**
  * Add new fields to tl_module

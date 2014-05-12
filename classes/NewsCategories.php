@@ -14,7 +14,6 @@
 
 namespace NewsCategories;
 
-
 /**
  * Provide methods regarding news categories
  */
@@ -30,7 +29,6 @@ class NewsCategories
         return (file_exists(TL_ROOT . '/system/modules/dc_multilingual/drivers/DC_Multilingual.php') && count(static::getAvailableLanguages()) > 1) ? true : false;
     }
 
-
     /**
      * Return a list of available languages
      * @return array
@@ -40,7 +38,6 @@ class NewsCategories
         return \Database::getInstance()->execute("SELECT DISTINCT(language) FROM tl_page WHERE type='root'")->fetchEach('language');
     }
 
-
     /**
      * Get a fallback language
      * @return string
@@ -49,7 +46,6 @@ class NewsCategories
     {
         return \Database::getInstance()->execute("SELECT language FROM tl_page WHERE type='root' AND fallback=1")->language;
     }
-
 
     /**
      * Get the model class name

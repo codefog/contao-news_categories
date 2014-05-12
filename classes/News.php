@@ -14,7 +14,6 @@
 
 namespace NewsCategories;
 
-
 /**
  * Provide methods regarding news archives
  */
@@ -28,22 +27,18 @@ class News extends \Contao\News
      */
     public function addCategoriesToTemplate($objTemplate, $arrData)
     {
-        if (isset($arrData['categories']))
-        {
+        if (isset($arrData['categories'])) {
             $arrCategories = array();
             $arrCategoriesList = array();
             $categories = deserialize($arrData['categories']);
 
-            if (is_array($categories) && !empty($categories))
-            {
+            if (is_array($categories) && !empty($categories)) {
                 $strClass = \NewsCategories\NewsCategories::getModelClass();
                 $objCategories = $strClass::findPublishedByIds($categories);
 
                 // Add the categories to template
-                if ($objCategories !== null)
-                {
-                    while ($objCategories->next())
-                    {
+                if ($objCategories !== null) {
+                    while ($objCategories->next()) {
                         $arrCategories[$objCategories->id] = $objCategories->row();
                         $arrCategoriesList[$objCategories->id] = $objCategories->frontendTitle ? $objCategories->frontendTitle : $objCategories->title;
                     }
@@ -55,7 +50,6 @@ class News extends \Contao\News
         }
     }
 
-
     /**
      * Set the news categories, if any
      * @param array
@@ -64,13 +58,10 @@ class News extends \Contao\News
     {
         $arrCategories = deserialize($arrFeed['categories']);
 
-        if (is_array($arrCategories) && !empty($arrCategories))
-        {
+        if (is_array($arrCategories) && !empty($arrCategories)) {
             $GLOBALS['NEWS_FILTER_CATEGORIES'] = true;
             $GLOBALS['NEWS_FILTER_DEFAULT'] = $arrCategories;
-        }
-        else
-        {
+        } else {
             $GLOBALS['NEWS_FILTER_CATEGORIES'] = false;
         }
 

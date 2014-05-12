@@ -12,12 +12,10 @@
  * @license LGPL
  */
 
-
 /**
  * Load tl_news_archive language file
  */
 \System::loadLanguageFile('tl_news_archive');
-
 
 /**
  * Table tl_news_category
@@ -197,12 +195,11 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
     )
 );
 
-
 /**
  * Enable multilingual features
  */
-if (\NewsCategories\NewsCategories::checkMultilingual())
-{
+if (\NewsCategories\NewsCategories::checkMultilingual()) {
+
     // Config
     $GLOBALS['TL_DCA']['tl_news_category']['config']['dataContainer'] = 'Multilingual';
     $GLOBALS['TL_DCA']['tl_news_category']['config']['language'] = \NewsCategories\NewsCategories::getAvailableLanguages();
@@ -219,7 +216,6 @@ if (\NewsCategories\NewsCategories::checkMultilingual())
     $GLOBALS['TL_DCA']['tl_news_category']['fields']['frontendTitle']['eval']['translatableFor'] = '*';
 }
 
-
 class tl_news_category extends Backend
 {
 
@@ -230,12 +226,10 @@ class tl_news_category extends Backend
     {
         $this->import('BackendUser', 'User');
 
-        if (!$this->User->isAdmin && !$this->User->newscategories)
-        {
+        if (!$this->User->isAdmin && !$this->User->newscategories) {
             $this->redirect('contao/main.php?act=error');
         }
     }
-
 
     /**
      * Return the paste category button
@@ -252,8 +246,7 @@ class tl_news_category extends Backend
         $disablePI = false;
 
         // Disable all buttons if there is a circular reference
-        if ($arrClipboard !== false && ($arrClipboard['mode'] == 'cut' && ($cr == 1 || $arrClipboard['id'] == $row['id']) || $arrClipboard['mode'] == 'cutAll' && ($cr == 1 || in_array($row['id'], $arrClipboard['id']))))
-        {
+        if ($arrClipboard !== false && ($arrClipboard['mode'] == 'cut' && ($cr == 1 || $arrClipboard['id'] == $row['id']) || $arrClipboard['mode'] == 'cutAll' && ($cr == 1 || in_array($row['id'], $arrClipboard['id'])))) {
             $disablePA = true;
             $disablePI = true;
         }
@@ -264,14 +257,12 @@ class tl_news_category extends Backend
         $imagePasteAfter = Image::getHtml('pasteafter.gif', sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id']));
         $imagePasteInto = Image::getHtml('pasteinto.gif', sprintf($GLOBALS['TL_LANG'][$table]['pasteinto'][1], $row['id']));
 
-        if ($row['id'] > 0)
-        {
+        if ($row['id'] > 0) {
             $return = $disablePA ? Image::getHtml('pasteafter_.gif').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';
         }
 
         return $return.($disablePI ? Image::getHtml('pasteinto_.gif').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteinto'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto.'</a> ');
     }
-
 
     /**
      * Auto-generate the category alias if it has not been set yet
@@ -285,14 +276,12 @@ class tl_news_category extends Backend
         $autoAlias = false;
 
         // Generate alias if there is none
-        if (!strlen($varValue))
-        {
+        if (!strlen($varValue)) {
             $autoAlias = true;
             $strTitle = $dc->activeRecord->title;
 
             // Use the frontend title if available
-            if (strlen($dc->activeRecord->frontendTitle))
-            {
+            if (strlen($dc->activeRecord->frontendTitle)) {
                 $strTitle = $dc->activeRecord->frontendTitle;
             }
 
@@ -303,20 +292,17 @@ class tl_news_category extends Backend
                                    ->execute($varValue);
 
         // Check whether the category alias exists
-        if ($objAlias->numRows > 1 && !$autoAlias)
-        {
+        if ($objAlias->numRows > 1 && !$autoAlias) {
             throw new Exception(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $varValue));
         }
 
         // Add ID to alias
-        if ($objAlias->numRows && $autoAlias)
-        {
+        if ($objAlias->numRows && $autoAlias) {
             $varValue .= '-' . $dc->id;
         }
 
         return $varValue;
     }
-
 
     /**
      * Return the "toggle visibility" button
@@ -330,22 +316,19 @@ class tl_news_category extends Backend
      */
     public function toggleIcon($row, $href, $label, $title, $icon, $attributes)
     {
-        if (strlen(Input::get('tid')))
-        {
+        if (strlen(Input::get('tid'))) {
             $this->toggleVisibility(Input::get('tid'), (Input::get('state') == 1));
             $this->redirect($this->getReferer());
         }
 
         $href .= '&amp;tid='.$row['id'].'&amp;state='.($row['published'] ? '' : 1);
 
-        if (!$row['published'])
-        {
+        if (!$row['published']) {
             $icon = 'invisible.gif';
         }
 
         return '<a href="'.$this->addToUrl($href).'" title="'.specialchars($title).'"'.$attributes.'>'.$this->generateImage($icon, $label).'</a> ';
     }
-
 
     /**
      * Publish/unpublish a category
@@ -358,17 +341,12 @@ class tl_news_category extends Backend
         $objVersions->initialize();
 
         // Trigger the save_callback
-        if (is_array($GLOBALS['TL_DCA']['tl_news_category']['fields']['published']['save_callback']))
-        {
-            foreach ($GLOBALS['TL_DCA']['tl_news_category']['fields']['published']['save_callback'] as $callback)
-            {
-                if (is_array($callback))
-                {
+        if (is_array($GLOBALS['TL_DCA']['tl_news_category']['fields']['published']['save_callback'])) {
+            foreach ($GLOBALS['TL_DCA']['tl_news_category']['fields']['published']['save_callback'] as $callback) {
+                if (is_array($callback)) {
                     $this->import($callback[0]);
                     $blnVisible = $this->$callback[0]->$callback[1]($blnVisible, $this);
-                }
-                elseif (is_callable($callback))
-                {
+                } elseif (is_callable($callback)) {
                     $blnVisible = $callback($blnVisible, $this);
                 }
             }

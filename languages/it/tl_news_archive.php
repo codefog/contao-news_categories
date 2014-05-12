@@ -14,7 +14,6 @@
  * @license LGPL
  */
 
-
 /**
  * Global operations
  */

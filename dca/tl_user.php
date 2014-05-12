@@ -12,13 +12,11 @@
  * @license LGPL
  */
 
-
 /**
  * Add a palette to tl_user
  */
 $GLOBALS['TL_DCA']['tl_user']['palettes']['extend'] = str_replace('newsfeedp;', 'newsfeedp,newscategories;', $GLOBALS['TL_DCA']['tl_user']['palettes']['extend']);
 $GLOBALS['TL_DCA']['tl_user']['palettes']['custom'] = str_replace('newsfeedp;', 'newsfeedp,newscategories;', $GLOBALS['TL_DCA']['tl_user']['palettes']['custom']);
-
 
 /**
  * Add a new field to tl_user

@@ -15,7 +15,6 @@
 
 namespace NewsCategories;
 
-
 /**
  * Front end module "news categories".
  */
@@ -40,15 +39,13 @@ class ModuleNewsCategories extends \ModuleNews
      */
     protected $arrCategoryTrail = array();
 
-
     /**
      * Display a wildcard in the back end
      * @return string
      */
     public function generate()
     {
-        if (TL_MODE == 'BE')
-        {
+        if (TL_MODE == 'BE') {
             $objTemplate = new \BackendTemplate('be_wildcard');
 
             $objTemplate->wildcard = '### NEWS CATEGORIES MENU ###';
@@ -63,14 +60,12 @@ class ModuleNewsCategories extends \ModuleNews
         $this->news_archives = $this->sortOutProtected(deserialize($this->news_archives));
 
         // Return if there are no archives
-        if (!is_array($this->news_archives) || empty($this->news_archives))
-        {
+        if (!is_array($this->news_archives) || empty($this->news_archives)) {
             return '';
         }
 
         return parent::generate();
     }
-
 
     /**
      * Generate the module
@@ -81,9 +76,9 @@ class ModuleNewsCategories extends \ModuleNews
         $objCategories = $strClass::findPublishedByParent($this->news_archives, ($this->news_customCategories ? deserialize($this->news_categories) : null));
 
         // Return if no categories are found
-        if ($objCategories === null)
-        {
+        if ($objCategories === null) {
             $this->Template->categories = '';
+
             return;
         }
 
@@ -91,12 +86,10 @@ class ModuleNewsCategories extends \ModuleNews
         $strUrl = $this->generateFrontendUrl($objPage->row(), '/category/%s');
 
         // Get the jumpTo page
-        if ($this->jumpTo > 0 && $objPage->id != $this->jumpTo)
-        {
+        if ($this->jumpTo > 0 && $objPage->id != $this->jumpTo) {
             $objJump = \PageModel::findByPk($this->jumpTo);
 
-            if ($objJump !== null)
-            {
+            if ($objJump !== null) {
                 $strUrl = $this->generateFrontendUrl($objJump->row(), '/category/%s');
             }
         }
@@ -104,18 +97,15 @@ class ModuleNewsCategories extends \ModuleNews
         $arrIds = array();
 
         // Get the parent categories IDs
-        while ($objCategories->next())
-        {
+        while ($objCategories->next()) {
             $arrIds = array_merge($arrIds, $this->getParentRecords($objCategories->id, 'tl_news_category'));
         }
 
         // Get the active category
-        if (\Input::get('category') != '')
-        {
+        if (\Input::get('category') != '') {
             $this->objActiveCategory = $strClass::findPublishedByIdOrAlias(\Input::get('category'));
 
-            if ($this->objActiveCategory !== null)
-            {
+            if ($this->objActiveCategory !== null) {
                 $this->arrCategoryTrail = $this->getParentRecords($this->objActiveCategory->id, 'tl_news_category');
 
                 // Remove the current category from the trail
@@ -125,7 +115,6 @@ class ModuleNewsCategories extends \ModuleNews
 
         $this->Template->categories = $this->renderNewsCategories(0, array_unique($arrIds), $strUrl);
     }
-
 
     /**
      * Recursively compile the news categories and return it as HTML string
@@ -138,16 +127,14 @@ class ModuleNewsCategories extends \ModuleNews
         $strClass = \NewsCategories\NewsCategories::getModelClass();
         $objCategories = $strClass::findPublishedByPidAndIds($intPid, $arrIds);
 
-        if ($objCategories === null)
-        {
+        if ($objCategories === null) {
             return '';
         }
 
         $arrCategories = array();
 
         // Layout template fallback
-        if ($this->navigationTpl == '')
-        {
+        if ($this->navigationTpl == '') {
             $this->navigationTpl = 'nav_news_categories';
         }
 
@@ -161,13 +148,11 @@ class ModuleNewsCategories extends \ModuleNews
         $total = $objCategories->count();
 
         // Add the "reset categories" link
-        if ($this->news_resetCategories && $intLevel == 1)
-        {
+        if ($this->news_resetCategories && $intLevel == 1) {
             $intNewsQuantity = 0;
 
             // Get the news quantity
-            if ($this->news_showQuantity)
-            {
+            if ($this->news_showQuantity) {
                 $intNewsQuantity = \NewsModel::countPublishedByCategoryAndPids($this->news_archives);
             }
 
@@ -190,13 +175,11 @@ class ModuleNewsCategories extends \ModuleNews
         $intLevel++;
 
         // Render categories
-        while ($objCategories->next())
-        {
+        while ($objCategories->next()) {
             $strSubcategories = '';
 
             // Get the subcategories
-            if ($objCategories->subcategories)
-            {
+            if ($objCategories->subcategories) {
                 $strSubcategories = $this->renderNewsCategories($objCategories->id, $arrIds, $strUrl, $intLevel);
             }
 
@@ -215,8 +198,7 @@ class ModuleNewsCategories extends \ModuleNews
             $arrRow['quantity'] = 0;
 
             // Get the news quantity
-            if ($this->news_showQuantity)
-            {
+            if ($this->news_showQuantity) {
                 $arrRow['quantity'] = \NewsModel::countPublishedByCategoryAndPids($this->news_archives, $objCategories->id);
             }
 
@@ -224,6 +206,7 @@ class ModuleNewsCategories extends \ModuleNews
         }
 
         $objTemplate->items = $arrCategories;
+
         return !empty($arrCategories) ? $objTemplate->parse() : '';
     }
 }

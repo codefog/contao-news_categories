@@ -12,7 +12,6 @@
  * @license LGPL
  */
 
-
 /**
  * Table tl_news_categories
  */

@@ -12,12 +12,10 @@
  * @license LGPL
  */
 
-
 /**
  * Register the namespace
  */
 ClassLoader::addNamespace('NewsCategories');
-
 
 /**
  * Register the classes
@@ -39,7 +37,6 @@ ClassLoader::addClasses(array
     'NewsCategories\ModuleNewsList'                => 'system/modules/news_categories/modules/ModuleNewsList.php',
     'NewsCategories\ModuleNewsMenu'                => 'system/modules/news_categories/modules/ModuleNewsMenu.php',
 ));
-
 
 /**
  * Register the templates

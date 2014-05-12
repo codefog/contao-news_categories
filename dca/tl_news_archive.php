@@ -12,12 +12,10 @@
  * @license LGPL
  */
 
-
 /**
  * Register the global callbacks
  */
 $GLOBALS['TL_DCA']['tl_news_archive']['config']['onload_callback'][] = array('tl_news_archive_categories', 'checkPermission');
-
 
 /**
  * Add a global operation to tl_news_archive
@@ -33,7 +31,6 @@ array_insert($GLOBALS['TL_DCA']['tl_news_archive']['list']['global_operations'],
     )
 ));
 
-
 class tl_news_archive_categories extends Backend
 {
 
@@ -44,8 +41,7 @@ class tl_news_archive_categories extends Backend
     {
         $this->import('BackendUser', 'User');
 
-        if (!$this->User->isAdmin && !$this->User->newscategories)
-        {
+        if (!$this->User->isAdmin && !$this->User->newscategories) {
             unset($GLOBALS['TL_DCA']['tl_news_archive']['list']['global_operations']['categories']);
         }
     }

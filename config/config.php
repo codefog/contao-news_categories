@@ -12,13 +12,11 @@
  * @license LGPL
  */
 
-
 /**
  * Extension version
  */
 @define('NEWS_CATEGORIES_VERSION', '1.2');
 @define('NEWS_CATEGORIES_BUILD', '3');
-
 
 /**
  * Back end modules
@@ -26,18 +24,15 @@
 $GLOBALS['BE_MOD']['content']['news']['tables'][] = 'tl_news_category';
 $GLOBALS['BE_MOD']['content']['news']['stylesheet'] = 'system/modules/news_categories/assets/backend.css';
 
-
 /**
  * Front end modules
  */
 $GLOBALS['FE_MOD']['news']['newscategories'] = 'ModuleNewsCategories';
 
-
 /**
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['parseArticles'][] = array('News', 'addCategoriesToTemplate');
-
 
 /**
  * Add permissions

@@ -12,7 +12,6 @@
  * @license LGPL
  */
 
-
 /**
  * Fields
  */

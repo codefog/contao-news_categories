@@ -12,18 +12,15 @@
  * @license LGPL
  */
 
-
 /**
  * Load tl_user language file
  */
 \System::loadLanguageFile('tl_user');
 
-
 /**
  * Add a palette to tl_user_group
  */
 $GLOBALS['TL_DCA']['tl_user_group']['palettes']['default'] = str_replace('newsfeedp;', 'newsfeedp,newscategories;', $GLOBALS['TL_DCA']['tl_user_group']['palettes']['default']);
-
 
 /**
  * Add a new field to tl_user_group

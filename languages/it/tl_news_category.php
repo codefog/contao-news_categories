@@ -14,7 +14,6 @@
  * @license LGPL
  */
 
-
 /**
  * Fields
  */
@@ -23,13 +22,11 @@ $GLOBALS['TL_LANG']['tl_news_category']['frontendTitle'] = array('Titolo in Fron
 $GLOBALS['TL_LANG']['tl_news_category']['alias']     = array('Alias', 'Testo univoco per il link, che può essere usato al posto dell\'ID.');
 $GLOBALS['TL_LANG']['tl_news_category']['published'] = array('Pubblica categoria', 'Rende attiva la categoria nel sito web.');
 
-
 /**
  * Legends
  */
 $GLOBALS['TL_LANG']['tl_news_category']['title_legend']   = 'Titolo e alias';
 $GLOBALS['TL_LANG']['tl_news_category']['publish_legend'] = 'Parametri di pubblicazione';
-
 
 /**
  * Buttons

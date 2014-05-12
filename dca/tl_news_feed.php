@@ -12,12 +12,10 @@
  * @license LGPL
  */
 
-
 /**
  * Extend the tl_news_feed palette
  */
 $GLOBALS['TL_DCA']['tl_news_feed']['palettes']['default'] = str_replace('archives;', 'archives,categories;', $GLOBALS['TL_DCA']['tl_news_feed']['palettes']['default']);
-
 
 /**
  * Add field to tl_news_feed

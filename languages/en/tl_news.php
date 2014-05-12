@@ -12,12 +12,10 @@
  * @license LGPL
  */
 
-
 /**
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_news']['categories'] = array('Categories', 'Here you can select one or more news categories.');
-
 
 /**
  * Legends

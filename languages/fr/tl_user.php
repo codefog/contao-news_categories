@@ -13,7 +13,6 @@
  * @license LGPL
  */
 
-
 /**
  * Fields
  */

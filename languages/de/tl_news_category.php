@@ -12,7 +12,6 @@
  * @license LGPL
  */
 
-
 /**
  * Fields
  */
@@ -22,13 +21,11 @@ $GLOBALS['TL_LANG']['tl_news_category']['frontendTitle'] = array('Frontend TiteL
 $GLOBALS['TL_LANG']['tl_news_category']['alias']     = array('News-Kategorie-Alias', 'Der Kategorie-Alias ist eine eindeutige Referenz, die anstelle der numerischen ID aufgerufen werden kann.');
 $GLOBALS['TL_LANG']['tl_news_category']['published'] = array('Kategorie veröffentlichen', 'News-Kategorie veröffentlichen.');
 
-
 /**
  * Legends
  */
 $GLOBALS['TL_LANG']['tl_news_category']['title_legend']   = 'Titel und Alias';
 $GLOBALS['TL_LANG']['tl_news_category']['publish_legend'] = 'Veröffentlichung';
-
 
 /**
  * Buttons
