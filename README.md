@@ -6,6 +6,8 @@ Extend the Contao news module with categories. This extension adds a new header 
 The extension is sponsored by Martin Schaffner from [Webcontext](http://www.webcontext.com).
 Demo page http://www.webcontext.info/de/news-kategorien.html
 
+To enable multilingual categories you have to install the [DC_Multilingual](https://github.com/terminal42/contao-DC_Multilingual) extension by [terminal42](http://www.terminal42.ch). Note, that you must have at least two different languages of your website to use this feature!
+
 You can display the categories in your *news_* template:
 
 ```php
