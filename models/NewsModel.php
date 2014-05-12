@@ -149,7 +149,6 @@ class NewsModel extends \Contao\NewsModel
 		$arrOptions['limit']  = $intLimit;
 		$arrOptions['offset'] = $intOffset;
 
-
 		return static::findBy($arrColumns, null, $arrOptions);
 	}
 
