@@ -133,12 +133,12 @@ class NewsModel extends \Contao\NewsModel
         // Filter by categories
         $arrColumns = static::filterByCategories($arrColumns);
 
-        $arrOptions = array
-        (
-            'order'  => "$t.date DESC",
-            'limit'  => $intLimit,
-            'offset' => $intOffset
-        );
+        if (!isset($arrOptions['order'])) {
+            $arrOptions['order']  = "$t.date DESC";
+        }
+
+        $arrOptions['limit']  = $intLimit;
+        $arrOptions['offset'] = $intOffset;
 
         return static::findBy($arrColumns, null, $arrOptions);
     }
@@ -175,7 +175,7 @@ class NewsModel extends \Contao\NewsModel
         // Filter by categories
         $arrColumns = static::filterByCategories($arrColumns);
 
-        return static::countBy($arrColumns, null);
+        return static::countBy($arrColumns, null, $arrOptions);
     }
 
     /**

@@ -12,6 +12,9 @@ Version 2.?.? stable (2014-??-??)
 - Added the multilingual titles (see #16)
 - Format the code according to PSR-2
 
+### Fixed
+- Fixed preserving the custom news order (see #24)
+
 
 Version 1.2.3 stable (2014-04-10)
 ---------------------------------
