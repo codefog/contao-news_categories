@@ -11,6 +11,7 @@ Version 2.?.? stable (2014-??-??)
 - Added feature to display the number of news items per each category (see #22)
 - Added the multilingual titles (see #16)
 - Format the code according to PSR-2
+- Allow to set the default news categories for user and user group (see #25)
 
 ### Fixed
 - Fixed preserving the custom news order (see #24)

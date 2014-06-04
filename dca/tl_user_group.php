@@ -20,7 +20,7 @@
 /**
  * Add a palette to tl_user_group
  */
-$GLOBALS['TL_DCA']['tl_user_group']['palettes']['default'] = str_replace('newsfeedp;', 'newsfeedp,newscategories;', $GLOBALS['TL_DCA']['tl_user_group']['palettes']['default']);
+$GLOBALS['TL_DCA']['tl_user_group']['palettes']['default'] = str_replace('newsfeedp;', 'newsfeedp;{newscategories_legend},newscategories,newscategories_default;', $GLOBALS['TL_DCA']['tl_user_group']['palettes']['default']);
 
 /**
  * Add a new field to tl_user_group
@@ -31,4 +31,14 @@ $GLOBALS['TL_DCA']['tl_user_group']['fields']['newscategories'] = array
     'exclude'                 => true,
     'inputType'               => 'checkbox',
     'sql'                     => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_user_group']['fields']['newscategories_default'] = array
+(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_user']['newscategories_default'],
+    'exclude'                 => true,
+    'inputType'               => 'treePicker',
+    'foreignKey'              => 'tl_news_category.title',
+    'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox', 'foreignTable'=>'tl_news_category', 'titleField'=>'title', 'searchField'=>'title', 'managerHref'=>'do=news&table=tl_news_category'),
+    'sql'                     => "blob NULL"
 );

@@ -38,3 +38,4 @@ $GLOBALS['TL_HOOKS']['parseArticles'][] = array('News', 'addCategoriesToTemplate
  * Add permissions
  */
 $GLOBALS['TL_PERMISSIONS'][] = 'newscategories';
+$GLOBALS['TL_PERMISSIONS'][] = 'newscategories_default';
