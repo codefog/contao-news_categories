@@ -3,7 +3,7 @@
 /**
  * news_categories extension for Contao Open Source CMS
  *
- * Copyright (C) 2013 Codefog
+ * Copyright (C) 2011-2014 Codefog
  *
  * @package news_categories
  * @link    http://codefog.pl
@@ -14,8 +14,7 @@
  * @license LGPL
  */
 
-
 /**
  * Front end modules
  */
-$GLOBALS['TL_LANG']['FMD']['newscategories'] = array('Liste des catégories d\'actualité', 'Ajoute une liste des catégories à la page.');
+$GLOBALS['TL_LANG']['FMD']['newscategories'] = array('Liste des catégories d\'actualités', 'Ajoute une liste des catégories à la page.');

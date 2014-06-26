@@ -18,7 +18,7 @@ namespace NewsCategories;
 /**
  * Reads and writes news categories
  */
-class NewsCategoryModel extends \Model
+class NewsCategoryMultilingualModel extends \MultilingualModel
 {
 
     /**
@@ -113,8 +113,18 @@ class NewsCategoryModel extends \Model
             return null;
         }
 
-        $objCategories = \Database::getInstance()->prepare("SELECT c1.*, (SELECT COUNT(*) FROM tl_news_category c2 WHERE c2.pid=c1.id AND c2.id IN (" . implode(',', array_map('intval', $arrIds)) . ")" . (!BE_USER_LOGGED_IN ? " AND c2.published=1" : "") . ") AS subcategories FROM tl_news_category c1 WHERE c1.pid=? AND c1.id IN (" . implode(',', array_map('intval', $arrIds)) . ")" . (!BE_USER_LOGGED_IN ? " AND c1.published=1" : "") . " ORDER BY c1.sorting")
-                                                 ->execute($intPid);
+        $arrLanguageFields = \MultilingualQueryBuilder::getMultilingualFields(static::$strTable);
+        $strPid = \DC_Multilingual::getPidColumnForTable(static::$strTable);
+        $strLang = \DC_Multilingual::getLanguageColumnForTable(static::$strTable);
+
+        $objCategories = \Database::getInstance()->prepare("SELECT c1.*
+                " . (!empty($arrLanguageFields) ? (", " . implode(", ", \MultilingualQueryBuilder::generateFieldsSubquery($arrLanguageFields, 'c1', 'dcm2'))) : "") . "
+                , (SELECT COUNT(*) FROM tl_news_category c2 WHERE c2.pid=c1.id AND c2.id IN (" . implode(',', array_map('intval', $arrIds)) . ")" . (!BE_USER_LOGGED_IN ? " AND c2.published=1" : "") . ") AS subcategories
+                FROM tl_news_category c1
+                " . (!empty($arrLanguageFields) ? (" LEFT OUTER JOIN " . static::$strTable . " AS dcm2 ON (c1.id=dcm2." . $strPid . " AND dcm2.$strLang='" . $GLOBALS['TL_LANGUAGE'] . "')") : "") . "
+                WHERE c1.pid=? AND c1." . $strPid . "=0 AND c1.id IN (" . implode(',', array_map('intval', $arrIds)) . ")" . (!BE_USER_LOGGED_IN ? " AND c1.published=1" : "") .
+                " ORDER BY c1.sorting")
+            ->execute($intPid);
 
         if ($objCategories->numRows < 1) {
             return null;

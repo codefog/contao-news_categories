@@ -3,7 +3,7 @@
 /**
  * news_categories extension for Contao Open Source CMS
  *
- * Copyright (C) 2013 Codefog
+ * Copyright (C) 2011-2014 Codefog
  *
  * @package news_categories
  * @link    http://codefog.pl
@@ -14,12 +14,10 @@
  * @license LGPL
  */
 
-
 /**
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_news']['categories'] = array('Categorie', 'Puoi selezionare una o più categorie.');
-
 
 /**
  * Legends

@@ -1,6 +1,22 @@
 news_categories Changelog
 =========================
 
+Version 2.0.0 stable (2014-06-26)
+---------------------------------
+
+### Improved
+- Updated the French translation (see #15)
+- Dropped the backend.css file
+- Added support for subcategories (see #19)
+- Added feature to display the number of news items per each category (see #22)
+- Added the multilingual titles (see #16)
+- Format the code according to PSR-2
+- Allow to set the default news categories for user and user group (see #25)
+
+### Fixed
+- Fixed preserving the custom news order (see #24)
+
+
 Version 1.2.3 stable (2014-04-10)
 ---------------------------------
 

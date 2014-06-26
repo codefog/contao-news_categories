@@ -6,15 +6,18 @@
  * Copyright (C) 2011-2014 Codefog
  *
  * @package news_categories
- * @link    http://codefog.pl
  * @author  Webcontext <http://webcontext.com>
  * @author  Codefog <info@codefog.pl>
  * @author  Kamil Kuzminski <kamil.kuzminski@codefog.pl>
- * @author  Lionel Maccaud <https://github.com/lionel-m>
  * @license LGPL
  */
 
 /**
- * Miscellaneous
+ * Load tl_user language file
  */
-$GLOBALS['TL_LANG']['MSC']['resetCategories'] = array('Toutes les catégories', 'Afficher les actualités de toutes les catégories');
+\System::loadLanguageFile('tl_user');
+
+/**
+ * Legends
+ */
+$GLOBALS['TL_LANG']['tl_user_group']['newscategories_legend'] = $GLOBALS['TL_LANG']['tl_user']['newscategories_legend'];
