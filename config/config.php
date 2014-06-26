@@ -15,8 +15,8 @@
 /**
  * Extension version
  */
-@define('NEWS_CATEGORIES_VERSION', '1.2');
-@define('NEWS_CATEGORIES_BUILD', '3');
+@define('NEWS_CATEGORIES_VERSION', '2.0');
+@define('NEWS_CATEGORIES_BUILD', '0');
 
 /**
  * Back end modules

@@ -24,6 +24,7 @@ You can display the categories in your *news_* template:
 ```
 
 ### Contao compatibility
+- Contao 3.3
 - Contao 3.2
 
 ### Available languages
