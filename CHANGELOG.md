@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 2.0.1 stable (2014-06-??)
+---------------------------------
+
+### Fixed
+- Fixed the indentation (see #26)
+
+
 Version 2.0.0 stable (2014-06-26)
 ---------------------------------
 
