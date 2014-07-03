@@ -58,7 +58,8 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
         'label' => array
         (
             'fields'                  => array('title', 'frontendTitle'),
-            'format'                  => '%s <span style="padding-left:3px;color:#b3b3b3;">[%s]</span>'
+            'format'                  => '%s <span style="padding-left:3px;color:#b3b3b3;">[%s]</span>',
+            'label_callback'          => array('tl_news_category', 'generateLabel')
         ),
         'global_operations' => array
         (
@@ -262,6 +263,19 @@ class tl_news_category extends Backend
         }
 
         return $return.($disablePI ? Image::getHtml('pasteinto_.gif').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteinto'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto.'</a> ');
+    }
+
+    /**
+     * Add the correct indentation
+     * @param array
+     * @param string
+     * @param object
+     * @param string
+     * @return string
+     */
+    public function generateLabel($arrRow, $strLabel, $objDca, $strAttributes)
+    {
+        return \Image::getHtml('iconPLAIN.gif', '', $strAttributes) . ' ' . $strLabel;
     }
 
     /**
