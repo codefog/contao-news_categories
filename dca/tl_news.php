@@ -21,7 +21,7 @@ $GLOBALS['TL_DCA']['tl_news']['config']['ondelete_callback'][] = array('tl_news_
 /**
  * Extend a tl_news palette
  */
-$GLOBALS['TL_DCA']['tl_news']['palettes']['default'] = str_replace('author;', 'author;{category_legend},categories;', $GLOBALS['TL_DCA']['tl_news']['palettes']['default']);
+$GLOBALS['TL_DCA']['tl_news']['palettes']['default'] = str_replace('author', 'author;{category_legend},categories;', $GLOBALS['TL_DCA']['tl_news']['palettes']['default']);
 
 /**
  * Add a new field to tl_news
