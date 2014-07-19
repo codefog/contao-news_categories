@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 2.0.2 stable (2014-07-19)
+---------------------------------
+
+### Fixed
+- Fixed the tl_news palette replacement (see #27)
+
+
 Version 2.0.1 stable (2014-07-03)
 ---------------------------------
 
