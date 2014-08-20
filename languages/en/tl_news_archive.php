@@ -16,3 +16,14 @@
  * Global operations
  */
 $GLOBALS['TL_LANG']['tl_news_archive']['categories'] = array('Categories', 'Add and manage news categories.');
+
+/**
+ * Legends
+ */
+$GLOBALS['TL_LANG']['tl_news_archive']['categories_legend'] = 'Categories settings';
+
+/**
+ * Fields
+ */
+$GLOBALS['TL_LANG']['tl_news_archive']['limitCategories'] = array('Limit categories', 'Limit the available categories for this archive.');
+$GLOBALS['TL_LANG']['tl_news_archive']['categories']      = array('News categories', 'Please choose one or more news categories.');

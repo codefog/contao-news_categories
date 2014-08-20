@@ -23,8 +23,9 @@ $GLOBALS['TL_LANG']['tl_news_category']['published']     = array('Publish catego
 /**
  * Legends
  */
-$GLOBALS['TL_LANG']['tl_news_category']['title_legend']   = 'Title and alias';
-$GLOBALS['TL_LANG']['tl_news_category']['publish_legend'] = 'Publish settings';
+$GLOBALS['TL_LANG']['tl_news_category']['title_legend']    = 'Title and alias';
+$GLOBALS['TL_LANG']['tl_news_category']['archives_legend'] = 'Archives limit';
+$GLOBALS['TL_LANG']['tl_news_category']['publish_legend']  = 'Publish settings';
 
 /**
  * Buttons
