@@ -16,6 +16,7 @@
  * Register the global callbacks
  */
 $GLOBALS['TL_DCA']['tl_news_archive']['config']['onload_callback'][] = array('tl_news_archive_categories', 'checkPermission');
+$GLOBALS['TL_DCA']['tl_news_archive']['config']['onload_callback'][] = array('tl_news_archive_categories', 'adjustPalette');
 
 /**
  * Add a global operation to tl_news_archive
@@ -34,9 +35,7 @@ array_insert($GLOBALS['TL_DCA']['tl_news_archive']['list']['global_operations'],
 /**
  * Add palettes to tl_news_archive
  */
-$GLOBALS['TL_DCA']['tl_news_archive']['palettes']['__selector__'][] = 'limitCategories';
 $GLOBALS['TL_DCA']['tl_news_archive']['palettes']['default'] = str_replace('jumpTo;', 'jumpTo;{categories_legend},limitCategories;', $GLOBALS['TL_DCA']['tl_news_archive']['palettes']['default']);
-$GLOBALS['TL_DCA']['tl_news_archive']['subpalettes']['limitCategories'] = 'categories';
 
 /**
  * Add fields to tl_news_archive
@@ -56,7 +55,7 @@ $GLOBALS['TL_DCA']['tl_news_archive']['fields']['categories'] = array
     'exclude'                 => true,
     'inputType'               => 'treePicker',
     'foreignKey'              => 'tl_news_category.title',
-    'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox', 'foreignTable'=>'tl_news_category', 'titleField'=>'title', 'searchField'=>'title', 'managerHref'=>'do=news&table=tl_news_category'),
+    'eval'                    => array('mandatory'=>true, 'multiple'=>true, 'fieldType'=>'checkbox', 'foreignTable'=>'tl_news_category', 'titleField'=>'title', 'searchField'=>'title', 'managerHref'=>'do=news&table=tl_news_category'),
     'sql'                     => "blob NULL"
 );
 
@@ -73,5 +72,25 @@ class tl_news_archive_categories extends Backend
         if (!$this->User->isAdmin && !$this->User->newscategories) {
             unset($GLOBALS['TL_DCA']['tl_news_archive']['list']['global_operations']['categories']);
         }
+    }
+
+    /**
+     * Adjust the palette
+     */
+    public function adjustPalette($dc=null)
+    {
+        if (!$dc->id) {
+            return;
+        }
+
+        $objArchive = $this->Database->prepare("SELECT limitCategories FROM tl_news_archive WHERE id=?")
+                                     ->limit(1)
+                                     ->execute($dc->id);
+
+        if (!$objArchive->numRows || !$objArchive->limitCategories) {
+            return;
+        }
+
+        $GLOBALS['TL_DCA']['tl_news_archive']['palettes']['default'] = str_replace('limitCategories;', 'limitCategories,categories;', $GLOBALS['TL_DCA']['tl_news_archive']['palettes']['default']);
     }
 }
