@@ -156,11 +156,13 @@ class ModuleNewsCategories extends \ModuleNews
                 $intNewsQuantity = \NewsModel::countPublishedByCategoryAndPids($this->news_archives);
             }
 
+            $blnActive = \Input::get('category') ? false : true;
+
             $arrCategories[] = array
             (
-                'isActive' => \Input::get('category') ? false : true,
+                'isActive' => $blnActive,
                 'subitems' => '',
-                'class' => 'reset first' . (($total == 1) ? ' last' : '') . ' even',
+                'class' => 'reset first' . (($total == 1) ? ' last' : '') . ' even' . ($blnActive ? ' active' : ''),
                 'title' => specialchars($GLOBALS['TL_LANG']['MSC']['resetCategories'][1]),
                 'linkTitle' => specialchars($GLOBALS['TL_LANG']['MSC']['resetCategories'][1]),
                 'link' => $GLOBALS['TL_LANG']['MSC']['resetCategories'][0],

@@ -1,6 +1,16 @@
 news_categories Changelog
 =========================
 
+Version 2.1.0 stable (2014-09-20)
+---------------------------------
+
+### Improved
+- Limit categories to news archives (see #30)
+
+### Fixed
+- Add the "active" class to reset link (see #31)
+
+
 Version 2.0.2 stable (2014-07-19)
 ---------------------------------
 

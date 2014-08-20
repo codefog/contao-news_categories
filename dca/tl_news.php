@@ -15,6 +15,7 @@
 /**
  * Register the global save and delete callbacks
  */
+$GLOBALS['TL_DCA']['tl_news']['config']['onload_callback'][] = array('tl_news_categories', 'setAllowedCategories');
 $GLOBALS['TL_DCA']['tl_news']['config']['onsubmit_callback'][] = array('tl_news_categories', 'updateCategories');
 $GLOBALS['TL_DCA']['tl_news']['config']['ondelete_callback'][] = array('tl_news_categories', 'deleteCategories');
 
@@ -39,6 +40,33 @@ $GLOBALS['TL_DCA']['tl_news']['fields']['categories'] = array
 
 class tl_news_categories extends Backend
 {
+
+    /**
+     * Set the allowed categories
+     * @param DataContainer
+     */
+    public function setAllowedCategories($dc=null)
+    {
+        if (!$dc->id) {
+            return;
+        }
+
+        $objArchive = $this->Database->prepare("SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=(SELECT pid FROM tl_news WHERE id=?)")
+                                     ->limit(1)
+                                     ->execute($dc->id);
+
+        if (!$objArchive->numRows) {
+            return;
+        }
+
+        $arrCategories = deserialize($objArchive->categories, true);
+
+        if (empty($arrCategories)) {
+            return;
+        }
+
+        $GLOBALS['TL_DCA']['tl_news']['fields']['categories']['rootNodes'] = $arrCategories;
+    }
 
     /**
      * Update the category relations

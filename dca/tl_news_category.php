@@ -53,7 +53,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
             'mode'                    => 5,
             'icon'                    => 'system/modules/news_categories/assets/icon.png',
             'paste_button_callback'   => array('tl_news_category', 'pasteCategory'),
-            'panelLayout'             => 'filter,search'
+            'panelLayout'             => 'search'
         ),
         'label' => array
         (
@@ -189,7 +189,6 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_news_category']['published'],
             'exclude'                 => true,
-            'search'                  => true,
             'inputType'               => 'checkbox',
             'sql'                     => "char(1) NOT NULL default ''"
         )
