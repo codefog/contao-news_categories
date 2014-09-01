@@ -22,7 +22,6 @@
  * Back end modules
  */
 $GLOBALS['BE_MOD']['content']['news']['tables'][] = 'tl_news_category';
-$GLOBALS['BE_MOD']['content']['news']['stylesheet'] = 'system/modules/news_categories/assets/backend.css';
 
 /**
  * Front end modules

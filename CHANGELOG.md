@@ -1,7 +1,14 @@
 news_categories Changelog
 =========================
 
-Version 2.1.0 stable (2014-09-20)
+Version 2.1.1 stable (2014-09-??)
+---------------------------------
+
+### Fixed
+- Drop the reference to old CSS file (see #33)
+
+
+Version 2.1.0 stable (2014-08-20)
 ---------------------------------
 
 ### Improved
