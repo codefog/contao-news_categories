@@ -135,7 +135,7 @@ class ModuleNewsCategories extends \ModuleNews
 
         // Layout template fallback
         if ($this->navigationTpl == '') {
-            $this->navigationTpl = 'nav_news_categories';
+            $this->navigationTpl = 'nav_newscategories';
         }
 
         $objTemplate = new \FrontendTemplate($this->navigationTpl);

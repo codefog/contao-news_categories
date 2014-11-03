@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 2.1.2 stable (2014-11-03)
+---------------------------------
+
+### Fixed
+- Fixed a wrong fallback template name
+
+
 Version 2.1.1 stable (2014-09-01)
 ---------------------------------
 
