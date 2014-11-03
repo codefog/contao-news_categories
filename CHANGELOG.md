@@ -1,7 +1,7 @@
 news_categories Changelog
 =========================
 
-Version 2.1.2 stable (2014-11-??)
+Version 2.1.2 stable (2014-11-03)
 ---------------------------------
 
 ### Fixed
