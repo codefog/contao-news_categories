@@ -20,4 +20,4 @@ $GLOBALS['TL_LANG']['tl_news']['categories'] = array('Kategorien', 'Eine oder me
 /**
  * Legends
  */
-$GLOBALS['TL_LANG']['tl_news']['category_legend'] = 'News-Kategorien';
+$GLOBALS['TL_LANG']['tl_news']['category_legend'] = 'Nachrichten-Kategorien';
