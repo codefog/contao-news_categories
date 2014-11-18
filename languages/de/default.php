@@ -15,4 +15,4 @@
 /**
  * Miscellaneous
  */
-$GLOBALS['TL_LANG']['MSC']['resetCategories'] = array('Alle Kategorien', 'Zeigt News aus allen Kategorien');
+$GLOBALS['TL_LANG']['MSC']['resetCategories'] = array('Alle Kategorien', 'Zeigt Nachrichten aus allen Kategorien');
