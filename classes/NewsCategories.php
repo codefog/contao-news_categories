@@ -26,7 +26,7 @@ class NewsCategories
      */
     public static function checkMultilingual()
     {
-        return (file_exists(TL_ROOT . '/system/modules/dc_multilingual/drivers/DC_Multilingual.php') && count(static::getAvailableLanguages()) > 1) ? true : false;
+        return (in_array('dc_multilingual', \Config::getInstance()->getActiveModules()) && count(static::getAvailableLanguages()) > 1) ? true : false;
     }
 
     /**
