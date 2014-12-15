@@ -15,4 +15,5 @@
 /**
  * Miscellaneous
  */
+$GLOBALS['TL_LANG']['MSC']['newsCategories']  = 'Categories:';
 $GLOBALS['TL_LANG']['MSC']['resetCategories'] = array('All categories', 'Show news from all categories');
