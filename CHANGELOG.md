@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 2.2.0 stable (2014-??-??)
+---------------------------------
+
+### Improved
+- Made the news menu filterable by categories (see #46)
+
+
 Version 2.1.2 stable (2014-11-03)
 ---------------------------------
 
