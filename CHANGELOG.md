@@ -6,6 +6,7 @@ Version 2.2.0 stable (2014-??-??)
 
 ### Improved
 - Made the news menu filterable by categories (see #46)
+- Added the composer.json file (see #34)
 
 
 Version 2.1.2 stable (2014-11-03)
