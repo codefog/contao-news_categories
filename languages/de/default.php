@@ -16,3 +16,8 @@
  * Miscellaneous
  */
 $GLOBALS['TL_LANG']['MSC']['resetCategories'] = array('Alle Kategorien', 'Zeigt News aus allen Kategorien');
+
+/**
+ * Content elements
+ */
+$GLOBALS['TL_LANG']['CTE']['newsfilter']  = array('Nachrichten-Modul-Filter', 'Nachrichtenlisten bzw. Nachrichtenarchive mit Kategorie-Filter.');
