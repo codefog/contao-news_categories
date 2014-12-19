@@ -38,7 +38,7 @@ ClassLoader::addClasses(array
     'NewsCategories\ModuleNewsMenu'                => 'system/modules/news_categories/modules/ModuleNewsMenu.php',
 
     // Elements
-    'NewsCategories\ContentModule'                 => 'system/modules/news_categories/elements/ContentModule.php',
+    'NewsCategories\ContentNewsFilter'             => 'system/modules/news_categories/elements/ContentNewsFilter.php',
     
 ));
 

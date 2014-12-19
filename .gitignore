@@ -1,2 +1,16 @@
-# PHPStorm
-.idea
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.buildpath
+.project
+.settings/
+.build/
+.idea/
+nbproject/
+
+# dependencies
+build
+vendor
+composer.lock

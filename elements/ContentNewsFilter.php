@@ -14,10 +14,11 @@
 
 namespace NewsCategories;
 
+
 /**
- * Override the default content element "content module".
+ * content element to filter new in newslist (module) or newsarchives (module)"
  */
-class ContentModule extends \Contao\ContentModule
+class ContentNewsFilter extends \Contao\ContentModule
 {
 
 	/**
@@ -33,14 +34,9 @@ class ContentModule extends \Contao\ContentModule
 
 		$objModule = \ModuleModel::findByPk($this->module);
 
-		if ($objModule === null)
+		if ($objModule === null || ('newslist' !== $objModule->type && 'newsarchive' !== $objModule->type))
 		{
 			return '';
-		}
-		
-		// Check for compatible module		
-		if ('newslist' !== $objModule->type || 'newsarchive' !== $objModule->type) {
-			return parent::generate();
 		}
 
 		$strClass = \Module::findClass($objModule->type);
@@ -50,20 +46,18 @@ class ContentModule extends \Contao\ContentModule
 		}
 
 		$objModule->typePrefix = 'ce_';
-		$objModule = new $strClass($objModule, $this->strColumn);
+		$objModule             = new $strClass($objModule, $this->strColumn);
 
 		// Overwrite spacing and CSS ID
 		$objModule->origSpace  = $objModule->space;
 		$objModule->space      = $this->space;
 		$objModule->origCssID  = $objModule->cssID;
 		$objModule->cssID      = $this->cssID;
-        
-        $GLOBALS['NEWS_FILTER_CATEGORIES'] = $this->news_filterCategories ? true : false;
-        $GLOBALS['NEWS_FILTER_DEFAULT']    = deserialize($this->news_filterDefault, true);
-        $GLOBALS['NEWS_FILTER_PRESERVE']   = $this->news_filterPreserve;
-		
-		// Set flag that categories are already set
-		$objModule->categoriesSetByContentElement = true;		
+
+		// Override news filter settings
+		$objModule->news_filterCategories = $this->news_filterCategories;
+		$objModule->news_filterDefault    = $this->news_filterDefault;
+		$objModule->news_filterPreserve   = $this->news_filterPreserve;
 
 		return $objModule->generate();
 	}
