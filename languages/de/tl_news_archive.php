@@ -15,4 +15,15 @@
 /**
  * Global operations
  */
-$GLOBALS['TL_LANG']['tl_news_archive']['categories'] = array('Kategorien', 'News-Kategorien hinzufügen und bearbeiten.');
+$GLOBALS['TL_LANG']['tl_news_archive']['categories'] = array('Kategorien', 'Nachrichten-Kategorien hinzufügen und bearbeiten.');
+
+/**
+ * Legends
+ */
+$GLOBALS['TL_LANG']['tl_news_archive']['categories_legend'] = 'Kategorien-Einstellungen';
+
+/**
+ * Fields
+ */
+$GLOBALS['TL_LANG']['tl_news_archive']['limitCategories'] = array('Kategorien-Auswahl einschränken', 'Verfügbare Kategorien für dieses Archiv einstellen.');
+$GLOBALS['TL_LANG']['tl_news_archive']['categories']      = array('Nachrichten-Kategorien', 'Bitte wähle eine oder mehrere Nachrichten-Kategorien.');
