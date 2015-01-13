@@ -29,6 +29,11 @@ $GLOBALS['BE_MOD']['content']['news']['tables'][] = 'tl_news_category';
 $GLOBALS['FE_MOD']['news']['newscategories'] = 'ModuleNewsCategories';
 
 /**
+ * Content elements
+ */
+$GLOBALS['TL_CTE']['includes']['newsfilter'] = 'ContentNewsFilter';
+
+/**
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['parseArticles'][] = array('News', 'addCategoriesToTemplate');

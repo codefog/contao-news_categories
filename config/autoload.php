@@ -36,6 +36,10 @@ ClassLoader::addClasses(array
     'NewsCategories\ModuleNewsArchive'             => 'system/modules/news_categories/modules/ModuleNewsArchive.php',
     'NewsCategories\ModuleNewsList'                => 'system/modules/news_categories/modules/ModuleNewsList.php',
     'NewsCategories\ModuleNewsMenu'                => 'system/modules/news_categories/modules/ModuleNewsMenu.php',
+
+    // Elements
+    'NewsCategories\ContentNewsFilter'             => 'system/modules/news_categories/elements/ContentNewsFilter.php',
+    
 ));
 
 /**
