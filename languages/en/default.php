@@ -21,4 +21,4 @@ $GLOBALS['TL_LANG']['MSC']['resetCategories'] = array('All categories', 'Show ne
 /**
  * Content elements
  */
-$GLOBALS['TL_LANG']['CTE']['newsfilter']  = array('News modules filter', 'Filter newslist or newsarchive with news categories');
+$GLOBALS['TL_LANG']['CTE']['newsfilter'] = array('News module filtered', 'Adds a news module to the page with custom filter settings.');

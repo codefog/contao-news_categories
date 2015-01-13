@@ -20,4 +20,4 @@ $GLOBALS['TL_LANG']['MSC']['resetCategories'] = array('Alle Kategorien', 'Zeigt 
 /**
  * Content elements
  */
-$GLOBALS['TL_LANG']['CTE']['newsfilter']  = array('Nachrichten-Modul-Filter', 'Nachrichtenlisten bzw. Nachrichtenarchive mit Kategorie-Filter.');
+$GLOBALS['TL_LANG']['CTE']['newsfilter'] = array('Nachrichten-Modul-Filter', 'Nachrichtenlisten bzw. Nachrichtenarchive mit Kategorie-Filter.');

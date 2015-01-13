@@ -12,84 +12,55 @@
  * @license LGPL
  */
 
+/**
+ * Load the tl_module data container
+ */
 \Controller::loadDataContainer('tl_module');
-\System::loadLanguageFile('tl_news');
+\System::loadLanguageFile('tl_module');
 
-$GLOBALS['TL_LANG']['tl_content']['news_categories_legend'] = $GLOBALS['TL_LANG']['tl_news']['category_legend'];
+/**
+ * Add palettes to tl_content
+ */
+$GLOBALS['TL_DCA']['tl_content']['palettes']['newsfilter'] = '{type_legend},type;{include_legend},news_module,news_filterCategories,news_filterDefault,news_filterPreserve;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
 
-// Add the palette for content element newsfilter
-$GLOBALS['TL_DCA']['tl_content']['palettes']['newsfilter'] = str_replace(
-    'module;',
-    'module;{news_categories_legend},news_filterCategories,news_filterDefault,news_filterPreserve;',
-    $GLOBALS['TL_DCA']['tl_content']['palettes']['module']
+/**
+ * Add fields to tl_content
+ */
+$GLOBALS['TL_DCA']['tl_content']['fields']['news_filterCategories'] = &$GLOBALS['TL_DCA']['tl_module']['fields']['news_filterCategories'];
+$GLOBALS['TL_DCA']['tl_content']['fields']['news_filterDefault']    = &$GLOBALS['TL_DCA']['tl_module']['fields']['news_filterDefault'];
+$GLOBALS['TL_DCA']['tl_content']['fields']['news_filterPreserve']   = &$GLOBALS['TL_DCA']['tl_module']['fields']['news_filterPreserve'];
+
+$GLOBALS['TL_DCA']['tl_content']['fields']['news_module'] = array
+(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_content']['module'],
+    'exclude'                 => true,
+    'inputType'               => 'select',
+    'options_callback'        => array('tl_content_newscategories', 'getNewsModules'),
+    'eval'                    => array('mandatory'=>true, 'chosen'=>true, 'submitOnChange'=>true),
+    'wizard' => array
+    (
+        array('tl_content', 'editModule')
+    ),
+    'sql'                     => "int(10) unsigned NOT NULL default '0'"
 );
 
-// Copy fields from tl_module-DCA to tl_content-DCA
-$copyFields = array('news_filterCategories', 'news_filterDefault','news_filterPreserve');
-foreach($copyFields as $fieldKey) {
-    $GLOBALS['TL_DCA']['tl_content']['fields'][$fieldKey] = $GLOBALS['TL_DCA']['tl_module']['fields'][$fieldKey];
-}
-
-$GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'][] = function(\DataContainer $dc) {
-
-    if (!$dc->id) {
-        return;
-    }
-    $objContent = \ContentModel::findByPk($dc->id);
-
-    if ($objContent === null || 'newsfilter' !== $objContent->type)
-    {
-        return;
-    }
-
-    // Set filter method for module field
-    $GLOBALS['TL_DCA']['tl_content']['fields']['module']['options_callback'] = array('tl_content_newsfilter', 'getFilteredModules');
-
-};
-
-
-class tl_content_newsfilter extends tl_content
+class tl_content_newscategories
 {
 
-    public function getFilteredModules()
+    /**
+     * Get news modules and return them as array
+     *
+     * @return array
+     */
+    public function getNewsModules()
     {
-        $arrModules = $this->getModules();
+        $arrModules = array();
+        $objModules = \Database::getInstance()->execute("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type IN ('newslist', 'newsarchive') ORDER BY t.name, m.name");
 
-        // Filter modules
-        foreach($arrModules as $theme => $arrThemeModules)
-        {
-
-            $arrModuleType = $this->getModuleTypesArray(array_keys($arrThemeModules));
-
-            foreach($arrThemeModules as $moduleId => $strModuleLabel)
-            {
-                $strModuleType = $arrModuleType[$moduleId];
-                // Show only newslist and newsarchive modules
-                if ('newslist' !== $strModuleType && 'newsarchive' !== $strModuleType)
-                {
-                    unset($arrModules[$theme][$moduleId]);
-                }
-            }
-
-            if (count($arrModules[$theme]) === 0)
-            {
-                // No newslist or newsarchive modules in the current theme array
-                unset($arrModules[$theme]);
-            }
-
+        while ($objModules->next()) {
+            $arrModules[$objModules->theme][$objModules->id] = $objModules->name . ' (ID ' . $objModules->id . ')';
         }
+
         return $arrModules;
-    }
-
-    private function getModuleTypesArray($arrIds)
-    {
-        $arrType          = array();
-        $collectionModule = \ModuleModel::findMultipleByIds($arrIds);
-
-        foreach($collectionModule as $objModule)
-        {
-            $arrType[$objModule->id] = $objModule->type;
-        }
-        return $arrType;
     }
 }

@@ -14,39 +14,39 @@
 
 namespace NewsCategories;
 
-
 /**
- * content element to filter new in newslist (module) or newsarchives (module)"
+ * Class ContentNewsFilter
+ *
+ * Content element "news filter".
  */
-class ContentNewsFilter extends \Contao\ContentModule
+class ContentNewsFilter extends \ContentModule
 {
 
 	/**
 	 * Parse the template
+	 *
 	 * @return string
 	 */
 	public function generate()
 	{
-		if (TL_MODE == 'FE' && !BE_USER_LOGGED_IN && ($this->invisible || ($this->start != '' && $this->start > time()) || ($this->stop != '' && $this->stop < time())))
-		{
+		if (TL_MODE == 'FE' && !BE_USER_LOGGED_IN && ($this->invisible || ($this->start > 0 && $this->start > time()) || ($this->stop > 0 && $this->stop < time()))) {
 			return '';
 		}
 
-		$objModule = \ModuleModel::findByPk($this->module);
+		$objModule = \ModuleModel::findByPk($this->news_module);
 
-		if ($objModule === null || ('newslist' !== $objModule->type && 'newsarchive' !== $objModule->type))
-		{
+		if ($objModule === null) {
 			return '';
 		}
 
 		$strClass = \Module::findClass($objModule->type);
-		if (!class_exists($strClass))
-		{
+
+		if (!class_exists($strClass)) {
 			return '';
 		}
 
 		$objModule->typePrefix = 'ce_';
-		$objModule             = new $strClass($objModule, $this->strColumn);
+		$objModule			   = new $strClass($objModule, $this->strColumn);
 
 		// Overwrite spacing and CSS ID
 		$objModule->origSpace  = $objModule->space;
@@ -61,5 +61,4 @@ class ContentNewsFilter extends \Contao\ContentModule
 
 		return $objModule->generate();
 	}
-
 }
