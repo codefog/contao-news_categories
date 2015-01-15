@@ -17,3 +17,8 @@
  */
 $GLOBALS['TL_LANG']['MSC']['newsCategories']  = 'Kategorie:';
 $GLOBALS['TL_LANG']['MSC']['resetCategories'] = array('Wszystkie', 'Pokaż aktualności z wszystkich kategorii');
+
+/**
+ * Content elements
+ */
+$GLOBALS['TL_LANG']['CTE']['newsfilter'] = array('Moduł aktualności filtrowany', 'Dodaje moduł aktualności do strony z własnymi ustawieniami filtrowania.');
