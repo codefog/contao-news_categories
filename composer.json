@@ -15,6 +15,9 @@
         "contao/core": ">=3.2",
         "contao-community-alliance/composer-plugin": "2.*"
     },
+    "suggest": {
+        "terminal42/dc_multilingual": "2.*"
+    },
     "extra": {
         "contao": {
             "sources": {

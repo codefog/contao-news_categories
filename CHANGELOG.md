@@ -9,6 +9,7 @@ Version 2.2.0 stable (2014-??-??)
 - Added the composer.json file (see #34)
 - Added the categories to news feed (see #47)
 - Added the news filter content element (see #51)
+- Added the dc_multlingual to composer.json file (see #50)
 
 
 Version 2.1.2 stable (2014-11-03)
