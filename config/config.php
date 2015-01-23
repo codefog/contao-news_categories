@@ -15,8 +15,8 @@
 /**
  * Extension version
  */
-@define('NEWS_CATEGORIES_VERSION', '2.1');
-@define('NEWS_CATEGORIES_BUILD', '2');
+@define('NEWS_CATEGORIES_VERSION', '2.2');
+@define('NEWS_CATEGORIES_BUILD', '0');
 
 /**
  * Back end modules
@@ -27,6 +27,11 @@ $GLOBALS['BE_MOD']['content']['news']['tables'][] = 'tl_news_category';
  * Front end modules
  */
 $GLOBALS['FE_MOD']['news']['newscategories'] = 'ModuleNewsCategories';
+
+/**
+ * Content elements
+ */
+$GLOBALS['TL_CTE']['includes']['newsfilter'] = 'ContentNewsFilter';
 
 /**
  * Hooks

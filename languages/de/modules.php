@@ -15,4 +15,4 @@
 /**
  * Front end modules
  */
-$GLOBALS['TL_LANG']['FMD']['newscategories'] = array('Liste mit News-Kategorien', 'Fügt eine News-Kategorieliste in die Seite ein.');
+$GLOBALS['TL_LANG']['FMD']['newscategories'] = array('Liste mit Nachrichten-Kategorien', 'Fügt eine Nachrichten-Kategorieliste in die Seite ein.');

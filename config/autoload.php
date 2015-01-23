@@ -26,6 +26,9 @@ ClassLoader::addClasses(array
     'NewsCategories\News'                          => 'system/modules/news_categories/classes/News.php',
     'NewsCategories\NewsCategories'                => 'system/modules/news_categories/classes/NewsCategories.php',
 
+    // Content elements
+    'NewsCategories\ContentNewsFilter'             => 'system/modules/news_categories/elements/ContentNewsFilter.php',
+
     // Models
     'NewsCategories\NewsCategoryModel'             => 'system/modules/news_categories/models/NewsCategoryModel.php',
     'NewsCategories\NewsCategoryMultilingualModel' => 'system/modules/news_categories/models/NewsCategoryMultilingualModel.php',

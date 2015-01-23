@@ -15,7 +15,7 @@
 /**
  * Extend the tl_news_feed palette
  */
-$GLOBALS['TL_DCA']['tl_news_feed']['palettes']['default'] = str_replace('archives;', 'archives,categories;', $GLOBALS['TL_DCA']['tl_news_feed']['palettes']['default']);
+$GLOBALS['TL_DCA']['tl_news_feed']['palettes']['default'] = str_replace('archives;', 'archives,categories,categories_show;', $GLOBALS['TL_DCA']['tl_news_feed']['palettes']['default']);
 
 /**
  * Add field to tl_news_feed
@@ -29,4 +29,16 @@ $GLOBALS['TL_DCA']['tl_news_feed']['fields']['categories'] = array
     'foreignKey'              => 'tl_news_category.title',
     'eval'                    => array('multiple'=>true),
     'sql'                     => "blob NULL"
+);
+
+$GLOBALS['TL_DCA']['tl_news_feed']['fields']['categories_show'] = array
+(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_news_feed']['categories_show'],
+    'exclude'                 => true,
+    'filter'                  => true,
+    'inputType'               => 'select',
+    'options'                 => array('title', 'text_before', 'text_after'),
+    'reference'               => &$GLOBALS['TL_LANG']['tl_news_feed']['categories_show'],
+    'eval'                    => array('includeBlankOption'=>true, 'blankOptionLabel'=>$GLOBALS['TL_LANG']['tl_news_feed']['categories_show']['empty']),
+    'sql'                     => "varchar(16) NOT NULL default ''"
 );

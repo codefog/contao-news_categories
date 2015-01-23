@@ -15,4 +15,10 @@
 /**
  * Miscellaneous
  */
+$GLOBALS['TL_LANG']['MSC']['newsCategories']  = 'Categories:';
 $GLOBALS['TL_LANG']['MSC']['resetCategories'] = array('All categories', 'Show news from all categories');
+
+/**
+ * Content elements
+ */
+$GLOBALS['TL_LANG']['CTE']['newsfilter'] = array('News module filtered', 'Adds a news module to the page with custom filter settings.');

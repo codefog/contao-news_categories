@@ -13,11 +13,11 @@
  */
 
 /**
- * Miscellaneous
+ * Load tl_user language file
  */
-$GLOBALS['TL_LANG']['MSC']['resetCategories'] = array('Alle Kategorien', 'Zeigt Nachrichten aus allen Kategorien');
+\System::loadLanguageFile('tl_user');
 
 /**
- * Content elements
+ * Legends
  */
-$GLOBALS['TL_LANG']['CTE']['newsfilter'] = array('Nachrichten-Modul-Filter', 'Nachrichtenlisten bzw. Nachrichtenarchive mit Kategorie-Filter.');
+$GLOBALS['TL_LANG']['tl_user_group']['newscategories_legend'] = $GLOBALS['TL_LANG']['tl_user']['newscategories_legend'];
