@@ -240,7 +240,7 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
      */
     protected function getFilteredNewsIds()
     {
-        $arrCategories = \NewsCategories\NewsModel::getCategoriesCache();
+        $arrCategories = \NewsModel::getCategoriesCache();
 
         if (empty($arrCategories)) {
             return array();
