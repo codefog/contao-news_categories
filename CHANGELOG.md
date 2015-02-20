@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 2.2.2 stable (2015-02-20)
+---------------------------------
+
+### Fixed
+- Fixed the class collision error in news menu module
+
+
 Version 2.2.1 stable (2015-01-23)
 ---------------------------------
 
