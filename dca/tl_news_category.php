@@ -132,7 +132,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
     // Palettes
     'palettes' => array
     (
-        'default'                     => '{title_legend},title,frontendTitle,alias;{publish_legend},published'
+        'default'                     => '{title_legend},title,frontendTitle,alias;{redirect_legend:hide},jumpTo;{publish_legend},published'
     ),
 
     // Fields
@@ -184,6 +184,15 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
                 array('tl_news_category', 'generateAlias')
             ),
             'sql'                     => "varbinary(128) NOT NULL default ''"
+        ),
+        'jumpTo' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_news_category']['jumpTo'],
+            'exclude'                 => true,
+            'inputType'               => 'pageTree',
+            'eval'                    => array('fieldType'=>'radio'),
+            'sql'                     => "int(10) unsigned NOT NULL default '0'",
+            'relation'                => array('type'=>'hasOne', 'load'=>'eager', 'table'=>'tl_page')
         ),
         'published' => array
         (

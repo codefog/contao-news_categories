@@ -18,13 +18,14 @@
 $GLOBALS['TL_LANG']['tl_news_category']['title']         = array('Title', 'Please enter a category title.');
 $GLOBALS['TL_LANG']['tl_news_category']['frontendTitle'] = array('Frontend title', 'Here you can enter a category title that will be displayed in front end.');
 $GLOBALS['TL_LANG']['tl_news_category']['alias']         = array('Category alias', 'The category alias is a unique reference to the category which can be called instead of its numeric ID.');
+$GLOBALS['TL_LANG']['tl_news_category']['jumpTo']        = array('Redirect page', 'Here you can choose the page to which visitors will be redirected when clicking a category link in the news template.');
 $GLOBALS['TL_LANG']['tl_news_category']['published']     = array('Publish category', 'Make the news category publicly visible on the website.');
 
 /**
  * Legends
  */
 $GLOBALS['TL_LANG']['tl_news_category']['title_legend']    = 'Title and alias';
-$GLOBALS['TL_LANG']['tl_news_category']['archives_legend'] = 'Archives limit';
+$GLOBALS['TL_LANG']['tl_news_category']['redirect_legend'] = 'Redirect settings';
 $GLOBALS['TL_LANG']['tl_news_category']['publish_legend']  = 'Publish settings';
 
 /**

@@ -38,9 +38,21 @@ class News extends \Contao\News
 
                 // Add the categories to template
                 if ($objCategories !== null) {
-                    while ($objCategories->next()) {
-                        $arrCategories[$objCategories->id] = $objCategories->row();
-                        $arrCategoriesList[$objCategories->id] = $objCategories->frontendTitle ? $objCategories->frontendTitle : $objCategories->title;
+                    foreach ($objCategories as $objCategory) {
+                        $strName = $objCategory->frontendTitle ? $objCategory->frontendTitle : $objCategory->title;
+
+                        $arrCategories[$objCategory->id] = $objCategory->row();
+                        $arrCategories[$objCategory->id]['name'] = $strName;
+                        $arrCategories[$objCategory->id]['linkTitle'] = specialchars($strName);
+                        $arrCategories[$objCategory->id]['href'] = '';
+
+                        // Add the jumpTo page
+                        if (($objJump = $objCategory->getRelated('jumpTo')) !== null) {
+                            $arrCategories[$objCategory->id]['href'] = $objJump->getFrontendUrl();
+                        }
+
+                        // Generate categories list
+                        $arrCategoriesList[$objCategory->id] = $strName;
                     }
                 }
             }
