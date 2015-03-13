@@ -43,6 +43,7 @@ class News extends \Contao\News
 
                         $arrCategories[$objCategory->id] = $objCategory->row();
                         $arrCategories[$objCategory->id]['name'] = $strName;
+                        $arrCategories[$objCategory->id]['class'] = 'category_' . $objCategory->id . ($objCategory->cssClass ? (' ' . $objCategory->cssClass) : '');
                         $arrCategories[$objCategory->id]['linkTitle'] = specialchars($strName);
                         $arrCategories[$objCategory->id]['href'] = '';
 

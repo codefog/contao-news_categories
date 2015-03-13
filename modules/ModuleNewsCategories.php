@@ -186,7 +186,7 @@ class ModuleNewsCategories extends \ModuleNews
             }
 
             $blnActive = ($this->objActiveCategory !== null) && ($this->objActiveCategory->id == $objCategories->id);
-            $strClass = 'news_category_' . $objCategories->id . ((++$count == 1) ? ' first' : '') . (($count == $total) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even') . ($blnActive ? ' active' : '') . (($strSubcategories != '') ? ' submenu' : '') . (in_array($objCategories->id, $this->arrCategoryTrail) ? ' trail' : '');
+            $strClass = ('news_category_' . $objCategories->id) . ($objCategories->cssClass ? (' ' . $objCategories->cssClass) : '') . ((++$count == 1) ? ' first' : '') . (($count == $total) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even') . ($blnActive ? ' active' : '') . (($strSubcategories != '') ? ' submenu' : '') . (in_array($objCategories->id, $this->arrCategoryTrail) ? ' trail' : '');
             $strTitle = $objCategories->frontendTitle ?: $objCategories->title;
 
             $arrRow = $objCategories->row();
