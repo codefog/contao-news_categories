@@ -98,7 +98,7 @@ class ModuleNewsCategories extends \ModuleNews
 
         // Get the parent categories IDs
         while ($objCategories->next()) {
-            $arrIds = array_merge($arrIds, $this->getParentRecords($objCategories->id, 'tl_news_category'));
+            $arrIds = array_merge($arrIds, $this->Database->gerParentRecords($objCategories->id, 'tl_news_category'));
         }
 
         // Get the active category
@@ -106,7 +106,7 @@ class ModuleNewsCategories extends \ModuleNews
             $this->objActiveCategory = $strClass::findPublishedByIdOrAlias(\Input::get('category'));
 
             if ($this->objActiveCategory !== null) {
-                $this->arrCategoryTrail = $this->getParentRecords($this->objActiveCategory->id, 'tl_news_category');
+                $this->arrCategoryTrail = $this->Database->getParentRecords($this->objActiveCategory->id, 'tl_news_category');
 
                 // Remove the current category from the trail
                 unset($this->arrCategoryTrail[array_search($this->objActiveCategory->id, $this->arrCategoryTrail)]);
