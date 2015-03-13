@@ -21,3 +21,4 @@ $GLOBALS['TL_LANG']['tl_module']['news_filterCategories'] = array('Filter by cat
 $GLOBALS['TL_LANG']['tl_module']['news_filterDefault']    = array('Default filter', 'Here you can choose the default filter that will be applied to the newslist.');
 $GLOBALS['TL_LANG']['tl_module']['news_filterPreserve']   = array('Preserve the default filter', 'Preserve the default filter settings even if there is an active category selected.');
 $GLOBALS['TL_LANG']['tl_module']['news_resetCategories']  = array('Reset categories link', 'Add a link to reset categories filter.');
+$GLOBALS['TL_LANG']['tl_module']['news_categoriesRoot']   = array('Reference category (root)', 'Here you can choose the reference category. It will be used as the starting point (similar to navigation module).');

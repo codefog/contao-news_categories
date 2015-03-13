@@ -7,6 +7,7 @@ Version 2.3.0 stable (2015-??-??)
 ### Improved
 - The categories in news template are now links (see #52)
 - Added the CSS class field for each category
+- Added the reference category field to the categories list front end module
 
 
 Version 2.2.2 stable (2015-02-20)

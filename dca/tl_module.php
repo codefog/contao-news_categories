@@ -16,7 +16,7 @@
  * Add palettes to tl_module
  */
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'news_customCategories';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_resetCategories,news_showQuantity,news_customCategories;{redirect_legend:hide},jumpTo;{template_legend:hide},navigationTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_resetCategories,news_showQuantity,news_categoriesRoot,news_customCategories;{redirect_legend:hide},jumpTo;{template_legend:hide},navigationTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_customCategories'] = 'news_categories';
 
 /**
@@ -81,4 +81,14 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_resetCategories'] = array
     'inputType'               => 'checkbox',
     'eval'                    => array('tl_class'=>'w50'),
     'sql'                     => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['news_categoriesRoot'] = array
+(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_categoriesRoot'],
+    'exclude'                 => true,
+    'inputType'               => 'treePicker',
+    'foreignKey'              => 'tl_news_category.title',
+    'eval'                    => array('fieldType'=>'radio', 'foreignTable'=>'tl_news_category', 'titleField'=>'title', 'searchField'=>'title', 'managerHref'=>'do=news&table=tl_news_category'),
+    'sql'                     => "int(10) unsigned NOT NULL default '0'"
 );

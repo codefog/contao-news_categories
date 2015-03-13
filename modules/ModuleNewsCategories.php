@@ -113,7 +113,14 @@ class ModuleNewsCategories extends \ModuleNews
             }
         }
 
-        $this->Template->categories = $this->renderNewsCategories(0, array_unique($arrIds), $strUrl);
+        $rootId = 0;
+
+        // Set the custom root ID
+        if ($this->news_categoriesRoot) {
+            $rootId = $this->news_categoriesRoot;
+        }
+
+        $this->Template->categories = $this->renderNewsCategories($rootId, array_unique($arrIds), $strUrl);
     }
 
     /**
