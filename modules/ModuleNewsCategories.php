@@ -98,7 +98,7 @@ class ModuleNewsCategories extends \ModuleNews
 
         // Get the parent categories IDs
         while ($objCategories->next()) {
-            $arrIds = array_merge($arrIds, $this->Database->gerParentRecords($objCategories->id, 'tl_news_category'));
+            $arrIds = array_merge($arrIds, $this->Database->getParentRecords($objCategories->id, 'tl_news_category'));
         }
 
         // Get the active category
