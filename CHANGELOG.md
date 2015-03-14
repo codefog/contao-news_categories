@@ -8,6 +8,7 @@ Version 2.3.0 stable (2015-??-??)
 - The categories in news template are now links (see #52)
 - Added the CSS class field for each category
 - Added the reference category field to the categories list front end module
+- Added new category data in the news templates. The category jumpTo page is now inherited from parent records
 
 
 Version 2.2.2 stable (2015-02-20)

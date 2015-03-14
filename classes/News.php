@@ -38,6 +38,7 @@ class News extends \Contao\News
 
                 // Add the categories to template
                 if ($objCategories !== null) {
+                    /** @var NewsCategoryModel $objCategory */
                     foreach ($objCategories as $objCategory) {
                         $strName = $objCategory->frontendTitle ? $objCategory->frontendTitle : $objCategory->title;
 
@@ -46,11 +47,20 @@ class News extends \Contao\News
                         $arrCategories[$objCategory->id]['class'] = 'category_' . $objCategory->id . ($objCategory->cssClass ? (' ' . $objCategory->cssClass) : '');
                         $arrCategories[$objCategory->id]['linkTitle'] = specialchars($strName);
                         $arrCategories[$objCategory->id]['href'] = '';
+                        $arrCategories[$objCategory->id]['hrefWithParam'] = '';
+                        $arrCategories[$objCategory->id]['targetPage'] = null;
 
-                        // Add the jumpTo page
-                        if (($objJump = $objCategory->getRelated('jumpTo')) !== null) {
-                            $arrCategories[$objCategory->id]['href'] = $objJump->getFrontendUrl();
+                        // Add the target page
+                        if (($targetPage = $objCategory->getTargetPage()) !== null) {
+                            $arrCategories[$objCategory->id]['href'] = $targetPage->getFrontendUrl();
+                            $arrCategories[$objCategory->id]['hrefWithParam'] = $targetPage->getFrontendUrl('/category/' . $objCategory->alias);
+                            $arrCategories[$objCategory->id]['targetPage'] = $targetPage;
                         }
+
+                        // Register a function to generate category URL manually
+                        $arrCategories[$objCategory->id]['getUrl'] = function(\PageModel $page) use ($objCategory) {
+                            return $page->getFrontendUrl('/category/' . $objCategory->alias);
+                        };
 
                         // Generate categories list
                         $arrCategoriesList[$objCategory->id] = $strName;
