@@ -65,6 +65,14 @@ class News extends \Contao\News
                         // Generate categories list
                         $arrCategoriesList[$objCategory->id] = $strName;
                     }
+
+                    // Sort the category list alphabetically
+                    asort($arrCategoriesList);
+
+                    // Sort the categories alphabetically
+                    uasort($arrCategories, function($a, $b) {
+                        return strnatcasecmp($a['name'], $b['name']);
+                    });
                 }
             }
 
