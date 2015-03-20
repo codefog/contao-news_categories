@@ -21,3 +21,4 @@ $GLOBALS['TL_LANG']['tl_module']['news_filterCategories'] = array('Filtruj przez
 $GLOBALS['TL_LANG']['tl_module']['news_filterDefault']    = array('Domyślny filtr', 'Tutaj możesz wybrać domyślny filtr, który będzie użyty przez listę aktualności.');
 $GLOBALS['TL_LANG']['tl_module']['news_filterPreserve']   = array('Zachowaj domyślny filtr', 'Zachowaj domyślny filtr, gdy aktywna jest inna kategoria.');
 $GLOBALS['TL_LANG']['tl_module']['news_resetCategories']  = array('Link resetujący kategorię', 'Dodaj do strony link resetujący filtr kategorii.');
+$GLOBALS['TL_LANG']['tl_module']['news_categoriesRoot']   = array('Kategoria startowa', 'Tutaj możesz wybrać kategorię startową. Zostanie ona użyta jako punkty startowy (podobnie do modułu nawigacji).');

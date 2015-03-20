@@ -38,10 +38,41 @@ class News extends \Contao\News
 
                 // Add the categories to template
                 if ($objCategories !== null) {
-                    while ($objCategories->next()) {
-                        $arrCategories[$objCategories->id] = $objCategories->row();
-                        $arrCategoriesList[$objCategories->id] = $objCategories->frontendTitle ? $objCategories->frontendTitle : $objCategories->title;
+                    /** @var NewsCategoryModel $objCategory */
+                    foreach ($objCategories as $objCategory) {
+                        $strName = $objCategory->frontendTitle ? $objCategory->frontendTitle : $objCategory->title;
+
+                        $arrCategories[$objCategory->id] = $objCategory->row();
+                        $arrCategories[$objCategory->id]['name'] = $strName;
+                        $arrCategories[$objCategory->id]['class'] = 'category_' . $objCategory->id . ($objCategory->cssClass ? (' ' . $objCategory->cssClass) : '');
+                        $arrCategories[$objCategory->id]['linkTitle'] = specialchars($strName);
+                        $arrCategories[$objCategory->id]['href'] = '';
+                        $arrCategories[$objCategory->id]['hrefWithParam'] = '';
+                        $arrCategories[$objCategory->id]['targetPage'] = null;
+
+                        // Add the target page
+                        if (($targetPage = $objCategory->getTargetPage()) !== null) {
+                            $arrCategories[$objCategory->id]['href'] = $targetPage->getFrontendUrl();
+                            $arrCategories[$objCategory->id]['hrefWithParam'] = $targetPage->getFrontendUrl('/category/' . $objCategory->alias);
+                            $arrCategories[$objCategory->id]['targetPage'] = $targetPage;
+                        }
+
+                        // Register a function to generate category URL manually
+                        $arrCategories[$objCategory->id]['getUrl'] = function(\PageModel $page) use ($objCategory) {
+                            return $page->getFrontendUrl('/category/' . $objCategory->alias);
+                        };
+
+                        // Generate categories list
+                        $arrCategoriesList[$objCategory->id] = $strName;
                     }
+
+                    // Sort the category list alphabetically
+                    asort($arrCategoriesList);
+
+                    // Sort the categories alphabetically
+                    uasort($arrCategories, function($a, $b) {
+                        return strnatcasecmp($a['name'], $b['name']);
+                    });
                 }
             }
 

@@ -98,7 +98,7 @@ class ModuleNewsCategories extends \ModuleNews
 
         // Get the parent categories IDs
         while ($objCategories->next()) {
-            $arrIds = array_merge($arrIds, $this->getParentRecords($objCategories->id, 'tl_news_category'));
+            $arrIds = array_merge($arrIds, $this->Database->getParentRecords($objCategories->id, 'tl_news_category'));
         }
 
         // Get the active category
@@ -106,14 +106,21 @@ class ModuleNewsCategories extends \ModuleNews
             $this->objActiveCategory = $strClass::findPublishedByIdOrAlias(\Input::get('category'));
 
             if ($this->objActiveCategory !== null) {
-                $this->arrCategoryTrail = $this->getParentRecords($this->objActiveCategory->id, 'tl_news_category');
+                $this->arrCategoryTrail = $this->Database->getParentRecords($this->objActiveCategory->id, 'tl_news_category');
 
                 // Remove the current category from the trail
                 unset($this->arrCategoryTrail[array_search($this->objActiveCategory->id, $this->arrCategoryTrail)]);
             }
         }
 
-        $this->Template->categories = $this->renderNewsCategories(0, array_unique($arrIds), $strUrl);
+        $rootId = 0;
+
+        // Set the custom root ID
+        if ($this->news_categoriesRoot) {
+            $rootId = $this->news_categoriesRoot;
+        }
+
+        $this->Template->categories = $this->renderNewsCategories($rootId, array_unique($arrIds), $strUrl);
     }
 
     /**
@@ -186,7 +193,7 @@ class ModuleNewsCategories extends \ModuleNews
             }
 
             $blnActive = ($this->objActiveCategory !== null) && ($this->objActiveCategory->id == $objCategories->id);
-            $strClass = 'news_category_' . $objCategories->id . ((++$count == 1) ? ' first' : '') . (($count == $total) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even') . ($blnActive ? ' active' : '') . (($strSubcategories != '') ? ' submenu' : '') . (in_array($objCategories->id, $this->arrCategoryTrail) ? ' trail' : '');
+            $strClass = ('news_category_' . $objCategories->id) . ($objCategories->cssClass ? (' ' . $objCategories->cssClass) : '') . ((++$count == 1) ? ' first' : '') . (($count == $total) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even') . ($blnActive ? ' active' : '') . (($strSubcategories != '') ? ' submenu' : '') . (in_array($objCategories->id, $this->arrCategoryTrail) ? ' trail' : '');
             $strTitle = $objCategories->frontendTitle ?: $objCategories->title;
 
             $arrRow = $objCategories->row();

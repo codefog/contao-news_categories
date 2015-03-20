@@ -24,7 +24,6 @@ $GLOBALS['TL_LANG']['tl_news_category']['published']     = array('Kategorie ver�
  * Legends
  */
 $GLOBALS['TL_LANG']['tl_news_category']['title_legend']    = 'Titel und Alias';
-$GLOBALS['TL_LANG']['tl_news_category']['archives_legend'] = 'Archive einschränken';
 $GLOBALS['TL_LANG']['tl_news_category']['publish_legend']  = 'Veröffentlichung';
 
 /**
