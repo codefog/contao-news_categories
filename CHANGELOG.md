@@ -1,7 +1,7 @@
 news_categories Changelog
 =========================
 
-Version 2.3.0 stable (2015-??-??)
+Version 2.3.0 stable (2015-03-20)
 ---------------------------------
 
 ### Improved
