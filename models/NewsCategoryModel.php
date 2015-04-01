@@ -28,6 +28,20 @@ class NewsCategoryModel extends \Model
     protected static $strTable = 'tl_news_category';
 
     /**
+     * Get the category URL
+     *
+     * @param \PageModel $page
+     *
+     * @return string
+     */
+    public function getUrl(\PageModel $page)
+    {
+        $page->loadDetails();
+
+        return $page->getFrontendUrl('/' . NewsCategories::getParameterName($page->rootId) . '/' . $this->alias);
+    }
+
+    /**
      * Get the target page
      *
      * @return \PageModel|null

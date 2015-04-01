@@ -38,6 +38,10 @@ $GLOBALS['TL_CTE']['includes']['newsfilter'] = 'ContentNewsFilter';
  */
 $GLOBALS['TL_HOOKS']['parseArticles'][] = array('News', 'addCategoriesToTemplate');
 
+if (in_array('changelanguage', \ModuleLoader::getActive())) {
+    $GLOBALS['TL_HOOKS']['translateUrlParameters'][] = array('NewsCategories', 'translateUrlParameters');
+}
+
 /**
  * Add permissions
  */

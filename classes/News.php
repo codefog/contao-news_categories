@@ -53,13 +53,13 @@ class News extends \Contao\News
                         // Add the target page
                         if (($targetPage = $objCategory->getTargetPage()) !== null) {
                             $arrCategories[$objCategory->id]['href'] = $targetPage->getFrontendUrl();
-                            $arrCategories[$objCategory->id]['hrefWithParam'] = $targetPage->getFrontendUrl('/category/' . $objCategory->alias);
+                            $arrCategories[$objCategory->id]['hrefWithParam'] = $targetPage->getFrontendUrl('/' . NewsCategories::getParameterName() . '/' . $objCategory->alias);
                             $arrCategories[$objCategory->id]['targetPage'] = $targetPage;
                         }
 
                         // Register a function to generate category URL manually
                         $arrCategories[$objCategory->id]['getUrl'] = function(\PageModel $page) use ($objCategory) {
-                            return $page->getFrontendUrl('/category/' . $objCategory->alias);
+                            return $objCategory->getUrl($page);
                         };
 
                         // Generate categories list
