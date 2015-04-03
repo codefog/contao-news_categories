@@ -221,10 +221,11 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
         // Get the current "jumpTo" page
         if (($objTarget = $this->objModel->getRelated('jumpTo')) !== null) {
             $varCategory = null;
+            $strParam = NewsCategories::getParameterName();
 
             // Set the current category
-            if (\Input::get('category')) {
-                $varCategory = '/category/' . \Input::get('category');
+            if (\Input::get($strParam)) {
+                $varCategory = '/' . $strParam . '/' . \Input::get($strParam);
             }
 
             $strUrl = $this->generateFrontendUrl($objTarget->row(), $varCategory);
@@ -257,10 +258,12 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
             }
         }
 
+        $strParam = NewsCategories::getParameterName();
+
         // Current category
-        if ($this->news_filterCategories && \Input::get('category')) {
+        if ($this->news_filterCategories && \Input::get($strParam)) {
             $strClass = \NewsCategories\NewsCategories::getModelClass();
-            $objCategory = $strClass::findPublishedByIdOrAlias(\Input::get('category'));
+            $objCategory = $strClass::findPublishedByIdOrAlias(\Input::get($strParam));
 
             if ($objCategory === null) {
                 return array();

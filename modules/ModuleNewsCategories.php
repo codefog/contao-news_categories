@@ -83,14 +83,15 @@ class ModuleNewsCategories extends \ModuleNews
         }
 
         global $objPage;
-        $strUrl = $this->generateFrontendUrl($objPage->row(), '/category/%s');
+        $strParam = NewsCategories::getParameterName();
+        $strUrl = $this->generateFrontendUrl($objPage->row(), '/' . $strParam . '/%s');
 
         // Get the jumpTo page
         if ($this->jumpTo > 0 && $objPage->id != $this->jumpTo) {
             $objJump = \PageModel::findByPk($this->jumpTo);
 
             if ($objJump !== null) {
-                $strUrl = $this->generateFrontendUrl($objJump->row(), '/category/%s');
+                $strUrl = $this->generateFrontendUrl($objJump->row(), '/' . $strParam . '/%s');
             }
         }
 
@@ -102,8 +103,8 @@ class ModuleNewsCategories extends \ModuleNews
         }
 
         // Get the active category
-        if (\Input::get('category') != '') {
-            $this->objActiveCategory = $strClass::findPublishedByIdOrAlias(\Input::get('category'));
+        if (\Input::get($strParam) != '') {
+            $this->objActiveCategory = $strClass::findPublishedByIdOrAlias(\Input::get($strParam));
 
             if ($this->objActiveCategory !== null) {
                 $this->arrCategoryTrail = $this->Database->getParentRecords($this->objActiveCategory->id, 'tl_news_category');
@@ -138,6 +139,7 @@ class ModuleNewsCategories extends \ModuleNews
             return '';
         }
 
+        $strParam = NewsCategories::getParameterName();
         $arrCategories = array();
 
         // Layout template fallback
@@ -163,7 +165,7 @@ class ModuleNewsCategories extends \ModuleNews
                 $intNewsQuantity = \NewsModel::countPublishedByCategoryAndPids($this->news_archives);
             }
 
-            $blnActive = \Input::get('category') ? false : true;
+            $blnActive = \Input::get($strParam) ? false : true;
 
             $arrCategories[] = array
             (
@@ -173,7 +175,7 @@ class ModuleNewsCategories extends \ModuleNews
                 'title' => specialchars($GLOBALS['TL_LANG']['MSC']['resetCategories'][1]),
                 'linkTitle' => specialchars($GLOBALS['TL_LANG']['MSC']['resetCategories'][1]),
                 'link' => $GLOBALS['TL_LANG']['MSC']['resetCategories'][0],
-                'href' => ampersand(str_replace('/category/%s', '', $strUrl)),
+                'href' => ampersand(str_replace('/' . $strParam . '/%s', '', $strUrl)),
                 'quantity' => $intNewsQuantity
             );
 
