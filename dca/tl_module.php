@@ -22,7 +22,7 @@ $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_customCategories'] = 'news_
 /**
  * Extend tl_module palettes
  */
-$GLOBALS['TL_DCA']['tl_module']['palettes']['newslist'] = str_replace('news_archives,', 'news_archives,news_filterCategories,news_filterDefault,news_filterPreserve,', $GLOBALS['TL_DCA']['tl_module']['palettes']['newslist']);
+$GLOBALS['TL_DCA']['tl_module']['palettes']['newslist'] = str_replace('news_archives,', 'news_archives,news_filterCategories,news_relatedCategories,news_filterDefault,news_filterPreserve,', $GLOBALS['TL_DCA']['tl_module']['palettes']['newslist']);
 $GLOBALS['TL_DCA']['tl_module']['palettes']['newsarchive'] = str_replace('news_archives,', 'news_archives,news_filterCategories,news_filterDefault,news_filterPreserve,', $GLOBALS['TL_DCA']['tl_module']['palettes']['newsarchive']);
 $GLOBALS['TL_DCA']['tl_module']['palettes']['newsmenu'] = str_replace('news_archives,', 'news_archives,news_filterCategories,news_filterDefault,news_filterPreserve,', $GLOBALS['TL_DCA']['tl_module']['palettes']['newsmenu']);
 
@@ -53,6 +53,16 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterCategories'] = array
     'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_filterCategories'],
     'exclude'                 => true,
     'inputType'               => 'checkbox',
+    'eval'                    => array('tl_class'=>'w50'),
+    'sql'                     => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['news_relatedCategories'] = array
+(
+    'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_relatedCategories'],
+    'exclude'                 => true,
+    'inputType'               => 'checkbox',
+    'eval'                    => array('tl_class'=>'w50'),
     'sql'                     => "char(1) NOT NULL default ''"
 );
 
@@ -62,7 +72,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterDefault'] = array
     'exclude'                 => true,
     'inputType'               => 'treePicker',
     'foreignKey'              => 'tl_news_category.title',
-    'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox', 'foreignTable'=>'tl_news_category', 'titleField'=>'title', 'searchField'=>'title', 'managerHref'=>'do=news&table=tl_news_category'),
+    'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox', 'foreignTable'=>'tl_news_category', 'titleField'=>'title', 'searchField'=>'title', 'managerHref'=>'do=news&table=tl_news_category', 'tl_class'=>'clr'),
     'sql'                     => "blob NULL"
 );
 
