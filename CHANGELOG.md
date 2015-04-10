@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 2.5.0 stable (2015-04-10)
+---------------------------------
+
+### Improved
+- Added the related categories mode to the newslist module
+
+
 Version 2.4.0 stable (2015-04-03)
 ---------------------------------
 

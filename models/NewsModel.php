@@ -83,6 +83,11 @@ class NewsModel extends \Contao\NewsModel
             }
         }
 
+        // Exclude particular news items
+        if (is_array($GLOBALS['NEWS_FILTER_EXCLUDE']) && !empty($GLOBALS['NEWS_FILTER_EXCLUDE'])) {
+            $arrColumns[] = "$t.id NOT IN (" . implode(',', array_map('intval', $GLOBALS['NEWS_FILTER_EXCLUDE'])) . ")";
+        }
+
         $strParam = NewsCategories::getParameterName();
 
         // Try to find by category
