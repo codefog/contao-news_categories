@@ -12,9 +12,9 @@
     ],
     "require": {
         "php": ">=5.3.2",
-        "contao/core": ">=3.2",
+        "contao/core": "3.5.*",
         "contao-community-alliance/composer-plugin": "2.*",
-        "codefog/contao-widget_tree_picker": ">=1.0.5"
+        "codefog/contao-widget_tree_picker": "2.*"
     },
     "suggest": {
         "terminal42/dc_multilingual": "2.*"
