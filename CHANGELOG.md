@@ -7,6 +7,9 @@ Version 2.6.0 stable (2015-06-??)
 ### Improved
 - The extension is now compatible with Contao 3.5
 
+### Fixed
+- Fixed the German labels (see #58) 
+
 
 Version 2.5.0 stable (2015-04-10)
 ---------------------------------
