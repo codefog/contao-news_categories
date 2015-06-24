@@ -11,7 +11,7 @@ Version 2.6.0 stable (2015-06-10)
 - Fixed the German labels (see #58) 
 
 
-Version 2.5.1 stable (2015-06-??)
+Version 2.5.1 stable (2015-06-24)
 ---------------------------------
 
 ### Fixed
