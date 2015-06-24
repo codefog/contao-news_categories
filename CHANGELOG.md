@@ -11,6 +11,13 @@ Version 2.6.0 stable (2015-06-10)
 - Fixed the German labels (see #58) 
 
 
+Version 2.5.1 stable (2015-06-??)
+---------------------------------
+
+### Fixed
+- Fixed the dependencies in composer.json for Contao 3.2, 3.3 and 3.4
+
+
 Version 2.5.0 stable (2015-04-10)
 ---------------------------------
 
