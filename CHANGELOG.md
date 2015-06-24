@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 2.6.1 stable (2015-06-24)
+---------------------------------
+
+### Fixed
+- Fixed the composer.json file
+
+
 Version 2.6.0 stable (2015-06-10)
 ---------------------------------
 
