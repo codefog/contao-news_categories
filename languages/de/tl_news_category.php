@@ -16,7 +16,7 @@
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_news_category']['title']         = array('Titel', 'Bitte Kategorie-Titel eingeben.');
-$GLOBALS['TL_LANG']['tl_news_category']['frontendTitle'] = array('Frontend Titel', 'Titel der im Frontend angezeigt wird.');
+$GLOBALS['TL_LANG']['tl_news_category']['frontendTitle'] = array('Frontend TiteL', 'Titel der im Frontend angezeigt wird.');
 $GLOBALS['TL_LANG']['tl_news_category']['alias']         = array('Nachrichten-Kategorie-Alias', 'Der Kategorie-Alias ist eine eindeutige Referenz, die anstelle der numerischen ID aufgerufen werden kann.');
 $GLOBALS['TL_LANG']['tl_news_category']['published']     = array('Kategorie veröffentlichen', 'Nachrichten-Kategorie veröffentlichen.');
 

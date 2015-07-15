@@ -235,18 +235,171 @@ if (\NewsCategories\NewsCategories::checkMultilingual()) {
 
 class tl_news_category extends Backend
 {
+	/**
+	 * Check permissions
+	 */
+	public function checkPermission()
+	{
+		$this->import('BackendUser', 'User');
 
-    /**
-     * Check the permission
-     */
-    public function checkPermission()
-    {
-        $this->import('BackendUser', 'User');
+		if($this->User->isAdmin) {
+			return;
+		}
 
-        if (!$this->User->isAdmin && !$this->User->newscategories) {
-            $this->redirect('contao/main.php?act=error');
-        }
-    }
+		if(!$this->User->newscategories) {
+			$this->redirect('contao/main.php?act=error');
+		}
+
+		// Set root IDs
+		if($this->User->newscategories_default == null &&  $this->User->newscategories_default == '') {
+			$root = array(0);
+		} else {
+			$root = $this->User->newscategories_default;
+		}
+
+		$GLOBALS['TL_DCA']['tl_news_category']['list']['sorting']['root'] = $root;
+
+		// Check permissions to add categories
+		if(!$this->User->hasAccess('create', 'newscategoriesp'))
+		{
+			$GLOBALS['TL_DCA']['tl_news_category']['config']['closed'] = true;
+			unset($GLOBALS['TL_DCA']['tl_news_category']['list']['operations']['copy']);
+			unset($GLOBALS['TL_DCA']['tl_news_category']['list']['operations']['copyChilds']);
+		}
+		// Check permissions to delete categories
+		if(!$this->User->hasAccess('delete', 'newscategoriesp'))
+		{
+			unset($GLOBALS['TL_DCA']['tl_news_category']['list']['operations']['delete']);
+		}
+
+		// get child records
+		$objDb = \Database::getInstance();
+		$arrAllowed = array();
+		foreach($root as $pid)
+		{
+			$arrAllowed = array_merge($arrAllowed, $objDb->getChildRecords($pid, 'tl_news_category'));
+		}
+
+		// Check current action
+		switch (Input::get('act')) {
+			case 'create':
+			case 'paste' :
+				if(!$this->User->hasAccess('create', 'newscategoriesp'))
+				{
+					$this->log('Not enough permissions to ' . Input::get('act') . ' news category ID "' . Input::get('id') . '"', __METHOD__, TL_ERROR);
+					$this->redirect('contao/main.php?act=error');
+					break;
+				}
+
+			case 'select':
+				// Allow
+				break;
+
+			case 'edit':
+				// Dynamically add the record to the user profile
+				if (!in_array(Input::get('id'), $root))
+				{
+					$arrNew = $this->Session->get('new_records');
+
+					if (is_array($arrNew['tl_news_category']) && in_array(Input::get('id'), $arrNew['tl_news_category']))
+					{
+						// Add permissions on user level
+						if ($this->User->inherit == 'custom' || !$this->User->groups[0])
+						{
+							$objUser = $this->Database->prepare("SELECT newscategoriesp FROM tl_user WHERE id=?")
+								->limit(1)
+								->execute($this->User->id);
+
+							$arrNewsCategoriesp = deserialize($objUser->newscategoriesp);
+
+							if (is_array($arrNewsCategoriesp) && in_array('create', $arrNewsCategoriesp))
+							{
+								$arrNewsCategories = deserialize($objUser->newscategories);
+								$arrNewsCategories[] = Input::get('id');
+
+								$this->Database->prepare("UPDATE tl_user SET news=? WHERE id=?")
+									->execute(serialize($arrNewsCategories), $this->User->id);
+							}
+						}
+
+						// Add permissions on group level
+						elseif ($this->User->groups[0] > 0)
+						{
+							$objGroup = $this->Database->prepare("SELECT newscategoriesp FROM tl_user_group WHERE id=?")
+								->limit(1)
+								->execute($this->User->groups[0]);
+
+							$arrNewsCategoriesp = deserialize($objGroup->newp);
+
+							if (is_array($arrNewsCategoriesp) && in_array('create', $arrNewsCategoriesp))
+							{
+								$arrNewsCategories = deserialize($objGroup->newscategories);
+								$arrNewsCategories[] = Input::get('id');
+
+								$this->Database->prepare("UPDATE tl_user_group SET news=? WHERE id=?")
+									->execute(serialize($arrNewsCategories), $this->User->groups[0]);
+							}
+						}
+
+						// Add new element to the user object
+						$root[] = Input::get('id');
+						$this->User->newscategories = $root;
+					}
+				}
+			break;
+
+			case 'copy':
+				if(!$this->User->hasAccess('create', 'newscategoriesp'))
+				{
+					$this->log('Not enough permissions to ' . Input::get('act') . ' news category ID "' . Input::get('id') . '"', __METHOD__, TL_ERROR);
+					$this->redirect('contao/main.php?act=error');
+					break;
+				}
+			case 'delete':
+				if(!$this->User->hasAccess('delete', 'newscategoriesp'))
+				{
+					$this->log('Not enough permissions to ' . Input::get('act') . ' news category ID "' . Input::get('id') . '"', __METHOD__, TL_ERROR);
+					$this->redirect('contao/main.php?act=error');
+					break;
+				}
+			case 'show':
+				if (!in_array(Input::get('id'), $arrAllowed) || (Input::get('act') == 'delete' && !$this->User->hasAccess('delete', 'newscategoriesp')))
+				{
+					$this->log(
+						'Not enough permissions to ' . Input::get('act') . ' news category ID "' . Input::get('id') . '"',
+						__METHOD__,
+						TL_ERROR
+					);
+					$this->redirect('contao/main.php?act=error');
+				}
+				break;
+
+			case 'editAll':
+			case 'deleteAll':
+				if(!$this->User->hasAccess('delete', 'newscategoriesp'))
+				{
+					$this->log('Not enough permissions to ' . Input::get('act') . ' news category ID "' . Input::get('id') . '"', __METHOD__, TL_ERROR);
+					$this->redirect('contao/main.php?act=error');
+					break;
+				}
+			case 'overrideAll':
+				$session = $this->Session->getData();
+				if (Input::get('act') == 'deleteAll' && !$this->User->hasAccess('delete', 'newscategoriesp')) {
+					$session['CURRENT']['IDS'] = array();
+				} else {
+					$session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $root);
+				}
+				$this->Session->setData($session);
+				break;
+
+			default:
+				if (strlen(Input::get('act'))) {
+					$this->log('Not enough permissions to ' . Input::get('act') . ' news category ', __METHOD__, TL_ERROR);
+					$this->redirect('contao/main.php?act=error');
+				}
+				break;
+		}
+	}
 
     /**
      * Return the paste category button
@@ -259,7 +412,25 @@ class tl_news_category extends Backend
      */
     public function pasteCategory(DataContainer $dc, $row, $table, $cr, $arrClipboard=null)
     {
-        $disablePA = false;
+		// Set root IDs
+		if($this->User->newscategories_default == null &&  $this->User->newscategories_default == '')
+		{
+			$root = array(0);
+		} else
+		{
+			$root = $this->User->newscategories_default;
+		}
+
+		// get child records
+		$objDb = \Database::getInstance();
+		$arrAllowed = array();
+		foreach($root as $pid)
+		{
+			$arrAllowed = array_merge($arrAllowed, $objDb->getChildRecords($pid, 'tl_news_category'));
+		}
+
+
+		$disablePA = false;
         $disablePI = false;
 
         // Disable all buttons if there is a circular reference
@@ -273,6 +444,12 @@ class tl_news_category extends Backend
         // Return the buttons
         $imagePasteAfter = Image::getHtml('pasteafter.gif', sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id']));
         $imagePasteInto = Image::getHtml('pasteinto.gif', sprintf($GLOBALS['TL_LANG'][$table]['pasteinto'][1], $row['id']));
+
+		// disallow paste after root
+		if($this->User->hasAccess('create', 'newscategoriesp') && !in_array($row['id'], $arrAllowed))
+		{
+			$disablePA = true;
+		}
 
         if ($row['id'] > 0) {
             $return = $disablePA ? Image::getHtml('pasteafter_.gif').' ' : '<a href="'.$this->addToUrl('act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')).'" title="'.specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter.'</a> ';

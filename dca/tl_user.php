@@ -16,7 +16,7 @@
  * Add a palette to tl_user
  */
 $GLOBALS['TL_DCA']['tl_user']['palettes']['extend'] = str_replace('newsfeedp;', 'newsfeedp;{newscategories_legend},newscategories,newscategories_default;', $GLOBALS['TL_DCA']['tl_user']['palettes']['extend']);
-$GLOBALS['TL_DCA']['tl_user']['palettes']['custom'] = str_replace('newsfeedp;', 'newsfeedp;{newscategories_legend},newscategories,newscategories_default;', $GLOBALS['TL_DCA']['tl_user']['palettes']['custom']);
+$GLOBALS['TL_DCA']['tl_user']['palettes']['custom'] = str_replace('newsfeedp;', 'newsfeedp;{newscategories_legend},newscategories,newscategoriesp,newscategories_default;', $GLOBALS['TL_DCA']['tl_user']['palettes']['custom']);
 
 /**
  * Add a new field to tl_user
@@ -37,4 +37,15 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['newscategories_default'] = array
     'foreignKey'              => 'tl_news_category.title',
     'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox', 'foreignTable'=>'tl_news_category', 'titleField'=>'title', 'searchField'=>'title', 'managerHref'=>'do=news&table=tl_news_category'),
     'sql'                     => "blob NULL"
+);
+
+$GLOBALS['TL_DCA']['tl_user']['fields']['newscategoriesp'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_user']['newscategoriesp'],
+	'exclude'                 => true,
+	'inputType'               => 'checkbox',
+	'options'                 => array('create', 'delete'),
+	'reference'               => &$GLOBALS['TL_LANG']['MSC'],
+	'eval'                    => array('multiple'=>true),
+	'sql'                     => "blob NULL"
 );

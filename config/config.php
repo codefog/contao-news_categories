@@ -15,8 +15,8 @@
 /**
  * Extension version
  */
-@define('NEWS_CATEGORIES_VERSION', '2.6');
-@define('NEWS_CATEGORIES_BUILD', '1');
+@define('NEWS_CATEGORIES_VERSION', '2.5');
+@define('NEWS_CATEGORIES_BUILD', '0');
 
 /**
  * Back end modules
@@ -47,3 +47,4 @@ if (in_array('changelanguage', \ModuleLoader::getActive())) {
  */
 $GLOBALS['TL_PERMISSIONS'][] = 'newscategories';
 $GLOBALS['TL_PERMISSIONS'][] = 'newscategories_default';
+$GLOBALS['TL_PERMISSIONS'][] = 'newscategoriesp';
