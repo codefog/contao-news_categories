@@ -446,7 +446,7 @@ class tl_news_category extends Backend
         $imagePasteInto = Image::getHtml('pasteinto.gif', sprintf($GLOBALS['TL_LANG'][$table]['pasteinto'][1], $row['id']));
 
 		// disallow paste after root
-		if($this->User->hasAccess('create', 'newscategoriesp') && !in_array($row['id'], $arrAllowed))
+		if(!$this->User->isAdmin && $this->User->hasAccess('create', 'newscategoriesp') && !in_array($row['id'], $arrAllowed))
 		{
 			$disablePA = true;
 		}
