@@ -84,7 +84,9 @@ class ModuleNewsCategories extends \ModuleNews
 
         global $objPage;
         $strParam = NewsCategories::getParameterName();
-        $strUrl = $this->generateFrontendUrl($objPage->row(), '/' . $strParam . '/%s');
+
+        // Generate Url for category
+        $strUrl = $this->generateFrontendUrl($objPage->row(), ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ?  '/%s' : '/'.$strParam.'/%s'));
 
         // Get the jumpTo page
         if ($this->jumpTo > 0 && $objPage->id != $this->jumpTo) {
@@ -100,6 +102,12 @@ class ModuleNewsCategories extends \ModuleNews
         // Get the parent categories IDs
         while ($objCategories->next()) {
             $arrIds = array_merge($arrIds, $this->Database->getParentRecords($objCategories->id, 'tl_news_category'));
+        }
+
+        // Set the item from the auto_item parameter
+        if (!\Input::get($strParam) && \Config::get('useAutoItem') && isset($_GET['auto_item']))
+        {
+            \Input::setGet($strParam, \Input::get('auto_item'));
         }
 
         // Get the active category
@@ -175,7 +183,7 @@ class ModuleNewsCategories extends \ModuleNews
                 'title' => specialchars($GLOBALS['TL_LANG']['MSC']['resetCategories'][1]),
                 'linkTitle' => specialchars($GLOBALS['TL_LANG']['MSC']['resetCategories'][1]),
                 'link' => $GLOBALS['TL_LANG']['MSC']['resetCategories'][0],
-                'href' => ampersand(str_replace('/' . $strParam . '/%s', '', $strUrl)),
+                'href' => ampersand(str_replace( (\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/'.$strParam.'/%s', '', $strUrl)),
                 'quantity' => $intNewsQuantity
             );
 
