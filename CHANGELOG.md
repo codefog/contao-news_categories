@@ -12,6 +12,7 @@ Version 2.7.0 stable (2015-??-??)
 
 ### Fixed
 - Cleaned up the $GLOBALS array in newslist module (see #57)
+- Removed the undefined variables usage in the NewsModel class (see #76)
 
 
 Version 2.6.1 stable (2015-06-24)
