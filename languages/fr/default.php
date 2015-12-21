@@ -17,4 +17,10 @@
 /**
  * Miscellaneous
  */
+$GLOBALS['TL_LANG']['MSC']['newsCategories']  = 'Catégories :';
 $GLOBALS['TL_LANG']['MSC']['resetCategories'] = array('Toutes les catégories', 'Afficher les actualités de toutes les catégories');
+
+/**
+ * Content elements
+ */
+$GLOBALS['TL_LANG']['CTE']['newsfilter'] = array('Module d\'actualités filtré', 'Ajoute un module d\'actualités à la page avec des paramètres de filtres personnalisés.');
