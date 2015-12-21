@@ -7,10 +7,11 @@ Version 2.7.0 stable (2015-??-??)
 ### Improved
 - Updated the composer.json file (see #63)
 - Updated the French language (thanks to Lionel Maccaud, see #70)
-- Add the "news_trail" class to category list items which the active news item belongs to (see #64)
+- Added the "news_trail" class to category list items which the active news item belongs to (see #64)
+- Added the "news_categories" insert tag that displays information about active news category (see #66)
 
 ### Fixed
-- Cleanup the $GLOBALS array in newslist module (see #57)
+- Cleaned up the $GLOBALS array in newslist module (see #57)
 
 
 Version 2.6.1 stable (2015-06-24)
