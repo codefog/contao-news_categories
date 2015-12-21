@@ -9,6 +9,7 @@ Version 2.7.0 stable (2015-??-??)
 - Updated the French language (thanks to Lionel Maccaud, see #70)
 - Added the "news_trail" class to category list items which the active news item belongs to (see #64)
 - Added the "news_categories" insert tag that displays information about active news category (see #66)
+- Allowed to choose the custom template for news categories module (see #77)
 
 ### Fixed
 - Cleaned up the $GLOBALS array in newslist module (see #57)
