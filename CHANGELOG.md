@@ -6,6 +6,7 @@ Version 2.7.0 stable (2015-??-??)
 
 ### Improved
 - Updated the composer.json file (see #63)
+- Updated the French language (thanks to Lionel Maccaud, see #70)
 
 
 Version 2.6.1 stable (2015-06-24)
