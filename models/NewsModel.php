@@ -288,6 +288,6 @@ class NewsModel extends \Contao\NewsModel
             }
         }
 
-        return static::countBy($arrColumns, array($intFrom, $intTo), $arrOptions);
+        return static::countBy($arrColumns, null, $arrOptions);
     }
 }

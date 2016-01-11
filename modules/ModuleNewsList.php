@@ -41,7 +41,12 @@ class ModuleNewsList extends \Contao\ModuleNewsList
         $GLOBALS['NEWS_FILTER_DEFAULT']    = deserialize($this->news_filterDefault, true);
         $GLOBALS['NEWS_FILTER_PRESERVE']   = $this->news_filterPreserve;
 
-        return parent::generate();
+        $buffer = parent::generate();
+
+        // Cleanup the $GLOBALS array (see #57)
+        unset($GLOBALS['NEWS_FILTER_CATEGORIES'], $GLOBALS['NEWS_FILTER_DEFAULT'], $GLOBALS['NEWS_FILTER_PRESERVE']);
+
+        return $buffer;
     }
 
     /**

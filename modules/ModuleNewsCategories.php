@@ -34,6 +34,12 @@ class ModuleNewsCategories extends \ModuleNews
     protected $objActiveCategory = null;
 
     /**
+     * Active news categories
+     * @var array
+     */
+    protected $activeNewsCategories = [];
+
+    /**
      * Category trail
      * @var array
      */
@@ -62,6 +68,20 @@ class ModuleNewsCategories extends \ModuleNews
         // Return if there are no archives
         if (!is_array($this->news_archives) || empty($this->news_archives)) {
             return '';
+        }
+
+        $param = 'items';
+
+        // Use the auto_item parameter if enabled
+        if (!isset($_GET['items']) && $GLOBALS['TL_CONFIG']['useAutoItem'] && isset($_GET['auto_item'])) {
+            $param = 'auto_item';
+        }
+
+        $newsModel = \NewsModel::findPublishedByParentAndIdOrAlias(\Input::get($param), $this->news_archives);
+
+        // Get the category IDs of the active news item
+        if ($newsModel !== null) {
+            $this->activeNewsCategories = deserialize($newsModel->categories, true);
         }
 
         return parent::generate();
@@ -195,7 +215,7 @@ class ModuleNewsCategories extends \ModuleNews
             }
 
             $blnActive = ($this->objActiveCategory !== null) && ($this->objActiveCategory->id == $objCategories->id);
-            $strClass = ('news_category_' . $objCategories->id) . ($objCategories->cssClass ? (' ' . $objCategories->cssClass) : '') . ((++$count == 1) ? ' first' : '') . (($count == $total) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even') . ($blnActive ? ' active' : '') . (($strSubcategories != '') ? ' submenu' : '') . (in_array($objCategories->id, $this->arrCategoryTrail) ? ' trail' : '');
+            $strClass = ('news_category_' . $objCategories->id) . ($objCategories->cssClass ? (' ' . $objCategories->cssClass) : '') . ((++$count == 1) ? ' first' : '') . (($count == $total) ? ' last' : '') . ((($count % 2) == 0) ? ' odd' : ' even') . ($blnActive ? ' active' : '') . (($strSubcategories != '') ? ' submenu' : '') . (in_array($objCategories->id, $this->arrCategoryTrail) ? ' trail' : '') . (in_array($objCategories->id, $this->activeNewsCategories) ? ' news_trail' : '');
             $strTitle = $objCategories->frontendTitle ?: $objCategories->title;
 
             $arrRow = $objCategories->row();

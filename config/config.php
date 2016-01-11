@@ -15,8 +15,8 @@
 /**
  * Extension version
  */
-@define('NEWS_CATEGORIES_VERSION', '2.6');
-@define('NEWS_CATEGORIES_BUILD', '1');
+@define('NEWS_CATEGORIES_VERSION', '2.7');
+@define('NEWS_CATEGORIES_BUILD', '0');
 
 /**
  * Back end modules
@@ -37,6 +37,7 @@ $GLOBALS['TL_CTE']['includes']['newsfilter'] = 'ContentNewsFilter';
  * Hooks
  */
 $GLOBALS['TL_HOOKS']['parseArticles'][] = array('News', 'addCategoriesToTemplate');
+$GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('News', 'parseCategoriesTags');
 
 if (in_array('changelanguage', \ModuleLoader::getActive())) {
     $GLOBALS['TL_HOOKS']['translateUrlParameters'][] = array('NewsCategories', 'translateUrlParameters');

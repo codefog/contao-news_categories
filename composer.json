@@ -25,5 +25,8 @@
                 "": "system/modules/news_categories"
             }
         }
+    },
+    "replace": {
+        "contao-legacy/news_categories": "self.version"
     }
 }
