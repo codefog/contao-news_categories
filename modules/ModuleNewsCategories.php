@@ -37,7 +37,7 @@ class ModuleNewsCategories extends \ModuleNews
      * Active news categories
      * @var array
      */
-    protected $activeNewsCategories = [];
+    protected $activeNewsCategories = array();
 
     /**
      * Category trail
