@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 2.7.1 stable (2016-04-27)
+---------------------------------
+
+### Fixed
+- Restored the PHP 5.3 compatibility (#85)
+
+
 Version 2.7.0 stable (2016-01-11)
 ---------------------------------
 
