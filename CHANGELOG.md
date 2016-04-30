@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 2.7.2 stable (2016-04-30)
+---------------------------------
+
+### Fixed
+- Fixed various news feed issues (#86)
+
+
 Version 2.7.1 stable (2016-04-27)
 ---------------------------------
 
