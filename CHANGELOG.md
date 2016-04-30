@@ -1,7 +1,7 @@
 news_categories Changelog
 =========================
 
-Version 2.7.2 stable (????-??-??)
+Version 2.7.2 stable (2016-04-30)
 ---------------------------------
 
 ### Fixed
