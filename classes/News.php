@@ -175,7 +175,7 @@ class News extends \Contao\News
                     }
                     else
                     {
-                        $arrUrls[$jumpTo] = $this->generateFrontendUrl($objParent->row(), (($GLOBALS['TL_CONFIG']['useAutoItem'] && !$GLOBALS['TL_CONFIG']['disableAlias']) ?  '/%s' : '/items/%s'), $objParent->language);
+                        $arrUrls[$jumpTo] = $objParent->getAbsoluteUrl((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s');
                     }
                 }
 
@@ -204,7 +204,7 @@ class News extends \Contao\News
                     $objItem->title = $objArticle->headline;
                 }
 
-                $objItem->link = $this->getLink($objArticle, $strUrl, $strLink);
+                $objItem->link = $this->getLink($objArticle, $strUrl);
                 $objItem->published = $objArticle->date;
                 $objItem->author = $objArticle->authorName;
 
@@ -216,10 +216,16 @@ class News extends \Contao\News
 
                     if ($objElement !== null)
                     {
+                        // Overwrite the request (see #7756)
+                        $strRequest = \Environment::get('request');
+                        \Environment::set('request', $objItem->link);
+
                         while ($objElement->next())
                         {
-                            $strDescription .= $this->getContentElement($objElement->id);
+                            $strDescription .= $this->getContentElement($objElement->current());
                         }
+
+                        \Environment::set('request', $strRequest);
                     }
                 }
                 else
@@ -248,7 +254,7 @@ class News extends \Contao\News
 
                     if ($objFile !== null)
                     {
-                        $objItem->addEnclosure($objFile->path);
+                        $objItem->addEnclosure($objFile->path, $strLink);
                     }
                 }
 
@@ -265,7 +271,7 @@ class News extends \Contao\News
                         {
                             while ($objFile->next())
                             {
-                                $objItem->addEnclosure($objFile->path);
+                                $objItem->addEnclosure($objFile->path, $strLink);
                             }
                         }
                     }
