@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 2.7.3 stable (????-??-??)
+---------------------------------
+
+### Fixed
+- Made the news menu module compatible with Contao 3.5.3 and above (#92)
+
+
 Version 2.7.2 stable (2016-04-30)
 ---------------------------------
 

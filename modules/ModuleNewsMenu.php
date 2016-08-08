@@ -202,12 +202,13 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
     /**
      * Return all weeks of the current month as array
      * @param array
-     * @param string
      * @return array
      */
-    protected function compileWeeks($arrData, $strUrl)
+    protected function compileWeeks($arrData)
     {
-        return parent::compileWeeks($arrData, $this->generateCategoryUrl());
+        $this->strUrl = $this->generateCategoryUrl();
+
+        return parent::compileWeeks($arrData);
     }
 
     /**
