@@ -189,7 +189,7 @@ class ModuleNewsCategories extends \ModuleNews
 
             $arrCategories[] = array
             (
-                'isActive' => $blnActive,
+                'isActive' => empty($this->activeNewsCategories) && $blnActive,
                 'subitems' => '',
                 'class' => 'reset first' . (($total == 1) ? ' last' : '') . ' even' . ($blnActive ? ' active' : ''),
                 'title' => specialchars($GLOBALS['TL_LANG']['MSC']['resetCategories'][1]),
