@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 2.7.4 stable (2016-08-19)
+---------------------------------
+
+### Fixed
+- Do not set reset link as active if any active categories are selected (#93)
+
+
 Version 2.7.3 stable (2016-08-09)
 ---------------------------------
 
