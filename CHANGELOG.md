@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 2.7.5 stable (2016-10-20)
+---------------------------------
+
+### Fixed
+- Extension is now compatible with Contao 4.2 (#95)
+
+
 Version 2.7.4 stable (2016-08-19)
 ---------------------------------
 
