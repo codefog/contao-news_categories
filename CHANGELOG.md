@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 2.8.0 stable (????-??-??)
+---------------------------------
+
+### Improved
+- Allow to hide category in the news list module
+
+
 Version 2.7.5 stable (2016-10-20)
 ---------------------------------
 
