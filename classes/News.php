@@ -41,9 +41,16 @@ class News extends \Contao\News
                 if ($objCategories !== null) {
                     /** @var NewsCategoryModel $objCategory */
                     foreach ($objCategories as $objCategory) {
-                        // Skip the category in news list module
-                        if ($objCategory->hideInList && $module instanceof \ModuleNewsList) {
-                            continue;
+                        if ($module instanceof \ModuleNewsList) {
+                            // Skip the category in news list module
+                            if ($objCategory->hideInList && !$module->news_relatedCategories) {
+                                continue;
+                            }
+
+                            // Skip the category in related news list module
+                            if ($objCategory->hideInRelatedList && $module->news_relatedCategories) {
+                                continue;
+                            }
                         }
 
                         $strName = $objCategory->frontendTitle ? $objCategory->frontendTitle : $objCategory->title;
