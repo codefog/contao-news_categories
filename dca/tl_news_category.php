@@ -132,7 +132,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
     // Palettes
     'palettes' => array
     (
-        'default'                     => '{title_legend},title,alias,frontendTitle,cssClass;{modules_legend:hide},hideInList,hideInRelatedList;{redirect_legend:hide},jumpTo;{publish_legend},published'
+        'default'                     => '{title_legend},title,alias,frontendTitle,cssClass;{modules_legend:hide},hideInList,hideInRelatedList,hideInReader;{redirect_legend:hide},jumpTo;{publish_legend},published'
     ),
 
     // Fields
@@ -204,6 +204,14 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
         'hideInRelatedList' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_news_category']['hideInRelatedList'],
+            'exclude'                 => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('tl_class'=>'w50'),
+            'sql'                     => "char(1) NOT NULL default ''",
+        ),
+        'hideInReader' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_news_category']['hideInReader'],
             'exclude'                 => true,
             'inputType'               => 'checkbox',
             'eval'                    => array('tl_class'=>'w50'),

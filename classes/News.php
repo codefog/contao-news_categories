@@ -53,6 +53,11 @@ class News extends \Contao\News
                             }
                         }
 
+                        // Skip the category in the news reader module
+                        if ($module instanceof \ModuleNewsReader && $objCategory->hideInReader) {
+                            continue;
+                        }
+
                         $strName = $objCategory->frontendTitle ? $objCategory->frontendTitle : $objCategory->title;
 
                         $arrCategories[$objCategory->id] = $objCategory->row();
