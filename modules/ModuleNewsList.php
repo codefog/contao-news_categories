@@ -99,7 +99,7 @@ class ModuleNewsList extends \Contao\ModuleNewsList
         }
 
         $GLOBALS['NEWS_FILTER_CATEGORIES'] = false;
-        $GLOBALS['NEWS_FILTER_DEFAULT']    = $categories;
+        $GLOBALS['NEWS_FILTER_DEFAULT']    = (count($categories) > 0) ? $categories : [0];
         $GLOBALS['NEWS_FILTER_EXCLUDE']    = array($news->id);
 
         return parent::generate();
