@@ -1,7 +1,7 @@
 news_categories Changelog
 =========================
 
-Version 2.8.0 stable (????-??-??)
+Version 2.8.0 stable (2017-01-27)
 ---------------------------------
 
 ### Improved
