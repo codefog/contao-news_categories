@@ -15,6 +15,8 @@
 
 namespace NewsCategories;
 
+use Contao\Database;
+
 /**
  * Override the default front end module "news list".
  */
@@ -83,8 +85,21 @@ class ModuleNewsList extends \Contao\ModuleNewsList
             return '';
         }
 
+        $categories = deserialize($news->categories, true);
+
+        // Check if there are categories to be excluded
+        if (count($categories) > 0) {
+            $exclude = Database::getInstance()->execute("SELECT id FROM tl_news_category WHERE excludeInRelated=1");
+
+            while ($exclude->next()) {
+                if (($index = array_search($exclude->id, $categories)) !== false) {
+                    unset($categories[$index]);
+                }
+            }
+        }
+
         $GLOBALS['NEWS_FILTER_CATEGORIES'] = false;
-        $GLOBALS['NEWS_FILTER_DEFAULT']    = deserialize($news->categories, true);
+        $GLOBALS['NEWS_FILTER_DEFAULT']    = (count($categories) > 0) ? $categories : [0];
         $GLOBALS['NEWS_FILTER_EXCLUDE']    = array($news->id);
 
         return parent::generate();

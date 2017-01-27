@@ -132,7 +132,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
     // Palettes
     'palettes' => array
     (
-        'default'                     => '{title_legend},title,alias,frontendTitle,cssClass;{redirect_legend:hide},jumpTo;{publish_legend},published'
+        'default'                     => '{title_legend},title,alias,frontendTitle,cssClass;{modules_legend:hide},hideInList,hideInReader,excludeInRelated;{redirect_legend:hide},jumpTo;{publish_legend},published'
     ),
 
     // Fields
@@ -192,6 +192,30 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
             'inputType'               => 'text',
             'eval'                    => array('maxlength'=>128, 'tl_class'=>'w50'),
             'sql'                     => "varchar(128) NOT NULL default ''",
+        ),
+        'hideInList' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_news_category']['hideInList'],
+            'exclude'                 => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('tl_class'=>'w50'),
+            'sql'                     => "char(1) NOT NULL default ''",
+        ),
+        'hideInReader' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_news_category']['hideInReader'],
+            'exclude'                 => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('tl_class'=>'w50'),
+            'sql'                     => "char(1) NOT NULL default ''",
+        ),
+        'excludeInRelated' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_news_category']['excludeInRelated'],
+            'exclude'                 => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('tl_class'=>'w50'),
+            'sql'                     => "char(1) NOT NULL default ''",
         ),
         'jumpTo' => array
         (

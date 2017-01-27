@@ -24,8 +24,9 @@ class News extends \Contao\News
      * Add the categories to the template
      * @param object
      * @param array
+     * @param object $module
      */
-    public function addCategoriesToTemplate($objTemplate, $arrData)
+    public function addCategoriesToTemplate($objTemplate, $arrData, $module)
     {
         if (isset($arrData['categories'])) {
             $arrCategories = array();
@@ -40,6 +41,18 @@ class News extends \Contao\News
                 if ($objCategories !== null) {
                     /** @var NewsCategoryModel $objCategory */
                     foreach ($objCategories as $objCategory) {
+                        // Skip the category in news list or archive module
+                        if (($module instanceof \ModuleNewsList || $module instanceof \ModuleNewsArchive)
+                            && $objCategory->hideInList
+                        ) {
+                            continue;
+                        }
+
+                        // Skip the category in the news reader module
+                        if ($module instanceof \ModuleNewsReader && $objCategory->hideInReader) {
+                            continue;
+                        }
+
                         $strName = $objCategory->frontendTitle ? $objCategory->frontendTitle : $objCategory->title;
 
                         $arrCategories[$objCategory->id] = $objCategory->row();
