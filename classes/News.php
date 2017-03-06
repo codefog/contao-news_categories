@@ -295,6 +295,10 @@ class News extends \Contao\News
         }
 
         // Create the file
-        \File::putContent('share/' . $strFile . '.xml', $this->replaceInsertTags($objFeed->$strType(), false));
+        if (class_exists('Contao\CoreBundle\ContaoCoreBundle')) {
+            \File::putContent('web/share/'.$strFile.'.xml', $this->replaceInsertTags($objFeed->$strType(), false));
+        } else {
+            \File::putContent('share/'.$strFile.'.xml', $this->replaceInsertTags($objFeed->$strType(), false));
+        }
     }
 }
