@@ -1,6 +1,13 @@
 news_categories Changelog
 =========================
 
+Version 2.8.1 stable (2017-03-06)
+---------------------------------
+
+### Fixed
+- Fixed news feed being created in wrong folder for Contao 4 (#99)
+
+
 Version 2.8.0 stable (2017-01-27)
 ---------------------------------
 
