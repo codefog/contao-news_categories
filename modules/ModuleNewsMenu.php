@@ -39,8 +39,17 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
     {
         $time = time();
         $arrData = array();
-        $this->Template = new \FrontendTemplate('mod_newsmenu_year');
         $arrNewsIds = $this->getFilteredNewsIds();
+        
+        // Configure template for yearly menu
+        if (version_compare(VERSION, '4.0', '<'))
+        {
+            $this->Template = new \FrontendTemplate('mod_newsmenu_year');
+        }
+        else
+        {
+            $this->Template->yearly = true;
+        }
 
         // Get the dates
         $objDates = $this->Database->query("SELECT FROM_UNIXTIME(date, '%Y') AS year, COUNT(*) AS count FROM tl_news WHERE pid IN(" . implode(',', array_map('intval', $this->news_archives)) . ")" . ((!BE_USER_LOGGED_IN || TL_MODE == 'BE') ? " AND (start='' OR start<$time) AND (stop='' OR stop>$time) AND published=1" : "") . (!empty($arrNewsIds) ? (" AND id IN (" . implode(',', $arrNewsIds) . ")") : "") . " GROUP BY year ORDER BY year DESC");
@@ -141,8 +150,17 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
     {
         $time = time();
         $arrData = array();
-        $this->Template = new \FrontendTemplate('mod_newsmenu_day');
         $arrNewsIds = $this->getFilteredNewsIds();
+        
+        // Configure template for daily menu
+        if (version_compare(VERSION, '4.0', '<'))
+        {
+            $this->Template = new \FrontendTemplate('mod_newsmenu_day');
+        }
+        else
+        {
+            $this->Template->daily = true;
+        }
 
         // Get the dates
         $objDates = $this->Database->query("SELECT FROM_UNIXTIME(date, '%Y%m%d') AS day, COUNT(*) AS count FROM tl_news WHERE pid IN(" . implode(',', array_map('intval', $this->news_archives)) . ")" . ((!BE_USER_LOGGED_IN || TL_MODE == 'BE') ? " AND (start='' OR start<$time) AND (stop='' OR stop>$time) AND published=1" : "") . (!empty($arrNewsIds) ? (" AND id IN (" . implode(',', $arrNewsIds) . ")") : "") . " GROUP BY day ORDER BY day DESC");
