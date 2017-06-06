@@ -15,15 +15,22 @@
 /**
  * Fields
  */
-$GLOBALS['TL_LANG']['tl_news_category']['title']         = array('Titel', 'Bitte Kategorie-Titel eingeben.');
-$GLOBALS['TL_LANG']['tl_news_category']['frontendTitle'] = array('Frontend Titel', 'Titel der im Frontend angezeigt wird.');
-$GLOBALS['TL_LANG']['tl_news_category']['alias']         = array('Nachrichten-Kategorie-Alias', 'Der Kategorie-Alias ist eine eindeutige Referenz, die anstelle der numerischen ID aufgerufen werden kann.');
-$GLOBALS['TL_LANG']['tl_news_category']['published']     = array('Kategorie veröffentlichen', 'Nachrichten-Kategorie veröffentlichen.');
+$GLOBALS['TL_LANG']['tl_news_category']['title']             = array('Titel', 'Bitte Kategorie-Titel eingeben.');
+$GLOBALS['TL_LANG']['tl_news_category']['frontendTitle']     = array('Frontend Titel', 'Titel der im Frontend angezeigt wird.');
+$GLOBALS['TL_LANG']['tl_news_category']['alias']             = array('Nachrichten-Kategorie-Alias', 'Der Kategorie-Alias ist eine eindeutige Referenz, die anstelle der numerischen ID aufgerufen werden kann.');
+$GLOBALS['TL_LANG']['tl_news_category']['cssClass']          = array('CSS-Klasse', 'Hier kann eine CSS-Klasse vergeben werden, welche zur Kategorie im Front-End hinzugefügt wird.');
+$GLOBALS['TL_LANG']['tl_news_category']['hideInList']        = array('Im Listen/Archiv-Modul verstekcen', 'Zeigt diese Kategorie nicht im Nachrichtenliste oder -archiv Modul an (wirkt sich nur auf die <em>news_</em> Templates aus).');
+$GLOBALS['TL_LANG']['tl_news_category']['hideInReader']      = array('Im Leser-Modul verstecken', 'Zeigt diese Kategorie nicht im Nachrichtenleser-Modul an (wirkt sich nur auf die <em>news_</em> Templates aus).');
+$GLOBALS['TL_LANG']['tl_news_category']['excludeInRelated']  = array('Aus ähnlicher Nachrichtenliste ausschließen', 'Schließt die Nachrichten dieser Kategorie in der Nachrichten-Liste der ähnlichen Nachrichten aus.');
+$GLOBALS['TL_LANG']['tl_news_category']['jumpTo']            = array('Weiterleitungsseite', 'Hier kann eine Seite ausgewählt werden, auf diese ein Besucher weitergeleitet wird wenn ein Kategorielink im Nachrichtentemplate angeklickt wird.');
+$GLOBALS['TL_LANG']['tl_news_category']['published']         = array('Kategorie veröffentlichen', 'Nachrichten-Kategorie veröffentlichen.');
 
 /**
  * Legends
  */
 $GLOBALS['TL_LANG']['tl_news_category']['title_legend']    = 'Titel und Alias';
+$GLOBALS['TL_LANG']['tl_news_category']['modules_legend']  = 'Modul-Einstellungen';
+$GLOBALS['TL_LANG']['tl_news_category']['redirect_legend'] = 'Weiterleitungs-Einstellungen';
 $GLOBALS['TL_LANG']['tl_news_category']['publish_legend']  = 'Veröffentlichung';
 
 /**
