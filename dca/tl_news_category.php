@@ -267,7 +267,7 @@ class tl_news_category extends Backend
     {
         $this->import('BackendUser', 'User');
 
-        if (!$this->User->isAdmin && !$this->User->newscategories) {
+        if (!$this->User->isAdmin && !$this->User->hasAccess('manage', 'newscategories')) {
             $this->redirect('contao/main.php?act=error');
         }
     }

@@ -69,7 +69,7 @@ class tl_news_archive_categories extends Backend
     {
         $this->import('BackendUser', 'User');
 
-        if (!$this->User->isAdmin && !$this->User->newscategories) {
+        if (!$this->User->isAdmin && !$this->User->hasAccess('manage', 'newscategories')) {
             unset($GLOBALS['TL_DCA']['tl_news_archive']['list']['global_operations']['categories']);
         }
     }
