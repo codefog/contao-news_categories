@@ -30,7 +30,10 @@ $GLOBALS['TL_DCA']['tl_user_group']['fields']['newscategories'] = array
     'label'                   => &$GLOBALS['TL_LANG']['tl_user']['newscategories'],
     'exclude'                 => true,
     'inputType'               => 'checkbox',
-    'sql'                     => "char(1) NOT NULL default ''"
+    'options'                 => ['manage'],
+    'reference'               => &$GLOBALS['TL_LANG']['tl_user']['newscategoriesRef'],
+    'eval'                    => ['multiple' => true, 'tl_class' => 'clr'],
+    'sql'                     => "varchar(32) NOT NULL default ''"
 );
 
 $GLOBALS['TL_DCA']['tl_user_group']['fields']['newscategories_default'] = array
