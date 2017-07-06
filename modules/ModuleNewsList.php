@@ -17,10 +17,21 @@ namespace NewsCategories;
 
 use Contao\Database;
 
+
+/**
+ * Dynamic parent class
+ */
+if (class_exists('\news_sorted\ModuleNewsList')) {
+    class ParentModuleNewsList extends \news_sorted\ModuleNewsList {}
+} else {
+    class ParentModuleNewsList extends \Contao\ModuleNewsList {}
+}
+
+
 /**
  * Override the default front end module "news list".
  */
-class ModuleNewsList extends \Contao\ModuleNewsList
+class ModuleNewsList extends ParentModuleNewsList
 {
 
     /**
