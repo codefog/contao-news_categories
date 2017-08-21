@@ -16,6 +16,7 @@
  * Fields
  */
 $GLOBALS['TL_LANG']['tl_news']['categories'] = array('Kategorien', 'Eine oder mehrere Kategorien auswählen.');
+$GLOBALS['TL_LANG']['tl_news']['primaryCategory'] = ['Primäre Kategorie', 'Bitte wählen Sie hier die primäre Kategorie aus. Diese Einstellung wird v.a. für vom Archiv abweichende Weiterleitungsseiten genutzt.'];
 
 /**
  * Legends

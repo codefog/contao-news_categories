@@ -22,7 +22,7 @@ $GLOBALS['TL_DCA']['tl_news']['config']['ondelete_callback'][] = array('tl_news_
 /**
  * Extend a tl_news palette
  */
-$GLOBALS['TL_DCA']['tl_news']['palettes']['default'] = str_replace('{date_legend}', '{category_legend},categories;{date_legend}', $GLOBALS['TL_DCA']['tl_news']['palettes']['default']);
+$GLOBALS['TL_DCA']['tl_news']['palettes']['default'] = str_replace('{date_legend}', '{category_legend},categories,primaryCategory;{date_legend}', $GLOBALS['TL_DCA']['tl_news']['palettes']['default']);
 
 /**
  * Add a new field to tl_news
@@ -36,6 +36,23 @@ $GLOBALS['TL_DCA']['tl_news']['fields']['categories'] = array
     'foreignKey'              => 'tl_news_category.title',
     'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox', 'foreignTable'=>'tl_news_category', 'titleField'=>'title', 'searchField'=>'title', 'managerHref'=>'do=news&table=tl_news_category'),
     'sql'                     => "blob NULL"
+);
+
+$GLOBALS['TL_DCA']['tl_news']['fields']['primaryCategory'] = array
+(
+    'label'      => &$GLOBALS['TL_LANG']['tl_news']['primaryCategory'],
+    'exclude'    => true,
+    'filter'     => true,
+    'inputType'  => 'treePicker',
+    'foreignKey' => 'tl_news_category.title',
+    'eval'       => [
+        'fieldType'    => 'radio',
+        'foreignTable' => 'tl_news_category',
+        'titleField'   => 'title',
+        'searchField'  => 'title',
+        'managerHref'  => 'do=news&table=tl_news_category',
+    ],
+    'sql'        => "int(10) unsigned NOT NULL default '0'",
 );
 
 class tl_news_categories extends Backend

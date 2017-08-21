@@ -36,11 +36,22 @@ $GLOBALS['TL_CTE']['includes']['newsfilter'] = 'ContentNewsFilter';
 /**
  * Hooks
  */
-$GLOBALS['TL_HOOKS']['parseArticles'][] = array('News', 'addCategoriesToTemplate');
-$GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('News', 'parseCategoriesTags');
+$GLOBALS['TL_HOOKS']['parseArticles']['news_categories']     = ['News', 'addCategoriesToTemplate'];
+$GLOBALS['TL_HOOKS']['replaceInsertTags']['news_categories'] = ['News', 'parseCategoriesTags'];
+$GLOBALS['TL_HOOKS']['replaceInsertTags']['news_categories'] = ['InsertTags', 'replace'];
 
-if (in_array('changelanguage', \ModuleLoader::getActive())) {
-    $GLOBALS['TL_HOOKS']['translateUrlParameters'][] = array('NewsCategories', 'translateUrlParameters');
+
+if (in_array('changelanguage', \ModuleLoader::getActive()))
+{
+    $GLOBALS['TL_HOOKS']['translateUrlParameters'][] = ['NewsCategories', 'translateUrlParameters'];
+}
+
+foreach ($GLOBALS['TL_HOOKS']['getSearchablePages'] as &$arrCallback)
+{
+    if ($arrCallback[0] == 'News' && $arrCallback[1] == 'getSearchablePages')
+    {
+        $arrCallback = ['News', 'getSearchablePages'];
+    }
 }
 
 /**

@@ -132,7 +132,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
     // Palettes
     'palettes' => array
     (
-        'default'                     => '{title_legend},title,alias,frontendTitle,cssClass;{modules_legend:hide},hideInList,hideInReader,excludeInRelated;{redirect_legend:hide},jumpTo;{publish_legend},published'
+        'default'                     => '{title_legend},title,alias,frontendTitle,cssClass;{modules_legend:hide},hideInList,hideInReader,excludeInRelated;{redirect_legend:hide},jumpTo,jumpToDetailsNote,jumpToDetails;{publish_legend},published'
     ),
 
     // Fields
@@ -220,6 +220,22 @@ $GLOBALS['TL_DCA']['tl_news_category'] = array
         'jumpTo' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_news_category']['jumpTo'],
+            'exclude'                 => true,
+            'inputType'               => 'pageTree',
+            'eval'                    => array('fieldType'=>'radio'),
+            'sql'                     => "int(10) unsigned NOT NULL default '0'",
+            'relation'                => array('type'=>'hasOne', 'load'=>'eager', 'table'=>'tl_page')
+        ),
+        'jumpToDetailsNote' => [
+            'inputType' => 'explanation',
+            'eval'      => [
+                'text'  => &$GLOBALS['TL_LANG']['tl_news_category']['jumpToDetailsNote'],
+                'class' => 'tl_info',
+            ],
+        ],
+        'jumpToDetails' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_news_category']['jumpToDetails'],
             'exclude'                 => true,
             'inputType'               => 'pageTree',
             'eval'                    => array('fieldType'=>'radio'),

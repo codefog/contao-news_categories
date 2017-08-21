@@ -22,6 +22,8 @@ $GLOBALS['TL_LANG']['tl_news_category']['frontendTitle'] = array('Titre front of
 $GLOBALS['TL_LANG']['tl_news_category']['alias']         = array('Alias', 'L\'alias de la catégorie est une référence unique qui peut être utilisé à la place de son ID numérique.');
 $GLOBALS['TL_LANG']['tl_news_category']['cssClass']      = array('Classe CSS', 'Ici, vous pouvez saisir une classe CSS qui sera ajoutée à la catégorie dans le front office');
 $GLOBALS['TL_LANG']['tl_news_category']['jumpTo']        = array('Page de redirection', 'Ici, vous pouvez choisir la page à laquelle les visiteurs seront redirigés lorsque vous cliquez sur un lien de catégorie dans le modèle d\'actualité.');
+$GLOBALS['TL_LANG']['tl_news_category']['jumpToDetails']     = ['Redéfinir les nouvelles dans cette catégorie', 'Veuillez choisir une page d\'expédition pour les nouvelles dans cette catégorie. Cette page écrase la page définie sur l\'archive.'];
+$GLOBALS['TL_LANG']['tl_news_category']['jumpToDetailsNote'] = 'Remarque: Pour que la page d\'acheminement définie ici soit utilisée, la catégorie doit être attribuée à la catégorie respective comme «catégorie primaire».';
 $GLOBALS['TL_LANG']['tl_news_category']['published']     = array('Publier la catégorie', 'Rendre la catégorie visible sur le site internet.');
 
 /**

@@ -23,6 +23,8 @@ $GLOBALS['TL_LANG']['tl_news_category']['hideInList']        = array('Im Listen/
 $GLOBALS['TL_LANG']['tl_news_category']['hideInReader']      = array('Im Leser-Modul verstecken', 'Zeigt diese Kategorie nicht im Nachrichtenleser-Modul an (wirkt sich nur auf die <em>news_</em> Templates aus).');
 $GLOBALS['TL_LANG']['tl_news_category']['excludeInRelated']  = array('Aus ähnlicher Nachrichtenliste ausschließen', 'Schließt die Nachrichten dieser Kategorie in der Nachrichten-Liste der ähnlichen Nachrichten aus.');
 $GLOBALS['TL_LANG']['tl_news_category']['jumpTo']            = array('Weiterleitungsseite', 'Hier kann eine Seite ausgewählt werden, auf diese ein Besucher weitergeleitet wird wenn ein Kategorielink im Nachrichtentemplate angeklickt wird.');
+$GLOBALS['TL_LANG']['tl_news_category']['jumpToDetails']     = ['Weiterleitungsseite für Nachrichten dieser Kategorie', 'Wählen Sie hier eine Weiterleitungsseite für Nachrichten dieser Kategorie aus. Diese Seite überschreibt die Seite, die am Archivs definiert wurde.'];
+$GLOBALS['TL_LANG']['tl_news_category']['jumpToDetailsNote'] = 'Hinweis: Damit die hier definierte Weiterleitungsseite genutzt wird, muss der jeweiligen Nachricht die Kategorie als "primäre Kategorie" zugewiesen sein. Aktuell wird diese Einstellung nur in Modulen des Typs "Erweiterte Nachrichtenliste" sowie bei der Suchindex-Generierung beachtet.';
 $GLOBALS['TL_LANG']['tl_news_category']['published']         = array('Kategorie veröffentlichen', 'Nachrichten-Kategorie veröffentlichen.');
 
 /**
