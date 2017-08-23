@@ -21,17 +21,33 @@ class News extends \Contao\News
 {
     public function getLink($objItem, $strUrl, $strBase = '')
     {
+        $categories = deserialize($objItem->categories, true);
+
         // overwrite news url with news category news item jumpTo for primary news category
-        if ($objItem->source == 'default' && $objItem->primaryCategory > 0 && ($tree = CategoryHelper::getCategoryTree($objItem->primaryCategory, 0)) !== null)
+        if ($objItem->source == 'default')
         {
-            $objCategory = CategoryHelper::prepareCategory($tree[0]);
+            $objCategory = null;
+
+            if ($objItem->primaryCategory > 0 && ($tree = CategoryHelper::getCategoryTree($objItem->primaryCategory, 0)) !== null)
+            {
+                $objCategory = CategoryHelper::prepareCategory($tree[0]);
+            }
+            else if (count($categories) > 0 && ($objAllCategories = NewsCategoryModel::findPublishedByIds($categories)) !== null)
+            {
+                $objCategory = CategoryHelper::prepareCategory($tree[0]);
+            }
+
+            if ($objCategory === null)
+            {
+                return parent::getLink($objItem, $strUrl, $strBase);
+            }
 
             if (($objPage = \PageModel::findByPk($objCategory->jumpToDetails)) !== null)
             {
                 return ampersand(
                     $objPage->getFrontendUrl(
-                        ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/') .
-                        ((!\Config::get('disableAlias') && $objItem->alias != '') ? $objItem->alias : $objItem->id)
+                        ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/') . ((!\Config::get('disableAlias')
+                                                                                                               && $objItem->alias != '') ? $objItem->alias : $objItem->id)
                     )
                 );
             }
@@ -117,11 +133,13 @@ class News extends \Contao\News
         $objTemplate->categoriesTree = $set;
 
         // news category jump to override?
-        if ($arrArticle['source'] == 'default' && $arrArticle['primaryCategory'] && ($objTemplate->categoriesTree->primary) !== null)
+        if ($arrArticle['source'] == 'default' && ($objTemplate->categoriesTree->primary) !== null && isset($objTemplate->categoriesTree->primary->targets[$arrArticle['pid']]))
         {
-            if (($objPage = \PageModel::findByPk($objTemplate->categoriesTree->primary->jumpToDetails)) !== null)
+            $target = $objTemplate->categoriesTree->primary->targets[$arrArticle['pid']];
+
+            if ($target->newsPage !== null)
             {
-                $link = $objPage->getFrontendUrl(
+                $link = $target->newsPage->getFrontendUrl(
                     ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/') . ((!\Config::get('disableAlias')
                                                                                                            && $arrArticle['alias']
                                                                                                               != '') ? $arrArticle['alias'] : $arrArticle['id'])

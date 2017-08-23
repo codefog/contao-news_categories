@@ -15,7 +15,7 @@
         "contao/core-bundle": "^3.5.9 | ^4.2.0",
         "contao-community-alliance/composer-plugin": "~2.4 | ~3.0",
         "codefog/contao-widget_tree_picker": "^2.0.1",
-        "heimrichhannot/contao-be_explanation": "^1.0.7"
+        "heimrichhannot/contao-fieldpalette": "^1.3.16"
     },
     "suggest": {
         "terminal42/dc_multilingual": "2.*"

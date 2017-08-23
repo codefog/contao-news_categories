@@ -31,11 +31,36 @@ class CategoryHelper
         $category->targetPage    = null;
 
         // Add the target page
-        if (($targetPage = $objCategory->getTargetPage()) !== null)
+        if (($targetPages = $objCategory->getTargetPages()) !== null)
         {
-            $category->href          = $targetPage->getFrontendUrl();
-            $category->hrefWithParam = $targetPage->getFrontendUrl('/' . NewsCategories::getParameterName() . '/' . $category->alias);
-            $category->targetPage    = $targetPage;
+            $targets = [];
+
+            foreach ($targetPages as $news_archive => $targetPage)
+            {
+                if($targetPage->category === null && $targetPage->news === null)
+                {
+                    continue;
+                }
+
+                $target = new \stdClass();
+
+                if ($targetPage->category !== null)
+                {
+                    $target->categoryUrl          = $targetPage->category->getFrontendUrl();
+                    $target->categoryUrlWithParam = $targetPage->category->getFrontendUrl('/' . NewsCategories::getParameterName() . '/' . $category->alias);
+                    $target->categoryPage         = $targetPage->category;
+                }
+
+                if ($targetPage->news !== null)
+                {
+                    $target->newsUrl  = $targetPage->news->getFrontendUrl();
+                    $target->newsPage = $targetPage->news;
+                }
+
+                $targets[$news_archive] = $target;
+            }
+
+            $category->targets = $targets;
         }
 
         // Register a function to generate category URL manually
