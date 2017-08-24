@@ -15,7 +15,7 @@
 /**
  * Register the global save and delete callbacks
  */
-$GLOBALS['TL_DCA']['tl_news']['config']['onload_callback'][] = array('tl_news_categories', 'setAllowedCategories');
+$GLOBALS['TL_DCA']['tl_news']['config']['onload_callback'][]   = array('tl_news_categories', 'setAllowedCategories');
 $GLOBALS['TL_DCA']['tl_news']['config']['onsubmit_callback'][] = array('tl_news_categories', 'updateCategories');
 $GLOBALS['TL_DCA']['tl_news']['config']['ondelete_callback'][] = array('tl_news_categories', 'deleteCategories');
 
@@ -29,13 +29,13 @@ $GLOBALS['TL_DCA']['tl_news']['palettes']['default'] = str_replace('{date_legend
  */
 $GLOBALS['TL_DCA']['tl_news']['fields']['categories'] = array
 (
-    'label'                   => &$GLOBALS['TL_LANG']['tl_news']['categories'],
-    'exclude'                 => true,
-    'filter'                  => true,
-    'inputType'               => 'treePicker',
-    'foreignKey'              => 'tl_news_category.title',
-    'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox', 'foreignTable'=>'tl_news_category', 'titleField'=>'title', 'searchField'=>'title', 'managerHref'=>'do=news&table=tl_news_category'),
-    'sql'                     => "blob NULL"
+    'label'      => &$GLOBALS['TL_LANG']['tl_news']['categories'],
+    'exclude'    => true,
+    'filter'     => true,
+    'inputType'  => 'treePicker',
+    'foreignKey' => 'tl_news_category.title',
+    'eval'       => array('multiple' => true, 'fieldType' => 'checkbox', 'foreignTable' => 'tl_news_category', 'titleField' => 'title', 'searchField' => 'title', 'managerHref' => 'do=news&table=tl_news_category'),
+    'sql'        => "blob NULL",
 );
 
 $GLOBALS['TL_DCA']['tl_news']['fields']['primaryCategory'] = array
@@ -60,17 +60,18 @@ class tl_news_categories extends Backend
 
     /**
      * Set the allowed categories
+     *
      * @param DataContainer
      */
-    public function setAllowedCategories($dc=null)
+    public function setAllowedCategories($dc = null)
     {
         if (!$dc->id) {
             return;
         }
 
         $objArchive = $this->Database->prepare("SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=(SELECT pid FROM tl_news WHERE id=?)")
-                                     ->limit(1)
-                                     ->execute($dc->id);
+            ->limit(1)
+            ->execute($dc->id);
 
         if (!$objArchive->numRows) {
             return;
@@ -87,6 +88,7 @@ class tl_news_categories extends Backend
 
     /**
      * Update the category relations
+     *
      * @param DataContainer
      */
     public function updateCategories(DataContainer $dc)
@@ -110,21 +112,34 @@ class tl_news_categories extends Backend
         if (is_array($arrCategories) && !empty($arrCategories)) {
             foreach ($arrCategories as $intCategory) {
                 $this->Database->prepare("INSERT INTO tl_news_categories (category_id, news_id) VALUES (?, ?)")
-                               ->execute($intCategory, $dc->id);
+                    ->execute($intCategory, $dc->id);
             }
 
             $this->Database->prepare("UPDATE tl_news SET categories=? WHERE id=?")
-                           ->execute(serialize($arrCategories), $dc->id);
+                ->execute(serialize($arrCategories), $dc->id);
+        }
+
+        // add primary category
+        if ($dc->activeRecord->primaryCategory > 0) {
+            
+            // already added before
+            if (is_array($arrCategories) && !empty($arrCategories) && in_array($dc->activeRecord->primaryCategory, $arrCategories)) {
+                return;
+            }
+
+            $this->Database->prepare("INSERT INTO tl_news_categories (category_id, news_id) VALUES (?, ?)")
+                ->execute($dc->activeRecord->primaryCategory, $dc->id);
         }
     }
 
     /**
      * Delete the category relations
+     *
      * @param DataContainer
      */
     public function deleteCategories(DataContainer $dc)
     {
         $this->Database->prepare("DELETE FROM tl_news_categories WHERE news_id=?")
-                       ->execute($dc->id);
+            ->execute($dc->id);
     }
 }
