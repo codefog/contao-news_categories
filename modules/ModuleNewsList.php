@@ -22,9 +22,13 @@ use Contao\Database;
  * Dynamic parent class
  */
 if (class_exists('\news_sorted\ModuleNewsList')) {
-    class ParentModuleNewsList extends \news_sorted\ModuleNewsList {}
+    class ParentModuleNewsList extends \news_sorted\ModuleNewsList
+    {
+    }
 } else {
-    class ParentModuleNewsList extends \Contao\ModuleNewsList {}
+    class ParentModuleNewsList extends \Contao\ModuleNewsList
+    {
+    }
 }
 
 
@@ -53,6 +57,7 @@ class ModuleNewsList extends ParentModuleNewsList
         $GLOBALS['NEWS_FILTER_CATEGORIES'] = $this->news_filterCategories ? true : false;
         $GLOBALS['NEWS_FILTER_DEFAULT']    = deserialize($this->news_filterDefault, true);
         $GLOBALS['NEWS_FILTER_PRESERVE']   = $this->news_filterPreserve;
+        $GLOBALS['NEWS_FILTER_PRIMARY']    = $this->news_filterPrimaryCategory;
 
         $buffer = parent::generate();
 

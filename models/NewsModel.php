@@ -23,6 +23,7 @@ class NewsModel extends \Contao\NewsModel
 
     /**
      * Get the categories cache and return it as array
+     *
      * @return array
      */
     public static function getCategoriesCache()
@@ -30,7 +31,7 @@ class NewsModel extends \Contao\NewsModel
         static $arrCache;
 
         if (!is_array($arrCache)) {
-            $arrCache = array();
+            $arrCache      = array();
             $objCategories = \Database::getInstance()->execute("SELECT * FROM tl_news_categories");
             $arrCategories = array();
 
@@ -51,7 +52,9 @@ class NewsModel extends \Contao\NewsModel
 
     /**
      * Filter the news by categories
+     *
      * @param array
+     *
      * @return array
      */
     protected static function filterByCategories($arrColumns)
@@ -79,28 +82,34 @@ class NewsModel extends \Contao\NewsModel
                     $strKey = 'category_default';
                 }
 
-                $arrColumns[$strKey] = "$t.id IN (" . implode(',', (empty($arrIds) ? array(0) : array_unique($arrIds))) . ")";
+                $strQuery = "$t.id IN (".implode(',', (empty($arrIds) ? array(0) : array_unique($arrIds))).")";
+
+                if ($GLOBALS['NEWS_FILTER_PRIMARY']) {
+                    $strQuery .= " AND $t.primaryCategory IN (".implode(',', $GLOBALS['NEWS_FILTER_DEFAULT']).")";
+                }
+
+                $arrColumns[$strKey] = $strQuery;
             }
         }
 
         // Exclude particular news items
         if (is_array($GLOBALS['NEWS_FILTER_EXCLUDE']) && !empty($GLOBALS['NEWS_FILTER_EXCLUDE'])) {
-            $arrColumns[] = "$t.id NOT IN (" . implode(',', array_map('intval', $GLOBALS['NEWS_FILTER_EXCLUDE'])) . ")";
+            $arrColumns[] = "$t.id NOT IN (".implode(',', array_map('intval', $GLOBALS['NEWS_FILTER_EXCLUDE'])).")";
         }
 
         $strParam = NewsCategories::getParameterName();
 
         // Try to find by category
         if ($GLOBALS['NEWS_FILTER_CATEGORIES'] && \Input::get($strParam)) {
-            $strClass = \NewsCategories\NewsCategories::getModelClass();
+            $strClass    = \NewsCategories\NewsCategories::getModelClass();
             $objCategory = $strClass::findPublishedByIdOrAlias(\Input::get($strParam));
 
             if ($objCategory === null) {
                 return null;
             }
 
-            $arrCategories = static::getCategoriesCache();
-            $arrColumns['category'] = "$t.id IN (" . implode(',', (empty($arrCategories[$objCategory->id]) ? array(0) : $arrCategories[$objCategory->id])) . ")";
+            $arrCategories          = static::getCategoriesCache();
+            $arrColumns['category'] = "$t.id IN (".implode(',', (empty($arrCategories[$objCategory->id]) ? array(0) : $arrCategories[$objCategory->id])).")";
         }
 
         return $arrColumns;
@@ -117,14 +126,14 @@ class NewsModel extends \Contao\NewsModel
      *
      * @return \Model\Collection|null A collection of models or null if there are no news
      */
-    public static function findPublishedByPids($arrPids, $blnFeatured=null, $intLimit=0, $intOffset=0, array $arrOptions=array())
+    public static function findPublishedByPids($arrPids, $blnFeatured = null, $intLimit = 0, $intOffset = 0, array $arrOptions = array())
     {
         if (!is_array($arrPids) || empty($arrPids)) {
             return null;
         }
 
-        $t = static::$strTable;
-        $arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
+        $t          = static::$strTable;
+        $arrColumns = array("$t.pid IN(".implode(',', array_map('intval', $arrPids)).")");
 
         if ($blnFeatured === true) {
             $arrColumns[] = "$t.featured=1";
@@ -133,7 +142,7 @@ class NewsModel extends \Contao\NewsModel
         }
 
         if (!BE_USER_LOGGED_IN) {
-            $time = time();
+            $time         = time();
             $arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
         }
 
@@ -141,7 +150,7 @@ class NewsModel extends \Contao\NewsModel
         $arrColumns = static::filterByCategories($arrColumns);
 
         if (!isset($arrOptions['order'])) {
-            $arrOptions['order']  = "$t.date DESC";
+            $arrOptions['order'] = "$t.date DESC";
         }
 
         $arrOptions['limit']  = $intLimit;
@@ -159,14 +168,14 @@ class NewsModel extends \Contao\NewsModel
      *
      * @return integer The number of news items
      */
-    public static function countPublishedByPids($arrPids, $blnFeatured=null, array $arrOptions=array())
+    public static function countPublishedByPids($arrPids, $blnFeatured = null, array $arrOptions = array())
     {
         if (!is_array($arrPids) || empty($arrPids)) {
             return 0;
         }
 
-        $t = static::$strTable;
-        $arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
+        $t          = static::$strTable;
+        $arrColumns = array("$t.pid IN(".implode(',', array_map('intval', $arrPids)).")");
 
         if ($blnFeatured === true) {
             $arrColumns[] = "$t.featured=1";
@@ -175,7 +184,7 @@ class NewsModel extends \Contao\NewsModel
         }
 
         if (!BE_USER_LOGGED_IN) {
-            $time = time();
+            $time         = time();
             $arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
         }
 
@@ -197,17 +206,17 @@ class NewsModel extends \Contao\NewsModel
      *
      * @return \Model\Collection|null A collection of models or null if there are no news
      */
-    public static function findPublishedFromToByPids($intFrom, $intTo, $arrPids, $intLimit=0, $intOffset=0, array $arrOptions=array())
+    public static function findPublishedFromToByPids($intFrom, $intTo, $arrPids, $intLimit = 0, $intOffset = 0, array $arrOptions = array())
     {
         if (!is_array($arrPids) || empty($arrPids)) {
             return null;
         }
 
-        $t = static::$strTable;
-        $arrColumns = array("$t.date>=? AND $t.date<=? AND $t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
+        $t          = static::$strTable;
+        $arrColumns = array("$t.date>=? AND $t.date<=? AND $t.pid IN(".implode(',', array_map('intval', $arrPids)).")");
 
         if (!BE_USER_LOGGED_IN) {
-            $time = time();
+            $time         = time();
             $arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
         }
 
@@ -215,7 +224,7 @@ class NewsModel extends \Contao\NewsModel
         $arrColumns = static::filterByCategories($arrColumns);
 
         if (!isset($arrOptions['order'])) {
-            $arrOptions['order']  = "$t.date DESC";
+            $arrOptions['order'] = "$t.date DESC";
         }
 
         $arrOptions['limit']  = $intLimit;
@@ -234,17 +243,17 @@ class NewsModel extends \Contao\NewsModel
      *
      * @return integer The number of news items
      */
-    public static function countPublishedFromToByPids($intFrom, $intTo, $arrPids, array $arrOptions=array())
+    public static function countPublishedFromToByPids($intFrom, $intTo, $arrPids, array $arrOptions = array())
     {
         if (!is_array($arrPids) || empty($arrPids)) {
             return 0;
         }
 
-        $t = static::$strTable;
-        $arrColumns = array("$t.date>=? AND $t.date<=? AND $t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
+        $t          = static::$strTable;
+        $arrColumns = array("$t.date>=? AND $t.date<=? AND $t.pid IN(".implode(',', array_map('intval', $arrPids)).")");
 
         if (!BE_USER_LOGGED_IN) {
-            $time = time();
+            $time         = time();
             $arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
         }
 
@@ -263,17 +272,17 @@ class NewsModel extends \Contao\NewsModel
      *
      * @return integer The number of news items
      */
-    public static function countPublishedByCategoryAndPids($arrPids, $intCategory=null, array $arrOptions=array())
+    public static function countPublishedByCategoryAndPids($arrPids, $intCategory = null, array $arrOptions = array())
     {
         if (!is_array($arrPids) || empty($arrPids)) {
             return 0;
         }
 
-        $t = static::$strTable;
-        $arrColumns = array("$t.pid IN(" . implode(',', array_map('intval', $arrPids)) . ")");
+        $t          = static::$strTable;
+        $arrColumns = array("$t.pid IN(".implode(',', array_map('intval', $arrPids)).")");
 
         if (!BE_USER_LOGGED_IN) {
-            $time = time();
+            $time         = time();
             $arrColumns[] = "($t.start='' OR $t.start<$time) AND ($t.stop='' OR $t.stop>$time) AND $t.published=1";
         }
 
@@ -282,7 +291,7 @@ class NewsModel extends \Contao\NewsModel
             $arrCategories = static::getCategoriesCache();
 
             if ($arrCategories[$intCategory]) {
-                $arrColumns[] = "$t.id IN (" . implode(',', $arrCategories[$intCategory]) . ")";
+                $arrColumns[] = "$t.id IN (".implode(',', $arrCategories[$intCategory]).")";
             } else {
                 $arrColumns[] = "$t.id=0";
             }
