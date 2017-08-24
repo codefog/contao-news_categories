@@ -14,6 +14,8 @@
 
 namespace NewsCategories;
 
+use Symfony\Component\Stopwatch\Stopwatch;
+
 /**
  * Provide methods regarding news archives
  */
@@ -24,30 +26,34 @@ class News extends \Contao\News
         $categories = deserialize($objItem->categories, true);
 
         // overwrite news url with news category news item jumpTo for primary news category
-        if ($objItem->source == 'default')
-        {
-            $objCategory = null;
+        if ($objItem->source == 'default') {
+            $tree = null;
 
-            if ($objItem->primaryCategory > 0 && ($tree = CategoryHelper::getCategoryTree($objItem->primaryCategory, 0)) !== null)
-            {
-                $objCategory = CategoryHelper::prepareCategory($tree[0]);
-            }
-            else if (count($categories) > 0 && ($objAllCategories = NewsCategoryModel::findPublishedByIds($categories)) !== null)
-            {
-                $objCategory = CategoryHelper::prepareCategory($tree[0]);
+            // set from primary category
+            if ($objItem->primaryCategory > 0) {
+                $tree = CategoryHelper::getCategoryTree($objItem->primaryCategory, 0);
+            } // use first category as primary if not more than 1 category isset
+            else {
+                if (count($categories) === 1) {
+                    $tree = CategoryHelper::getCategoryTree($categories[0], 0);
+                }
             }
 
-            if ($objCategory === null || !is_array($objCategory->newsTargets) || !isset($objCategory->newsTargets[$objItem->pid]))
-            {
+            if ($tree === null) {
                 return parent::getLink($objItem, $strUrl, $strBase);
             }
 
-            if ($objCategory->newsTargets[$objItem->pid]->categoryNewsPage !== null)
-            {
+            $objCategory = CategoryHelper::prepareCategory($tree[0]);
+
+            if ($objCategory === null || !is_array($objCategory->newsTargets) || !isset($objCategory->newsTargets[$objItem->pid])) {
+                return parent::getLink($objItem, $strUrl, $strBase);
+            }
+
+            if ($objCategory->newsTargets[$objItem->pid]->categoryNewsPage !== null) {
                 return ampersand(
                     $objCategory->newsTargets[$objItem->pid]->categoryNewsPage->getFrontendUrl(
-                        ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/') . ((!\Config::get('disableAlias')
-                                                                                                               && $objItem->alias != '') ? $objItem->alias : $objItem->id)
+                        ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/').((!\Config::get('disableAlias')
+                                                                                                             && $objItem->alias != '') ? $objItem->alias : $objItem->id)
                     )
                 );
             }
@@ -67,8 +73,7 @@ class News extends \Contao\News
      */
     public function addCategoriesToTemplate(\FrontendTemplate $objTemplate, array $arrArticle, \Module $objModule)
     {
-        if (!isset($arrArticle['categories']))
-        {
+        if (!isset($arrArticle['categories'])) {
             return;
         }
 
@@ -78,43 +83,60 @@ class News extends \Contao\News
         $arrCategoriesList = [];
         $categories        = deserialize($arrArticle['categories'], true);
 
-        if ($this->article->primaryCategory > 0 && ($tree = CategoryHelper::getCategoryTree($arrArticle['primaryCategory'], 0)) !== null)
-        {
+        if ($arrArticle['primaryCategory'] > 0 && ($tree = CategoryHelper::getCategoryTree($arrArticle['primaryCategory'], 0)) !== null) {
             $set->primary = CategoryHelper::prepareCategory($tree[0]);
         }
 
-        if (count($categories) > 0 && ($objAllCategories = NewsCategoryModel::findPublishedByIds($categories)) !== null)
-        {
+        if (count($categories) > 0 && ($objAllCategories = NewsCategoryModel::findPublishedByIds($categories)) !== null) {
             $all = [];
 
-            foreach ($objAllCategories as $objCategory)
-            {
+            foreach ($objAllCategories as $objCategory) {
                 // set first category as primary category
-                if (!$set->primary && ($tree = CategoryHelper::getCategoryTree($arrArticle['primaryCategory'], 0)) !== null)
-                {
+                if (!$set->primary && count($categories) === 1 && ($tree = CategoryHelper::getCategoryTree($categories[0], 0)) !== null) {
                     $set->primary = CategoryHelper::prepareCategory($tree[0]);
                 }
 
                 // Skip the category in news list or archive module
-                if (($objModule instanceof \ModuleNewsList || $objModule instanceof \ModuleNewsArchive) && $objCategory->hideInList)
-                {
+                if (($objModule instanceof \ModuleNewsList || $objModule instanceof \ModuleNewsArchive) && $objCategory->hideInList) {
                     continue;
                 }
 
                 // Skip the category in the news reader module
-                if ($objModule instanceof \ModuleNewsReader && $objCategory->hideInReader)
-                {
+                if ($objModule instanceof \ModuleNewsReader && $objCategory->hideInReader) {
                     continue;
                 }
 
                 $category = CategoryHelper::prepareCategory($objCategory);
 
                 $all[]                               = $category;
-                $arrCategories[$objCategory->id]     = (array) $category;
+                $arrCategories[$objCategory->id]     = (array)$category;
                 $arrCategoriesList[$objCategory->id] = $category->name;
             }
 
             $set->categories = $all;
+        }
+
+        if ($set->primary) {
+            $objTemplate->hasPrimaryCategory  = true;
+            $objTemplate->primaryCategory     = $set->primary;
+            $objTemplate->primaryCategoryName = $set->primary->name;
+            $objTemplate->primaryCategoryHref = $set->primary->href;
+
+            if (is_array($set->primary->newsTargets) && isset($set->primary->newsTargets[$arrArticle['pid']])) {
+                $objTemplate->primaryCategoryHref = $set->primary->newsTargets[$arrArticle['pid']]->categoryNewsHref;
+            }
+
+
+            if ($set->primary->parent) {
+                $objTemplate->hasPrimaryParentCategory  = true;
+                $objTemplate->primaryParentCategory     = $set->primary->parent;
+                $objTemplate->primaryParentCategoryName = $set->primary->parent->name;
+                $objTemplate->primaryParentCategoryHref = $set->primary->parent->href;
+
+                if (is_array($set->primary->parent->newsTargets) && isset($set->primary->parent->newsTargets[$arrArticle['pid']])) {
+                    $objTemplate->primaryParentCategoryHref = $set->primary->parent->newsTargets[$arrArticle['pid']]->categoryNewsHref;
+                }
+            }
         }
 
         // Sort the category list alphabetically
@@ -133,16 +155,14 @@ class News extends \Contao\News
         $objTemplate->categoriesTree = $set;
 
         // news category jump to override?
-        if ($arrArticle['source'] == 'default' && ($objTemplate->categoriesTree->primary) !== null && isset($objTemplate->categoriesTree->primary->newsTargets[$arrArticle['pid']]))
-        {
+        if ($arrArticle['source'] == 'default' && ($objTemplate->categoriesTree->primary) !== null && isset($objTemplate->categoriesTree->primary->newsTargets[$arrArticle['pid']])) {
             $target = $objTemplate->categoriesTree->primary->newsTargets[$arrArticle['pid']];
 
-            if ($target->newsPage !== null)
-            {
-                $link = $target->newsPage->getFrontendUrl(
-                    ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/') . ((!\Config::get('disableAlias')
-                                                                                                           && $arrArticle['alias']
-                                                                                                              != '') ? $arrArticle['alias'] : $arrArticle['id'])
+            if ($target->categoryNewsPage !== null) {
+                $link = $target->categoryNewsPage->getFrontendUrl(
+                    ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/').((!\Config::get('disableAlias')
+                                                                                                         && $arrArticle['alias']
+                                                                                                            != '') ? $arrArticle['alias'] : $arrArticle['id'])
                 );
 
                 $objTemplate->linkHeadline = str_replace($objTemplate->link, $link, $objTemplate->linkHeadline);
@@ -163,13 +183,11 @@ class News extends \Contao\News
     {
         $chunks = trimsplit('::', $tag);
 
-        if ($chunks[0] === 'news_categories')
-        {
+        if ($chunks[0] === 'news_categories') {
             $className = \NewsCategories\NewsCategories::getModelClass();
             $param     = NewsCategories::getParameterName();
 
-            if (($newsModel = $className::findPublishedByIdOrAlias(\Input::get($param))) !== null)
-            {
+            if (($newsModel = $className::findPublishedByIdOrAlias(\Input::get($param))) !== null) {
                 return $newsModel->{$chunks[1]};
             }
         }
@@ -186,8 +204,7 @@ class News extends \Contao\News
     {
         $arrArchives = deserialize($arrFeed['archives']);
 
-        if (!is_array($arrArchives) || empty($arrArchives))
-        {
+        if (!is_array($arrArchives) || empty($arrArchives)) {
             return;
         }
 
@@ -205,70 +222,54 @@ class News extends \Contao\News
         $arrCategories = deserialize($arrFeed['categories']);
 
         // Filter by categories
-        if (is_array($arrCategories) && !empty($arrCategories))
-        {
+        if (is_array($arrCategories) && !empty($arrCategories)) {
             $GLOBALS['NEWS_FILTER_CATEGORIES'] = true;
             $GLOBALS['NEWS_FILTER_DEFAULT']    = $arrCategories;
-        }
-        else
-        {
+        } else {
             $GLOBALS['NEWS_FILTER_CATEGORIES'] = false;
         }
 
         // Get the items
-        if ($arrFeed['maxItems'] > 0)
-        {
+        if ($arrFeed['maxItems'] > 0) {
             $objArticle = \NewsModel::findPublishedByPids($arrArchives, null, $arrFeed['maxItems']);
-        }
-        else
-        {
+        } else {
             $objArticle = \NewsModel::findPublishedByPids($arrArchives);
         }
 
         // Parse the items
-        if ($objArticle !== null)
-        {
+        if ($objArticle !== null) {
             $arrUrls = [];
 
-            while ($objArticle->next())
-            {
+            while ($objArticle->next()) {
                 $jumpTo = $objArticle->getRelated('pid')->jumpTo;
 
                 // No jumpTo page set (see #4784)
-                if (!$jumpTo)
-                {
+                if (!$jumpTo) {
                     continue;
                 }
 
                 // Get the jumpTo URL
-                if (!isset($arrUrls[$jumpTo]))
-                {
+                if (!isset($arrUrls[$jumpTo])) {
                     $objParent = \PageModel::findWithDetails($jumpTo);
 
                     // A jumpTo page is set but does no longer exist (see #5781)
-                    if ($objParent === null)
-                    {
+                    if ($objParent === null) {
                         $arrUrls[$jumpTo] = false;
-                    }
-                    else
-                    {
+                    } else {
                         $arrUrls[$jumpTo] = $objParent->getAbsoluteUrl((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s');
                     }
                 }
 
                 // Skip the event if it requires a jumpTo URL but there is none
-                if ($arrUrls[$jumpTo] === false && $objArticle->source == 'default')
-                {
+                if ($arrUrls[$jumpTo] === false && $objArticle->source == 'default') {
                     continue;
                 }
 
                 // Get the categories
-                if ($arrFeed['categories_show'])
-                {
+                if ($arrFeed['categories_show']) {
                     $arrCategories = [];
 
-                    if (($objCategories = NewsCategoryModel::findPublishedByIds(deserialize($objArticle->categories, true))) !== null)
-                    {
+                    if (($objCategories = NewsCategoryModel::findPublishedByIds(deserialize($objArticle->categories, true))) !== null) {
                         $arrCategories = $objCategories->fetchEach('title');
                     }
                 }
@@ -277,12 +278,9 @@ class News extends \Contao\News
                 $objItem = new \FeedItem();
 
                 // Add the categories to the title
-                if ($arrFeed['categories_show'] == 'title')
-                {
+                if ($arrFeed['categories_show'] == 'title') {
                     $objItem->title = sprintf('[%s] %s', implode(', ', $arrCategories), $objArticle->headline);
-                }
-                else
-                {
+                } else {
                     $objItem->title = $objArticle->headline;
                 }
 
@@ -291,41 +289,32 @@ class News extends \Contao\News
                 $objItem->author    = $objArticle->authorName;
 
                 // Prepare the description
-                if ($arrFeed['source'] == 'source_text')
-                {
+                if ($arrFeed['source'] == 'source_text') {
                     $strDescription = '';
                     $objElement     = \ContentModel::findPublishedByPidAndTable($objArticle->id, 'tl_news');
 
-                    if ($objElement !== null)
-                    {
+                    if ($objElement !== null) {
                         // Overwrite the request (see #7756)
                         $strRequest = \Environment::get('request');
                         \Environment::set('request', $objItem->link);
 
-                        while ($objElement->next())
-                        {
+                        while ($objElement->next()) {
                             $strDescription .= $this->getContentElement($objElement->current());
                         }
 
                         \Environment::set('request', $strRequest);
                     }
-                }
-                else
-                {
+                } else {
                     $strDescription = $objArticle->teaser;
                 }
 
                 // Add the categories to the description
-                if ($arrFeed['categories_show'] == 'text_before' || $arrFeed['categories_show'] == 'text_after')
-                {
-                    $strCategories = '<p>' . $GLOBALS['TL_LANG']['MSC']['newsCategories'] . ' ' . implode(', ', $arrCategories) . '</p>';
+                if ($arrFeed['categories_show'] == 'text_before' || $arrFeed['categories_show'] == 'text_after') {
+                    $strCategories = '<p>'.$GLOBALS['TL_LANG']['MSC']['newsCategories'].' '.implode(', ', $arrCategories).'</p>';
 
-                    if ($arrFeed['categories_show'] == 'text_before')
-                    {
-                        $strDescription = $strCategories . $strDescription;
-                    }
-                    else
-                    {
+                    if ($arrFeed['categories_show'] == 'text_before') {
+                        $strDescription = $strCategories.$strDescription;
+                    } else {
                         $strDescription .= $strCategories;
                     }
                 }
@@ -334,29 +323,23 @@ class News extends \Contao\News
                 $objItem->description = $this->convertRelativeUrls($strDescription, $strLink);
 
                 // Add the article image as enclosure
-                if ($objArticle->addImage)
-                {
+                if ($objArticle->addImage) {
                     $objFile = \FilesModel::findByUuid($objArticle->singleSRC);
 
-                    if ($objFile !== null)
-                    {
+                    if ($objFile !== null) {
                         $objItem->addEnclosure($objFile->path, $strLink);
                     }
                 }
 
                 // Enclosures
-                if ($objArticle->addEnclosure)
-                {
+                if ($objArticle->addEnclosure) {
                     $arrEnclosure = deserialize($objArticle->enclosure, true);
 
-                    if (is_array($arrEnclosure))
-                    {
+                    if (is_array($arrEnclosure)) {
                         $objFile = \FilesModel::findMultipleByUuids($arrEnclosure);
 
-                        if ($objFile !== null)
-                        {
-                            while ($objFile->next())
-                            {
+                        if ($objFile !== null) {
+                            while ($objFile->next()) {
                                 $objItem->addEnclosure($objFile->path, $strLink);
                             }
                         }
@@ -368,13 +351,10 @@ class News extends \Contao\News
         }
 
         // Create the file
-        if (class_exists('Contao\CoreBundle\ContaoCoreBundle'))
-        {
-            \File::putContent('web/share/' . $strFile . '.xml', $this->replaceInsertTags($objFeed->$strType(), false));
-        }
-        else
-        {
-            \File::putContent('share/' . $strFile . '.xml', $this->replaceInsertTags($objFeed->$strType(), false));
+        if (class_exists('Contao\CoreBundle\ContaoCoreBundle')) {
+            \File::putContent('web/share/'.$strFile.'.xml', $this->replaceInsertTags($objFeed->$strType(), false));
+        } else {
+            \File::putContent('share/'.$strFile.'.xml', $this->replaceInsertTags($objFeed->$strType(), false));
         }
     }
 }

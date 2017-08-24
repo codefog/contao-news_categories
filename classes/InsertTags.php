@@ -40,8 +40,7 @@ class InsertTags extends News
     {
         $elements = explode('::', $strTag);
 
-        if (in_array($elements[0], $this->supportedTags, true))
-        {
+        if (in_array($elements[0], $this->supportedTags, true)) {
             return $this->replaceNewsInsertTags($elements[0], $elements[1]);
         }
 
@@ -59,8 +58,7 @@ class InsertTags extends News
      */
     private function replaceNewsInsertTags($insertTag, $idOrAlias)
     {
-        if (null === ($news = \NewsModel::findByIdOrAlias($idOrAlias)))
-        {
+        if (null === ($news = \NewsModel::findByIdOrAlias($idOrAlias))) {
             return '';
         }
 
@@ -77,13 +75,11 @@ class InsertTags extends News
      */
     private function generateReplacement($news, $insertTag)
     {
-        switch ($insertTag)
-        {
+        switch ($insertTag) {
             case 'news_category_link':
 
-                if (($strUrl = $this->getNewsUrl($news)) === null)
-                {
-                    return '';
+                if ($news->source !== 'default' || ($strUrl = $this->getNewsUrl($news)) === null) {
+                    return \Controller::replaceInsertTags('{{news::'.$news->id.'}}', false);
                 }
 
                 return sprintf(
@@ -95,9 +91,8 @@ class InsertTags extends News
 
             case 'news_category_link_open':
 
-                if (($strUrl = $this->getNewsUrl($news)) === null)
-                {
-                    return '';
+                if ($news->source !== 'default' || ($strUrl = $this->getNewsUrl($news)) === null) {
+                    return \Controller::replaceInsertTags('{{news_open::'.$news->id.'}}', false);
                 }
 
                 return sprintf(
@@ -108,9 +103,8 @@ class InsertTags extends News
 
             case 'news_category_url':
 
-                if (($strUrl = $this->getNewsUrl($news)) === null)
-                {
-                    return '';
+                if ($news->source !== 'default' || ($strUrl = $this->getNewsUrl($news)) === null) {
+                    return \Controller::replaceInsertTags('{{news_url::'.$news->id.'}}', false);
                 }
 
                 return $this->getLink($news, $strUrl);
@@ -128,32 +122,25 @@ class InsertTags extends News
      */
     private function getNewsUrl($news)
     {
-        /** @var \PageModel $objPage */
-        $objPage = $news->getRelated('pid');
+        /** @var \NewsArchiveModel $objPage */
+        $archive = $news->getRelated('pid');
 
-        $jumpTo = $objPage->jumpTo;
+        $jumpTo = $archive->jumpTo;
 
-        // No jumpTo page set (see #4784)
-        if (!$jumpTo)
-        {
+        // No jumpTo page set
+        if (!$jumpTo) {
             return null;
         }
 
-        $objParent = \PageModel::findWithDetails($jumpTo);
-
-        // A jumpTo page is set but does no longer exist (see #5781)
-        if ($objParent === null)
-        {
+        // A jumpTo page is set but does no longer exist
+        if (($objParent = \PageModel::findWithDetails($jumpTo)) === null) {
             $strUrl = false;
-        }
-        else
-        {
-            $strUrl = $objParent->getAbsoluteUrl((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s');
+        } else {
+            $strUrl = ampersand($objParent->getFrontendUrl((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s'));
         }
 
-        // Skip the event if it requires a jumpTo URL but there is none
-        if ($strUrl === false && $news->source == 'default')
-        {
+        // return if it requires a jumpTo URL but there is none
+        if ($strUrl === false) {
             return null;
         }
 

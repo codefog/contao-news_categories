@@ -194,7 +194,7 @@ class NewsCategoryModel extends \Model
      * @param integer $intPid The parent ID
      * @param array   $arrIds An array of categories
      *
-     * @return \Model|null The NewsModelCategpry or null if there are no categories
+     * @return @return Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null A collection of models or null if there are no categories
      */
     public static function findPublishedByPidAndIds($intPid, $arrIds)
     {
