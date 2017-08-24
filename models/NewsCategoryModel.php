@@ -78,9 +78,9 @@ class NewsCategoryModel extends \Model
      *
      * @return array|null
      */
-    public function getTargetPages()
+    public function getNewsTargetPages()
     {
-        if (($references = FieldPaletteModel::findPublishedByPidAndTableAndField($this->id, 'tl_news_category', 'jumpTo')) === null)
+        if (($references = FieldPaletteModel::findPublishedByPidAndTableAndField($this->id, 'tl_news_category', 'jumpToNews')) === null)
         {
             return null;
         }

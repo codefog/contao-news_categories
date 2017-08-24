@@ -37,15 +37,15 @@ class News extends \Contao\News
                 $objCategory = CategoryHelper::prepareCategory($tree[0]);
             }
 
-            if ($objCategory === null)
+            if ($objCategory === null || !is_array($objCategory->newsTargets) || !isset($objCategory->newsTargets[$objItem->pid]))
             {
                 return parent::getLink($objItem, $strUrl, $strBase);
             }
 
-            if (($objPage = \PageModel::findByPk($objCategory->jumpToDetails)) !== null)
+            if ($objCategory->newsTargets[$objItem->pid]->categoryNewsPage !== null)
             {
                 return ampersand(
-                    $objPage->getFrontendUrl(
+                    $objCategory->newsTargets[$objItem->pid]->categoryNewsPage->getFrontendUrl(
                         ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/') . ((!\Config::get('disableAlias')
                                                                                                                && $objItem->alias != '') ? $objItem->alias : $objItem->id)
                     )
@@ -133,9 +133,9 @@ class News extends \Contao\News
         $objTemplate->categoriesTree = $set;
 
         // news category jump to override?
-        if ($arrArticle['source'] == 'default' && ($objTemplate->categoriesTree->primary) !== null && isset($objTemplate->categoriesTree->primary->targets[$arrArticle['pid']]))
+        if ($arrArticle['source'] == 'default' && ($objTemplate->categoriesTree->primary) !== null && isset($objTemplate->categoriesTree->primary->newsTargets[$arrArticle['pid']]))
         {
-            $target = $objTemplate->categoriesTree->primary->targets[$arrArticle['pid']];
+            $target = $objTemplate->categoriesTree->primary->newsTargets[$arrArticle['pid']];
 
             if ($target->newsPage !== null)
             {

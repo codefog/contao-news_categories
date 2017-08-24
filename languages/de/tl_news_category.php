@@ -27,8 +27,10 @@ $GLOBALS['TL_LANG']['tl_news_category']['hideInReader']               =
     ['Im Leser-Modul verstecken', 'Zeigt diese Kategorie nicht im Nachrichtenleser-Modul an (wirkt sich nur auf die <em>news_</em> Templates aus).'];
 $GLOBALS['TL_LANG']['tl_news_category']['excludeInRelated']           =
     ['Aus ähnlicher Nachrichtenliste ausschließen', 'Schließt die Nachrichten dieser Kategorie in der Nachrichten-Liste der ähnlichen Nachrichten aus.'];
-$GLOBALS['TL_LANG']['tl_news_category']['jumpTo']                     =
-    ['Weiterleitungs-Einstellungen', 'Konfigurieren Sie die Weiterleitungen für Kategorielink und Nachrichten dieser Kategorie.'];
+$GLOBALS['TL_LANG']['tl_news_category']['jumpTo']                    =
+    ['Weiterleitungsseite', 'Hier kann eine Seite ausgewählt werden, auf diese ein Besucher weitergeleitet wird wenn ein Kategorielink im Nachrichtentemplate angeklickt wird.'];
+$GLOBALS['TL_LANG']['tl_news_category']['jumpToNews']                     =
+    ['Weiterleitungs-Einstellungen für Nachrichten dieser Kategorie', 'Konfigurieren Sie die Weiterleitungen für Kategorielink und Nachrichten dieser Kategorie.'];
 $GLOBALS['TL_LANG']['tl_news_category']['news_category_news_archive'] = ['Nachrichtenarchiv', 'Wählen Sie ein Nachrichtenarchiv aus.'];
 $GLOBALS['TL_LANG']['tl_news_category']['news_category_jumpTo']       =
     ['Kategorie-Weiterleitung', 'Hier kann eine Seite ausgewählt werden, auf diese ein Besucher weitergeleitet wird wenn ein Kategorielink im Nachrichtentemplate angeklickt wird.'];

@@ -112,7 +112,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
 
     // Palettes
     'palettes' => [
-        'default' => '{title_legend},title,alias,frontendTitle,cssClass;{modules_legend:hide},hideInList,hideInReader,excludeInRelated;{redirect_legend:hide},jumpTo,jumpToDetailsNote,jumpToDetails;{publish_legend},published',
+        'default' => '{title_legend},title,alias,frontendTitle,cssClass;{modules_legend:hide},hideInList,hideInReader,excludeInRelated;{redirect_legend:hide},jumpTo,jumpToNews;{publish_legend},published',
     ],
 
     // Fields
@@ -184,8 +184,16 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
             'eval'      => ['tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'jumpTo'           => [
-            'label'        => &$GLOBALS['TL_LANG']['tl_news_category']['jumpTo'],
+        'jumpTo'            => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_news_category']['jumpTo'],
+            'exclude'   => true,
+            'inputType' => 'pageTree',
+            'eval'      => ['fieldType' => 'radio'],
+            'sql'       => "int(10) unsigned NOT NULL default '0'",
+            'relation'  => ['type' => 'hasOne', 'load' => 'eager', 'table' => 'tl_page'],
+        ],
+        'jumpToNews'           => [
+            'label'        => &$GLOBALS['TL_LANG']['tl_news_category']['jumpToNews'],
             'exclude'      => true,
             'inputType'    => 'fieldpalette',
             'foreignKey'   => 'tl_fieldpalette.id',
