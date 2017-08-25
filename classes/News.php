@@ -52,7 +52,7 @@ class News extends \Contao\News
              */
             if (($categoryNewsPage = $category['newsTargets'][$objItem->pid]['categoryNewsPage']) !== null) {
                 return ampersand(
-                    $categoryNewsPage->getFrontendUrl(
+                    $categoryNewsPage->getAbsoluteUrl(
                         ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/').((!\Config::get('disableAlias')
                                                                                                              && $objItem->alias != '') ? $objItem->alias : $objItem->id)
                     )
