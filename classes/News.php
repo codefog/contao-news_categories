@@ -53,8 +53,8 @@ class News extends \Contao\News
             if (($categoryNewsPage = $category['newsTargets'][$objItem->pid]['categoryNewsPage']) !== null) {
                 return ampersand(
                     $categoryNewsPage->getAbsoluteUrl(
-                        ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/').((!\Config::get('disableAlias')
-                                                                                                             && $objItem->alias != '') ? $objItem->alias : $objItem->id)
+                        ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/') . ((!\Config::get('disableAlias')
+                            && $objItem->alias != '') ? $objItem->alias : $objItem->id)
                     )
                 );
             }
@@ -67,8 +67,8 @@ class News extends \Contao\News
      * Add the categories to the template
      *
      * @param \FrontendTemplate $objTemplate
-     * @param array             $arrArticle
-     * @param \Module           $objModule
+     * @param array $arrArticle
+     * @param \Module $objModule
      *
      * @return string|void
      */
@@ -85,7 +85,7 @@ class News extends \Contao\News
         $categories        = deserialize($arrArticle['categories'], true);
 
         if ($arrArticle['primaryCategory'] > 0 && ($tree = CategoryHelper::getCategoryTree($arrArticle['primaryCategory'], 0)) !== null) {
-            $set['primary'] = CategoryHelper::prepareCategory($tree[0]);
+            $set['primary'] = CategoryHelper::prepareCategory(current($tree));
         }
 
         if (count($categories) > 0 && ($objAllCategories = NewsCategoryModel::findPublishedByIds($categories)) !== null) {
@@ -94,7 +94,7 @@ class News extends \Contao\News
             foreach ($objAllCategories as $objCategory) {
                 // set first category as primary category
                 if (!$set['primary'] && count($categories) === 1 && ($tree = CategoryHelper::getCategoryTree($categories[0], 0)) !== null) {
-                    $set['primary'] = CategoryHelper::prepareCategory($tree[0]);
+                    $set['primary'] = CategoryHelper::prepareCategory(current($tree));
                 }
 
                 // Skip the category in news list or archive module
@@ -109,9 +109,9 @@ class News extends \Contao\News
 
                 $category = CategoryHelper::prepareCategory($objCategory);
 
-                $all[]                               = $category;
+                $all[$category['id']]                = $category;
                 $arrCategories[$objCategory->id]     = (array)$category;
-                $arrCategoriesList[$objCategory->id] = $category->name;
+                $arrCategoriesList[$objCategory->id] = $category['name'];
             }
 
             $set['categories'] = $all;
@@ -164,9 +164,9 @@ class News extends \Contao\News
              */
             if (($targetNewsPage = $target['categoryNewsPage']) !== null) {
                 $link = $targetNewsPage->getFrontendUrl(
-                    ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/').((!\Config::get('disableAlias')
-                                                                                                         && $arrArticle['alias']
-                                                                                                            != '') ? $arrArticle['alias'] : $arrArticle['id'])
+                    ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/') . ((!\Config::get('disableAlias')
+                        && $arrArticle['alias']
+                        != '') ? $arrArticle['alias'] : $arrArticle['id'])
                 );
 
                 $objTemplate->linkHeadline = str_replace($objTemplate->link, $link, $objTemplate->linkHeadline);
@@ -314,10 +314,10 @@ class News extends \Contao\News
 
                 // Add the categories to the description
                 if ($arrFeed['categories_show'] == 'text_before' || $arrFeed['categories_show'] == 'text_after') {
-                    $strCategories = '<p>'.$GLOBALS['TL_LANG']['MSC']['newsCategories'].' '.implode(', ', $arrCategories).'</p>';
+                    $strCategories = '<p>' . $GLOBALS['TL_LANG']['MSC']['newsCategories'] . ' ' . implode(', ', $arrCategories) . '</p>';
 
                     if ($arrFeed['categories_show'] == 'text_before') {
-                        $strDescription = $strCategories.$strDescription;
+                        $strDescription = $strCategories . $strDescription;
                     } else {
                         $strDescription .= $strCategories;
                     }
@@ -356,9 +356,9 @@ class News extends \Contao\News
 
         // Create the file
         if (class_exists('Contao\CoreBundle\ContaoCoreBundle')) {
-            \File::putContent('web/share/'.$strFile.'.xml', $this->replaceInsertTags($objFeed->$strType(), false));
+            \File::putContent('web/share/' . $strFile . '.xml', $this->replaceInsertTags($objFeed->$strType(), false));
         } else {
-            \File::putContent('share/'.$strFile.'.xml', $this->replaceInsertTags($objFeed->$strType(), false));
+            \File::putContent('share/' . $strFile . '.xml', $this->replaceInsertTags($objFeed->$strType(), false));
         }
     }
 }

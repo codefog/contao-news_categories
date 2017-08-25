@@ -91,11 +91,17 @@ class CategoryHelper
      *
      * @return array|null
      */
-    public static function getCategoryTree($intId, $max_level = null, $all = [])
+    public static function getCategoryTree($intId, $max_level = null, $all = [], $cacheKey = null)
     {
+        $count = count($all);
+
+        if ($count === 0) {
+            $cacheKey = $intId;
+        }
+
         // try to load from cache
-        if (isset(static::$treeCache[$intId]) && is_array(static::$treeCache[$intId]) && $max_level === null) {
-            return static::$treeCache[$intId];
+        if ($cacheKey !== null && isset(static::$treeCache[$cacheKey]) && ($max_level === null || $count >= $max_level)) {
+            return static::$treeCache[$cacheKey];
         }
 
         $category = NewsCategoryModel::findPublishedByIdOrAlias($intId);
@@ -104,29 +110,28 @@ class CategoryHelper
             return null;
         }
 
-        $count    = count($all);
         $category = $category->current();
 
         // store parent within current category
         if ($count > 0) {
-            $all[count($all) - 1]->parent = static::prepareCategory($category);
+            $all[key($all)]->parent = static::prepareCategory($category);
 
             if ($max_level !== null && $max_level <= $count) {
-                $tree                      = array_reverse($all);
-                static::$treeCache[$intId] = $tree;
+                $tree                         = array_reverse($all, true);
+                static::$treeCache[$cacheKey] = $tree;
                 return $tree;  // sort in reverse order (parent to children)
             }
         }
 
-        $all[] = $category;
+        $all[$category->id] = $category;
 
         // no more parent category
         if ((int)$category->pid === 0) {
-            $tree                      = array_reverse($all);
-            static::$treeCache[$intId] = $tree;
+            $tree                         = array_reverse($all, true);
+            static::$treeCache[$cacheKey] = $tree;
             return $tree;  // sort in reverse order (parent to children)
         }
 
-        return static::getCategoryTree($category->pid, $max_level, $all);
+        return static::getCategoryTree($category->pid, $max_level, $all, $cacheKey);
     }
 }
