@@ -50,7 +50,7 @@ foreach ($GLOBALS['TL_HOOKS']['getSearchablePages'] as &$arrCallback)
 {
     if ($arrCallback[0] == 'News' && $arrCallback[1] == 'getSearchablePages')
     {
-        $arrCallback = ['News', 'getSearchablePages'];
+        $arrCallback = ['NewsCategories\News', 'getSearchablePages'];
     }
 }
 

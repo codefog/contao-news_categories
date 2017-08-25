@@ -22,19 +22,19 @@ class CategoryHelper
      */
     public static function prepareCategory(NewsCategoryModel $objCategory)
     {
-        $category                = (object)$objCategory->row();
-        $category->name          = $category->frontendTitle ?: $category->title;
-        $category->class         = 'category_'.$category->id.($category->cssClass ? (' '.$category->cssClass) : '');
-        $category->linkTitle     = specialchars($category->frontendTitle ?: $category->title);
-        $category->href          = '';
-        $category->hrefWithParam = '';
-        $category->targetPage    = null;
+        $category                  = $objCategory->row();
+        $category['name']          = $category['frontendTitle'] ?: $category['title'];
+        $category['class']         = 'category_'.$category->id.($category['cssClass'] ? (' '.$category['cssClass']) : '');
+        $category['linkTitle']     = specialchars($category['name']);
+        $category['href']          = '';
+        $category['hrefWithParam'] = '';
+        $category['targetPage']    = null;
 
         // Add the target page
         if (($targetPage = $objCategory->getTargetPage()) !== null) {
-            $category->href          = $targetPage->getFrontendUrl();
-            $category->hrefWithParam = $targetPage->getFrontendUrl('/'.NewsCategories::getParameterName().'/'.$category->alias);
-            $category->targetPage    = $targetPage;
+            $category['href']          = $targetPage->getFrontendUrl();
+            $category['hrefWithParam'] = $targetPage->getFrontendUrl('/'.NewsCategories::getParameterName().'/'.$category['alias']);
+            $category['targetPage']    = $targetPage;
         }
 
         // Add the news target page
@@ -42,35 +42,41 @@ class CategoryHelper
             $targets = [];
 
             foreach ($targetPages as $news_archive => $targetPage) {
-                if ($targetPage->category === null && $targetPage->news === null) {
+                if ($targetPage['category'] === null && $targetPage['news'] === null) {
                     continue;
                 }
 
-                $target = new \stdClass();
+                $target = [];
 
-                if ($targetPage->category !== null) {
-                    $target->categoryHref          = $targetPage->category->getFrontendUrl();
-                    $target->categoryHrefWithParam = $targetPage->category->getFrontendUrl('/'.NewsCategories::getParameterName().'/'.$category->alias);
-                    $target->categoryPage          = $targetPage->category;
+                /**
+                 * @var \PageModel $targetCategoryPage
+                 */
+                if (($targetCategoryPage = $targetPage['category']) !== null) {
+                    $target['categoryHref']          = $targetCategoryPage->getFrontendUrl();
+                    $target['categoryHrefWithParam'] = $targetCategoryPage->getFrontendUrl('/'.NewsCategories::getParameterName().'/'.$category['alias']);
+                    $target['categoryPage']          = $targetCategoryPage;
                 }
 
-                if ($targetPage->news !== null) {
-                    $target->categoryNewsHref = $targetPage->news->getFrontendUrl();
-                    $target->categoryNewsPage = $targetPage->news;
+                /**
+                 * @var \PageModel $targetNewsPage
+                 */
+                if (($targetNewsPage = $targetPage['news']) !== null) {
+                    $target['categoryNewsHref'] = $targetNewsPage->getFrontendUrl();
+                    $target['categoryNewsPage'] = $targetNewsPage;
                 }
 
                 $targets[$news_archive] = $target;
             }
 
-            $category->newsTargets = $targets;
+            $category['newsTargets'] = $targets;
         }
 
         // Register a function to generate category URL manually
-        $category->getUrl = function (\PageModel $page) use ($category) {
-            return $category->getUrl($page);
+        $category['getUrl'] = function (\PageModel $page) use ($objCategory) {
+            return $objCategory->getUrl($page);
         };
 
-        $category->tree = CategoryHelper::getCategoryTree($objCategory->id);
+        $category['tree'] = CategoryHelper::getCategoryTree($category['id']);
 
         return $category;
     }

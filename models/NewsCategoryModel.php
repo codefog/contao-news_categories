@@ -89,16 +89,16 @@ class NewsCategoryModel extends \Model
 
         while ($references->next())
         {
-            $target = new \stdClass();
+            $target = [];
 
             if ($references->news_category_jumpTo > 0)
             {
-                $target->category = \PageModel::findByPk($references->news_category_jumpTo);
+                $target['category'] = \PageModel::findByPk($references->news_category_jumpTo);
             }
 
             if ($references->news_category_news_jumpTo > 0)
             {
-                $target->news = \PageModel::findByPk($references->news_category_news_jumpTo);
+                $target['news'] = \PageModel::findByPk($references->news_category_news_jumpTo);
             }
 
             $pages[$references->news_category_news_archive] = $target;

@@ -14,8 +14,6 @@
 
 namespace NewsCategories;
 
-use Symfony\Component\Stopwatch\Stopwatch;
-
 /**
  * Provide methods regarding news archives
  */
@@ -43,15 +41,18 @@ class News extends \Contao\News
                 return parent::getLink($objItem, $strUrl, $strBase);
             }
 
-            $objCategory = CategoryHelper::prepareCategory($tree[0]);
+            $category = CategoryHelper::prepareCategory($tree[0]);
 
-            if ($objCategory === null || !is_array($objCategory->newsTargets) || !isset($objCategory->newsTargets[$objItem->pid])) {
+            if ($category === null || !is_array($category['newsTargets']) || !isset($category['newsTargets'][$objItem->pid])) {
                 return parent::getLink($objItem, $strUrl, $strBase);
             }
 
-            if ($objCategory->newsTargets[$objItem->pid]->categoryNewsPage !== null) {
+            /**
+             * @var \PageModel $categoryNewsPage
+             */
+            if (($categoryNewsPage = $category['newsTargets'][$objItem->pid]['categoryNewsPage']) !== null) {
                 return ampersand(
-                    $objCategory->newsTargets[$objItem->pid]->categoryNewsPage->getFrontendUrl(
+                    $categoryNewsPage->getFrontendUrl(
                         ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/').((!\Config::get('disableAlias')
                                                                                                              && $objItem->alias != '') ? $objItem->alias : $objItem->id)
                     )
@@ -77,14 +78,14 @@ class News extends \Contao\News
             return;
         }
 
-        $set = new \stdClass();
+        $set = [];
 
         $arrCategories     = [];
         $arrCategoriesList = [];
         $categories        = deserialize($arrArticle['categories'], true);
 
         if ($arrArticle['primaryCategory'] > 0 && ($tree = CategoryHelper::getCategoryTree($arrArticle['primaryCategory'], 0)) !== null) {
-            $set->primary = CategoryHelper::prepareCategory($tree[0]);
+            $set['primary'] = CategoryHelper::prepareCategory($tree[0]);
         }
 
         if (count($categories) > 0 && ($objAllCategories = NewsCategoryModel::findPublishedByIds($categories)) !== null) {
@@ -92,8 +93,8 @@ class News extends \Contao\News
 
             foreach ($objAllCategories as $objCategory) {
                 // set first category as primary category
-                if (!$set->primary && count($categories) === 1 && ($tree = CategoryHelper::getCategoryTree($categories[0], 0)) !== null) {
-                    $set->primary = CategoryHelper::prepareCategory($tree[0]);
+                if (!$set['primary'] && count($categories) === 1 && ($tree = CategoryHelper::getCategoryTree($categories[0], 0)) !== null) {
+                    $set['primary'] = CategoryHelper::prepareCategory($tree[0]);
                 }
 
                 // Skip the category in news list or archive module
@@ -113,28 +114,28 @@ class News extends \Contao\News
                 $arrCategoriesList[$objCategory->id] = $category->name;
             }
 
-            $set->categories = $all;
+            $set['categories'] = $all;
         }
 
-        if ($set->primary) {
+        if (is_array($set['primary']) && !empty($set['primary'])) {
             $objTemplate->hasPrimaryCategory  = true;
-            $objTemplate->primaryCategory     = $set->primary;
-            $objTemplate->primaryCategoryName = $set->primary->name;
-            $objTemplate->primaryCategoryHref = $set->primary->href;
+            $objTemplate->primaryCategory     = $set['primary'];
+            $objTemplate->primaryCategoryName = $set['primary']['name'];
+            $objTemplate->primaryCategoryHref = $set['primary']['href'];
 
-            if (is_array($set->primary->newsTargets) && isset($set->primary->newsTargets[$arrArticle['pid']])) {
-                $objTemplate->primaryCategoryHref = $set->primary->newsTargets[$arrArticle['pid']]->categoryNewsHref;
+            if (is_array($set['primary']['newsTargets']) && isset($set['primary']['newsTargets'][$arrArticle['pid']])) {
+                $objTemplate->primaryCategoryHref = $set['primary']['newsTargets'][$arrArticle['pid']]['categoryNewsHref'];
             }
 
 
-            if ($set->primary->parent) {
+            if (is_array($set['primary']['parent'])) {
                 $objTemplate->hasPrimaryParentCategory  = true;
-                $objTemplate->primaryParentCategory     = $set->primary->parent;
-                $objTemplate->primaryParentCategoryName = $set->primary->parent->name;
-                $objTemplate->primaryParentCategoryHref = $set->primary->parent->href;
+                $objTemplate->primaryParentCategory     = $set['primary']['parent'];
+                $objTemplate->primaryParentCategoryName = $set['primary']['parent']['name'];
+                $objTemplate->primaryParentCategoryHref = $set['primary']['parent']['href'];
 
-                if (is_array($set->primary->parent->newsTargets) && isset($set->primary->parent->newsTargets[$arrArticle['pid']])) {
-                    $objTemplate->primaryParentCategoryHref = $set->primary->parent->newsTargets[$arrArticle['pid']]->categoryNewsHref;
+                if (is_array($set['primary']['parent']['newsTargets']) && isset($set['primary']['parent']['newsTargets'][$arrArticle['pid']])) {
+                    $objTemplate->primaryParentCategoryHref = $set['primary']['parent']['newsTargets'][$arrArticle['pid']]['categoryNewsHref'];
                 }
             }
         }
@@ -155,11 +156,14 @@ class News extends \Contao\News
         $objTemplate->categoriesTree = $set;
 
         // news category jump to override?
-        if ($arrArticle['source'] == 'default' && ($objTemplate->categoriesTree->primary) !== null && isset($objTemplate->categoriesTree->primary->newsTargets[$arrArticle['pid']])) {
-            $target = $objTemplate->categoriesTree->primary->newsTargets[$arrArticle['pid']];
+        if ($arrArticle['source'] == 'default' && ($objTemplate->categoriesTree['primary']) !== null && isset($objTemplate->categoriesTree['primary']['newsTargets'][$arrArticle['pid']])) {
+            $target = $objTemplate->categoriesTree['primary']['newsTargets'][$arrArticle['pid']];
 
-            if ($target->categoryNewsPage !== null) {
-                $link = $target->categoryNewsPage->getFrontendUrl(
+            /**
+             * @var \PageModel $targetNewsPage
+             */
+            if (($targetNewsPage = $target['categoryNewsPage']) !== null) {
+                $link = $targetNewsPage->getFrontendUrl(
                     ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/').((!\Config::get('disableAlias')
                                                                                                          && $arrArticle['alias']
                                                                                                             != '') ? $arrArticle['alias'] : $arrArticle['id'])
