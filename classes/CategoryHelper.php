@@ -12,6 +12,7 @@ namespace NewsCategories;
 
 class CategoryHelper
 {
+    private static $treeCache;
 
     /**
      * Prepare the category object
@@ -24,7 +25,7 @@ class CategoryHelper
     {
         $category                  = $objCategory->row();
         $category['name']          = $category['frontendTitle'] ?: $category['title'];
-        $category['class']         = 'category_'.$category->id.($category['cssClass'] ? (' '.$category['cssClass']) : '');
+        $category['class']         = 'category_' . $category->id . ($category['cssClass'] ? (' ' . $category['cssClass']) : '');
         $category['linkTitle']     = specialchars($category['name']);
         $category['href']          = '';
         $category['hrefWithParam'] = '';
@@ -33,7 +34,7 @@ class CategoryHelper
         // Add the target page
         if (($targetPage = $objCategory->getTargetPage()) !== null) {
             $category['href']          = $targetPage->getFrontendUrl();
-            $category['hrefWithParam'] = $targetPage->getFrontendUrl('/'.NewsCategories::getParameterName().'/'.$category['alias']);
+            $category['hrefWithParam'] = $targetPage->getFrontendUrl('/' . NewsCategories::getParameterName() . '/' . $category['alias']);
             $category['targetPage']    = $targetPage;
         }
 
@@ -53,7 +54,7 @@ class CategoryHelper
                  */
                 if (($targetCategoryPage = $targetPage['category']) !== null) {
                     $target['categoryHref']          = $targetCategoryPage->getFrontendUrl();
-                    $target['categoryHrefWithParam'] = $targetCategoryPage->getFrontendUrl('/'.NewsCategories::getParameterName().'/'.$category['alias']);
+                    $target['categoryHrefWithParam'] = $targetCategoryPage->getFrontendUrl('/' . NewsCategories::getParameterName() . '/' . $category['alias']);
                     $target['categoryPage']          = $targetCategoryPage;
                 }
 
@@ -84,29 +85,36 @@ class CategoryHelper
     /**
      * Get the category tree with all parent categories of the given category id
      *
-     * @param integer      $intId     The category id
+     * @param integer $intId The category id
      * @param integer|null $max_level Maximum level of parent categories that should be covered, set to null for unlimited execution, 0 for only current category with its parent
-     * @param array        $all       Required for recursion
+     * @param array $all Required for recursion
      *
      * @return array|null
      */
     public static function getCategoryTree($intId, $max_level = null, $all = [])
     {
+        // try to load from cache
+        if (isset(static::$treeCache[$intId]) && is_array(static::$treeCache[$intId]) && $max_level === null) {
+            return static::$treeCache[$intId];
+        }
+
         $category = NewsCategoryModel::findPublishedByIdOrAlias($intId);
 
         if ($category === null) {
             return null;
         }
 
-        $category = $category->current();
         $count    = count($all);
+        $category = $category->current();
 
         // store parent within current category
         if ($count > 0) {
             $all[count($all) - 1]->parent = static::prepareCategory($category);
 
             if ($max_level !== null && $max_level <= $count) {
-                return array_reverse($all);  // sort in reverse order (parent to children)
+                $tree                      = array_reverse($all);
+                static::$treeCache[$intId] = $tree;
+                return $tree;  // sort in reverse order (parent to children)
             }
         }
 
@@ -114,7 +122,9 @@ class CategoryHelper
 
         // no more parent category
         if ((int)$category->pid === 0) {
-            return array_reverse($all);  // sort in reverse order (parent to children)
+            $tree                      = array_reverse($all);
+            static::$treeCache[$intId] = $tree;
+            return $tree;  // sort in reverse order (parent to children)
         }
 
         return static::getCategoryTree($category->pid, $max_level, $all);
