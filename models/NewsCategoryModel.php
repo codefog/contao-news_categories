@@ -54,23 +54,25 @@ class NewsCategoryModel extends \Model
         $pageId = $this->jumpTo;
 
         // Inherit the page from parent if there is none set
-        if (!$pageId)
-        {
+        if (!$pageId) {
             $pid = $this->pid;
 
-            do
-            {
+            do {
+                if (!$pid) {
+                    $parent = null;
+                    break;
+                }
+
                 $parent = static::findByPk($pid);
 
-                if ($parent !== null)
-                {
+                if ($parent !== null) {
                     $pid    = $parent->pid;
                     $pageId = $parent->jumpTo;
                 }
             } while ($pid && !$pageId);
         }
 
-        return \PageModel::findByPk($pageId);
+        return $pageId > 0 ? \PageModel::findByPk($pageId) : null;
     }
 
     /**
@@ -80,24 +82,20 @@ class NewsCategoryModel extends \Model
      */
     public function getNewsTargetPages()
     {
-        if (($references = FieldPaletteModel::findPublishedByPidAndTableAndField($this->id, 'tl_news_category', 'jumpToNews')) === null)
-        {
+        if (($references = FieldPaletteModel::findPublishedByPidAndTableAndField($this->id, 'tl_news_category', 'jumpToNews')) === null) {
             return null;
         }
 
         $pages = [];
 
-        while ($references->next())
-        {
+        while ($references->next()) {
             $target = [];
 
-            if ($references->news_category_jumpTo > 0)
-            {
+            if ($references->news_category_jumpTo > 0) {
                 $target['category'] = \PageModel::findByPk($references->news_category_jumpTo);
             }
 
-            if ($references->news_category_news_jumpTo > 0)
-            {
+            if ($references->news_category_news_jumpTo > 0) {
                 $target['news'] = \PageModel::findByPk($references->news_category_news_jumpTo);
             }
 
@@ -111,14 +109,13 @@ class NewsCategoryModel extends \Model
      * Find published news categories by their archives
      *
      * @param array $arrArchives An array of archives
-     * @param array $arrIds      An array of categories
+     * @param array $arrIds An array of categories
      *
      * @return \Model|null The NewsModelCategpry or null if there are no categories
      */
     public static function findPublishedByParent($arrArchives, $arrIds = [])
     {
-        if (!is_array($arrArchives) || empty($arrArchives))
-        {
+        if (!is_array($arrArchives) || empty($arrArchives)) {
             return null;
         }
 
@@ -130,13 +127,11 @@ class NewsCategoryModel extends \Model
         ];
 
         // Filter by custom categories
-        if (is_array($arrIds) && !empty($arrIds))
-        {
+        if (is_array($arrIds) && !empty($arrIds)) {
             $arrColumns[] = "$t.id IN (" . implode(',', array_map('intval', $arrIds)) . ")";
         }
 
-        if (!BE_USER_LOGGED_IN)
-        {
+        if (!BE_USER_LOGGED_IN) {
             $arrColumns[] = "$t.published=1";
         }
 
@@ -155,8 +150,7 @@ class NewsCategoryModel extends \Model
         $t          = static::$strTable;
         $arrColumns = ["($t.id=? OR $t.alias=?)"];
 
-        if (!BE_USER_LOGGED_IN)
-        {
+        if (!BE_USER_LOGGED_IN) {
             $arrColumns[] = "$t.published=1";
         }
 
@@ -172,16 +166,14 @@ class NewsCategoryModel extends \Model
      */
     public static function findPublishedByIds($arrIds)
     {
-        if (!is_array($arrIds) || empty($arrIds))
-        {
+        if (!is_array($arrIds) || empty($arrIds)) {
             return null;
         }
 
         $t          = static::$strTable;
         $arrColumns = ["$t.id IN (" . implode(',', array_map('intval', $arrIds)) . ")"];
 
-        if (!BE_USER_LOGGED_IN)
-        {
+        if (!BE_USER_LOGGED_IN) {
             $arrColumns[] = "$t.published=1";
         }
 
@@ -192,14 +184,13 @@ class NewsCategoryModel extends \Model
      * Find published news categories by parent ID and IDs
      *
      * @param integer $intPid The parent ID
-     * @param array   $arrIds An array of categories
+     * @param array $arrIds An array of categories
      *
      * @return @return Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null A collection of models or null if there are no categories
      */
     public static function findPublishedByPidAndIds($intPid, $arrIds)
     {
-        if (!is_array($arrIds) || empty($arrIds))
-        {
+        if (!is_array($arrIds) || empty($arrIds)) {
             return null;
         }
 
@@ -211,8 +202,7 @@ class NewsCategoryModel extends \Model
             ) . ")" . (!BE_USER_LOGGED_IN ? " AND c1.published=1" : "") . " ORDER BY c1.sorting"
         )->execute($intPid);
 
-        if ($objCategories->numRows < 1)
-        {
+        if ($objCategories->numRows < 1) {
             return null;
         }
 
