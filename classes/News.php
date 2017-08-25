@@ -41,7 +41,7 @@ class News extends \Contao\News
                 return parent::getLink($objItem, $strUrl, $strBase);
             }
 
-            $category = CategoryHelper::prepareCategory($tree[0]);
+            $category = CategoryHelper::prepareCategory(current($tree));
 
             if ($category === null || !is_array($category['newsTargets']) || !isset($category['newsTargets'][$objItem->pid])) {
                 return parent::getLink($objItem, $strUrl, $strBase);
