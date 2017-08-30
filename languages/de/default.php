@@ -15,9 +15,10 @@
 /**
  * Miscellaneous
  */
-$GLOBALS['TL_LANG']['MSC']['resetCategories'] = array('Alle Kategorien', 'Zeigt Nachrichten aus allen Kategorien');
+$GLOBALS['TL_LANG']['MSC']['resetCategories']  = ['Alle Kategorien', 'Zeigt Nachrichten aus allen Kategorien'];
+$GLOBALS['TL_LANG']['MSC']['moreNewsCategory'] = 'Artikel aus der Kategorie: %s';
 
 /**
  * Content elements
  */
-$GLOBALS['TL_LANG']['CTE']['newsfilter'] = array('Nachrichten-Modul-Filter', 'Nachrichtenlisten bzw. Nachrichtenarchive mit Kategorie-Filter.');
+$GLOBALS['TL_LANG']['CTE']['newsfilter'] = ['Nachrichten-Modul-Filter', 'Nachrichtenlisten bzw. Nachrichtenarchive mit Kategorie-Filter.'];

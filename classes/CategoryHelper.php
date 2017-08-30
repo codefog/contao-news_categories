@@ -10,9 +10,27 @@
 
 namespace NewsCategories;
 
+use HeimrichHannot\FieldPalette\FieldPaletteModel;
+
 class CategoryHelper
 {
     private static $treeCache;
+
+    /**
+     * Get news archive category page by category id and news archive id
+     * @param int $idCategory The category id
+     * @param int $idArchive The news archive id
+     *
+     * @return \Contao\PageModel|null The news archive to category related page model
+     */
+    public static function getNewsArchiveCategoryPage($idCategory, $idArchive)
+    {
+        if (($references = FieldPaletteModel::findPublishedByPidAndTableAndField($idCategory, 'tl_news_category', 'jumpToNews', ['limit' => 1], ['news_category_news_archive = ?'], [$idArchive])) !== null) {
+            return \PageModel::findPublishedById($references->news_category_news_jumpTo);
+        }
+
+        return null;
+    }
 
     /**
      * Prepare the category object

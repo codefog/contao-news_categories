@@ -11,12 +11,36 @@
 namespace NewsCategories;
 
 
+use HeimrichHannot\FieldPalette\FieldPaletteModel;
+
 class InsertTags extends News
 {
     /**
+     * Supported tags with category and news archive relation
      * @var array
      */
-    private $supportedTags = [
+    private $supportedNewsArchiveCategoryTags = [
+        'news_archive_category_page',
+        'news_archive_category_page_url',
+        'news_archive_category_page_title',
+        'news_archive_category_page_link',
+        'news_archive_category_page_name',
+        'news_archive_category_page_link_open'
+    ];
+
+    /**
+     * Supported tags with category relation
+     * @var array
+     */
+    private $supportedCategoryTags = [
+        'news_category_page',
+    ];
+
+    /**
+     * Supported tags with news relation
+     * @var array
+     */
+    private $supportedNewsTags = [
         'news_category_link',
         'news_category_url',
         'news_category_link_open',
@@ -40,12 +64,58 @@ class InsertTags extends News
     {
         $elements = explode('::', $strTag);
 
-        if (in_array($elements[0], $this->supportedTags, true)) {
+        if (in_array($elements[0], $this->supportedNewsArchiveCategoryTags, true)) {
+            return $this->replaceNewsArchiveCategoryInsertTags($elements[0], $elements[1], $elements[2]);
+        }
+
+        if (in_array($elements[0], $this->supportedCategoryTags, true)) {
+            return $this->replaceCategoryInsertTags($elements[0], $elements[1]);
+        }
+
+        if (in_array($elements[0], $this->supportedNewsTags, true)) {
             return $this->replaceNewsInsertTags($elements[0], $elements[1]);
         }
 
         return false;
+    }
 
+    /**
+     * Replaces a category and news archive related insert tag.
+     *
+     * @param string $insertTag
+     * @param string $categoryIsOrAlias
+     * @param int $newsArchive
+     *
+     * @return string
+     */
+    private function replaceNewsArchiveCategoryInsertTags($insertTag, $categoryIsOrAlias, $newsArchive)
+    {
+        if (null === ($category = NewsCategoryModel::findPublishedByIdOrAlias($categoryIsOrAlias))) {
+            return '';
+        }
+
+        if (null === ($newsArchive = \NewsArchiveModel::findByPk($newsArchive))) {
+            return '';
+        }
+
+        return $this->generateNewsArchiveCategoryReplacement($category, $newsArchive, $insertTag);
+    }
+
+    /**
+     * Replaces a category-related insert tag.
+     *
+     * @param string $insertTag
+     * @param string $idOrAlias
+     *
+     * @return string
+     */
+    private function replaceCategoryInsertTags($insertTag, $idOrAlias)
+    {
+        if (null === ($category = NewsCategoryModel::findPublishedByIdOrAlias($idOrAlias))) {
+            return '';
+        }
+
+        return $this->generateCategoryReplacement($category, $insertTag);
     }
 
     /**
@@ -62,24 +132,24 @@ class InsertTags extends News
             return '';
         }
 
-        return $this->generateReplacement($news, $insertTag);
+        return $this->generateNewsReplacement($news, $insertTag);
     }
 
     /**
-     * Generates the replacement string.
+     * Generates the news related replacement string.
      *
-     * @param \NewsModel $news
-     * @param string     $insertTag
+     * @param \Contao\NewsModel $news
+     * @param string $insertTag
      *
      * @return string
      */
-    private function generateReplacement($news, $insertTag)
+    private function generateNewsReplacement($news, $insertTag)
     {
         switch ($insertTag) {
             case 'news_category_link':
 
                 if ($news->source !== 'default' || ($strUrl = $this->getNewsUrl($news)) === null) {
-                    return \Controller::replaceInsertTags('{{news::'.$news->id.'}}', false);
+                    return \Controller::replaceInsertTags('{{news::' . $news->id . '}}', false);
                 }
 
                 return sprintf(
@@ -92,7 +162,7 @@ class InsertTags extends News
             case 'news_category_link_open':
 
                 if ($news->source !== 'default' || ($strUrl = $this->getNewsUrl($news)) === null) {
-                    return \Controller::replaceInsertTags('{{news_open::'.$news->id.'}}', false);
+                    return \Controller::replaceInsertTags('{{news_open::' . $news->id . '}}', false);
                 }
 
                 return sprintf(
@@ -104,19 +174,96 @@ class InsertTags extends News
             case 'news_category_url':
 
                 if ($news->source !== 'default' || ($strUrl = $this->getNewsUrl($news)) === null) {
-                    return \Controller::replaceInsertTags('{{news_url::'.$news->id.'}}', false);
+                    return \Controller::replaceInsertTags('{{news_url::' . $news->id . '}}', false);
                 }
 
                 return $this->getLink($news, $strUrl);
+            case 'news_category_page':
+                break;
         }
 
         return '';
     }
 
     /**
+     * Generates the category related replacement string.
+     *
+     * @param NewsCategoryModel $category
+     * @param string $insertTag
+     *
+     * @return string
+     */
+    private function generateCategoryReplacement($category, $insertTag)
+    {
+        switch ($insertTag) {
+            case 'news_category_page':
+                return $category->jumpTo ?: '';
+        }
+
+        return '';
+    }
+
+    /**
+     * Generates the category and news archive related replacement string.
+     *
+     * @param NewsCategoryModel $category
+     * @param \Contao\NewsArchiveModel $newsArchive
+     * @param string $insertTag
+     *
+     * @return string
+     */
+    private function generateNewsArchiveCategoryReplacement($category, $newsArchive, $insertTag)
+    {
+        switch ($insertTag) {
+            case 'news_archive_category_page':
+                $pageId = $category->jumpTo;
+
+                if (($page = CategoryHelper::getNewsArchiveCategoryPage($category->id, $newsArchive->id)) !== null) {
+                    $pageId = $page->id;
+                }
+
+                return $pageId > 0 ? $pageId : '';
+
+            case 'news_archive_category_page_url':
+                if (($page = CategoryHelper::getNewsArchiveCategoryPage($category->id, $newsArchive->id)) === null) {
+                    return '';
+                }
+
+                return \Controller::replaceInsertTags('{{link_url::' . $page->id . '}}');
+            case 'news_archive_category_page_title':
+                if (($page = CategoryHelper::getNewsArchiveCategoryPage($category->id, $newsArchive->id)) === null) {
+                    return '';
+                }
+
+                return \Controller::replaceInsertTags('{{link_title::' . $page->id . '}}');
+            case 'news_archive_category_page_link':
+                if (($page = CategoryHelper::getNewsArchiveCategoryPage($category->id, $newsArchive->id)) === null) {
+                    return '';
+                }
+
+                return \Controller::replaceInsertTags('{{link::' . $page->id . '}}');
+            case 'news_archive_category_page_name':
+                if (($page = CategoryHelper::getNewsArchiveCategoryPage($category->id, $newsArchive->id)) === null) {
+                    return '';
+                }
+
+                return \Controller::replaceInsertTags('{{link_name::' . $page->id . '}}');
+            case 'news_archive_category_page_link_open':
+                if (($page = CategoryHelper::getNewsArchiveCategoryPage($category->id, $newsArchive->id)) === null) {
+                    return '';
+                }
+
+                return \Controller::replaceInsertTags('{{link_open::' . $page->id . '}}');
+        }
+
+        return '';
+    }
+
+
+    /**
      * Get the news jumpTo url
      *
-     * @param $news
+     * @param \Contao\NewsModel $news
      *
      * @return string|null
      */
