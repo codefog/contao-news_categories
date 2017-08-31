@@ -32,6 +32,7 @@ class ModuleNewsArchive extends \Contao\ModuleNewsArchive
         $GLOBALS['NEWS_FILTER_DEFAULT']    = deserialize($this->news_filterDefault, true);
         $GLOBALS['NEWS_FILTER_PRESERVE']   = $this->news_filterPreserve;
         $GLOBALS['NEWS_FILTER_PRIMARY']    = $this->news_filterPrimaryCategory;
+        $GLOBALS['NEWS_FILTER_STOP_LEVEL'] = intval($this->news_filterStopLevel);
 
         return parent::generate();
     }

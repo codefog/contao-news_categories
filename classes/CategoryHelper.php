@@ -16,6 +16,10 @@ class CategoryHelper
 {
     private static $treeCache;
 
+    private static $idTreeCache;
+
+    private static $flatIdTreeCache;
+
     /**
      * Get news archive category page by category id and news archive id
      * @param int $idCategory The category id
@@ -101,15 +105,84 @@ class CategoryHelper
     }
 
     /**
+     * Get the categories id as tree cache and return it as array
+     *
+     * @param int $pid The parent id
+     * @param int $maxLevel The max level of child categories that should be covered descending from $pid
+     * @param boolean $flat Set true if the tree should be returned as flat array
+     * @param int $level Current recursion level
+     * @param integer $cacheKey Required to load from cache within recursion
+     *
+     * @return array All categories as tree (key = category id) or flat (value = category id)
+     */
+    public static function getCategoryIdTree($pid = 0, $maxLevel = 1, $flat = false, $level = 0, $cacheKey = null)
+    {
+        $pid        = intval($pid);
+        $isParent   = false;
+        $categories = [];
+
+        if ($cacheKey === null) {
+            $isParent = true;
+            $cacheKey = $pid . '_' . $maxLevel;
+
+            if (is_array(static::$idTreeCache) && !$flat && isset(static::$idTreeCache[$cacheKey])) {
+                return static::$idTreeCache[$cacheKey];
+            } elseif (is_array(static::$flatIdTreeCache) && $flat && isset(static::$flatIdTreeCache[$cacheKey])) {
+                return static::$flatIdTreeCache[$cacheKey];
+            }
+        }
+
+
+        $objCategories = NewsCategoryModel::findByPid($pid, ['order' => 'pid, sorting']);
+
+        if ($objCategories === null) {
+            return $categories;
+        }
+
+        while ($objCategories->next()) {
+            $nested = [];
+
+            if ($level <= $maxLevel) {
+                $nested = static::getCategoryIdTree($objCategories->id, $maxLevel, $flat, ++$level, $cacheKey);
+            }
+
+            if (empty($nested) || $level >= $maxLevel) {
+                $level = 0;
+            }
+
+            if ($flat) {
+                $categories = array_merge($categories, [intval($objCategories->id)], $nested);
+                continue;
+            }
+
+            $categories[intval($objCategories->id)] = $nested;
+        }
+
+        if ($isParent) {
+            if ($flat) {
+                static::$flatIdTreeCache[$cacheKey] = $categories;
+                array_unshift(static::$flatIdTreeCache[$cacheKey], $pid);
+                return static::$flatIdTreeCache[$cacheKey];
+            } else {
+                static::$idTreeCache[$cacheKey][$pid] = $categories;
+                return static::$idTreeCache[$cacheKey];
+            }
+        }
+
+        return $categories;
+    }
+
+    /**
      * Get the category tree with all parent categories of the given category id
      *
      * @param integer $intId The category id
-     * @param integer|null $max_level Maximum level of parent categories that should be covered, set to null for unlimited execution, 0 for only current category with its parent
+     * @param integer|null $maxLevel Maximum level of parent categories that should be covered, set to null for unlimited execution, 0 for only current category with its parent
      * @param array $all Required for recursion
+     * @param integer $cacheKey Required to load from cache within recursion
      *
      * @return array|null
      */
-    public static function getCategoryTree($intId, $max_level = null, $all = [], $cacheKey = null)
+    public static function getCategoryTree($intId, $maxLevel = null, $all = [], $cacheKey = null)
     {
         $count = count($all);
 
@@ -118,7 +191,7 @@ class CategoryHelper
         }
 
         // try to load from cache
-        if ($cacheKey !== null && isset(static::$treeCache[$cacheKey]) && ($max_level === null || $count >= $max_level)) {
+        if ($cacheKey !== null && isset(static::$treeCache[$cacheKey]) && ($maxLevel === null || $count >= $maxLevel)) {
             return static::$treeCache[$cacheKey];
         }
 
@@ -134,7 +207,7 @@ class CategoryHelper
         if ($count > 0) {
             $all[key($all)]->parent = static::prepareCategory($category);
 
-            if ($max_level !== null && $max_level <= $count) {
+            if ($maxLevel !== null && $maxLevel <= $count) {
                 $tree                         = array_reverse($all, true);
                 static::$treeCache[$cacheKey] = $tree;
                 return $tree;  // sort in reverse order (parent to children)
@@ -150,6 +223,6 @@ class CategoryHelper
             return $tree;  // sort in reverse order (parent to children)
         }
 
-        return static::getCategoryTree($category->pid, $max_level, $all, $cacheKey);
+        return static::getCategoryTree($category->pid, $maxLevel, $all, $cacheKey);
     }
 }

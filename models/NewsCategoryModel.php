@@ -19,6 +19,72 @@ use HeimrichHannot\FieldPalette\FieldPaletteModel;
 
 /**
  * Reads and writes news categories
+ *
+ * @property integer $id
+ * @property integer $pid
+ * @property integer $sorting
+ * @property integer $tstamp
+ * @property string $title
+ * @property string $frontendTitle
+ * @property string $alias
+ * @property string $cssClass
+ * @property boolean $hideInList
+ * @property boolean $hideInReader
+ * @property boolean $excludeInRelated
+ * @property string $jumpTo
+ * @property string $jumpToNews
+ * @property boolean $published
+ *
+ * @method static NewsCategoryModel|null findById($id, array $opt = [])
+ * @method static NewsCategoryModel|null findByPk($id, array $opt = [])
+ * @method static NewsCategoryModel|null findByIdOrAlias($val, array $opt = [])
+ * @method static NewsCategoryModel|null findOneBy($col, $val, array $opt = [])
+ * @method static NewsCategoryModel|null findOneBySorting($val, array $opt = [])
+ * @method static NewsCategoryModel|null findOneByTstamp($val, array $opt = [])
+ * @method static NewsCategoryModel|null findOneByTitle($val, array $opt = [])
+ * @method static NewsCategoryModel|null findOneByFrontendTitle($val, array $opt = [])
+ * @method static NewsCategoryModel|null findOneByAlias($val, array $opt = [])
+ * @method static NewsCategoryModel|null findOneByCssClass($val, array $opt = [])
+ * @method static NewsCategoryModel|null findOneByHideInList($val, array $opt = [])
+ * @method static NewsCategoryModel|null findOneByHideInReader($val, array $opt = [])
+ * @method static NewsCategoryModel|null findOneByExcludeInRelated($val, array $opt = [])
+ * @method static NewsCategoryModel|null findOneByJumpTo($val, array $opt = [])
+ * @method static NewsCategoryModel|null findOneByJumpToNews($val, array $opt = [])
+ * @method static NewsCategoryModel|null findOneByPublished($val, array $opt = [])
+ *
+ * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByPid($val, array $opt = [])
+ * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findBySorting($val, array $opt = [])
+ * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByTstamp($val, array $opt = [])
+ * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByTitle($val, array $opt = [])
+ * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByFrontendTitle($val, array $opt = [])
+ * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByAlias($val, array $opt = [])
+ * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByCssClass($val, array $opt = [])
+ * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByHideInList($val, array $opt = [])
+ * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByHideInReader($val, array $opt = [])
+ * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByExcludeInRelated($val, array $opt = [])
+ * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByJumpTo($val, array $opt = [])
+ * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByJumpToNews($val, array $opt = [])
+ * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByPublished($val, array $opt = [])
+ * @method static \Model\Collection|NewsModel[]|NewsModel|null findMultipleByIds($val, array $opt = [])
+ * @method static \Model\Collection|NewsModel[]|NewsModel|null findBy($col, $val, array $opt = [])
+ * @method static \Model\Collection|NewsModel[]|NewsModel|null findAll(array $opt = [])
+ *
+ * @method static integer countById($id, array $opt = [])
+ * @method static integer countByPid($val, array $opt = [])
+ * @method static integer countBySorting($val, array $opt = [])
+ * @method static integer countByTstamp($val, array $opt = [])
+ * @method static integer countByTitle($val, array $opt = [])
+ * @method static integer countByFrontendTitle($val, array $opt = [])
+ * @method static integer countByAlias($val, array $opt = [])
+ * @method static integer countByCssClass($val, array $opt = [])
+ * @method static integer countByHideInList($val, array $opt = [])
+ * @method static integer countByHideInReader($val, array $opt = [])
+ * @method static integer countByExcludeInRelated($val, array $opt = [])
+ * @method static integer countByJumpTo($val, array $opt = [])
+ * @method static integer countByJumpToNews($val, array $opt = [])
+ * @method static integer countByPublished($val, array $opt = [])
+ *
+ * @author Rico Kaltofen <https://github.com/heimrichhannot>
  */
 class NewsCategoryModel extends \Model
 {

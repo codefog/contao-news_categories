@@ -68,8 +68,18 @@ class NewsModel extends \Contao\NewsModel
             if (!empty($arrCategories)) {
                 $arrIds = array();
 
+                $filterCategories = $GLOBALS['NEWS_FILTER_DEFAULT'];
+
+                if ($GLOBALS['NEWS_FILTER_STOP_LEVEL'] > 0) {
+                    foreach ($GLOBALS['NEWS_FILTER_DEFAULT'] as $category) {
+                        $filterCategories = array_merge($filterCategories, CategoryHelper::getCategoryIdTree($category, $GLOBALS['NEWS_FILTER_STOP_LEVEL'], true));
+                    }
+                }
+
+                $filterCategories = array_unique($filterCategories);
+
                 // Get the news IDs for particular categories
-                foreach ($GLOBALS['NEWS_FILTER_DEFAULT'] as $category) {
+                foreach ($filterCategories as $category) {
                     if (isset($arrCategories[$category])) {
                         $arrIds = array_merge($arrCategories[$category], $arrIds);
                     }
@@ -85,7 +95,7 @@ class NewsModel extends \Contao\NewsModel
                 $strQuery = "$t.id IN (".implode(',', (empty($arrIds) ? array(0) : array_unique($arrIds))).")";
 
                 if ($GLOBALS['NEWS_FILTER_PRIMARY']) {
-                    $strQuery .= " AND $t.primaryCategory IN (".implode(',', $GLOBALS['NEWS_FILTER_DEFAULT']).")";
+                    $strQuery .= " AND $t.primaryCategory IN (".implode(',', $filterCategories).")";
                 }
 
                 $arrColumns[$strKey] = $strQuery;
