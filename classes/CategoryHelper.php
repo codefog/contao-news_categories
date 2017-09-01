@@ -188,6 +188,10 @@ class CategoryHelper
 
         if ($count === 0) {
             $cacheKey = $intId;
+
+            if ($maxLevel !== null) {
+                $cacheKey .= '_' . $maxLevel;
+            }
         }
 
         // try to load from cache
