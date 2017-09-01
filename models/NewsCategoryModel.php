@@ -148,6 +148,12 @@ class NewsCategoryModel extends \Model
      */
     public function getNewsTargetPages()
     {
+        static $cache;
+
+        if (is_array($cache) && isset($cache[$this->id])) {
+            return $cache[$this->id];
+        }
+
         if (($references = FieldPaletteModel::findPublishedByPidAndTableAndField($this->id, 'tl_news_category', 'jumpToNews')) === null) {
             return null;
         }
@@ -168,7 +174,9 @@ class NewsCategoryModel extends \Model
             $pages[$references->news_category_news_archive] = $target;
         }
 
-        return $pages;
+        $cache[$this->id] = $pages;
+
+        return $cache[$this->id];
     }
 
     /**
