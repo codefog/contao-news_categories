@@ -30,7 +30,12 @@ class NewsCategories
     public static function getParameterName($rootId = null)
     {
         if (!$rootId) {
-            $rootId = $GLOBALS['objPage']->rootId;
+            global $objPage;
+            $rootId = $objPage->rootId;
+        }
+
+        if (!$rootId) {
+            return '';
         }
 
         $rootPage = \PageModel::findByPk($rootId);
@@ -45,16 +50,16 @@ class NewsCategories
     /**
      * Translate the URL parameters
      *
-     * @param array  $params
+     * @param array $params
      * @param string $language
-     * @param array  $rootPage
+     * @param array $rootPage
      *
      * @return array
      */
     public function translateUrlParameters(array $params, $language, array $rootPage)
     {
         $currentParam = static::getParameterName();
-        $newParam = static::getParameterName($rootPage['id']);
+        $newParam     = static::getParameterName($rootPage['id']);
 
         if (isset($params['url'][$currentParam]) && $currentParam != $newParam) {
             $params['url'][$newParam] = $params['url'][$currentParam];
