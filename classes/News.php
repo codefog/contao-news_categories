@@ -80,9 +80,10 @@ class News extends \Contao\News
 
         $set = [];
 
-        $arrCategories     = [];
-        $arrCategoriesList = [];
-        $categories        = deserialize($arrArticle['categories'], true);
+        $arrCategories      = [];
+        $arrCategoriesList  = [];
+        $arrCategoriesClass = [];
+        $categories         = deserialize($arrArticle['categories'], true);
 
         if ($arrArticle['primaryCategory'] > 0 && ($tree = CategoryHelper::getCategoryTree($arrArticle['primaryCategory'], 0)) !== null) {
             $set['primary'] = CategoryHelper::prepareCategory(current($tree));
@@ -109,9 +110,10 @@ class News extends \Contao\News
 
                 $category = CategoryHelper::prepareCategory($objCategory);
 
-                $all[$category['id']]                = $category;
-                $arrCategories[$objCategory->id]     = (array)$category;
-                $arrCategoriesList[$objCategory->id] = $category['name'];
+                $all[$category['id']]                 = $category;
+                $arrCategories[$objCategory->id]      = (array)$category;
+                $arrCategoriesList[$objCategory->id]  = $category['name'];
+                $arrCategoriesClass[$objCategory->id] = 'cat-' . $category['id'] . ' cat-' . $category['alias'];
             }
 
             $set['categories'] = $all;
@@ -154,6 +156,10 @@ class News extends \Contao\News
         $objTemplate->categories     = $arrCategories;
         $objTemplate->categoriesList = $arrCategoriesList;
         $objTemplate->categoriesTree = $set;
+
+        if (!empty($arrCategoriesClass)) {
+            $objTemplate->class .= ($objTemplate->class != '' ? ' ' : '') . implode(' ', $arrCategoriesClass);
+        }
 
         // news category jump to override?
         if ($arrArticle['source'] == 'default' && ($objTemplate->categoriesTree['primary']) !== null && isset($objTemplate->categoriesTree['primary']['newsTargets'][$arrArticle['pid']])) {
