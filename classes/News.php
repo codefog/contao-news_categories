@@ -19,6 +19,12 @@ namespace NewsCategories;
  */
 class News extends \Contao\News
 {
+    /**
+     * URL cache array
+     * @var array
+     */
+    private static $arrCategoryUrlCache = [];
+
     public function getLink($objItem, $strUrl, $strBase = '')
     {
         $categories = deserialize($objItem->categories, true);
@@ -27,21 +33,26 @@ class News extends \Contao\News
         if ($objItem->source == 'default') {
             $tree = null;
 
-            // set from primary category
-            if ($objItem->primaryCategory > 0) {
-                $tree = CategoryHelper::getCategoryTree($objItem->primaryCategory, 0);
-            } // use first category as primary if not more than 1 category isset
-            else {
-                if (count($categories) === 1) {
-                    $tree = CategoryHelper::getCategoryTree($categories[0], 0);
-                }
-            }
+            // set from primary category or use first category as primary if not more than 1 category isset
+            $primaryCategory = $objItem->primaryCategory ?: ((count($categories) === 1) ? $categories[0] : 0);
 
-            if ($tree === null) {
+            if ($primaryCategory === 0) {
                 return parent::getLink($objItem, $strUrl, $strBase);
             }
 
-            $category = CategoryHelper::prepareCategory(current($tree));
+            $cacheKey = 'id_' . $objItem->id . '_' . $primaryCategory;
+
+            // Load the URL from cache
+            if (isset(self::$arrCategoryUrlCache[$cacheKey])) {
+                return self::$arrCategoryUrlCache[$cacheKey];
+            }
+
+            if(($objCategory = NewsCategoryModel::findPublishedByIdOrAlias($primaryCategory)) === null)
+            {
+                return parent::getLink($objItem, $strUrl, $strBase);
+            }
+
+            $category = CategoryHelper::prepareCategory($objCategory);
 
             if ($category === null || !is_array($category['newsTargets']) || !isset($category['newsTargets'][$objItem->pid])) {
                 return parent::getLink($objItem, $strUrl, $strBase);
@@ -51,12 +62,14 @@ class News extends \Contao\News
              * @var \PageModel $categoryNewsPage
              */
             if (($categoryNewsPage = $category['newsTargets'][$objItem->pid]['categoryNewsPage']) !== null) {
-                return ampersand(
+                self::$arrCategoryUrlCache[$cacheKey] = ampersand(
                     $categoryNewsPage->getAbsoluteUrl(
                         ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/') . ((!\Config::get('disableAlias')
                             && $objItem->alias != '') ? $objItem->alias : $objItem->id)
                     )
                 );
+
+                return self::$arrCategoryUrlCache[$cacheKey];
             }
         }
 
@@ -85,6 +98,8 @@ class News extends \Contao\News
         $arrCategoriesClass = [];
         $categories         = deserialize($arrArticle['categories'], true);
 
+        $primaryCategory = $arrArticle['primaryCategory'];
+
         if ($arrArticle['primaryCategory'] > 0 && ($tree = CategoryHelper::getCategoryTree($arrArticle['primaryCategory'], 0)) !== null) {
             $set['primary'] = CategoryHelper::prepareCategory(current($tree));
         }
@@ -93,9 +108,11 @@ class News extends \Contao\News
             $all = [];
 
             foreach ($objAllCategories as $objCategory) {
+
                 // set first category as primary category
-                if (!$set['primary'] && count($categories) === 1 && ($tree = CategoryHelper::getCategoryTree($categories[0], 0)) !== null) {
-                    $set['primary'] = CategoryHelper::prepareCategory(current($tree));
+                if(!$primaryCategory && count($categories) === 1)
+                {
+                    $primaryCategory = $categories[0];
                 }
 
                 // Skip the category in news list or archive module
@@ -117,6 +134,11 @@ class News extends \Contao\News
             }
 
             $set['categories'] = $all;
+        }
+
+        // set first category as primary category
+        if ($primaryCategory && ($tree = CategoryHelper::getCategoryTree($primaryCategory, 0)) !== null) {
+            $set['primary'] = CategoryHelper::prepareCategory(current($tree));
         }
 
         if (is_array($set['primary']) && !empty($set['primary'])) {

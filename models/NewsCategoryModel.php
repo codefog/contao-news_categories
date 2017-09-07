@@ -65,9 +65,9 @@ use HeimrichHannot\FieldPalette\FieldPaletteModel;
  * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByJumpTo($val, array $opt = [])
  * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByJumpToNews($val, array $opt = [])
  * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByPublished($val, array $opt = [])
- * @method static \Model\Collection|NewsModel[]|NewsModel|null findMultipleByIds($val, array $opt = [])
- * @method static \Model\Collection|NewsModel[]|NewsModel|null findBy($col, $val, array $opt = [])
- * @method static \Model\Collection|NewsModel[]|NewsModel|null findAll(array $opt = [])
+ * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findMultipleByIds($val, array $opt = [])
+ * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findBy($col, $val, array $opt = [])
+ * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findAll(array $opt = [])
  *
  * @method static integer countById($id, array $opt = [])
  * @method static integer countByPid($val, array $opt = [])
@@ -185,7 +185,7 @@ class NewsCategoryModel extends \Model
      * @param array $arrArchives An array of archives
      * @param array $arrIds An array of categories
      *
-     * @return \Model|null The NewsModelCategpry or null if there are no categories
+     * @return \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null A collection of models or null if there are no categories
      */
     public static function findPublishedByParent($arrArchives, $arrIds = [])
     {
@@ -217,7 +217,7 @@ class NewsCategoryModel extends \Model
      *
      * @param mixed $varId The numeric ID or alias name
      *
-     * @return \Model|null The NewsCategoryModel or null if there is no category
+     * @return NewsCategoryModel|null The NewsCategoryModel or null if there is no category
      */
     public static function findPublishedByIdOrAlias($varId)
     {
@@ -228,7 +228,7 @@ class NewsCategoryModel extends \Model
             $arrColumns[] = "$t.published=1";
         }
 
-        return static::findBy($arrColumns, [(is_numeric($varId) ? $varId : 0), $varId]);
+        return static::findOneBy($arrColumns, [(is_numeric($varId) ? $varId : 0), $varId]);
     }
 
     /**
@@ -236,7 +236,7 @@ class NewsCategoryModel extends \Model
      *
      * @param array $arrIds An array of category IDs
      *
-     * @return \Model|null The NewsCategoryModel or null if there is no category
+     * @return \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null A collection of models or null if there are no categories
      */
     public static function findPublishedByIds($arrIds)
     {
@@ -260,7 +260,7 @@ class NewsCategoryModel extends \Model
      * @param integer $intPid The parent ID
      * @param array $arrIds An array of categories
      *
-     * @return @return Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null A collection of models or null if there are no categories
+     * @return \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null A collection of models or null if there are no categories
      */
     public static function findPublishedByPidAndIds($intPid, $arrIds)
     {
