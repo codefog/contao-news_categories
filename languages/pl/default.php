@@ -17,6 +17,7 @@
  */
 $GLOBALS['TL_LANG']['MSC']['newsCategories']  = 'Kategorie:';
 $GLOBALS['TL_LANG']['MSC']['resetCategories'] = array('Wszystkie', 'Pokaż aktualności z wszystkich kategorii');
+$GLOBALS['TL_LANG']['MSC']['moreNewsCategory'] = 'Artykuły z kategorii: %s';
 
 /**
  * Content elements
