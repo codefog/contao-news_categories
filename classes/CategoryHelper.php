@@ -99,8 +99,8 @@ class CategoryHelper
             return $objCategory->getUrl($page);
         };
 
-        // Register a function to provide the category tree for the current category
-        $category['tree'] = function () use ($objCategory){
+        // Register a function to provide the category tree for the current category on demand
+        $category['getTree'] = function () use ($objCategory){
             return CategoryHelper::getCategoryTree($objCategory->id);
         };
 
