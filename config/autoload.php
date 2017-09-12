@@ -25,6 +25,7 @@ ClassLoader::addClasses(array
     // Classes
     'NewsCategories\News'                          => 'system/modules/news_categories/classes/News.php',
     'NewsCategories\NewsCategories'                => 'system/modules/news_categories/classes/NewsCategories.php',
+    'NewsCategories\NewsCategoriesChangeLanguageListener'    => 'system/modules/news_categories/classes/NewsCategoriesChangeLanguageListener.php',
 
     // Content elements
     'NewsCategories\ContentNewsFilter'             => 'system/modules/news_categories/elements/ContentNewsFilter.php',

@@ -41,6 +41,10 @@ $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = array('News', 'parseCategoriesTags
 
 if (in_array('changelanguage', \ModuleLoader::getActive())) {
     $GLOBALS['TL_HOOKS']['translateUrlParameters'][] = array('NewsCategories', 'translateUrlParameters');
+    $GLOBALS['TL_HOOKS']['changelanguageNavigation'][] = [
+        'NewsCategoriesChangeLanguageListener',
+        'onChangelanguageNavigation'
+    ];
 }
 
 /**
