@@ -95,29 +95,6 @@ class News extends \Contao\News
     }
 
     /**
-     * Parse news categories insert tags
-     *
-     * @param string $tag
-     *
-     * @return string|bool
-     */
-    public function parseCategoriesTags($tag)
-    {
-        $chunks = trimsplit('::', $tag);
-
-        if ($chunks[0] === 'news_categories') {
-            $className = \NewsCategories\NewsCategories::getModelClass();
-            $param     = NewsCategories::getParameterName();
-
-            if (($newsModel = $className::findPublishedByIdOrAlias(\Input::get($param))) !== null) {
-                return $newsModel->{$chunks[1]};
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * Generate an XML files and save them to the root directory
      * @param array
      */

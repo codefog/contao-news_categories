@@ -1,0 +1,8 @@
+services:
+    codefog_news_categories.listener.change_language:
+        class: Codefog\NewsCategoriesBundle\EventListener\ChangeLanguageListener
+
+    codefog_news_categories.listener.insert_tags:
+        class: Codefog\NewsCategoriesBundle\EventListener\InsertTagsListener
+        arguments:
+            - "@contao.framework"
