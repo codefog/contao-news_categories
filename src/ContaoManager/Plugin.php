@@ -20,6 +20,7 @@ class Plugin implements BundlePluginInterface
             BundleConfig::create(CodefogNewsCategoriesBundle::class)->setLoadAfter([
                 ContaoCoreBundle::class,
                 ContaoNewsBundle::class,
+                'haste',
             ]),
         ];
     }

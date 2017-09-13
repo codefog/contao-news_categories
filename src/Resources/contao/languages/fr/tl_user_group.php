@@ -20,4 +20,4 @@
 /**
  * Legends
  */
-$GLOBALS['TL_LANG']['tl_user_group']['newscategories_legend'] = $GLOBALS['TL_LANG']['tl_user']['newscategories_legend'];
+$GLOBALS['TL_LANG']['tl_user_group']['newsCategories_legend'] = $GLOBALS['TL_LANG']['tl_user']['newsCategories_legend'];

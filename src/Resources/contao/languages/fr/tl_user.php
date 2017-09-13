@@ -22,4 +22,4 @@ $GLOBALS['TL_LANG']['tl_user']['newscategories_default'] = array('Catégories d\
 /**
  * Legends
  */
-$GLOBALS['TL_LANG']['tl_user']['newscategories_legend'] = 'Permissions des catégories d\'actualités';
+$GLOBALS['TL_LANG']['tl_user']['newsCategories_legend'] = 'Permissions des catégories d\'actualités';

@@ -21,4 +21,4 @@ $GLOBALS['TL_LANG']['tl_user']['newscategories_default'] = array('Standard-Nachr
 /**
  * Legends
  */
-$GLOBALS['TL_LANG']['tl_user']['newscategories_legend'] = 'Berechtigungen Nachrichten-Kategorien';
+$GLOBALS['TL_LANG']['tl_user']['newsCategories_legend'] = 'Berechtigungen Nachrichten-Kategorien';

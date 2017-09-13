@@ -21,7 +21,7 @@ $GLOBALS['TL_LANG']['tl_user']['newscategories_default'] = array('Default news c
 /**
  * Legends
  */
-$GLOBALS['TL_LANG']['tl_user']['newscategories_legend'] = 'News categories permissions';
+$GLOBALS['TL_LANG']['tl_user']['newsCategories_legend'] = 'News categories permissions';
 
 /**
  * Reference

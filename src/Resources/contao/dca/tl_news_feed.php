@@ -1,44 +1,38 @@
 <?php
 
 /**
- * news_categories extension for Contao Open Source CMS
- *
- * Copyright (C) 2011-2014 Codefog
- *
- * @package news_categories
- * @author  Webcontext <http://webcontext.com>
- * @author  Codefog <info@codefog.pl>
- * @author  Kamil Kuzminski <kamil.kuzminski@codefog.pl>
- * @license LGPL
+ * Extend palettes
  */
+\Contao\CoreBundle\DataContainer\PaletteManipulator::create()
+    ->addLegend('newsCategories_legend', 'archives_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+    ->addField('categories', 'newsCategories_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->addField('categories_show', 'newsCategories_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->applyToPalette('default', 'tl_news_feed');
 
 /**
- * Extend the tl_news_feed palette
+ * Add fields
  */
-$GLOBALS['TL_DCA']['tl_news_feed']['palettes']['default'] = str_replace('archives;', 'archives,categories,categories_show;', $GLOBALS['TL_DCA']['tl_news_feed']['palettes']['default']);
+$GLOBALS['TL_DCA']['tl_news_feed']['fields']['categories'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_news_feed']['categories'],
+    'exclude' => true,
+    'filter' => true,
+    // @todo – use dca picker instead of checkbox?
+    'inputType' => 'checkbox',
+    'foreignKey' => 'tl_news_category.title',
+    'eval' => ['multiple' => true],
+    'sql' => ['type' => 'blob'],
+];
 
-/**
- * Add field to tl_news_feed
- */
-$GLOBALS['TL_DCA']['tl_news_feed']['fields']['categories'] = array
-(
-    'label'                   => &$GLOBALS['TL_LANG']['tl_news_feed']['categories'],
-    'exclude'                 => true,
-    'filter'                  => true,
-    'inputType'               => 'checkbox',
-    'foreignKey'              => 'tl_news_category.title',
-    'eval'                    => array('multiple'=>true),
-    'sql'                     => "blob NULL"
-);
-
-$GLOBALS['TL_DCA']['tl_news_feed']['fields']['categories_show'] = array
-(
-    'label'                   => &$GLOBALS['TL_LANG']['tl_news_feed']['categories_show'],
-    'exclude'                 => true,
-    'filter'                  => true,
-    'inputType'               => 'select',
-    'options'                 => array('title', 'text_before', 'text_after'),
-    'reference'               => &$GLOBALS['TL_LANG']['tl_news_feed']['categories_show'],
-    'eval'                    => array('includeBlankOption'=>true, 'blankOptionLabel'=>$GLOBALS['TL_LANG']['tl_news_feed']['categories_show']['empty']),
-    'sql'                     => "varchar(16) NOT NULL default ''"
-);
+$GLOBALS['TL_DCA']['tl_news_feed']['fields']['categories_show'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_news_feed']['categories_show'],
+    'exclude' => true,
+    'filter' => true,
+    'inputType' => 'select',
+    'options' => ['title', 'text_before', 'text_after'],
+    'reference' => &$GLOBALS['TL_LANG']['tl_news_feed']['categories_show'],
+    'eval' => [
+        'includeBlankOption' => true,
+        'blankOptionLabel' => $GLOBALS['TL_LANG']['tl_news_feed']['categories_show']['empty'],
+    ],
+    'sql' => ['type' => 'string', 'length' => 16, 'default' => ''],
+];

@@ -19,6 +19,11 @@ $GLOBALS['TL_LANG']['tl_news_feed']['categories']      = array('Categories', 'He
 $GLOBALS['TL_LANG']['tl_news_feed']['categories_show'] = array('Show categories in the feed', 'Here you can choose how the news categories will be showed in the feed.');
 
 /**
+ * Legends
+ */
+$GLOBALS['TL_LANG']['tl_news_feed']['newsCategories_legend'] = 'News categories';
+
+/**
  * Reference
  */
 $GLOBALS['TL_LANG']['tl_news_feed']['categories_show']['empty']       = 'Do not show';
