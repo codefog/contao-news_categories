@@ -70,7 +70,9 @@ class NewsCategories
      */
     public static function checkMultilingual()
     {
-        return (in_array('dc_multilingual', \Config::getInstance()->getActiveModules()) && count(static::getAvailableLanguages()) > 1) ? true : false;
+        $hasDcMultilingual = in_array('dc_multilingual', \Config::getInstance()->getActiveModules()) || class_exists('Terminal42\DcMultilingualBundle\Terminal42DcMultilingualBundle');
+
+        return ($hasDcMultilingual && count(static::getAvailableLanguages()) > 1) ? true : false;
     }
 
     /**
