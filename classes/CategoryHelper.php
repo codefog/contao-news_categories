@@ -14,11 +14,86 @@ use HeimrichHannot\FieldPalette\FieldPaletteModel;
 
 class CategoryHelper
 {
+    private static $newsUrlCache;
+
     private static $treeCache;
 
     private static $idTreeCache;
 
     private static $flatIdTreeCache;
+
+    /**
+     * Get the news url based on the category
+     * @param \Contao\NewsModel $objNews The news item
+     *
+     * @return string|null The news url based on the news archive and primary category or null if category has no news archive related jump to
+     */
+    public static function getCategoryNewsUrl(\Contao\NewsModel $objNews)
+    {
+        if (($primaryCategory = static::getPrimaryNewsCategory($objNews)) === null) {
+            return null;
+        }
+
+        $cacheKey = 'id_' . $objNews->id . '_' . $primaryCategory;
+
+        // Load the URL from cache
+        if (isset(self::$newsUrlCache[$cacheKey])) {
+            return self::$newsUrlCache[$cacheKey];
+        }
+
+        if (($categoryNewsPage = CategoryHelper::getCategoryNewsPage($primaryCategory, $objNews->pid)) === null) {
+            return null;
+        }
+
+        self::$newsUrlCache[$cacheKey] = ampersand(
+            $categoryNewsPage->getAbsoluteUrl(
+                ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/') . ((!\Config::get('disableAlias')
+                    && $objNews->alias != '') ? $objNews->alias : $objNews->id)
+            )
+        );
+
+        return self::$newsUrlCache[$cacheKey];
+    }
+
+    /**
+     * Get the primary news category
+     *
+     * @param \Contao\NewsModel $objNews The news item
+     * @return int|null The category id or null if none is set
+     */
+    public static function getPrimaryNewsCategory(\Contao\NewsModel $objNews)
+    {
+        $categories = deserialize($objNews->categories, true);
+
+        // get from primary category or use first category as primary if not more than 1 category isset
+        return $objNews->primaryCategory ?: ((count($categories) === 1) ? $categories[0] : null);
+    }
+
+    /**
+     * Get the news target page based on the news archive or news category to news archive related jumpTo page
+     * @param int $intCategory The category id
+     * @param int $intArchive The news archive id
+     *
+     * @return \Contao\PageModel|null The page model based on the category to news archive relation or null
+     */
+    public static function getCategoryNewsPage($intCategory, $intArchive)
+    {
+        if (!$intCategory || !$intArchive) {
+            return null;
+        }
+
+        if (($objCategory = NewsCategoryModel::findPublishedByIdOrAlias($intCategory)) === null) {
+            return null;
+        }
+
+        $category = CategoryHelper::prepareCategory($objCategory);
+
+        if ($category === null || !is_array($category['newsTargets']) || !isset($category['newsTargets'][$intArchive])) {
+            return null;
+        }
+
+        return $category['newsTargets'][$intArchive]['categoryNewsPage'];
+    }
 
     /**
      * Get news archive category page by category id and news archive id
@@ -100,7 +175,7 @@ class CategoryHelper
         };
 
         // Register a function to provide the category tree for the current category on demand
-        $category['getTree'] = function () use ($objCategory){
+        $category['getTree'] = function () use ($objCategory) {
             return CategoryHelper::getCategoryTree($objCategory->id);
         };
 

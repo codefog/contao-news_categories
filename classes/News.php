@@ -19,57 +19,13 @@ namespace NewsCategories;
  */
 class News extends \Contao\News
 {
-    /**
-     * URL cache array
-     * @var array
-     */
-    private static $arrCategoryUrlCache = [];
-
-    public function getLink($objItem, $strUrl, $strBase = '')
+    protected function getLink($objItem, $strUrl, $strBase = '')
     {
-        $categories = deserialize($objItem->categories, true);
-
         // overwrite news url with news category news item jumpTo for primary news category
         if ($objItem->source == 'default') {
-            $tree = null;
 
-            // set from primary category or use first category as primary if not more than 1 category isset
-            $primaryCategory = $objItem->primaryCategory ?: ((count($categories) === 1) ? $categories[0] : 0);
-
-            if ($primaryCategory === 0) {
-                return parent::getLink($objItem, $strUrl, $strBase);
-            }
-
-            $cacheKey = 'id_' . $objItem->id . '_' . $primaryCategory;
-
-            // Load the URL from cache
-            if (isset(self::$arrCategoryUrlCache[$cacheKey])) {
-                return self::$arrCategoryUrlCache[$cacheKey];
-            }
-
-            if(($objCategory = NewsCategoryModel::findPublishedByIdOrAlias($primaryCategory)) === null)
-            {
-                return parent::getLink($objItem, $strUrl, $strBase);
-            }
-
-            $category = CategoryHelper::prepareCategory($objCategory);
-
-            if ($category === null || !is_array($category['newsTargets']) || !isset($category['newsTargets'][$objItem->pid])) {
-                return parent::getLink($objItem, $strUrl, $strBase);
-            }
-
-            /**
-             * @var \PageModel $categoryNewsPage
-             */
-            if (($categoryNewsPage = $category['newsTargets'][$objItem->pid]['categoryNewsPage']) !== null) {
-                self::$arrCategoryUrlCache[$cacheKey] = ampersand(
-                    $categoryNewsPage->getAbsoluteUrl(
-                        ((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/' : '/items/') . ((!\Config::get('disableAlias')
-                            && $objItem->alias != '') ? $objItem->alias : $objItem->id)
-                    )
-                );
-
-                return self::$arrCategoryUrlCache[$cacheKey];
+            if (($strCategoryNewsUrl = CategoryHelper::getCategoryNewsUrl($objItem)) !== null) {
+                return $strCategoryNewsUrl;
             }
         }
 
@@ -110,8 +66,7 @@ class News extends \Contao\News
             foreach ($objAllCategories as $objCategory) {
 
                 // set first category as primary category
-                if(!$primaryCategory && count($categories) === 1)
-                {
+                if (!$primaryCategory && count($categories) === 1) {
                     $primaryCategory = $categories[0];
                 }
 

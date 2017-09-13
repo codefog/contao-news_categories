@@ -10,9 +10,6 @@
 
 namespace NewsCategories;
 
-
-use HeimrichHannot\FieldPalette\FieldPaletteModel;
-
 class InsertTags extends News
 {
     /**
