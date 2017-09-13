@@ -16,6 +16,7 @@
  * Register the global save and delete callbacks
  */
 $GLOBALS['TL_DCA']['tl_news']['config']['onload_callback'][] = array('tl_news_categories', 'setAllowedCategories');
+$GLOBALS['TL_DCA']['tl_news']['config']['oncopy_callback'][] = array('tl_news_categories', 'copyCategories');
 $GLOBALS['TL_DCA']['tl_news']['config']['onsubmit_callback'][] = array('tl_news_categories', 'updateCategories');
 $GLOBALS['TL_DCA']['tl_news']['config']['ondelete_callback'][] = array('tl_news_categories', 'deleteCategories');
 
@@ -66,6 +67,25 @@ class tl_news_categories extends Backend
         }
 
         $GLOBALS['TL_DCA']['tl_news']['fields']['categories']['rootNodes'] = $arrCategories;
+    }
+
+    /**
+     * Copy the category relations
+     * @param int $id
+     * @param DataContainer $dc
+     */
+    public function copyCategories($id, DataContainer $dc)
+    {
+        $arrCategories = $this->Database->prepare("SELECT category_id FROM tl_news_categories WHERE news_id=?")
+            ->execute($dc->id)
+            ->fetchEach('category_id');
+
+        if (!empty($arrCategories)) {
+            foreach ($arrCategories as $intCategory) {
+                $this->Database->prepare("INSERT INTO tl_news_categories (category_id, news_id) VALUES (?, ?)")
+                    ->execute($intCategory, $id);
+            }
+        }
     }
 
     /**

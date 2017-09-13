@@ -235,7 +235,7 @@ class ModuleNewsMenu extends \Contao\ModuleNewsMenu
      */
     protected function generateCategoryUrl()
     {
-        $strUrl = \Environment::get('request');
+        $strUrl = \Environment::get('script');
 
         // Get the current "jumpTo" page
         if (($objTarget = $this->objModel->getRelated('jumpTo')) !== null) {

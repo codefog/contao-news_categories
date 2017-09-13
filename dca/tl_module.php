@@ -89,7 +89,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_resetCategories'] = array
     'label'                   => &$GLOBALS['TL_LANG']['tl_module']['news_resetCategories'],
     'exclude'                 => true,
     'inputType'               => 'checkbox',
-    'eval'                    => array('tl_class'=>'w50'),
+    'eval'                    => array('tl_class'=>'clr'),
     'sql'                     => "char(1) NOT NULL default ''"
 );
 
