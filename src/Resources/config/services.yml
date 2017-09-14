@@ -1,0 +1,6 @@
+services:
+    codefog_news_categories.permission_checker:
+        class: Codefog\NewsCategoriesBundle\PermissionChecker
+        public: false
+        arguments:
+            - "@contao.framework"

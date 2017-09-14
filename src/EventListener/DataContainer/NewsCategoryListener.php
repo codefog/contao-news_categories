@@ -2,8 +2,8 @@
 
 namespace Codefog\NewsCategoriesBundle\EventListener\DataContainer;
 
+use Codefog\NewsCategoriesBundle\PermissionChecker;
 use Contao\Backend;
-use Contao\BackendUser;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\DataContainer;
@@ -24,15 +24,25 @@ class NewsCategoryListener
     private $framework;
 
     /**
+     * @var PermissionChecker
+     */
+    private $permissionChecker;
+
+    /**
      * NewsCategoryListener constructor.
      *
-     * @param Connection               $connection
+     * @param Connection $connection
      * @param ContaoFrameworkInterface $framework
+     * @param PermissionChecker $permissionChecker
      */
-    public function __construct(Connection $connection, ContaoFrameworkInterface $framework)
-    {
+    public function __construct(
+        Connection $connection,
+        ContaoFrameworkInterface $framework,
+        PermissionChecker $permissionChecker
+    ) {
         $this->connection = $connection;
         $this->framework = $framework;
+        $this->permissionChecker = $permissionChecker;
     }
 
     /**
@@ -40,11 +50,8 @@ class NewsCategoryListener
      */
     public function onLoadCallback()
     {
-        /** @var BackendUser $user */
-        $user = $this->framework->createInstance(BackendUser::class);
-
-        if (!$user->isAdmin && !$user->hasAccess('manage', 'newscategories')) {
-            throw new AccessDeniedException(sprintf('User ID %s has no permissions to manage news categories', $user->id));
+        if (!$this->permissionChecker->canUserManageNewsCategories()) {
+            throw new AccessDeniedException('User has no permissions to manage news categories');
         }
     }
 

@@ -16,8 +16,20 @@ services:
         arguments:
             - "@database_connection"
 
+    codefog_news_categories.listener.data_container.news_archive:
+        class: Codefog\NewsCategoriesBundle\EventListener\DataContainer\NewsArchiveListener
+        arguments:
+            - "@codefog_news_categories.permission_checker"
+
     codefog_news_categories.listener.data_container.news_category:
         class: Codefog\NewsCategoriesBundle\EventListener\DataContainer\NewsCategoryListener
         arguments:
             - "@database_connection"
             - "@contao.framework"
+            - "@codefog_news_categories.permission_checker"
+
+    codefog_news_categories.listener.data_container.news:
+        class: Codefog\NewsCategoriesBundle\EventListener\DataContainer\NewsListener
+        arguments:
+            - "@database_connection"
+            - "@codefog_news_categories.permission_checker"
