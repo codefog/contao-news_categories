@@ -1,26 +1,11 @@
 <?php
 
-/**
- * news_categories extension for Contao Open Source CMS
- *
- * Copyright (C) 2011-2014 Codefog
- *
- * @package news_categories
- * @link    http://codefog.pl
- * @author  Webcontext <http://webcontext.com>
- * @author  Codefog <info@codefog.pl>
- * @author  Kamil Kuzminski <kamil.kuzminski@codefog.pl>
- * @license LGPL
- */
+namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
-namespace NewsCategories;
+use Contao\ModuleNews;
 
-/**
- * Front end module "news categories".
- */
-class ModuleNewsCategories extends \ModuleNews
+class NewsCategoriesModule extends ModuleNews
 {
-
     /**
      * Template
      * @var string
@@ -51,7 +36,7 @@ class ModuleNewsCategories extends \ModuleNews
      */
     public function generate()
     {
-        if (TL_MODE == 'BE') {
+        if (TL_MODE === 'BE') {
             $objTemplate = new \BackendTemplate('be_wildcard');
 
             $objTemplate->wildcard = '### NEWS CATEGORIES MENU ###';

@@ -1,31 +1,56 @@
 <?php
 
-/**
- * news_categories extension for Contao Open Source CMS
- *
- * Copyright (C) 2011-2014 Codefog
- *
- * @package news_categories
- * @link    http://codefog.pl
- * @author  Webcontext <http://webcontext.com>
- * @author  Codefog <info@codefog.pl>
- * @author  Kamil Kuzminski <kamil.kuzminski@codefog.pl>
- * @license LGPL
- */
+namespace Codefog\NewsCategoriesBundle\Model;
 
-namespace NewsCategories;
+use Contao\PageModel;
 
-/**
- * Reads and writes news categories
- */
-class NewsCategoryMultilingualModel extends \MultilingualModel
+class NewsCategoryModel extends \Model
 {
-
     /**
      * Table name
      * @var string
      */
     protected static $strTable = 'tl_news_category';
+
+    /**
+     * Get the category URL
+     *
+     * @param PageModel $page
+     *
+     * @return string
+     */
+    public function getUrl(PageModel $page)
+    {
+        $page->loadDetails();
+
+        return $page->getFrontendUrl('/' . NewsCategories::getParameterName($page->rootId) . '/' . $this->alias);
+    }
+
+    /**
+     * Get the target page
+     *
+     * @return PageModel|null
+     */
+    public function getTargetPage()
+    {
+        $pageId = $this->jumpTo;
+
+        // Inherit the page from parent if there is none set
+        if (!$pageId) {
+            $pid = $this->pid;
+
+            do {
+                $parent = static::findByPk($pid);
+
+                if ($parent !== null) {
+                    $pid = $parent->pid;
+                    $pageId = $parent->jumpTo;
+                }
+            } while ($pid && !$pageId);
+        }
+
+        return PageModel::findByPk($pageId);
+    }
 
     /**
      * Find published news categories by their archives
@@ -113,18 +138,8 @@ class NewsCategoryMultilingualModel extends \MultilingualModel
             return null;
         }
 
-        $arrLanguageFields = \MultilingualQueryBuilder::getMultilingualFields(static::$strTable);
-        $strPid = \DC_Multilingual::getPidColumnForTable(static::$strTable);
-        $strLang = \DC_Multilingual::getLanguageColumnForTable(static::$strTable);
-
-        $objCategories = \Database::getInstance()->prepare("SELECT c1.*
-                " . (!empty($arrLanguageFields) ? (", " . implode(", ", \MultilingualQueryBuilder::generateFieldsSubquery($arrLanguageFields, 'c1', 'dcm2'))) : "") . "
-                , (SELECT COUNT(*) FROM tl_news_category c2 WHERE c2.pid=c1.id AND c2.id IN (" . implode(',', array_map('intval', $arrIds)) . ")" . (!BE_USER_LOGGED_IN ? " AND c2.published=1" : "") . ") AS subcategories
-                FROM tl_news_category c1
-                " . (!empty($arrLanguageFields) ? (" LEFT OUTER JOIN " . static::$strTable . " AS dcm2 ON (c1.id=dcm2." . $strPid . " AND dcm2.$strLang='" . $GLOBALS['TL_LANGUAGE'] . "')") : "") . "
-                WHERE c1.pid=? AND c1." . $strPid . "=0 AND c1.id IN (" . implode(',', array_map('intval', $arrIds)) . ")" . (!BE_USER_LOGGED_IN ? " AND c1.published=1" : "") .
-                " ORDER BY c1.sorting")
-            ->execute($intPid);
+        $objCategories = \Database::getInstance()->prepare("SELECT c1.*, (SELECT COUNT(*) FROM tl_news_category c2 WHERE c2.pid=c1.id AND c2.id IN (" . implode(',', array_map('intval', $arrIds)) . ")" . (!BE_USER_LOGGED_IN ? " AND c2.published=1" : "") . ") AS subcategories FROM tl_news_category c1 WHERE c1.pid=? AND c1.id IN (" . implode(',', array_map('intval', $arrIds)) . ")" . (!BE_USER_LOGGED_IN ? " AND c1.published=1" : "") . " ORDER BY c1.sorting")
+                                                 ->execute($intPid);
 
         if ($objCategories->numRows < 1) {
             return null;

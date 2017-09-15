@@ -1,22 +1,8 @@
 <?php
 
-/**
- * news_categories extension for Contao Open Source CMS
- *
- * Copyright (C) 2011-2014 Codefog
- *
- * @package news_categories
- * @link    http://codefog.pl
- * @author  Webcontext <http://webcontext.com>
- * @author  Codefog <info@codefog.pl>
- * @author  Kamil Kuzminski <kamil.kuzminski@codefog.pl>
- * @license LGPL
- */
-
-namespace NewsCategories;
+namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
 use Contao\Database;
-
 
 /**
  * Dynamic parent class
@@ -27,13 +13,8 @@ if (class_exists('\news_sorted\ModuleNewsList')) {
     class ParentModuleNewsList extends \Contao\ModuleNewsList {}
 }
 
-
-/**
- * Override the default front end module "news list".
- */
-class ModuleNewsList extends ParentModuleNewsList
+class NewsListModule extends ParentModuleNewsList
 {
-
     /**
      * Set the flag to filter news by categories
      *
@@ -41,7 +22,7 @@ class ModuleNewsList extends ParentModuleNewsList
      */
     public function generate()
     {
-        if (TL_MODE == 'BE') {
+        if (TL_MODE === 'BE') {
             return parent::generate();
         }
 

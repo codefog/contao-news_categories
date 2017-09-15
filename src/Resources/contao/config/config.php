@@ -8,12 +8,21 @@ $GLOBALS['BE_MOD']['content']['news']['tables'][] = 'tl_news_category';
 /**
  * Front end modules
  */
-$GLOBALS['FE_MOD']['news']['newscategories'] = 'ModuleNewsCategories';
+$GLOBALS['FE_MOD']['news']['newsarchive'] = \Codefog\NewsCategoriesBundle\FrontendModule\NewsArchiveModule::class;
+$GLOBALS['FE_MOD']['news']['newscategories'] = \Codefog\NewsCategoriesBundle\FrontendModule\NewsCategoriesModule::class;
+$GLOBALS['FE_MOD']['news']['newslist'] = \Codefog\NewsCategoriesBundle\FrontendModule\NewsListModule::class;
+$GLOBALS['FE_MOD']['news']['newsmenu'] = \Codefog\NewsCategoriesBundle\FrontendModule\NewsMenuModule::class;
 
 /**
  * Content elements
  */
-$GLOBALS['TL_CTE']['includes']['newsfilter'] = 'ContentNewsFilter';
+$GLOBALS['TL_CTE']['includes']['newsfilter'] = \Codefog\NewsCategoriesBundle\ContentElement\NewsFilterElement::class;
+
+/**
+ * Models
+ */
+// @todo – use multilingual if needed?
+$GLOBALS['TL_MODELS']['tl_news_category'] = \Codefog\NewsCategoriesBundle\Model\NewsCategoryModel::class;
 
 /**
  * Hooks

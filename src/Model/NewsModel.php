@@ -1,23 +1,8 @@
 <?php
 
-/**
- * news_categories extension for Contao Open Source CMS
- *
- * Copyright (C) 2011-2014 Codefog
- *
- * @package news_categories
- * @link    http://codefog.pl
- * @author  Webcontext <http://webcontext.com>
- * @author  Codefog <info@codefog.pl>
- * @author  Kamil Kuzminski <kamil.kuzminski@codefog.pl>
- * @license LGPL
- */
+namespace Codefog\NewsCategoriesBundle\Model;
 
-namespace NewsCategories;
-
-/**
- * Reads and writes news and their categories
- */
+// @todo – replace this model by a service
 class NewsModel extends \Contao\NewsModel
 {
 
