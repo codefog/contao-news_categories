@@ -3,23 +3,23 @@
 namespace Codefog\NewsCategoriesBundle;
 
 use Contao\BackendUser;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class PermissionChecker
 {
     /**
-     * @var ContaoFrameworkInterface
+     * @var TokenStorageInterface
      */
-    private $framework;
+    private $tokenStorage;
 
     /**
      * PermissionChecker constructor.
      *
-     * @param ContaoFrameworkInterface $framework
+     * @param TokenStorageInterface $tokenStorage
      */
-    public function __construct(ContaoFrameworkInterface $framework)
+    public function __construct(TokenStorageInterface $tokenStorage)
     {
-        $this->framework = $framework;
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -29,13 +29,7 @@ class PermissionChecker
      */
     public function canUserManageNewsCategories()
     {
-        $user = $this->getUser();
-
-        if (!$user->isAdmin && !$user->hasAccess('manage', 'newscategories')) {
-            return false;
-        }
-
-        return true;
+        return $this->getUser()->hasAccess('manage', 'newscategories');
     }
 
     /**
@@ -66,11 +60,26 @@ class PermissionChecker
      * Get the user
      *
      * @return BackendUser
+     *
+     * @throws \RuntimeException
      */
     private function getUser()
     {
-        /** @var BackendUser $user */
-        $user = $this->framework->createInstance(BackendUser::class);
+        if (null === $this->tokenStorage) {
+            throw new \RuntimeException('No token storage provided');
+        }
+
+        $token = $this->tokenStorage->getToken();
+
+        if (null === $token) {
+            throw new \RuntimeException('No token provided');
+        }
+
+        $user = $token->getUser();
+
+        if (!$user instanceof BackendUser) {
+            throw new \RuntimeException('The token does not contain a back end user object');
+        }
 
         return $user;
     }

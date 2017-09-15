@@ -3,24 +3,13 @@
 namespace Codefog\NewsCategoriesBundle\EventListener;
 
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\FrameworkAwareInterface;
+use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\Input;
 
-class InsertTagsListener
+class InsertTagsListener implements FrameworkAwareInterface
 {
-    /**
-     * @var ContaoFrameworkInterface
-     */
-    private $framework;
-
-    /**
-     * InsertTagsListener constructor.
-     *
-     * @param ContaoFrameworkInterface $framework
-     */
-    public function __construct(ContaoFrameworkInterface $framework)
-    {
-        $this->framework = $framework;
-    }
+    use FrameworkAwareTrait;
 
     /**
      * On replace the insert tags

@@ -6,6 +6,11 @@
 $GLOBALS['BE_MOD']['content']['news']['tables'][] = 'tl_news_category';
 
 /**
+ * Back end form fields
+ */
+$GLOBALS['BE_FFL']['newsCategoriesPicker'] = \Codefog\NewsCategoriesBundle\Widget\NewsCategoriesPickerWidget::class;
+
+/**
  * Front end modules
  */
 $GLOBALS['FE_MOD']['news']['newsarchive'] = \Codefog\NewsCategoriesBundle\FrontendModule\NewsArchiveModule::class;
@@ -31,6 +36,7 @@ $GLOBALS['TL_HOOKS']['changelanguageNavigation'][] = [
     'codefog_news_categories.listener.change_language',
     'onChangeLanguageNavigation',
 ];
+$GLOBALS['TL_HOOKS']['executePostActions'][] = ['codefog_news_categories.listener.ajax', 'onExecutePostActions'];
 $GLOBALS['TL_HOOKS']['parseArticles'][] = ['codefog_news_categories.listener.template', 'onParseArticles'];
 $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = ['codefog_news_categories.listener.insert_tags', 'onReplace'];
 

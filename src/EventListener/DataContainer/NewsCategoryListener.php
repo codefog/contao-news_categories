@@ -6,22 +6,21 @@ use Codefog\NewsCategoriesBundle\PermissionChecker;
 use Contao\Backend;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\FrameworkAwareInterface;
+use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\DataContainer;
 use Contao\Image;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 
-class NewsCategoryListener
+class NewsCategoryListener implements FrameworkAwareInterface
 {
+    use FrameworkAwareTrait;
+
     /**
      * @var Connection
      */
     private $connection;
-
-    /**
-     * @var ContaoFrameworkInterface
-     */
-    private $framework;
 
     /**
      * @var PermissionChecker
@@ -31,17 +30,12 @@ class NewsCategoryListener
     /**
      * NewsCategoryListener constructor.
      *
-     * @param Connection $connection
-     * @param ContaoFrameworkInterface $framework
+     * @param Connection        $connection
      * @param PermissionChecker $permissionChecker
      */
-    public function __construct(
-        Connection $connection,
-        ContaoFrameworkInterface $framework,
-        PermissionChecker $permissionChecker
-    ) {
+    public function __construct(Connection $connection, PermissionChecker $permissionChecker)
+    {
         $this->connection = $connection;
-        $this->framework = $framework;
         $this->permissionChecker = $permissionChecker;
     }
 
