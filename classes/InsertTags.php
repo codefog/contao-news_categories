@@ -32,6 +32,7 @@ class InsertTags extends News
      */
     private $supportedCategoryTags = [
         'news_category_page',
+        'news_category_alias',
         'news_category_teaser',
     ];
 
@@ -197,6 +198,8 @@ class InsertTags extends News
         switch ($insertTag) {
             case 'news_category_page':
                 return $category->jumpTo ?: '';
+            case 'news_category_alias':
+                return $category->alias ?: '';
             case 'news_category_teaser':
                 return $category->teaser ? \StringUtil::encodeEmail(\StringUtil::toHtml5($category->teaser)) : '';
         }
