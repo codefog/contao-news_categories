@@ -102,8 +102,8 @@ class News extends \Contao\News
             $objTemplate->primaryCategoryName = $set['primary']['name'];
             $objTemplate->primaryCategoryHref = $set['primary']['href'];
 
-            if (is_array($set['primary']['newsTargets']) && isset($set['primary']['newsTargets'][$arrArticle['pid']])) {
-                $objTemplate->primaryCategoryHref = $set['primary']['newsTargets'][$arrArticle['pid']]['categoryNewsHref'];
+            if (is_array($set['primary']['archives']) && isset($set['primary']['archives'][$arrArticle['pid']])) {
+                $objTemplate->primaryCategoryHref = $set['primary']['archives'][$arrArticle['pid']]['categoryNewsHref'];
             }
 
 
@@ -113,8 +113,8 @@ class News extends \Contao\News
                 $objTemplate->primaryParentCategoryName = $set['primary']['parent']['name'];
                 $objTemplate->primaryParentCategoryHref = $set['primary']['parent']['href'];
 
-                if (is_array($set['primary']['parent']['newsTargets']) && isset($set['primary']['parent']['newsTargets'][$arrArticle['pid']])) {
-                    $objTemplate->primaryParentCategoryHref = $set['primary']['parent']['newsTargets'][$arrArticle['pid']]['categoryNewsHref'];
+                if (is_array($set['primary']['parent']['archives']) && isset($set['primary']['parent']['archives'][$arrArticle['pid']])) {
+                    $objTemplate->primaryParentCategoryHref = $set['primary']['parent']['archives'][$arrArticle['pid']]['categoryNewsHref'];
                 }
             }
         }
@@ -139,8 +139,8 @@ class News extends \Contao\News
         }
 
         // news category jump to override?
-        if ($arrArticle['source'] == 'default' && ($objTemplate->categoriesTree['primary']) !== null && isset($objTemplate->categoriesTree['primary']['newsTargets'][$arrArticle['pid']])) {
-            $target = $objTemplate->categoriesTree['primary']['newsTargets'][$arrArticle['pid']];
+        if ($arrArticle['source'] == 'default' && ($objTemplate->categoriesTree['primary']) !== null && isset($objTemplate->categoriesTree['primary']['archives'][$arrArticle['pid']])) {
+            $target = $objTemplate->categoriesTree['primary']['archives'][$arrArticle['pid']];
 
             /**
              * @var \PageModel $targetNewsPage

@@ -32,7 +32,7 @@ use HeimrichHannot\FieldPalette\FieldPaletteModel;
  * @property boolean $hideInReader
  * @property boolean $excludeInRelated
  * @property string $jumpTo
- * @property string $jumpToNews
+ * @property string $archiveConfig
  * @property boolean $published
  *
  * @method static NewsCategoryModel|null findById($id, array $opt = [])
@@ -49,7 +49,7 @@ use HeimrichHannot\FieldPalette\FieldPaletteModel;
  * @method static NewsCategoryModel|null findOneByHideInReader($val, array $opt = [])
  * @method static NewsCategoryModel|null findOneByExcludeInRelated($val, array $opt = [])
  * @method static NewsCategoryModel|null findOneByJumpTo($val, array $opt = [])
- * @method static NewsCategoryModel|null findOneByJumpToNews($val, array $opt = [])
+ * @method static NewsCategoryModel|null findOneByArchiveConfig($val, array $opt = [])
  * @method static NewsCategoryModel|null findOneByPublished($val, array $opt = [])
  *
  * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByPid($val, array $opt = [])
@@ -63,7 +63,7 @@ use HeimrichHannot\FieldPalette\FieldPaletteModel;
  * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByHideInReader($val, array $opt = [])
  * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByExcludeInRelated($val, array $opt = [])
  * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByJumpTo($val, array $opt = [])
- * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByJumpToNews($val, array $opt = [])
+ * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByArchiveConfig($val, array $opt = [])
  * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findByPublished($val, array $opt = [])
  * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findMultipleByIds($val, array $opt = [])
  * @method static \Model\Collection|NewsCategoryModel[]|NewsCategoryModel|null findBy($col, $val, array $opt = [])
@@ -81,7 +81,7 @@ use HeimrichHannot\FieldPalette\FieldPaletteModel;
  * @method static integer countByHideInReader($val, array $opt = [])
  * @method static integer countByExcludeInRelated($val, array $opt = [])
  * @method static integer countByJumpTo($val, array $opt = [])
- * @method static integer countByJumpToNews($val, array $opt = [])
+ * @method static integer countByArchiveConfig($val, array $opt = [])
  * @method static integer countByPublished($val, array $opt = [])
  *
  * @author Rico Kaltofen <https://github.com/heimrichhannot>
@@ -142,11 +142,11 @@ class NewsCategoryModel extends \Model
     }
 
     /**
-     * Get the target pages by news_archives
+     * Get the config by news_archive with target pages and teaser
      *
      * @return array|null
      */
-    public function getNewsTargetPages()
+    public function getNewsCategoryConfig()
     {
         static $cache;
 
@@ -169,6 +169,14 @@ class NewsCategoryModel extends \Model
 
             if ($references->news_category_news_jumpTo > 0) {
                 $target['news'] = \PageModel::findByPk($references->news_category_news_jumpTo);
+            }
+
+            $target['hasTeaser'] = false;
+
+            if ($references->news_category_teaser != '') {
+                $target['hasTeaser'] = true;
+                $target['teaser']    = \StringUtil::toHtml5($references->news_category_teaser);
+                $target['teaser']    = \StringUtil::encodeEmail($references->news_category_teaser);
             }
 
             $pages[$references->news_category_news_archive] = $target;

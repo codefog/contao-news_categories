@@ -21,19 +21,23 @@ $GLOBALS['TL_LANG']['tl_news_category']['title']                      = ['Titre'
 $GLOBALS['TL_LANG']['tl_news_category']['frontendTitle']              = ['Titre front office', 'Ici, vous pouvez saisir un titre de catégorie qui sera affiché en front office.'];
 $GLOBALS['TL_LANG']['tl_news_category']['alias']                      = ['Alias', 'L\'alias de la catégorie est une référence unique qui peut être utilisé à la place de son ID numérique.'];
 $GLOBALS['TL_LANG']['tl_news_category']['cssClass']                   = ['Classe CSS', 'Ici, vous pouvez saisir une classe CSS qui sera ajoutée à la catégorie dans le front office'];
+$GLOBALS['TL_LANG']['tl_news_category']['teaser']                     = ['Accroche', 'Affectez un accroche pour cette catégorie.'];
 $GLOBALS['TL_LANG']['tl_news_category']['jumpTo']                     = ['Page de redirection', 'Ici, vous pouvez choisir la page à laquelle les visiteurs seront redirigés lorsque vous cliquez sur un lien de catégorie dans le modèle d\'actualité.'];
-$GLOBALS['TL_LANG']['tl_news_category']['jumpToNews']                 = ['Redéfinir les paramètres pour les actualités dans cette catégorie', 'Configurez les redirections pour les actualités dans cette catégorie.'];
+$GLOBALS['TL_LANG']['tl_news_category']['archiveConfig']              = ['Paramètres d\'archives pour les actualités dans cette catégorie', 'Configurez les redirections pour les actualités dans cette catégorie en fonction de l\'archive d\'actualité.'];
 $GLOBALS['TL_LANG']['tl_news_category']['news_category_news_archive'] = ['Archives des actualités', 'Sélectionnez une archive d\'actualité.'];
 $GLOBALS['TL_LANG']['tl_news_category']['news_category_jumpTo']       = ['Page de redirection de catégorie', 'Sélectionnez une page sur laquelle un visiteur sera redirigé lorsqu\'un lien de catégorie est cliqué dans le modèle d\'actualité.'];
 $GLOBALS['TL_LANG']['tl_news_category']['news_category_news_jumpTo']  = ['Page de redirection des actualités', 'Sélectionnez une page de redirection pour les actualités dans cette catégorie et les archives d\'actualité.'];
+$GLOBALS['TL_LANG']['tl_news_category']['news_category_teaser']       = ['Accroche', 'Assignez un accroche pour cette catégorie et les archives d\'actualité.'];
 $GLOBALS['TL_LANG']['tl_news_category']['published']                  = ['Publier la catégorie', 'Rendre la catégorie visible sur le site internet.'];
 
 /**
  * Legends
  */
-$GLOBALS['TL_LANG']['tl_news_category']['title_legend']    = 'Titre et alias';
-$GLOBALS['TL_LANG']['tl_news_category']['redirect_legend'] = 'Paramètres de redirection';
-$GLOBALS['TL_LANG']['tl_news_category']['publish_legend']  = 'Paramètres de publication';
+$GLOBALS['TL_LANG']['tl_news_category']['title_legend']        = 'Titre et alias';
+$GLOBALS['TL_LANG']['tl_news_category']['teaser_legend']       = 'Accroche';
+$GLOBALS['TL_LANG']['tl_news_category']['redirect_legend']     = 'Paramètres de redirection';
+$GLOBALS['TL_LANG']['tl_news_category']['news_archive_legend'] = 'Paramètres d\'archivage';
+$GLOBALS['TL_LANG']['tl_news_category']['publish_legend']      = 'Paramètres de publication';
 
 /**
  * Buttons

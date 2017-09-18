@@ -22,7 +22,8 @@ class InsertTags extends News
         'news_archive_category_page_title',
         'news_archive_category_page_link',
         'news_archive_category_page_name',
-        'news_archive_category_page_link_open'
+        'news_archive_category_page_link_open',
+        'news_archive_category_teaser',
     ];
 
     /**
@@ -31,6 +32,7 @@ class InsertTags extends News
      */
     private $supportedCategoryTags = [
         'news_category_page',
+        'news_category_teaser',
     ];
 
     /**
@@ -195,6 +197,8 @@ class InsertTags extends News
         switch ($insertTag) {
             case 'news_category_page':
                 return $category->jumpTo ?: '';
+            case 'news_category_teaser':
+                return $category->teaser ? \StringUtil::encodeEmail(\StringUtil::toHtml5($category->teaser)) : '';
         }
 
         return '';
@@ -251,6 +255,17 @@ class InsertTags extends News
                 }
 
                 return \Controller::replaceInsertTags('{{link_open::' . $page->id . '}}');
+            case 'news_archive_category_teaser':
+                if (($config = CategoryHelper::getNewsArchiveCategoryConfig($category->id, $newsArchive->id)) === null) {
+                    return '';
+                }
+
+                if ($config->news_category_teaser == '') {
+                    return '';
+                }
+
+                return \StringUtil::encodeEmail(\StringUtil::toHtml5($config->news_category_teaser));
+                break;
         }
 
         return '';

@@ -88,11 +88,11 @@ class CategoryHelper
 
         $category = CategoryHelper::prepareCategory($objCategory);
 
-        if ($category === null || !is_array($category['newsTargets']) || !isset($category['newsTargets'][$intArchive])) {
+        if ($category === null || !is_array($category['archives']) || !isset($category['archives'][$intArchive])) {
             return null;
         }
 
-        return $category['newsTargets'][$intArchive]['categoryNewsPage'];
+        return $category['archives'][$intArchive]['categoryNewsPage'];
     }
 
     /**
@@ -104,11 +104,23 @@ class CategoryHelper
      */
     public static function getNewsArchiveCategoryPage($idCategory, $idArchive)
     {
-        if (($references = FieldPaletteModel::findPublishedByPidAndTableAndField($idCategory, 'tl_news_category', 'jumpToNews', ['limit' => 1], ['news_category_news_archive = ?'], [$idArchive])) !== null) {
+        if (($references = static::getNewsArchiveCategoryConfig($idCategory, $idArchive)) !== null) {
             return \PageModel::findPublishedById($references->news_category_news_jumpTo);
         }
 
         return null;
+    }
+
+    /**
+     * Get news archive category configuration
+     * @param int $idCategory The category id
+     * @param int $idArchive The news archive id
+     *
+     * @return FieldPaletteModel|null The config model
+     */
+    public static function getNewsArchiveCategoryConfig($idCategory, $idArchive)
+    {
+        return FieldPaletteModel::findPublishedByPidAndTableAndField($idCategory, 'tl_news_category', 'archiveConfig', ['limit' => 1], ['news_category_news_archive = ?'], [$idArchive]);
     }
 
     /**
@@ -127,6 +139,14 @@ class CategoryHelper
         $category['href']          = '';
         $category['hrefWithParam'] = '';
         $category['targetPage']    = null;
+        $category['hasTeaser']     = false;
+
+        // Clean the RTE output
+        if ($category['teaser'] != '') {
+            $category['hasTeaser'] = true;
+            $category['teaser']    = \StringUtil::toHtml5($category['teaser']);
+            $category['teaser']    = \StringUtil::encodeEmail($category['teaser']);
+        }
 
         // Add the target page
         if (($targetPage = $objCategory->getTargetPage()) !== null) {
@@ -136,37 +156,42 @@ class CategoryHelper
         }
 
         // Add the news target page
-        if (($targetPages = $objCategory->getNewsTargetPages()) !== null) {
-            $targets = [];
+        if (($archiveConfigs = $objCategory->getNewsCategoryConfig()) !== null) {
+            $archives = [];
 
-            foreach ($targetPages as $news_archive => $targetPage) {
-                if ($targetPage['category'] === null && $targetPage['news'] === null) {
-                    continue;
-                }
-
-                $target = [];
+            foreach ($archiveConfigs as $news_archive => $archiveConfig) {
+                $archive = [];
 
                 /**
                  * @var \PageModel $targetCategoryPage
                  */
-                if (($targetCategoryPage = $targetPage['category']) !== null) {
-                    $target['categoryHref']          = $targetCategoryPage->getFrontendUrl();
-                    $target['categoryHrefWithParam'] = $targetCategoryPage->getFrontendUrl('/' . NewsCategories::getParameterName() . '/' . $category['alias']);
-                    $target['categoryPage']          = $targetCategoryPage;
+                if (($targetCategoryPage = $archiveConfig['category']) !== null) {
+                    $archive['categoryHref']          = $targetCategoryPage->getFrontendUrl();
+                    $archive['categoryHrefWithParam'] = $targetCategoryPage->getFrontendUrl('/' . NewsCategories::getParameterName() . '/' . $category['alias']);
+                    $archive['categoryPage']          = $targetCategoryPage;
                 }
 
                 /**
                  * @var \PageModel $targetNewsPage
                  */
-                if (($targetNewsPage = $targetPage['news']) !== null) {
-                    $target['categoryNewsHref'] = $targetNewsPage->getFrontendUrl();
-                    $target['categoryNewsPage'] = $targetNewsPage;
+                if (($targetNewsPage = $archiveConfig['news']) !== null) {
+                    $archive['categoryNewsHref'] = $targetNewsPage->getFrontendUrl();
+                    $archive['categoryNewsPage'] = $targetNewsPage;
                 }
 
-                $targets[$news_archive] = $target;
+                if ($archiveConfig['hasTeaser']) {
+                    $archive['hasTeaser'] = true;
+                    $archive['teaser']    = $archiveConfig['teaser'];
+                }
+
+                if (empty($archive)) {
+                    continue;
+                }
+
+                $archives[$news_archive] = $archive;
             }
 
-            $category['newsTargets'] = $targets;
+            $category['archives'] = $archives;
         }
 
         // Register a function to generate category URL manually

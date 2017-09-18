@@ -94,7 +94,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
                 'label'      => &$GLOBALS['TL_LANG']['tl_news_category']['delete'],
                 'href'       => 'act=delete',
                 'icon'       => 'delete.gif',
-                'attributes' => 'onclick="if(!confirm(\''.$GLOBALS['TL_LANG']['MSC']['deleteConfirm'].'\'))return false;Backend.getScrollOffset()"',
+                'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
             ],
             'show'       => [
                 'label' => &$GLOBALS['TL_LANG']['tl_news_category']['show'],
@@ -112,7 +112,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
 
     // Palettes
     'palettes' => [
-        'default' => '{title_legend},title,alias,frontendTitle,cssClass;{modules_legend:hide},hideInList,hideInReader,excludeInRelated;{redirect_legend:hide},jumpTo,jumpToNews;{publish_legend},published',
+        'default' => '{title_legend},title,alias,frontendTitle,cssClass;{teaser_legend:hide},teaser;{modules_legend:hide},hideInList,hideInReader,excludeInRelated;{redirect_legend:hide},jumpTo;{news_archive_legend:hide},archiveConfig;{publish_legend},published',
     ],
 
     // Fields
@@ -163,6 +163,14 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
             'eval'      => ['maxlength' => 128, 'tl_class' => 'w50'],
             'sql'       => "varchar(128) NOT NULL default ''",
         ],
+        'teaser'           => [
+            'label'     => &$GLOBALS['TL_LANG']['tl_news_category']['teaser'],
+            'exclude'   => true,
+            'search'    => true,
+            'inputType' => 'textarea',
+            'eval'      => ['rte' => 'tinyMCE', 'tl_class' => 'clr'],
+            'sql'       => "text NULL"
+        ],
         'hideInList'       => [
             'label'     => &$GLOBALS['TL_LANG']['tl_news_category']['hideInList'],
             'exclude'   => true,
@@ -192,8 +200,8 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
             'sql'       => "int(10) unsigned NOT NULL default '0'",
             'relation'  => ['type' => 'hasOne', 'load' => 'eager', 'table' => 'tl_page'],
         ],
-        'jumpToNews'       => [
-            'label'        => &$GLOBALS['TL_LANG']['tl_news_category']['jumpToNews'],
+        'archiveConfig'    => [
+            'label'        => &$GLOBALS['TL_LANG']['tl_news_category']['archiveConfig'],
             'exclude'      => true,
             'inputType'    => 'fieldpalette',
             'foreignKey'   => 'tl_fieldpalette.id',
@@ -211,7 +219,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
                     ],
                 ],
                 'palettes' => [
-                    'default' => 'news_category_news_archive,news_category_jumpTo,news_category_news_jumpTo',
+                    'default' => 'news_category_news_archive,news_category_jumpTo,news_category_news_jumpTo,news_category_teaser',
                 ],
                 'fields'   => [
                     'news_category_news_archive' => [
@@ -237,6 +245,14 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
                         'relation'  => ['type' => 'hasOne', 'load' => 'eager', 'table' => 'tl_page'],
                         'sql'       => "int(10) unsigned NOT NULL default '0'",
                     ],
+                    'news_category_teaser'       => [
+                        'label'     => &$GLOBALS['TL_LANG']['tl_news_category']['news_category_teaser'],
+                        'exclude'   => true,
+                        'search'    => true,
+                        'inputType' => 'textarea',
+                        'eval'      => ['rte' => 'tinyMCE', 'tl_class' => 'clr'],
+                        'sql'       => "text NULL"
+                    ]
                 ],
             ],
         ],
@@ -305,11 +321,11 @@ class tl_news_category extends Backend
         if ($arrClipboard !== false
             && ($arrClipboard['mode'] == 'cut' && ($cr == 1 || $arrClipboard['id'] == $row['id'])
                 || $arrClipboard['mode'] == 'cutAll'
-                   && ($cr == 1
-                       || in_array(
-                           $row['id'],
-                           $arrClipboard['id']
-                       )))) {
+                && ($cr == 1
+                    || in_array(
+                        $row['id'],
+                        $arrClipboard['id']
+                    )))) {
             $disablePA = true;
             $disablePI = true;
         }
@@ -322,19 +338,19 @@ class tl_news_category extends Backend
 
         if ($row['id'] > 0) {
             $return = $disablePA
-                ? Image::getHtml('pasteafter_.gif').' '
-                : '<a href="'.$this->addToUrl(
-                    'act='.$arrClipboard['mode'].'&amp;mode=1&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')
-                ).'" title="'.specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteAfter
-                  .'</a> ';
+                ? Image::getHtml('pasteafter_.gif') . ' '
+                : '<a href="' . $this->addToUrl(
+                    'act=' . $arrClipboard['mode'] . '&amp;mode=1&amp;pid=' . $row['id'] . (!is_array($arrClipboard['id']) ? '&amp;id=' . $arrClipboard['id'] : '')
+                ) . '" title="' . specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteafter'][1], $row['id'])) . '" onclick="Backend.getScrollOffset()">' . $imagePasteAfter
+                . '</a> ';
         }
 
-        return $return.($disablePI
-                ? Image::getHtml('pasteinto_.gif').' '
-                : '<a href="'.$this->addToUrl(
-                    'act='.$arrClipboard['mode'].'&amp;mode=2&amp;pid='.$row['id'].(!is_array($arrClipboard['id']) ? '&amp;id='.$arrClipboard['id'] : '')
-                ).'" title="'.specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteinto'][1], $row['id'])).'" onclick="Backend.getScrollOffset()">'.$imagePasteInto
-                  .'</a> ');
+        return $return . ($disablePI
+                ? Image::getHtml('pasteinto_.gif') . ' '
+                : '<a href="' . $this->addToUrl(
+                    'act=' . $arrClipboard['mode'] . '&amp;mode=2&amp;pid=' . $row['id'] . (!is_array($arrClipboard['id']) ? '&amp;id=' . $arrClipboard['id'] : '')
+                ) . '" title="' . specialchars(sprintf($GLOBALS['TL_LANG'][$table]['pasteinto'][1], $row['id'])) . '" onclick="Backend.getScrollOffset()">' . $imagePasteInto
+                . '</a> ');
     }
 
     /**
@@ -349,7 +365,7 @@ class tl_news_category extends Backend
      */
     public function generateLabel($arrRow, $strLabel, $objDca, $strAttributes)
     {
-        return \Image::getHtml('iconPLAIN.gif', '', $strAttributes).' '.$strLabel;
+        return \Image::getHtml('iconPLAIN.gif', '', $strAttributes) . ' ' . $strLabel;
     }
 
     /**
@@ -387,7 +403,7 @@ class tl_news_category extends Backend
 
         // Add ID to alias
         if ($objAlias->numRows && $autoAlias) {
-            $varValue .= '-'.$dc->id;
+            $varValue .= '-' . $dc->id;
         }
 
         return $varValue;
@@ -412,13 +428,13 @@ class tl_news_category extends Backend
             $this->redirect($this->getReferer());
         }
 
-        $href .= '&amp;tid='.$row['id'].'&amp;state='.($row['published'] ? '' : 1);
+        $href .= '&amp;tid=' . $row['id'] . '&amp;state=' . ($row['published'] ? '' : 1);
 
         if (!$row['published']) {
             $icon = 'invisible.gif';
         }
 
-        return '<a href="'.$this->addToUrl($href).'" title="'.specialchars($title).'"'.$attributes.'>'.$this->generateImage($icon, $label).'</a> ';
+        return '<a href="' . $this->addToUrl($href) . '" title="' . specialchars($title) . '"' . $attributes . '>' . $this->generateImage($icon, $label) . '</a> ';
     }
 
     /**
@@ -445,10 +461,10 @@ class tl_news_category extends Backend
         }
 
         // Update the database
-        $this->Database->prepare("UPDATE tl_news_category SET tstamp=".time().", published='".($blnVisible ? 1 : '')."' WHERE id=?")->execute($intId);
+        $this->Database->prepare("UPDATE tl_news_category SET tstamp=" . time() . ", published='" . ($blnVisible ? 1 : '') . "' WHERE id=?")->execute($intId);
 
         $objVersions->create();
-        $this->log('A new version of record "tl_news_category.id='.$intId.'" has been created'.$this->getParentEntries('tl_news_category', $intId), __METHOD__, TL_GENERAL);
+        $this->log('A new version of record "tl_news_category.id=' . $intId . '" has been created' . $this->getParentEntries('tl_news_category', $intId), __METHOD__, TL_GENERAL);
     }
 
     public function getNewsArchives(\DataContainer $dc)
@@ -461,7 +477,7 @@ class tl_news_category extends Backend
 
         $options = $archives->fetchEach('title');
 
-        $existing = \HeimrichHannot\FieldPalette\FieldPaletteModel::findByPidAndTableAndField($dc->activeRecord->pid, 'tl_news_category', 'jumpToNews');
+        $existing = \HeimrichHannot\FieldPalette\FieldPaletteModel::findByPidAndTableAndField($dc->activeRecord->pid, 'tl_news_category', 'archiveConfig');
 
         if ($existing !== null) {
             while ($existing->next()) {
@@ -494,10 +510,10 @@ class tl_news_category extends Backend
             return $strLabel;
         }
 
-        $strLabel = $archive->title.' ['.$GLOBALS['TL_LANG']['tl_news_category']['news_category_jumpTo'][0].'->'.$page->getFrontendUrl().']';
+        $strLabel = $archive->title . ' [' . $GLOBALS['TL_LANG']['tl_news_category']['news_category_jumpTo'][0] . '->' . $page->getFrontendUrl() . ']';
 
         if ($pageNews !== null) {
-            $strLabel .= '['.$GLOBALS['TL_LANG']['tl_news_category']['news_category_news_jumpTo'][0].' -> '.$pageNews->getFrontendUrl().']';
+            $strLabel .= '[' . $GLOBALS['TL_LANG']['tl_news_category']['news_category_news_jumpTo'][0] . ' -> ' . $pageNews->getFrontendUrl() . ']';
         }
 
         return $strLabel;
