@@ -154,7 +154,7 @@ class NewsCategoryModel extends \Model
             return $cache[$this->id];
         }
 
-        if (($references = FieldPaletteModel::findPublishedByPidAndTableAndField($this->id, 'tl_news_category', 'jumpToNews')) === null) {
+        if (($references = FieldPaletteModel::findPublishedByPidAndTableAndField($this->id, 'tl_news_category', 'archiveConfig')) === null) {
             return null;
         }
 
