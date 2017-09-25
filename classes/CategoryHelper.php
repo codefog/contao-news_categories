@@ -24,11 +24,11 @@ class CategoryHelper
 
     /**
      * Get the news url based on the category
-     * @param \Contao\NewsModel $objNews The news item
+     * @param \Contao\NewsModel|\Contao\Model\Collection $objNews The news item
      *
      * @return string|null The news url based on the news archive and primary category or null if category has no news archive related jump to
      */
-    public static function getCategoryNewsUrl(\Contao\NewsModel $objNews)
+    public static function getCategoryNewsUrl($objNews)
     {
         if (($primaryCategory = static::getPrimaryNewsCategory($objNews)) === null) {
             return null;
@@ -58,10 +58,10 @@ class CategoryHelper
     /**
      * Get the primary news category
      *
-     * @param \Contao\NewsModel $objNews The news item
+     * @param \Contao\NewsModel|\Contao\Model\Collection $objNews The news item
      * @return int|null The category id or null if none is set
      */
-    public static function getPrimaryNewsCategory(\Contao\NewsModel $objNews)
+    public static function getPrimaryNewsCategory($objNews)
     {
         $categories = deserialize($objNews->categories, true);
 
