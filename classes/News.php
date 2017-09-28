@@ -24,7 +24,7 @@ class News extends \Contao\News
         // overwrite news url with news category news item jumpTo for primary news category
         if ($objItem->source == 'default') {
 
-            if (($strCategoryNewsUrl = CategoryHelper::getCategoryNewsUrl($objItem)) !== null) {
+            if (($strCategoryNewsUrl = CategoryHelper::getCategoryNewsUrl($objItem->current())) !== null) {
                 return $strCategoryNewsUrl;
             }
         }

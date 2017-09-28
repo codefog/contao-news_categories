@@ -38,7 +38,7 @@ $GLOBALS['TL_CTE']['includes']['newsfilter'] = 'ContentNewsFilter';
  */
 $GLOBALS['TL_HOOKS']['parseArticles']['news_categories']     = ['News', 'addCategoriesToTemplate'];
 $GLOBALS['TL_HOOKS']['replaceInsertTags']['news_categories'] = ['News', 'parseCategoriesTags'];
-$GLOBALS['TL_HOOKS']['replaceInsertTags']['news_categories'] = ['InsertTags', 'replace'];
+$GLOBALS['TL_HOOKS']['replaceInsertTags']['news_categories'] = ['NewsCategories\InsertTags', 'replace'];
 
 
 if (in_array('changelanguage', \ModuleLoader::getActive()))

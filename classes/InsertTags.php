@@ -268,7 +268,6 @@ class InsertTags extends News
                 }
 
                 return \StringUtil::encodeEmail(\StringUtil::toHtml5($config->news_category_teaser));
-                break;
         }
 
         return '';
