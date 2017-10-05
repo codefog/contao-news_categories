@@ -161,7 +161,7 @@ class NewsCategoryListener implements FrameworkAwareInterface
             return $imageAdapter->getHtml($type . '_.svg') . ' ';
         }
 
-        $url = sprintf('act=%s&amp;mode=%s&amp;pid=%s', $clipboard['mode'], ($type === 'pasteafter' ? 1 : 0), $row['id']);
+        $url = sprintf('act=%s&amp;mode=%s&amp;pid=%s', $clipboard['mode'], ($type === 'pasteafter' ? 1 : 2), $row['id']);
 
         // Add the ID to the URL if the clipboard does not contain any
         if (!is_array($clipboard['id'])) {
