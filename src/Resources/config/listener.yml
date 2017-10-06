@@ -15,6 +15,9 @@ services:
 
     codefog_news_categories.listener.template:
         class: Codefog\NewsCategoriesBundle\EventListener\TemplateListener
+        arguments:
+            - "@codefog_news_categories.factory"
+            - "@codefog_news_categories.url_generator"
 
     # Data container
     codefog_news_categories.listener.data_container.content:

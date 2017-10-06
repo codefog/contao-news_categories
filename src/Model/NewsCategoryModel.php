@@ -2,55 +2,15 @@
 
 namespace Codefog\NewsCategoriesBundle\Model;
 
-use Contao\PageModel;
+use Contao\Model;
 
-class NewsCategoryModel extends \Model
+class NewsCategoryModel extends Model
 {
     /**
      * Table name
      * @var string
      */
     protected static $strTable = 'tl_news_category';
-
-    /**
-     * Get the category URL
-     *
-     * @param PageModel $page
-     *
-     * @return string
-     */
-    public function getUrl(PageModel $page)
-    {
-        $page->loadDetails();
-
-        return $page->getFrontendUrl('/' . NewsCategories::getParameterName($page->rootId) . '/' . $this->alias);
-    }
-
-    /**
-     * Get the target page
-     *
-     * @return PageModel|null
-     */
-    public function getTargetPage()
-    {
-        $pageId = $this->jumpTo;
-
-        // Inherit the page from parent if there is none set
-        if (!$pageId) {
-            $pid = $this->pid;
-
-            do {
-                $parent = static::findByPk($pid);
-
-                if ($parent !== null) {
-                    $pid = $parent->pid;
-                    $pageId = $parent->jumpTo;
-                }
-            } while ($pid && !$pageId);
-        }
-
-        return PageModel::findByPk($pageId);
-    }
 
     /**
      * Find published news categories by their archives

@@ -4,6 +4,9 @@ services:
             calls:
                 - ["setFramework", ["@contao.framework"]]
 
+    codefog_news_categories.factory:
+        class: Codefog\NewsCategoriesBundle\NewsCategoryFactory
+
     codefog_news_categories.picker:
         class: Codefog\NewsCategoriesBundle\Picker\NewsCategoriesPickerProvider
         public: false
@@ -20,3 +23,6 @@ services:
         public: false
         arguments:
             - "@security.token_storage"
+
+    codefog_news_categories.url_generator:
+        class: Codefog\NewsCategoriesBundle\UrlGenerator

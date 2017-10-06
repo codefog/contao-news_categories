@@ -2,79 +2,123 @@
 
 namespace Codefog\NewsCategoriesBundle\EventListener;
 
+use Codefog\NewsCategoriesBundle\NewsCategory;
+use Codefog\NewsCategoriesBundle\NewsCategoryFactory;
+use Codefog\NewsCategoriesBundle\UrlGenerator;
+use Contao\FrontendTemplate;
+use Contao\Module;
+use Contao\PageModel;
+use Contao\StringUtil;
+
 class TemplateListener
 {
     /**
-     * Add the categories to the template
-     * @param object
-     * @param array
-     * @param object $module
+     * @var NewsCategoryFactory
      */
-    public function addCategoriesToTemplate($objTemplate, $arrData, $module)
+    private $factory;
+
+    /**
+     * @var UrlGenerator
+     */
+    private $urlGenerator;
+
+    /**
+     * TemplateListener constructor.
+     *
+     * @param NewsCategoryFactory $factory
+     * @param UrlGenerator        $urlGenerator
+     */
+    public function __construct(NewsCategoryFactory $factory, UrlGenerator $urlGenerator)
     {
-        if (isset($arrData['categories'])) {
-            $arrCategories = array();
-            $arrCategoriesList = array();
-            $categories = deserialize($arrData['categories']);
+        $this->factory = $factory;
+        $this->urlGenerator = $urlGenerator;
+    }
 
-            if (is_array($categories) && !empty($categories)) {
-                $strClass = \NewsCategories\NewsCategories::getModelClass();
-                $objCategories = $strClass::findPublishedByIds($categories);
+    /**
+     * On parse the articles
+     *
+     * @param FrontendTemplate $template
+     * @param array            $data
+     * @param Module           $module
+     */
+    public function onParseArticles(FrontendTemplate $template, array $data, Module $module)
+    {
+        if (isset($data['categories'])
+            && count($ids = StringUtil::deserialize($data['categories'], true)) > 0
+            && count($categories = $this->factory->createMultiple($ids)) > 0
+        ) {
+            $this->addCategoriesToTemplate($template, $module, $categories);
+        }
+    }
 
-                // Add the categories to template
-                if ($objCategories !== null) {
-                    /** @var NewsCategoryModel $objCategory */
-                    foreach ($objCategories as $objCategory) {
-                        // Skip the category in news list or archive module
-                        if (($module instanceof \ModuleNewsList || $module instanceof \ModuleNewsArchive)
-                            && $objCategory->hideInList
-                        ) {
-                            continue;
-                        }
+    /**
+     * Add categories to the template
+     *
+     * @param FrontendTemplate $template
+     * @param Module           $module
+     * @param array            $categories
+     */
+    private function addCategoriesToTemplate(FrontendTemplate $template, Module $module, array $categories)
+    {
+        $data = [];
+        $list = [];
 
-                        // Skip the category in the news reader module
-                        if ($module instanceof \ModuleNewsReader && $objCategory->hideInReader) {
-                            continue;
-                        }
-
-                        $strName = $objCategory->frontendTitle ? $objCategory->frontendTitle : $objCategory->title;
-
-                        $arrCategories[$objCategory->id] = $objCategory->row();
-                        $arrCategories[$objCategory->id]['name'] = $strName;
-                        $arrCategories[$objCategory->id]['class'] = 'category_' . $objCategory->id . ($objCategory->cssClass ? (' ' . $objCategory->cssClass) : '');
-                        $arrCategories[$objCategory->id]['linkTitle'] = specialchars($strName);
-                        $arrCategories[$objCategory->id]['href'] = '';
-                        $arrCategories[$objCategory->id]['hrefWithParam'] = '';
-                        $arrCategories[$objCategory->id]['targetPage'] = null;
-
-                        // Add the target page
-                        if (($targetPage = $objCategory->getTargetPage()) !== null) {
-                            $arrCategories[$objCategory->id]['href'] = $targetPage->getFrontendUrl();
-                            $arrCategories[$objCategory->id]['hrefWithParam'] = $targetPage->getFrontendUrl('/' . NewsCategories::getParameterName() . '/' . $objCategory->alias);
-                            $arrCategories[$objCategory->id]['targetPage'] = $targetPage;
-                        }
-
-                        // Register a function to generate category URL manually
-                        $arrCategories[$objCategory->id]['getUrl'] = function(\PageModel $page) use ($objCategory) {
-                            return $objCategory->getUrl($page);
-                        };
-
-                        // Generate categories list
-                        $arrCategoriesList[$objCategory->id] = $strName;
-                    }
-
-                    // Sort the category list alphabetically
-                    asort($arrCategoriesList);
-
-                    // Sort the categories alphabetically
-                    uasort($arrCategories, function($a, $b) {
-                        return strnatcasecmp($a['name'], $b['name']);
-                    });
-                }
+        /** @var NewsCategory $category */
+        foreach ($categories as $category) {
+            // Skip the categories not eligible for the current module
+            if (!$category->isVisibleForModule($module)) {
+                continue;
             }
 
-            $objTemplate->categories = $arrCategories;
-            $objTemplate->categoriesList = $arrCategoriesList;
+            $model = $category->getModel();
+
+            $data[$model->id] = $this->generateCategoryData($category);
+            $list[$model->id] = $category->getTitle();
         }
+
+        // Sort the categories data alphabetically
+        uasort($data, function($a, $b) {
+            return strnatcasecmp($a['name'], $b['name']);
+        });
+
+        // Sort the category list alphabetically
+        asort($list);
+
+        $template->categories = $data;
+        $template->categoriesList = $list;
+    }
+
+    /**
+     * Generate the category data
+     *
+     * @param NewsCategory $category
+     *
+     * @return array
+     */
+    private function generateCategoryData(NewsCategory $category)
+    {
+        $data = $category->getModel()->row();
+
+        $data['instance'] = $category;
+        $data['name'] = $category->getTitle();
+        $data['class'] = $category->getCssClass();
+        $data['linkTitle'] = StringUtil::specialchars($data['name']);
+        $data['href'] = '';
+        $data['hrefWithParam'] = '';
+        $data['targetPage'] = null;
+
+        // Add the target page and URLs
+        if (($targetPage = $this->urlGenerator->getTargetPage($category)) !== null) {
+            $data['href'] = $targetPage->getFrontendUrl();
+            $data['hrefWithParam'] = $this->urlGenerator->generateUrl($category, $targetPage);
+            $data['targetPage'] = $targetPage;
+        }
+
+        // Register a function to generate category URL manually
+        $data['generateUrl'] = function(PageModel $page, $absolute = false) use ($category) {
+            return $this->urlGenerator->generateUrl($category, $page, $absolute);
+        };
+
+        return $data;
     }
 }

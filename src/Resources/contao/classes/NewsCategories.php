@@ -43,28 +43,6 @@ class NewsCategories
     }
 
     /**
-     * Translate the URL parameters
-     *
-     * @param array  $params
-     * @param string $language
-     * @param array  $rootPage
-     *
-     * @return array
-     */
-    public function translateUrlParameters(array $params, $language, array $rootPage)
-    {
-        $currentParam = static::getParameterName();
-        $newParam = static::getParameterName($rootPage['id']);
-
-        if (isset($params['url'][$currentParam]) && $currentParam != $newParam) {
-            $params['url'][$newParam] = $params['url'][$currentParam];
-            unset($params['url'][$currentParam]);
-        }
-
-        return $params;
-    }
-
-    /**
      * Check if the system is multilingual installed
      * @return boolean
      */
