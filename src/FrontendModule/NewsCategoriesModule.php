@@ -210,7 +210,7 @@ class NewsCategoriesModule extends ModuleNews
             $arrRow['title'] = specialchars($strTitle, true);
             $arrRow['linkTitle'] = specialchars($strTitle, true);
             $arrRow['link'] = $strTitle;
-            $arrRow['href'] = ampersand(sprintf($strUrl, ($GLOBALS['TL_CONFIG']['disableAlias'] ? $objCategories->id : $objCategories->alias)));
+            $arrRow['href'] = ampersand(urlencode(sprintf(urldecode($strUrl), ($GLOBALS['TL_CONFIG']['disableAlias'] ? $objCategories->id : $objCategories->alias))));
             $arrRow['quantity'] = 0;
 
             // Get the news quantity
