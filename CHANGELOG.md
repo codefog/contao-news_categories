@@ -10,3 +10,7 @@ Fork from `https://github.com/codefog/contao-news_categories` 2.8.6
 - category jumpTo based on news_archive (can be set on each news category for each news archive)
 - news url jumpTo based on news_archive and primary category (can be set on each news category for each news archive) -> news url will be linked to the primary category jumpTo page instead of archive jumpTo page
 - news categories can now have a teaser (also based on news_archive, can be set on each news category for each news archive)
+- several new inserttags
+
+### Changed
+- adjusted composer.json and dependencies
