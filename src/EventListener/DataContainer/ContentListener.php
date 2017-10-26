@@ -9,16 +9,16 @@ class ContentListener
     /**
      * @var Connection
      */
-    private $connection;
+    private $db;
 
     /**
      * ContentListener constructor.
      *
-     * @param Connection $connection
+     * @param Connection $db
      */
-    public function __construct(Connection $connection)
+    public function __construct(Connection $db)
     {
-        $this->connection = $connection;
+        $this->db = $db;
     }
 
     /**
@@ -29,7 +29,7 @@ class ContentListener
     public function onGetNewsModules()
     {
         $modules = [];
-        $records = $this->connection->fetchAll("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type IN ('newslist', 'newsarchive') ORDER BY t.name, m.name");
+        $records = $this->db->fetchAll("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type IN ('newslist', 'newsarchive') ORDER BY t.name, m.name");
 
         foreach ($records as $record) {
             $modules[$record['theme']][$record['id']] = sprintf('%s (ID %s)', $record['name'], $record['id']);

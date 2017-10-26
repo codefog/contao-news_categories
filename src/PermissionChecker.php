@@ -27,7 +27,7 @@ class PermissionChecker
      *
      * @return bool
      */
-    public function canUserManageNewsCategories()
+    public function canUserManageCategories()
     {
         return $this->getUser()->hasAccess('manage', 'newscategories');
     }
@@ -37,7 +37,7 @@ class PermissionChecker
      *
      * @return bool
      */
-    public function canUserAssignNewsCategories()
+    public function canUserAssignCategories()
     {
         $user = $this->getUser();
 

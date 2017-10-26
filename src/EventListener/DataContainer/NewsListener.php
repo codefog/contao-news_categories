@@ -12,7 +12,7 @@ class NewsListener
     /**
      * @var Connection
      */
-    private $connection;
+    private $db;
 
     /**
      * @var PermissionChecker
@@ -22,12 +22,12 @@ class NewsListener
     /**
      * NewsListener constructor.
      *
-     * @param Connection        $connection
+     * @param Connection        $db
      * @param PermissionChecker $permissionChecker
      */
-    public function __construct(Connection $connection, PermissionChecker $permissionChecker)
+    public function __construct(Connection $db, PermissionChecker $permissionChecker)
     {
-        $this->connection = $connection;
+        $this->db = $db;
         $this->permissionChecker = $permissionChecker;
     }
 
@@ -42,7 +42,7 @@ class NewsListener
             return;
         }
 
-        $categories = $this->connection->fetchColumn('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=(SELECT pid FROM tl_news WHERE id=?)', [$dc->id]);
+        $categories = $this->db->fetchColumn('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=(SELECT pid FROM tl_news WHERE id=?)', [$dc->id]);
 
         if (!$categories || count($categories = StringUtil::deserialize($categories, true)) === 0) {
             return;
@@ -59,10 +59,10 @@ class NewsListener
      */
     public function onCopyCallback($id, DataContainer $dc)
     {
-        $categories = $this->connection->fetchAll('SELECT category_id FROM tl_news_categories WHERE news_id=?', [$dc->id]);
+        $categories = $this->db->fetchAll('SELECT category_id FROM tl_news_categories WHERE news_id=?', [$dc->id]);
 
         foreach ($categories as $category) {
-            $this->connection->insert('tl_news_categories', [
+            $this->db->insert('tl_news_categories', [
                 'category_id' => $category['category_id'],
                 'news_id' => $id,
             ]);
@@ -77,7 +77,7 @@ class NewsListener
     public function onSubmitCallback(DataContainer $dc)
     {
         // Use the default categories if the user is not allowed to edit the field directly
-        if (!$this->permissionChecker->canUserAssignNewsCategories()) {
+        if (!$this->permissionChecker->canUserAssignCategories()) {
             // Return if the record is not new
             if ($dc->activeRecord->tstamp) {
                 return;
@@ -97,13 +97,13 @@ class NewsListener
 
         // Add new categories
         foreach ($categories as $category) {
-            $this->connection->insert('tl_news_categories', [
+            $this->db->insert('tl_news_categories', [
                 'category_id' => $category,
                 'news_id' => $dc->id,
             ]);
         }
 
-        $this->connection->update('tl_news', ['categories' => serialize($categories)], ['id' => $dc->id]);
+        $this->db->update('tl_news', ['categories' => serialize($categories)], ['id' => $dc->id]);
     }
 
     /**
@@ -123,6 +123,6 @@ class NewsListener
      */
     private function deleteCategories($newsId)
     {
-        $this->connection->delete('tl_news_categories', ['news_id' => $newsId]);
+        $this->db->delete('tl_news_categories', ['news_id' => $newsId]);
     }
 }

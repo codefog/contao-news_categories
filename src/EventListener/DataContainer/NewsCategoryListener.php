@@ -20,7 +20,7 @@ class NewsCategoryListener implements FrameworkAwareInterface
     /**
      * @var Connection
      */
-    private $connection;
+    private $db;
 
     /**
      * @var PermissionChecker
@@ -30,12 +30,12 @@ class NewsCategoryListener implements FrameworkAwareInterface
     /**
      * NewsCategoryListener constructor.
      *
-     * @param Connection        $connection
+     * @param Connection        $db
      * @param PermissionChecker $permissionChecker
      */
-    public function __construct(Connection $connection, PermissionChecker $permissionChecker)
+    public function __construct(Connection $db, PermissionChecker $permissionChecker)
     {
-        $this->connection = $connection;
+        $this->db = $db;
         $this->permissionChecker = $permissionChecker;
     }
 
@@ -44,7 +44,7 @@ class NewsCategoryListener implements FrameworkAwareInterface
      */
     public function onLoadCallback()
     {
-        if (!$this->permissionChecker->canUserManageNewsCategories()) {
+        if (!$this->permissionChecker->canUserManageCategories()) {
             throw new AccessDeniedException('User has no permissions to manage news categories');
         }
     }
@@ -123,7 +123,7 @@ class NewsCategoryListener implements FrameworkAwareInterface
             $value = StringUtil::standardize(StringUtil::restoreBasicEntities($title));
         }
 
-        $exists = $this->connection->fetchColumn('SELECT id FROM tl_news_category WHERE alias=? AND id!=?', [$value, $dc->id]);
+        $exists = $this->db->fetchColumn('SELECT id FROM tl_news_category WHERE alias=? AND id!=?', [$value, $dc->id]);
 
         // Check whether the category alias exists
         if ($exists) {
