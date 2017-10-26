@@ -15,7 +15,6 @@ $GLOBALS['BE_FFL']['newsCategoriesPicker'] = \Codefog\NewsCategoriesBundle\Widge
  */
 $GLOBALS['FE_MOD']['news']['newsarchive'] = \Codefog\NewsCategoriesBundle\FrontendModule\NewsArchiveModule::class;
 $GLOBALS['FE_MOD']['news']['newscategories'] = \Codefog\NewsCategoriesBundle\FrontendModule\NewsCategoriesModule::class;
-$GLOBALS['FE_MOD']['news']['newslist'] = \Codefog\NewsCategoriesBundle\FrontendModule\NewsListModule::class;
 $GLOBALS['FE_MOD']['news']['newsmenu'] = \Codefog\NewsCategoriesBundle\FrontendModule\NewsMenuModule::class;
 
 /**
@@ -37,6 +36,8 @@ $GLOBALS['TL_HOOKS']['changelanguageNavigation'][] = [
     'onChangeLanguageNavigation',
 ];
 $GLOBALS['TL_HOOKS']['executePostActions'][] = ['codefog_news_categories.listener.ajax', 'onExecutePostActions'];
+$GLOBALS['TL_HOOKS']['newsListCountItems'][] = ['codefog_news_categories.listener.news', 'onNewsListCountItems'];
+$GLOBALS['TL_HOOKS']['newsListFetchItems'][] = ['codefog_news_categories.listener.news', 'onNewsListFetchItems'];
 $GLOBALS['TL_HOOKS']['parseArticles'][] = ['codefog_news_categories.listener.template', 'onParseArticles'];
 $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = ['codefog_news_categories.listener.insert_tags', 'onReplace'];
 

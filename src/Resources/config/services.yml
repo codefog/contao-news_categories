@@ -24,5 +24,8 @@ services:
         arguments:
             - "@security.token_storage"
 
+    codefog_news_categories.search_builder:
+        class: Codefog\NewsCategoriesBundle\SearchBuilder
+
     codefog_news_categories.url_generator:
         class: Codefog\NewsCategoriesBundle\UrlGenerator

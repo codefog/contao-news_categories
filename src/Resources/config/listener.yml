@@ -13,6 +13,11 @@ services:
     codefog_news_categories.listener.insert_tags:
         class: Codefog\NewsCategoriesBundle\EventListener\InsertTagsListener
 
+    codefog_news_categories.listener.news:
+        class: Codefog\NewsCategoriesBundle\EventListener\NewsListener
+        arguments:
+          - "@codefog_news_categories.search_builder"
+
     codefog_news_categories.listener.template:
         class: Codefog\NewsCategoriesBundle\EventListener\TemplateListener
         arguments:

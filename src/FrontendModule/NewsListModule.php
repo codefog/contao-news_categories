@@ -3,17 +3,9 @@
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
 use Contao\Database;
+use Contao\ModuleNewsList;
 
-/**
- * Dynamic parent class
- */
-if (class_exists('\news_sorted\ModuleNewsList')) {
-    class ParentModuleNewsList extends \news_sorted\ModuleNewsList {}
-} else {
-    class ParentModuleNewsList extends \Contao\ModuleNewsList {}
-}
-
-class NewsListModule extends ParentModuleNewsList
+class NewsListModule extends ModuleNewsList
 {
     /**
      * Set the flag to filter news by categories
