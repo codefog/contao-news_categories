@@ -2,6 +2,7 @@
 
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
+use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\ModuleNews;
 
 class NewsCategoriesModule extends ModuleNews
@@ -77,8 +78,7 @@ class NewsCategoriesModule extends ModuleNews
      */
     protected function compile()
     {
-        $strClass = \NewsCategories\NewsCategories::getModelClass();
-        $objCategories = $strClass::findPublishedByParent($this->news_archives, ($this->news_customCategories ? deserialize($this->news_categories) : null));
+        $objCategories = NewsCategoryModel::findPublishedByParent($this->news_archives, ($this->news_customCategories ? deserialize($this->news_categories) : null));
 
         // Return if no categories are found
         if ($objCategories === null) {
@@ -137,8 +137,7 @@ class NewsCategoriesModule extends ModuleNews
      */
     protected function renderNewsCategories($intPid, $arrIds, $strUrl, $intLevel=1)
     {
-        $strClass = \NewsCategories\NewsCategories::getModelClass();
-        $objCategories = $strClass::findPublishedByPidAndIds($intPid, $arrIds);
+        $objCategories = NewsCategoryModel::findPublishedByPidAndIds($intPid, $arrIds);
 
         if ($objCategories === null) {
             return '';

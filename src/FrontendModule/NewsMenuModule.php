@@ -2,6 +2,7 @@
 
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
+use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\ModuleNewsMenu;
 
 class NewsMenuModule extends ModuleNewsMenu
@@ -267,8 +268,7 @@ class NewsMenuModule extends ModuleNewsMenu
 
         // Current category
         if ($this->news_filterCategories && \Input::get($strParam)) {
-            $strClass = \NewsCategories\NewsCategories::getModelClass();
-            $objCategory = $strClass::findPublishedByIdOrAlias(\Input::get($strParam));
+            $objCategory = NewsCategoryModel::findPublishedByIdOrAlias(\Input::get($strParam));
 
             if ($objCategory === null) {
                 return array();

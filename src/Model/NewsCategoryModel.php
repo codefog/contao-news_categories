@@ -2,9 +2,18 @@
 
 namespace Codefog\NewsCategoriesBundle\Model;
 
-use Contao\Model;
+use Contao\System;
 
-class NewsCategoryModel extends Model
+/**
+ * Use the multilingual model if available
+ */
+if (array_key_exists('Terminal42DcMultilingualBundle', System::getContainer()->getParameter('kernel.bundles'))) {
+    class ParentModel extends \Terminal42\DcMultilingualBundle\Model\Multilingual {}
+} else {
+    class ParentModel extends \Contao\Model {}
+}
+
+class NewsCategoryModel extends ParentModel
 {
     /**
      * Table name

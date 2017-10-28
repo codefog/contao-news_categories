@@ -215,24 +215,19 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
     ],
 ];
 
-// @todo – find out what to do with this
 /**
  * Enable multilingual features
  */
-//if (\NewsCategories\NewsCategories::checkMultilingual()) {
-//
-//    // Config
-//    $GLOBALS['TL_DCA']['tl_news_category']['config']['dataContainer'] = 'Multilingual';
-//    $GLOBALS['TL_DCA']['tl_news_category']['config']['language'] = \NewsCategories\NewsCategories::getAvailableLanguages();
-//    $GLOBALS['TL_DCA']['tl_news_category']['config']['langColumn'] = 'language';
-//    $GLOBALS['TL_DCA']['tl_news_category']['config']['langPid'] = 'lid';
-//    $GLOBALS['TL_DCA']['tl_news_category']['config']['fallbackLang'] = \NewsCategories\NewsCategories::getFallbackLanguage();
-//    $GLOBALS['TL_DCA']['tl_news_category']['config']['sql']['keys']['language'] = 'index';
-//    $GLOBALS['TL_DCA']['tl_news_category']['config']['sql']['keys']['lid'] = 'index';
-//
-//    // Fields
-//    $GLOBALS['TL_DCA']['tl_news_category']['fields']['language']['sql'] = "varchar(2) NOT NULL default ''";
-//    $GLOBALS['TL_DCA']['tl_news_category']['fields']['lid']['sql'] = "int(10) unsigned NOT NULL default '0'";
-//    $GLOBALS['TL_DCA']['tl_news_category']['fields']['title']['eval']['translatableFor'] = '*';
-//    $GLOBALS['TL_DCA']['tl_news_category']['fields']['frontendTitle']['eval']['translatableFor'] = '*';
-//}
+if (array_key_exists('Terminal42DcMultilingualBundle', System::getContainer()->getParameter('kernel.bundles'))) {
+    // Config
+    $GLOBALS['TL_DCA']['tl_news_category']['config']['dataContainer'] = 'Multilingual';
+    $GLOBALS['TL_DCA']['tl_news_category']['config']['langColumn'] = 'language';
+    $GLOBALS['TL_DCA']['tl_news_category']['config']['langPid'] = 'lid';
+    $GLOBALS['TL_DCA']['tl_news_category']['config']['sql']['keys']['language,lid'] = 'index';
+
+    // Fields
+    $GLOBALS['TL_DCA']['tl_news_category']['fields']['language']['sql'] = "varchar(5) NOT NULL default ''";
+    $GLOBALS['TL_DCA']['tl_news_category']['fields']['lid']['sql'] = "int(10) unsigned NOT NULL default '0'";
+    $GLOBALS['TL_DCA']['tl_news_category']['fields']['title']['eval']['translatableFor'] = '*';
+    $GLOBALS['TL_DCA']['tl_news_category']['fields']['frontendTitle']['eval']['translatableFor'] = '*';
+}
