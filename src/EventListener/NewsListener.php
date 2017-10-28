@@ -10,7 +10,7 @@ use Contao\Model\Collection;
 use Contao\ModuleNewsList;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class InsertTagsListener implements FrameworkAwareInterface
+class NewsListener implements FrameworkAwareInterface
 {
     use FrameworkAwareTrait;
 

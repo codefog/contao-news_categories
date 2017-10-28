@@ -19,29 +19,6 @@ namespace NewsCategories;
  */
 class NewsCategories
 {
-
-    /**
-     * Get the parameter name
-     *
-     * @param int $rootId
-     *
-     * @return string
-     */
-    public static function getParameterName($rootId = null)
-    {
-        if (!$rootId) {
-            $rootId = $GLOBALS['objPage']->rootId;
-        }
-
-        $rootPage = \PageModel::findByPk($rootId);
-
-        if ($rootPage === null) {
-            return '';
-        }
-
-        return $rootPage->newsCategories_param ?: 'category';
-    }
-
     /**
      * Check if the system is multilingual installed
      * @return boolean

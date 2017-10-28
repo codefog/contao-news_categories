@@ -2,10 +2,26 @@
 
 namespace Codefog\NewsCategoriesBundle\EventListener;
 
+use Codefog\NewsCategoriesBundle\UrlGenerator;
 use Terminal42\ChangeLanguage\Event\ChangelanguageNavigationEvent;
 
 class ChangeLanguageListener
 {
+    /**
+     * @var UrlGenerator
+     */
+    private $urlGenerator;
+
+    /**
+     * ChangeLanguageListener constructor.
+     *
+     * @param UrlGenerator $urlGenerator
+     */
+    public function __construct(UrlGenerator $urlGenerator)
+    {
+        $this->urlGenerator = $urlGenerator;
+    }
+
     /**
      * On change language navigation
      *
@@ -13,8 +29,8 @@ class ChangeLanguageListener
      */
     public function onChangelanguageNavigation(ChangelanguageNavigationEvent $event)
     {
-        $currentParam = \NewsCategories\NewsCategories::getParameterName();
-        $newParam = \NewsCategories\NewsCategories::getParameterName($event->getNavigationItem()->getRootPage()->id);
+        $currentParam = $this->urlGenerator->getParameterName();
+        $newParam = $this->urlGenerator->getParameterName($event->getNavigationItem()->getRootPage()->id);
 
         if ($currentParam === $newParam) {
             return;

@@ -9,13 +9,18 @@ services:
 
     codefog_news_categories.listener.change_language:
         class: Codefog\NewsCategoriesBundle\EventListener\ChangeLanguageListener
+        arguments:
+            - "@codefog_news_categories.url_generator"
 
     codefog_news_categories.listener.insert_tags:
         class: Codefog\NewsCategoriesBundle\EventListener\InsertTagsListener
+        arguments:
+            - "@codefog_news_categories.url_generator"
 
     codefog_news_categories.listener.news:
         class: Codefog\NewsCategoriesBundle\EventListener\NewsListener
         arguments:
+          - "@request_stack"
           - "@codefog_news_categories.search_builder"
 
     codefog_news_categories.listener.template:

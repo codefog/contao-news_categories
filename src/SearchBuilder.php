@@ -15,6 +15,21 @@ class SearchBuilder implements FrameworkAwareInterface
     use FrameworkAwareTrait;
 
     /**
+     * @var UrlGenerator
+     */
+    private $urlGenerator;
+
+    /**
+     * SearchBuilder constructor.
+     *
+     * @param UrlGenerator $urlGenerator
+     */
+    public function __construct(UrlGenerator $urlGenerator)
+    {
+        $this->urlGenerator = $urlGenerator;
+    }
+
+    /**
      * Get the criteria for module
      *
      * @param array     $archives
@@ -44,8 +59,7 @@ class SearchBuilder implements FrameworkAwareInterface
 
             // Filter by active category
             if ($module->news_filterCategories) {
-                // @todo – change this
-                $param = \NewsCategories\NewsCategories::getParameterName();
+                $param = $this->urlGenerator->getParameterName();
 
                 if ($request->query->has($param)) {
                     $category = NewsCategoryModel::findPublishedByIdOrAlias($request->query->get($param));

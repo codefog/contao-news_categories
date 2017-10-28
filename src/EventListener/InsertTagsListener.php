@@ -2,6 +2,7 @@
 
 namespace Codefog\NewsCategoriesBundle\EventListener;
 
+use Codefog\NewsCategoriesBundle\UrlGenerator;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
@@ -10,6 +11,21 @@ use Contao\Input;
 class InsertTagsListener implements FrameworkAwareInterface
 {
     use FrameworkAwareTrait;
+
+    /**
+     * @var UrlGenerator
+     */
+    private $urlGenerator;
+
+    /**
+     * InsertTagsListener constructor.
+     *
+     * @param UrlGenerator $urlGenerator
+     */
+    public function __construct(UrlGenerator $urlGenerator)
+    {
+        $this->urlGenerator = $urlGenerator;
+    }
 
     /**
      * On replace the insert tags
@@ -26,7 +42,7 @@ class InsertTagsListener implements FrameworkAwareInterface
             /** @var Input $input */
             $input = $this->framework->getAdapter(Input::class);
 
-            if ($alias = $input->get(\NewsCategories\NewsCategories::getParameterName())) {
+            if ($alias = $input->get($this->urlGenerator->getParameterName())) {
                 $className = \NewsCategories\NewsCategories::getModelClass();
 
                 if (($category = $className::findPublishedByIdOrAlias($input->get($alias))) !== null) {
