@@ -27,6 +27,7 @@ services:
     codefog_news_categories.search_builder:
         class: Codefog\NewsCategoriesBundle\SearchBuilder
         arguments:
+            - "@database_connection"
             - "@codefog_news_categories.url_generator"
 
     codefog_news_categories.url_generator:

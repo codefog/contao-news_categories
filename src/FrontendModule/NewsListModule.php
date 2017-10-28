@@ -2,11 +2,19 @@
 
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
-use Contao\Database;
+use Contao\Input;
 use Contao\ModuleNewsList;
+use Contao\NewsModel;
+use Contao\StringUtil;
 
 class NewsListModule extends ModuleNewsList
 {
+    /**
+     * Current news for future reference in search builder
+     * @var NewsModel
+     */
+    public $currentNews;
+
     /**
      * Set the flag to filter news by categories
      *
@@ -23,16 +31,7 @@ class NewsListModule extends ModuleNewsList
             return $this->generateRelated();
         }
 
-        $GLOBALS['NEWS_FILTER_CATEGORIES'] = $this->news_filterCategories ? true : false;
-        $GLOBALS['NEWS_FILTER_DEFAULT']    = deserialize($this->news_filterDefault, true);
-        $GLOBALS['NEWS_FILTER_PRESERVE']   = $this->news_filterPreserve;
-
-        $buffer = parent::generate();
-
-        // Cleanup the $GLOBALS array (see #57)
-        unset($GLOBALS['NEWS_FILTER_CATEGORIES'], $GLOBALS['NEWS_FILTER_DEFAULT'], $GLOBALS['NEWS_FILTER_PRESERVE']);
-
-        return $buffer;
+        return parent::generate();
     }
 
     /**
@@ -45,46 +44,22 @@ class NewsListModule extends ModuleNewsList
      */
     protected function generateRelated()
     {
-        // Set the item from the auto_item parameter
-        if (!isset($_GET['items']) && $GLOBALS['TL_CONFIG']['useAutoItem'] && isset($_GET['auto_item'])) {
-            \Input::setGet('items', \Input::get('auto_item'));
-        }
-
-        // Return if there is no item specified
-        if (!\Input::get('items')) {
-            return '';
-        }
-
-        $this->news_archives = $this->sortOutProtected(deserialize($this->news_archives));
+        $this->news_archives = $this->sortOutProtected(StringUtil::deserialize($this->news_archives, true));
 
         // Return if there are no archives
-        if (!is_array($this->news_archives) || empty($this->news_archives)) {
+        if (count($this->news_archives) === 0) {
             return '';
         }
 
-        $news = \NewsModel::findPublishedByParentAndIdOrAlias(\Input::get('items'), $this->news_archives);
+        $alias = Input::get('items') ?: Input::get('auto_item');
 
         // Return if the news item was not found
-        if ($news === null) {
+        if (($news = NewsModel::findPublishedByParentAndIdOrAlias($alias, $this->news_archives)) === null) {
             return '';
         }
 
-        $categories = deserialize($news->categories, true);
-
-        // Check if there are categories to be excluded
-        if (count($categories) > 0) {
-            $exclude = Database::getInstance()->execute("SELECT id FROM tl_news_category WHERE excludeInRelated=1");
-
-            while ($exclude->next()) {
-                if (($index = array_search($exclude->id, $categories)) !== false) {
-                    unset($categories[$index]);
-                }
-            }
-        }
-
-        $GLOBALS['NEWS_FILTER_CATEGORIES'] = false;
-        $GLOBALS['NEWS_FILTER_DEFAULT']    = (count($categories) > 0) ? $categories : [0];
-        $GLOBALS['NEWS_FILTER_EXCLUDE']    = array($news->id);
+        // Store the news item for further reference
+        $this->currentNews = $news;
 
         return parent::generate();
     }

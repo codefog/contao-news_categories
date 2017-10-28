@@ -25,7 +25,6 @@ $GLOBALS['TL_CTE']['includes']['newsfilter'] = \Codefog\NewsCategoriesBundle\Con
 /**
  * Models
  */
-// @todo – use multilingual if needed?
 $GLOBALS['TL_MODELS']['tl_news_category'] = \Codefog\NewsCategoriesBundle\Model\NewsCategoryModel::class;
 
 /**

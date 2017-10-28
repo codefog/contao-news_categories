@@ -96,7 +96,7 @@ class NewsListener implements FrameworkAwareInterface
      */
     private function getCriteria(array $archives, $featured, ModuleNewsList $module)
     {
-        return $this->searchBuilder->getCriteriaForModule(
+        return $this->searchBuilder->getCriteriaForListModule(
             $archives,
             $featured,
             $module,

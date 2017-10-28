@@ -49,6 +49,8 @@ class Criteria
      */
     public function setBasicCriteria(array $archives, $featured)
     {
+        $archives = $this->parseIds($archives);
+
         if (count($archives) === 0) {
             throw new NoNewsException();
         }
@@ -87,6 +89,8 @@ class Criteria
      */
     public function setDefaultCategories(array $defaultCategories)
     {
+        $defaultCategories = $this->parseIds($defaultCategories);
+
         if (count($defaultCategories) === 0) {
             throw new NoNewsException();
         }
@@ -128,6 +132,8 @@ class Criteria
      */
     public function setCategory($category, $preserveDefault = false)
     {
+        $category = (int) $category;
+
         // @todo – change this
         $categoriesMapper = \Codefog\NewsCategoriesBundle\Model\NewsModel::getCategoriesCache();
 
@@ -144,6 +150,24 @@ class Criteria
         $t = $this->getNewsModelAdapter()->getTable();
 
         $this->columns[] = "$t.id IN(" . implode(',', $categoriesMapper[$category]) . ")";
+    }
+
+    /**
+     * Set the excluded news IDs
+     *
+     * @param array $newsIds
+     */
+    public function setExcludedNews(array $newsIds)
+    {
+        $newsIds = $this->parseIds($newsIds);
+
+        if (count($newsIds) === 0) {
+            throw new NoNewsException();
+        }
+
+        $t = $this->getNewsModelAdapter()->getTable();
+
+        $this->columns[] = "$t.id NOT IN (" . implode(',', $newsIds) . ")";
     }
 
     /**
@@ -201,5 +225,21 @@ class Criteria
         $adapter = $this->framework->getAdapter(NewsModel::class);
 
         return $adapter;
+    }
+
+    /**
+     * Parse the record IDs
+     *
+     * @param array $ids
+     *
+     * @return array
+     */
+    private function parseIds(array $ids)
+    {
+        $ids = array_map('intval', $ids);
+        $ids = array_filter($ids);
+        $ids = array_unique($ids);
+
+        return array_values($ids);
     }
 }
