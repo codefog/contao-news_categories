@@ -51,7 +51,6 @@ class SearchBuilder implements FrameworkAwareInterface
     {
         $criteria = new Criteria($this->framework);
 
-        // DO NOT CHANGE THE ORDER OF CRITERIA METHODS!!!
         try {
             $criteria->setBasicCriteria($archives, $featured);
 
