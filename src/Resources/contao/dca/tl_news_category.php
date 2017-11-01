@@ -226,8 +226,8 @@ if (array_key_exists('Terminal42DcMultilingualBundle', System::getContainer()->g
     $GLOBALS['TL_DCA']['tl_news_category']['config']['sql']['keys']['language,lid'] = 'index';
 
     // Fields
-    $GLOBALS['TL_DCA']['tl_news_category']['fields']['language']['sql'] = "varchar(5) NOT NULL default ''";
-    $GLOBALS['TL_DCA']['tl_news_category']['fields']['lid']['sql'] = "int(10) unsigned NOT NULL default '0'";
+    $GLOBALS['TL_DCA']['tl_news_category']['fields']['language']['sql'] = ['type' => 'string', 'length' => 5];
+    $GLOBALS['TL_DCA']['tl_news_category']['fields']['lid']['sql'] = ['type' => 'integer', 'unsigned' => true];
     $GLOBALS['TL_DCA']['tl_news_category']['fields']['title']['eval']['translatableFor'] = '*';
     $GLOBALS['TL_DCA']['tl_news_category']['fields']['frontendTitle']['eval']['translatableFor'] = '*';
 }
