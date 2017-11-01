@@ -47,16 +47,9 @@ $GLOBALS['TL_DCA']['tl_news_archive']['fields']['limitCategories'] = [
 $GLOBALS['TL_DCA']['tl_news_archive']['fields']['categories'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_news_archive']['categories'],
     'exclude' => true,
-    'inputType' => 'treePicker',
+    'filter' => true,
+    'inputType' => 'newsCategoriesPicker',
     'foreignKey' => 'tl_news_category.title',
-    'eval' => [
-        'mandatory' => true,
-        'multiple' => true,
-        'fieldType' => 'checkbox',
-        'foreignTable' => 'tl_news_category',
-        'titleField' => 'title',
-        'searchField' => 'title',
-        'managerHref' => 'do=news&table=tl_news_category',
-    ],
+    'eval' => ['mandatory' => true, 'multiple' => true, 'fieldType' => 'checkbox'],
     'sql' => ['type' => 'blob'],
 ];

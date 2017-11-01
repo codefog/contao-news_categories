@@ -9,6 +9,7 @@ use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\Module;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
+use Haste\Model\Model;
 use Symfony\Component\HttpFoundation\Request;
 
 class SearchBuilder implements FrameworkAwareInterface
@@ -118,7 +119,9 @@ class SearchBuilder implements FrameworkAwareInterface
             throw new NoNewsException();
         }
 
-        $categories = StringUtil::deserialize($news->categories, true);
+        /** @var Model $adapter */
+        $adapter = $this->framework->getAdapter(Model::class);
+        $categories = array_unique($adapter->getReferenceValues($news->getTable(), 'categories', $news->id));
 
         // This news has no news categories assigned
         if (count($categories) === 0) {

@@ -5,10 +5,12 @@ namespace Codefog\NewsCategoriesBundle\EventListener;
 use Codefog\NewsCategoriesBundle\NewsCategory;
 use Codefog\NewsCategoriesBundle\NewsCategoryFactory;
 use Codefog\NewsCategoriesBundle\UrlGenerator;
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\FrontendTemplate;
 use Contao\Module;
 use Contao\PageModel;
 use Contao\StringUtil;
+use Haste\Model\Model;
 
 class TemplateListener
 {
@@ -16,6 +18,11 @@ class TemplateListener
      * @var NewsCategoryFactory
      */
     private $factory;
+
+    /**
+     * @var ContaoFrameworkInterface
+     */
+    private $framework;
 
     /**
      * @var UrlGenerator
@@ -26,11 +33,16 @@ class TemplateListener
      * TemplateListener constructor.
      *
      * @param NewsCategoryFactory $factory
-     * @param UrlGenerator        $urlGenerator
+     * @param ContaoFrameworkInterface $framework
+     * @param UrlGenerator $urlGenerator
      */
-    public function __construct(NewsCategoryFactory $factory, UrlGenerator $urlGenerator)
-    {
+    public function __construct(
+        NewsCategoryFactory $factory,
+        ContaoFrameworkInterface $framework,
+        UrlGenerator $urlGenerator
+    ) {
         $this->factory = $factory;
+        $this->framework = $framework;
         $this->urlGenerator = $urlGenerator;
     }
 
@@ -43,10 +55,11 @@ class TemplateListener
      */
     public function onParseArticles(FrontendTemplate $template, array $data, Module $module)
     {
-        if (isset($data['categories'])
-            && count($ids = StringUtil::deserialize($data['categories'], true)) > 0
-            && count($categories = $this->factory->createMultiple($ids)) > 0
-        ) {
+        /** @var Model $adapter */
+        $adapter = $this->framework->getAdapter(Model::class);
+        $ids = array_unique($adapter->getRelatedValues('tl_news', 'categories', $data['id']));
+
+        if (count($ids) > 0 && count($categories = $this->factory->createMultiple($ids)) > 0) {
             $this->addCategoriesToTemplate($template, $module, $categories);
         }
     }

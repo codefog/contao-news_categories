@@ -52,24 +52,6 @@ class NewsListener
     }
 
     /**
-     * On copy the record. Duplicate also the relations
-     *
-     * @param int           $id
-     * @param DataContainer $dc
-     */
-    public function onCopyCallback($id, DataContainer $dc)
-    {
-        $categories = $this->db->fetchAll('SELECT category_id FROM tl_news_categories WHERE news_id=?', [$dc->id]);
-
-        foreach ($categories as $category) {
-            $this->db->insert('tl_news_categories', [
-                'category_id' => $category['category_id'],
-                'news_id' => $id,
-            ]);
-        }
-    }
-
-    /**
      * On submit record. Update the category relations
      *
      * @param DataContainer $dc
@@ -104,16 +86,6 @@ class NewsListener
         }
 
         $this->db->update('tl_news', ['categories' => serialize($categories)], ['id' => $dc->id]);
-    }
-
-    /**
-     * On delete the record
-     *
-     * @param DataContainer $dc
-     */
-    public function onDeleteCallback(DataContainer $dc)
-    {
-        $this->deleteCategories($dc->id);
     }
 
     /**

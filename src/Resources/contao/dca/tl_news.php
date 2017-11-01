@@ -4,9 +4,7 @@
  * Add global callbacks
  */
 $GLOBALS['TL_DCA']['tl_news']['config']['onload_callback'][] = ['codefog_news_categories.listener.data_container.news', 'onLoadCallback'];
-$GLOBALS['TL_DCA']['tl_news']['config']['oncopy_callback'][] = ['codefog_news_categories.listener.data_container.news', 'onCopyCallback'];
 $GLOBALS['TL_DCA']['tl_news']['config']['onsubmit_callback'][] = ['codefog_news_categories.listener.data_container.news', 'onSubmitCallback'];
-$GLOBALS['TL_DCA']['tl_news']['config']['ondelete_callback'][] = ['codefog_news_categories.listener.data_container.news', 'onDeleteCallback'];
 
 /**
  * Extend palettes
@@ -26,5 +24,12 @@ $GLOBALS['TL_DCA']['tl_news']['fields']['categories'] = [
     'inputType' => 'newsCategoriesPicker',
     'foreignKey' => 'tl_news_category.title',
     'eval' => ['multiple' => true, 'fieldType' => 'checkbox'],
-    'sql' => ['type' => 'blob'],
+    'relation' => [
+        'type' => 'haste-ManyToMany',
+        'load' => 'lazy',
+        'table' => 'tl_news_category',
+        'referenceColumn' => 'news_id',
+        'fieldColumn' => 'category_id',
+        'relationTable' => 'tl_news_categories',
+    ],
 ];
