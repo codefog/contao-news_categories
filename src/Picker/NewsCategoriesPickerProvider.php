@@ -29,7 +29,13 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
      */
     public function getDcaAttributes(PickerConfig $config)
     {
-        return ['fieldType' => 'checkbox'];
+        $attributes = ['fieldType' => 'checkbox'];
+
+        if ($this->supportsValue($config)) {
+            $attributes['value'] = array_map('intval', explode(',', $config->getValue()));
+        }
+
+        return $attributes;
     }
 
     /**
@@ -37,11 +43,7 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
      */
     public function convertDcaValue(PickerConfig $config, $value)
     {
-        if (!$value) {
-            return $value;
-        }
-
-        return is_array($value) ? array_map('intval', $value) : (int) $value;
+        return (int) $value;
     }
 
     /**
@@ -65,7 +67,12 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
      */
     public function supportsValue(PickerConfig $config)
     {
-        // @todo – check this
+        foreach (explode(',', $config->getValue()) as $id) {
+            if (!is_numeric($id)) {
+                return false;
+            }
+        }
+
         return true;
     }
 }

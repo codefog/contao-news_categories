@@ -7,6 +7,7 @@ use Contao\CoreBundle\Exception\ResponseException;
 use Contao\Database;
 use Contao\DataContainer;
 use Contao\Input;
+use Contao\StringUtil;
 use Contao\System;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -81,6 +82,12 @@ class AjaxListener
 
         // Set the new value
         $value = Input::post('value', true);
+
+        // Convert the selected values
+        if ($value) {
+            $value = StringUtil::trimsplit("\t", $value);
+            $value = serialize($value);
+        }
 
         /** @var NewsCategoriesPickerWidget $strClass */
         $strClass = $GLOBALS['BE_FFL']['newsCategoriesPicker'];
