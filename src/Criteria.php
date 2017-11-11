@@ -44,12 +44,11 @@ class Criteria
     /**
      * Set the basic criteria
      *
-     * @param array     $archives
-     * @param bool|null $featured
+     * @param array $archives
      *
      * @throws NoNewsException
      */
-    public function setBasicCriteria(array $archives, $featured)
+    public function setBasicCriteria(array $archives)
     {
         $archives = $this->parseIds($archives);
 
@@ -62,15 +61,6 @@ class Criteria
         $this->columns[] = "$t.pid IN(" . implode(',', array_map('intval', $archives)) . ")";
         $this->options['order'] = "$t.date DESC";
 
-        // Handle the featured settings
-        if ($featured === true) {
-            $this->columns[] = "$t.featured=?";
-            $this->values[] = 1;
-        } elseif ($featured === false) {
-            $this->columns[] = "$t.featured=?";
-            $this->values[] = '';
-        }
-
         // Never return unpublished elements in the back end, so they don't end up in the RSS feed
         if (!BE_USER_LOGGED_IN || TL_MODE === 'BE') {
             /** @var Date $dateAdapter */
@@ -80,6 +70,39 @@ class Criteria
             $this->columns[] = "($t.start=? OR $t.start<=?') AND ($t.stop=? OR $t.stop>?) AND $t.published=?";
             $this->values = array_merge($this->values, ['', $time, '', ($time + 60), 1]);
         }
+    }
+
+    /**
+     * Set the features items
+     *
+     * @param bool $enable
+     */
+    public function setFeatured($enable)
+    {
+        $t = $this->getNewsModelAdapter()->getTable();
+
+        if ($enable === true) {
+            $this->columns[] = "$t.featured=?";
+            $this->values[] = 1;
+        } elseif ($enable === false) {
+            $this->columns[] = "$t.featured=?";
+            $this->values[] = '';
+        }
+    }
+
+    /**
+     * Set the time frame
+     *
+     * @param int $begin
+     * @param int $end
+     */
+    public function setTimeFrame($begin, $end)
+    {
+        $t = $this->getNewsModelAdapter()->getTable();
+
+        $this->columns[] = "$t.date>=? AND $t.date<=?";
+        $this->values[] = $begin;
+        $this->values[] = $end;
     }
 
     /**

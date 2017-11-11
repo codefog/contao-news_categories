@@ -39,6 +39,36 @@ class SearchBuilder implements FrameworkAwareInterface
     }
 
     /**
+     * Get the criteria for archive module
+     *
+     * @param array   $archives
+     * @param int     $begin
+     * @param int     $end
+     * @param Module  $module
+     * @param Request $request
+     *
+     * @return Criteria|null
+     */
+    public function getCriteriaForArchiveModule(array $archives, $begin, $end, Module $module, Request $request)
+    {
+        $criteria = new Criteria($this->framework);
+
+        try {
+            $criteria->setBasicCriteria($archives);
+
+            // Set the time frame
+            $criteria->setTimeFrame($begin, $end);
+
+            // Set the regular list criteria
+            $this->setRegularListCriteria($criteria, $module, $request);
+        } catch (NoNewsException $e) {
+            return null;
+        }
+
+        return $criteria;
+    }
+
+    /**
      * Get the criteria for list module
      *
      * @param array     $archives
@@ -53,7 +83,12 @@ class SearchBuilder implements FrameworkAwareInterface
         $criteria = new Criteria($this->framework);
 
         try {
-            $criteria->setBasicCriteria($archives, $featured);
+            $criteria->setBasicCriteria($archives);
+
+            // Set the featured filter
+            if ($featured !== null) {
+                $criteria->setFeatured($featured);
+            }
 
             // Set the criteria for related categories
             if ($module->news_relatedCategories) {
