@@ -16,10 +16,9 @@ $GLOBALS['TL_DCA']['tl_news_feed']['fields']['categories'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_news_feed']['categories'],
     'exclude' => true,
     'filter' => true,
-    // @todo – use dca picker instead of checkbox?
-    'inputType' => 'checkbox',
+    'inputType' => 'newsCategoriesPicker',
     'foreignKey' => 'tl_news_category.title',
-    'eval' => ['multiple' => true],
+    'eval' => ['multiple' => true, 'fieldType' => 'checkbox'],
     'sql' => ['type' => 'blob'],
 ];
 
