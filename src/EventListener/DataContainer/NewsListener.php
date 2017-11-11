@@ -6,6 +6,7 @@ use Codefog\NewsCategoriesBundle\PermissionChecker;
 use Contao\DataContainer;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
+use Haste\Model\Relations;
 
 class NewsListener
 {
@@ -58,43 +59,17 @@ class NewsListener
      */
     public function onSubmitCallback(DataContainer $dc)
     {
-        // Use the default categories if the user is not allowed to edit the field directly
-        if (!$this->permissionChecker->canUserAssignCategories()) {
-            // Return if the record is not new
-            if ($dc->activeRecord->tstamp) {
-                return;
-            }
-
-            $categories = $this->permissionChecker->getUserDefaultCategories();
-        } else {
-            // Otherwise just use the categories of submitted record
-            $categories = StringUtil::deserialize($dc->activeRecord->categories, true);
-        }
-
-        $this->deleteCategories($dc->id);
-
-        if (count($categories) === 0) {
+        // Return if the user is allowed to assign categories or the record is not new
+        if ($this->permissionChecker->canUserAssignCategories() || $dc->activeRecord->tstamp > 0) {
             return;
         }
 
-        // Add new categories
-        foreach ($categories as $category) {
-            $this->db->insert('tl_news_categories', [
-                'category_id' => $category,
-                'news_id' => $dc->id,
-            ]);
-        }
+        $dc->field = 'categories';
 
-        $this->db->update('tl_news', ['categories' => serialize($categories)], ['id' => $dc->id]);
-    }
+        $relations = new Relations();
+        $relations->updateRelatedRecords($this->permissionChecker->getUserDefaultCategories(), $dc);
 
-    /**
-     * Delete the category relations
-     *
-     * @param int $newsId
-     */
-    private function deleteCategories($newsId)
-    {
-        $this->db->delete('tl_news_categories', ['news_id' => $newsId]);
+        // Reset back the field property
+        $dc->field = null;
     }
 }
