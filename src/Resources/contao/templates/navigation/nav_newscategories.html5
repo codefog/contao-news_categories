@@ -1,19 +1,19 @@
 
-<ul class="<?php echo $this->level; ?>">
+<ul class="<?= $this->level; ?>">
     <?php foreach ($this->items as $item): ?>
         <?php if ($item['isActive']): ?>
-            <li class="<?php echo $item['class']; ?>">
-                <span class="<?php echo $item['class']; ?>"><?php echo $item['link']; ?></span>
-                <?php if ($this->showQuantity): ?> <span class="quantity">(<?php echo $item['quantity']; ?>)</span><?php endif; ?>
-                <?php echo $item['subitems']; ?>
+            <li class="<?= $item['class']; ?>">
+                <span class="<?= $item['class']; ?>"><?= $item['link']; ?></span>
+                <?php if ($this->showQuantity): ?> <span class="quantity">(<?= $item['quantity']; ?>)</span><?php endif; ?>
+                <?= $item['subitems']; ?>
             </li>
         <?php else: ?>
-            <li class="<?php echo $item['class']; ?>">
-                <a href="<?php echo $item['href']; ?>" class="<?php echo $item['class']; ?>" title="<?php echo $item['linkTitle']; ?>">
-                    <?php echo $item['link']; ?>
-                    <?php if ($this->showQuantity): ?> <span class="quantity">(<?php echo $item['quantity']; ?>)</span><?php endif; ?>
+            <li class="<?= $item['class']; ?>">
+                <a href="<?= $item['href']; ?>" class="<?= $item['class']; ?>" title="<?= $item['linkTitle']; ?>">
+                    <?= $item['link']; ?>
+                    <?php if ($this->showQuantity): ?> <span class="quantity">(<?= $item['quantity']; ?>)</span><?php endif; ?>
                 </a>
-                <?php echo $item['subitems']; ?>
+                <?= $item['subitems']; ?>
             </li>
         <?php endif; ?>
     <?php endforeach; ?>
