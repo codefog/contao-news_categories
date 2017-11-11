@@ -105,6 +105,31 @@ class SearchBuilder implements FrameworkAwareInterface
     }
 
     /**
+     * Get the criteria for menu module
+     *
+     * @param array   $archives
+     * @param Module  $module
+     * @param Request $request
+     *
+     * @return Criteria|null
+     */
+    public function getCriteriaForMenuModule(array $archives, Module $module, Request $request)
+    {
+        $criteria = new Criteria($this->framework);
+
+        try {
+            $criteria->setBasicCriteria($archives);
+
+            // Set the regular list criteria
+            $this->setRegularListCriteria($criteria, $module, $request);
+        } catch (NoNewsException $e) {
+            return null;
+        }
+
+        return $criteria;
+    }
+
+    /**
      * Set the regular list criteria
      *
      * @param Criteria $criteria

@@ -189,8 +189,11 @@ class NewsArchiveModule extends ModuleNewsArchive
      */
     protected function getSearchCriteria($begin, $end)
     {
-        return System::getContainer()
+        $container = System::getContainer();
+        $request = $container->get('request_stack')->getCurrentRequest();
+
+        return $container
             ->get('codefog_news_categories.search_builder')
-            ->getCriteriaForArchiveModule($this->news_archives, $begin, $end, $this, $this->requestStack->getCurrentRequest());
+            ->getCriteriaForArchiveModule($this->news_archives, $begin, $end, $this, $request);
     }
 }
