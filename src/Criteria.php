@@ -6,6 +6,8 @@ use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Date;
 use Contao\NewsModel;
+use Haste\Model\Model;
+use Haste\Model\Relations;
 
 class Criteria
 {
@@ -95,24 +97,10 @@ class Criteria
             throw new NoNewsException();
         }
 
-        // @todo – change this
-        $categoriesMapper = \Codefog\NewsCategoriesBundle\Model\NewsModel::getCategoriesCache();
+        /** @var Model $model */
+        $model = $this->framework->getAdapter(Model::class);
+        $newsIds = $model->getReferenceValues('tl_news', 'categories', $defaultCategories);
 
-        // If there are no categories just return
-        if (count($categoriesMapper) === 0) {
-            return;
-        }
-
-        $newsIds = [];
-
-        // Get the news IDs for particular categories
-        foreach ($defaultCategories as $categoryId) {
-            if (isset($categoriesMapper[$categoryId])) {
-                $newsIds = array_merge($categoriesMapper[$categoryId], $newsIds);
-            }
-        }
-
-        // No news found
         if (count($newsIds) === 0) {
             throw new NoNewsException();
         }
@@ -132,13 +120,11 @@ class Criteria
      */
     public function setCategory($category, $preserveDefault = false)
     {
-        $category = (int) $category;
+        /** @var Model $model */
+        $model = $this->framework->getAdapter(Model::class);
+        $newsIds = $model->getReferenceValues('tl_news', 'categories', (int) $category);
 
-        // @todo – change this
-        $categoriesMapper = \Codefog\NewsCategoriesBundle\Model\NewsModel::getCategoriesCache();
-
-        // @todo – make sure the array in mapper cannot be empty
-        if (!isset($categoriesMapper[$category])) {
+        if (count($newsIds) === 0) {
             throw new NoNewsException();
         }
 
@@ -149,7 +135,7 @@ class Criteria
 
         $t = $this->getNewsModelAdapter()->getTable();
 
-        $this->columns[] = "$t.id IN(" . implode(',', $categoriesMapper[$category]) . ")";
+        $this->columns[] = "$t.id IN(" . implode(',', $newsIds) . ")";
     }
 
     /**
