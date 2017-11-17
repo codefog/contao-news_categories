@@ -50,7 +50,16 @@ class NewsCategory
      */
     public function getCssClass()
     {
-        return 'category_' . $this->model->id . ($this->model->cssClass ? (' ' . $this->model->cssClass) : '');
+        $cssClasses = [
+            'news_category_' . $this->model->id,
+            'category_' . $this->model->id,
+        ];
+
+        if ($this->model->cssClass) {
+            $cssClasses[] = $this->model->cssClass;
+        }
+
+        return implode(' ', array_unique($cssClasses));
     }
 
     /**

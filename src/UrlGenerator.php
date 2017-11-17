@@ -34,14 +34,17 @@ class UrlGenerator implements FrameworkAwareInterface
      * Generate the category URL
      *
      * @param NewsCategory $category
-     * @param PageModel $page
-     * @param boolean $absolute
+     * @param PageModel    $page
+     * @param boolean      $absolute
      *
      * @return string
      */
     public function generateUrl(NewsCategory $category, PageModel $page, $absolute = false)
     {
         $page->loadDetails();
+
+        // @todo – support wildcard as category alias?
+
         $params = '/' . $this->getParameterName($page->rootId) . '/' . $category->getModel()->alias;
 
         return $absolute ? $page->getAbsoluteUrl($params) : $page->getFrontendUrl($params);
