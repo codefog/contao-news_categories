@@ -67,7 +67,7 @@ class Criteria
             $dateAdapter = $this->framework->getAdapter(Date::class);
 
             $time = $dateAdapter->floorToMinute();
-            $this->columns[] = "($t.start=? OR $t.start<=?') AND ($t.stop=? OR $t.stop>?) AND $t.published=?";
+            $this->columns[] = "($t.start=? OR $t.start<=?) AND ($t.stop=? OR $t.stop>?) AND $t.published=?";
             $this->values = array_merge($this->values, ['', $time, '', ($time + 60), 1]);
         }
     }

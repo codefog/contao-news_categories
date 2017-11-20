@@ -35,16 +35,13 @@ class NewsCategoryModel extends ParentModel
      */
     public static function findPublishedByParent(array $archives, array $ids = [])
     {
-        if (count($archives) === 0) {
+        if (count($archives) === 0
+            || count($categoryIds = Model::getRelatedValues('tl_news', 'categories')) === 0
+        ) {
             return null;
         }
 
         $t = static::$strTable;
-
-        if (count($categoryIds = Model::getRelatedValues($t, 'categories')) === 0) {
-            return null;
-        }
-
         $time = time();
         $columns = ["$t.id IN (SELECT category_id FROM tl_news_categories WHERE news_id IN (SELECT id FROM tl_news WHERE pid IN (" . implode(',', array_map('intval', $archives)) . ")" . (!BE_USER_LOGGED_IN ? " AND (tl_news.start='' OR tl_news.start<$time) AND (tl_news.stop='' OR tl_news.stop>$time) AND tl_news.published=1" : "") . "))"];
         $values = [];
@@ -155,6 +152,8 @@ class NewsCategoryModel extends ParentModel
         }
 
         $columns[] = "$t.pid IN (" . implode(',', array_map('intval', $archives)) . ")";
+        $columns[] = "$t.id IN (" . implode(',', array_unique($ids)) . ")";
+
         $values = [];
 
         if (!BE_USER_LOGGED_IN) {

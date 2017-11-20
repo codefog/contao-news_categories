@@ -4,7 +4,6 @@ namespace Codefog\NewsCategoriesBundle\EventListener;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategory;
-use Codefog\NewsCategoriesBundle\NewsCategoryFactory;
 use Codefog\NewsCategoriesBundle\UrlGenerator;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\FrontendTemplate;
@@ -15,11 +14,6 @@ use Haste\Model\Model;
 
 class TemplateListener
 {
-    /**
-     * @var NewsCategoryFactory
-     */
-    private $factory;
-
     /**
      * @var ContaoFrameworkInterface
      */
@@ -33,16 +27,11 @@ class TemplateListener
     /**
      * TemplateListener constructor.
      *
-     * @param NewsCategoryFactory $factory
      * @param ContaoFrameworkInterface $framework
-     * @param UrlGenerator $urlGenerator
+     * @param UrlGenerator             $urlGenerator
      */
-    public function __construct(
-        NewsCategoryFactory $factory,
-        ContaoFrameworkInterface $framework,
-        UrlGenerator $urlGenerator
-    ) {
-        $this->factory = $factory;
+    public function __construct(ContaoFrameworkInterface $framework, UrlGenerator $urlGenerator)
+    {
         $this->framework = $framework;
         $this->urlGenerator = $urlGenerator;
     }

@@ -8,10 +8,10 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_customCategories'] = 'news_categories';
 
 \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addField('news_filterCategories', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField('news_relatedCategories', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField('news_filterDefault', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField('news_filterPreserve', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+    ->addField('news_filterDefault', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+    ->addField('news_filterCategories', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->applyToPalette('newslist', 'tl_module');
 
 \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
@@ -27,17 +27,9 @@ $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_customCategories'] = 'news_
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_categories'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['news_categories'],
     'exclude' => true,
-    'inputType' => 'treePicker',
+    'inputType' => 'newsCategoriesPicker',
     'foreignKey' => 'tl_news_category.title',
-    'eval' => [
-        'mandatory' => true,
-        'multiple' => true,
-        'fieldType' => 'checkbox',
-        'foreignTable' => 'tl_news_category',
-        'titleField' => 'title',
-        'searchField' => 'title',
-        'managerHref' => 'do=news&table=tl_news_category',
-    ],
+    'eval' => ['multiple' => true, 'fieldType' => 'checkbox'],
     'sql' => ['type' => 'blob'],
 ];
 
@@ -53,7 +45,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterCategories'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['news_filterCategories'],
     'exclude' => true,
     'inputType' => 'checkbox',
-    'eval' => ['tl_class' => 'w50'],
+    'eval' => ['tl_class' => 'clr'],
     'sql' => ['type' => 'boolean'],
 ];
 
@@ -68,17 +60,9 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_relatedCategories'] = [
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterDefault'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['news_filterDefault'],
     'exclude' => true,
-    'inputType' => 'treePicker',
+    'inputType' => 'newsCategoriesPicker',
     'foreignKey' => 'tl_news_category.title',
-    'eval' => [
-        'multiple' => true,
-        'fieldType' => 'checkbox',
-        'foreignTable' => 'tl_news_category',
-        'titleField' => 'title',
-        'searchField' => 'title',
-        'managerHref' => 'do=news&table=tl_news_category',
-        'tl_class' => 'clr',
-    ],
+    'eval' => ['multiple' => true, 'fieldType' => 'checkbox', 'tl_class' => 'clr'],
     'sql' => ['type' => 'blob'],
 ];
 
@@ -86,6 +70,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterPreserve'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['news_filterPreserve'],
     'exclude' => true,
     'inputType' => 'checkbox',
+    'eval' => ['tl_class' => 'w50'],
     'sql' => ['type' => 'boolean'],
 ];
 
@@ -100,14 +85,8 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_resetCategories'] = [
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoriesRoot'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['news_categoriesRoot'],
     'exclude' => true,
-    'inputType' => 'treePicker',
+    'inputType' => 'newsCategoriesPicker',
     'foreignKey' => 'tl_news_category.title',
-    'eval' => [
-        'fieldType' => 'radio',
-        'foreignTable' => 'tl_news_category',
-        'titleField' => 'title',
-        'searchField' => 'title',
-        'managerHref' => 'do=news&table=tl_news_category',
-    ],
+    'eval' => ['fieldType' => 'radio'],
     'sql' => ['type' => 'integer', 'unsigned' => true],
 ];

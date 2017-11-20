@@ -26,7 +26,6 @@ services:
     codefog_news_categories.listener.template:
         class: Codefog\NewsCategoriesBundle\EventListener\TemplateListener
         arguments:
-            - "@codefog_news_categories.factory"
             - "@contao.framework"
             - "@codefog_news_categories.url_generator"
 
