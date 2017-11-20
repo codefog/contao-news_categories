@@ -2,10 +2,6 @@
 
 <?php $this->block('content'); ?>
 
-<?php if ($this->headline): ?>
-    <<?= $this->hl ?>><?= $this->headline ?></<?= $this->hl ?>>
-<?php endif; ?>
-
 <?= $this->categories ?>
 
 <?php $this->endblock(); ?>

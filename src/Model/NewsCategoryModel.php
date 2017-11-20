@@ -2,7 +2,11 @@
 
 namespace Codefog\NewsCategoriesBundle\Model;
 
+use Contao\Database;
+use Contao\Date;
+use Contao\Model\Collection;
 use Contao\System;
+use Haste\Model\Model;
 
 /**
  * Use the multilingual model if available
@@ -24,96 +28,141 @@ class NewsCategoryModel extends ParentModel
     /**
      * Find published news categories by their archives
      *
-     * @param array $arrArchives An array of archives
-     * @param array $arrIds      An array of categories
+     * @param array $archives
+     * @param array $ids
      *
-     * @return \Model|null The NewsModelCategpry or null if there are no categories
+     * @return Collection|null
      */
-    public static function findPublishedByParent($arrArchives, $arrIds=array())
+    public static function findPublishedByParent(array $archives, array $ids = [])
     {
-        if (!is_array($arrArchives) || empty($arrArchives)) {
+        if (count($archives) === 0) {
+            return null;
+        }
+
+        $t = static::$strTable;
+
+        if (count($categoryIds = Model::getRelatedValues($t, 'categories')) === 0) {
             return null;
         }
 
         $time = time();
-        $t = static::$strTable;
-        $arrColumns = array("$t.id IN (SELECT category_id FROM tl_news_categories WHERE news_id IN (SELECT id FROM tl_news WHERE pid IN (" . implode(',', array_map('intval', $arrArchives)) . ")" . (!BE_USER_LOGGED_IN ? " AND (tl_news.start='' OR tl_news.start<$time) AND (tl_news.stop='' OR tl_news.stop>$time) AND tl_news.published=1" : "") . "))");
+        $columns = ["$t.id IN (SELECT category_id FROM tl_news_categories WHERE news_id IN (SELECT id FROM tl_news WHERE pid IN (" . implode(',', array_map('intval', $archives)) . ")" . (!BE_USER_LOGGED_IN ? " AND (tl_news.start='' OR tl_news.start<$time) AND (tl_news.stop='' OR tl_news.stop>$time) AND tl_news.published=1" : "") . "))"];
+        $values = [];
 
         // Filter by custom categories
-        if (is_array($arrIds) && !empty($arrIds)) {
-            $arrColumns[] = "$t.id IN (" . implode(',', array_map('intval', $arrIds)) . ")";
+        if (count($ids) > 0) {
+            $columns[] = "$t.id IN (" . implode(',', array_map('intval', $ids)) . ")";
         }
 
         if (!BE_USER_LOGGED_IN) {
-            $arrColumns[] = "$t.published=1";
+            $columns[] = "$t.published=?";
+            $values[] = 1;
         }
 
-        return static::findBy($arrColumns, null, array('order'=>"$t.sorting"));
+        return static::findBy($columns, $values, ['order' => "$t.sorting"]);
     }
 
     /**
      * Find published category by ID or alias
      *
-     * @param mixed $varId The numeric ID or alias name
+     * @param string $idOrAlias
      *
-     * @return \Model|null The NewsCategoryModel or null if there is no category
+     * @return NewsCategoryModel|null
      */
-    public static function findPublishedByIdOrAlias($varId)
+    public static function findPublishedByIdOrAlias($idOrAlias)
     {
         $t = static::$strTable;
-        $arrColumns = array("($t.id=? OR $t.alias=?)");
+        $columns = ["($t.id=? OR $t.alias=?)"];
+        $values = [$idOrAlias, $idOrAlias];
 
         if (!BE_USER_LOGGED_IN) {
-            $arrColumns[] = "$t.published=1";
+            $columns[] = "$t.published=?";
+            $values[] = 1;
         }
 
-        return static::findBy($arrColumns, array((is_numeric($varId) ? $varId : 0), $varId));
+        return static::findOneBy($columns, $values);
     }
 
     /**
      * Find published categories by IDs
      *
-     * @param array $arrIds An array of category IDs
+     * @param array $ids
      *
-     * @return \Model|null The NewsCategoryModel or null if there is no category
+     * @return Collection|null
      */
-    public static function findPublishedByIds($arrIds)
+    public static function findPublishedByIds(array $ids)
     {
-        if (!is_array($arrIds) || empty($arrIds)) {
+        if (count($ids) === 0) {
             return null;
         }
 
         $t = static::$strTable;
-        $arrColumns = array("$t.id IN (" . implode(',', array_map('intval', $arrIds)) . ")");
+        $columns = ["$t.id IN (" . implode(',', array_map('intval', $ids)) . ")"];
+        $values = [];
 
         if (!BE_USER_LOGGED_IN) {
-            $arrColumns[] = "$t.published=1";
+            $columns[] = "$t.published=?";
+            $values[] = 1;
         }
 
-        return static::findBy($arrColumns, null, array('order'=>"$t.sorting"));
+        return static::findBy($columns, $values, ['order' => "$t.sorting"]);
     }
 
     /**
      * Find published news categories by parent ID and IDs
      *
-     * @param integer $intPid The parent ID
-     * @param array   $arrIds An array of categories
+     * @param integer $pid
+     * @param array   $ids
      *
-     * @return \Model|null The NewsModelCategpry or null if there are no categories
+     * @return Collection|null
      */
-    public static function findPublishedByPidAndIds($intPid, $arrIds)
+    public static function findPublishedByPidAndIds($pid, array $ids)
     {
-        if (!is_array($arrIds) || empty($arrIds)) {
+        if (count($ids) === 0) {
             return null;
         }
 
-        $objCategories = \Database::getInstance()->prepare("SELECT c1.*, (SELECT COUNT(*) FROM tl_news_category c2 WHERE c2.pid=c1.id AND c2.id IN (" . implode(',', array_map('intval', $arrIds)) . ")" . (!BE_USER_LOGGED_IN ? " AND c2.published=1" : "") . ") AS subcategories FROM tl_news_category c1 WHERE c1.pid=? AND c1.id IN (" . implode(',', array_map('intval', $arrIds)) . ")" . (!BE_USER_LOGGED_IN ? " AND c1.published=1" : "") . " ORDER BY c1.sorting")
-                                                 ->execute($intPid);
+        $categories = Database::getInstance()
+            ->prepare("SELECT c1.*, (SELECT COUNT(*) FROM tl_news_category c2 WHERE c2.pid=c1.id AND c2.id IN (" . implode(',', array_map('intval', $ids)) . ")" . (!BE_USER_LOGGED_IN ? " AND c2.published=1" : "") . ") AS subcategories FROM tl_news_category c1 WHERE c1.pid=? AND c1.id IN (" . implode(',', array_map('intval', $ids)) . ")" . (!BE_USER_LOGGED_IN ? " AND c1.published=1" : "") . " ORDER BY c1.sorting")
+            ->execute($pid);
 
-        if ($objCategories->numRows < 1) {
+        if ($categories->numRows < 1) {
             return null;
         }
 
-        return \Model\Collection::createFromDbResult($objCategories, static::$strTable);
+        return Collection::createFromDbResult($categories, static::$strTable);
+    }
+
+    /**
+     * Count the published news by archives
+     *
+     * @param array    $archives
+     * @param int|null $category
+     *
+     * @return int
+     */
+    public static function countPublishedNewsByArchives(array $archives, $category = null)
+    {
+        if (count($archives) === 0) {
+            return 0;
+        }
+
+        $t = NewsModel::getTable();
+        $ids = Model::getReferenceValues($t, 'categories', $category);
+
+        if (count($ids) === 0) {
+            return 0;
+        }
+
+        $columns[] = "$t.pid IN (" . implode(',', array_map('intval', $archives)) . ")";
+        $values = [];
+
+        if (!BE_USER_LOGGED_IN) {
+            $time = Date::floorToMinute();
+            $columns[] = "($t.start=? OR $t.start<=?) AND ($t.stop=? OR $t.stop>?) AND $t.published=?";
+            $values = array_merge($values, ['', $time, '', $time + 60, 1]);
+        }
+
+        return NewsModel::countBy($columns, $values);
     }
 }

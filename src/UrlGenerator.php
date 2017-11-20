@@ -43,8 +43,6 @@ class UrlGenerator implements FrameworkAwareInterface
     {
         $page->loadDetails();
 
-        // @todo – support wildcard as category alias?
-
         $params = '/' . $this->getParameterName($page->rootId) . '/' . $category->getModel()->alias;
 
         return $absolute ? $page->getAbsoluteUrl($params) : $page->getFrontendUrl($params);

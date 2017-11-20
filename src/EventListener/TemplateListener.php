@@ -2,6 +2,7 @@
 
 namespace Codefog\NewsCategoriesBundle\EventListener;
 
+use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategory;
 use Codefog\NewsCategoriesBundle\NewsCategoryFactory;
 use Codefog\NewsCategoriesBundle\UrlGenerator;
@@ -55,13 +56,29 @@ class TemplateListener
      */
     public function onParseArticles(FrontendTemplate $template, array $data, Module $module)
     {
-        /** @var Model $adapter */
-        $adapter = $this->framework->getAdapter(Model::class);
-        $ids = array_unique($adapter->getRelatedValues('tl_news', 'categories', $data['id']));
+        /** @var Model $modelAdapter */
+        $modelAdapter = $this->framework->getAdapter(Model::class);
+        $ids = array_unique($modelAdapter->getRelatedValues('tl_news', 'categories', $data['id']));
 
-        if (count($ids) > 0 && count($categories = $this->factory->createMultiple($ids)) > 0) {
-            $this->addCategoriesToTemplate($template, $module, $categories);
+        if (count($ids) === 0) {
+            return;
         }
+
+        /** @var NewsCategoryModel $newsCategoryModelAdapter */
+        $newsCategoryModelAdapter = $this->framework->getAdapter(NewsCategoryModel::class);
+
+        if (($models = $newsCategoryModelAdapter->findPublishedByIds($ids)) === null) {
+            return;
+        }
+
+        $categories = [];
+
+        /** @var NewsCategoryModel $model */
+        foreach ($models as $model) {
+            $categories[] = new NewsCategory($model);
+        }
+
+        $this->addCategoriesToTemplate($template, $module, $categories);
     }
 
     /**

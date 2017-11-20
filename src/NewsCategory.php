@@ -3,6 +3,7 @@
 namespace Codefog\NewsCategoriesBundle;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+use Contao\Database;
 use Contao\Module;
 use Contao\ModuleNewsArchive;
 use Contao\ModuleNewsList;
@@ -60,6 +61,26 @@ class NewsCategory
         }
 
         return implode(' ', array_unique($cssClasses));
+    }
+
+    /**
+     * Get the category trail IDs
+     *
+     * @return array
+     */
+    public function getTrailIds()
+    {
+        static $ids;
+
+        if (!is_array($ids)) {
+            $ids = Database::getInstance()->getParentRecords($this->model->id, $this->model->getTable());
+            $ids = array_map('intval', array_unique($ids));
+
+            // Remove the current category
+            unset($ids[array_search($this->model->id, $ids)]);
+        }
+
+        return $ids;
     }
 
     /**
