@@ -12,6 +12,12 @@ services:
         arguments:
             - "@codefog_news_categories.url_generator"
 
+    codefog_news_categories.listener.feed:
+        class: Codefog\NewsCategoriesBundle\EventListener\FeedListener
+        arguments:
+            - "@database_connection"
+            - "@session"
+
     codefog_news_categories.listener.insert_tags:
         class: Codefog\NewsCategoriesBundle\EventListener\InsertTagsListener
         arguments:

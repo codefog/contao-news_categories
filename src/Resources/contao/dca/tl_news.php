@@ -1,6 +1,13 @@
 <?php
 
 /**
+ * Replace the feed generation callback
+ */
+if (($index = array_search(['tl_news', 'generateFeed'] ,$GLOBALS['TL_DCA']['tl_news']['config']['onload_callback'])) !== false) {
+    $GLOBALS['TL_DCA']['tl_news']['config']['onload_callback'][$index] = ['codefog_news_categories.listener.feed', 'onLoadCallback'];
+}
+
+/**
  * Add global callbacks
  */
 $GLOBALS['TL_DCA']['tl_news']['config']['onload_callback'][] = ['codefog_news_categories.listener.data_container.news', 'onLoadCallback'];

@@ -5,6 +5,7 @@ namespace Codefog\NewsCategoriesBundle\Model;
 use Contao\Database;
 use Contao\Date;
 use Contao\Model\Collection;
+use Contao\NewsModel;
 use Contao\System;
 use Haste\Model\Model;
 
@@ -35,9 +36,7 @@ class NewsCategoryModel extends ParentModel
      */
     public static function findPublishedByParent(array $archives, array $ids = [])
     {
-        if (count($archives) === 0
-            || count($categoryIds = Model::getRelatedValues('tl_news', 'categories')) === 0
-        ) {
+        if (count($archives) === 0 || count($categoryIds = Model::getRelatedValues('tl_news', 'categories')) === 0) {
             return null;
         }
 
@@ -128,6 +127,25 @@ class NewsCategoryModel extends ParentModel
         }
 
         return Collection::createFromDbResult($categories, static::$strTable);
+    }
+
+    /**
+     * Find the published categories by news
+     *
+     * @param int $newsId
+     *
+     * @return Collection|null
+     */
+    public static function findPublishedByNews($newsId)
+    {
+        $ids = Model::getRelatedValues('tl_news', 'categories', $newsId);
+        $ids = array_unique($ids);
+
+        if (count($ids) === 0) {
+            return null;
+        }
+
+        return static::findPublishedByIds($ids);
     }
 
     /**

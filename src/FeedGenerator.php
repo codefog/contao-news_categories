@@ -1,31 +1,18 @@
 <?php
 
-/**
- * news_categories extension for Contao Open Source CMS
- *
- * Copyright (C) 2011-2014 Codefog
- *
- * @package news_categories
- * @author  Webcontext <http://webcontext.com>
- * @author  Codefog <info@codefog.pl>
- * @author  Kamil Kuzminski <kamil.kuzminski@codefog.pl>
- * @license LGPL
- */
+namespace Codefog\NewsCategoriesBundle;
 
-namespace NewsCategories;
+use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+use Contao\News;
 
-/**
- * Provide methods regarding news archives
- */
-class News extends \Contao\News
+class FeedGenerator extends News
 {
     /**
-     * Generate an XML files and save them to the root directory
-     * @param array
+     * @inheritDoc
      */
     protected function generateFiles($arrFeed)
     {
-        $arrArchives = deserialize($arrFeed['archives']);
+        $arrArchives = \StringUtil::deserialize($arrFeed['archives']);
 
         if (!is_array($arrArchives) || empty($arrArchives))
         {
@@ -43,25 +30,20 @@ class News extends \Contao\News
         $objFeed->language = $arrFeed['language'];
         $objFeed->published = $arrFeed['tstamp'];
 
-        $arrCategories = deserialize($arrFeed['categories']);
+        $criteria = new Criteria(\System::getContainer()->get('contao.framework'));
+        $criteria->setBasicCriteria($arrArchives);
 
         // Filter by categories
-        if (is_array($arrCategories) && !empty($arrCategories)) {
-            $GLOBALS['NEWS_FILTER_CATEGORIES'] = true;
-            $GLOBALS['NEWS_FILTER_DEFAULT'] = $arrCategories;
-        } else {
-            $GLOBALS['NEWS_FILTER_CATEGORIES'] = false;
+        if (count($categories = \StringUtil::deserialize($arrFeed['categories'], true)) > 0) {
+            $criteria->setDefaultCategories($categories);
         }
 
-        // Get the items
-        if ($arrFeed['maxItems'] > 0)
-        {
-            $objArticle = \NewsModel::findPublishedByPids($arrArchives, null, $arrFeed['maxItems']);
+        // Set the limit
+        if ($arrFeed['maxItems'] > 0) {
+            $criteria->setLimit($arrFeed['maxItems']);
         }
-        else
-        {
-            $objArticle = \NewsModel::findPublishedByPids($arrArchives);
-        }
+
+        $objArticle = \NewsModel::findBy($criteria->getColumns(), $criteria->getValues(), $criteria->getOptions());
 
         // Parse the items
         if ($objArticle !== null)
@@ -90,7 +72,7 @@ class News extends \Contao\News
                     }
                     else
                     {
-                        $arrUrls[$jumpTo] = $objParent->getAbsoluteUrl((\Config::get('useAutoItem') && !\Config::get('disableAlias')) ? '/%s' : '/items/%s');
+                        $arrUrls[$jumpTo] = $objParent->getAbsoluteUrl(\Config::get('useAutoItem') ? '/%s' : '/items/%s');
                     }
                 }
 
@@ -100,28 +82,28 @@ class News extends \Contao\News
                     continue;
                 }
 
-                // Get the categories
-                if ($arrFeed['categories_show']) {
-                    $arrCategories = array();
+                $categories = [];
 
-                    if (($objCategories = NewsCategoryModel::findPublishedByIds(deserialize($objArticle->categories, true))) !== null) {
-                        $arrCategories = $objCategories->fetchEach('title');
+                // Get the categories
+                if ($arrFeed['categories_show'] && ($categoryModels = NewsCategoryModel::findPublishedByNews($objArticle->id)) !== null) {
+                    /** @var NewsCategoryModel $categoryModel */
+                    foreach ($categoryModels as $categoryModel) {
+                        $categories[] = (new NewsCategory($categoryModel))->getTitle();
                     }
                 }
 
                 $strUrl = $arrUrls[$jumpTo];
                 $objItem = new \FeedItem();
 
-                // Add the categories to the title
-                if ($arrFeed['categories_show'] == 'title') {
-                    $objItem->title = sprintf('[%s] %s', implode(', ', $arrCategories), $objArticle->headline);
-                } else {
-                    $objItem->title = $objArticle->headline;
-                }
-
+                $objItem->title = $objArticle->headline;
                 $objItem->link = $this->getLink($objArticle, $strUrl);
                 $objItem->published = $objArticle->date;
-                $objItem->author = $objArticle->authorName;
+
+                /** @var \BackendUser $objAuthor */
+                if (($objAuthor = $objArticle->getRelated('author')) !== null)
+                {
+                    $objItem->author = $objAuthor->name;
+                }
 
                 // Prepare the description
                 if ($arrFeed['source'] == 'source_text')
@@ -148,14 +130,22 @@ class News extends \Contao\News
                     $strDescription = $objArticle->teaser;
                 }
 
-                // Add the categories to the description
-                if ($arrFeed['categories_show'] == 'text_before' || $arrFeed['categories_show'] == 'text_after') {
-                    $strCategories = '<p>' . $GLOBALS['TL_LANG']['MSC']['newsCategories'] . ' ' .  implode(', ', $arrCategories) . '</p>';
+                // Add the categories
+                if (count($categories) > 0) {
+                    switch ($arrFeed['categories_show']) {
+                        case 'title':
+                            $objItem->title = sprintf('[%s] %s', implode(', ', $categories), $objArticle->headline);
+                            break;
+                        case 'text_before':
+                        case 'text_after':
+                            $buffer = sprintf('<p>%s %s</p>', $GLOBALS['TL_LANG']['MSC']['newsCategories'], implode(', ', $categories));
 
-                    if ($arrFeed['categories_show'] == 'text_before') {
-                        $strDescription = $strCategories . $strDescription;
-                    } else {
-                        $strDescription .= $strCategories;
+                            if ($arrFeed['categories_show'] === 'text_before') {
+                                $strDescription = $buffer . $strDescription;
+                            } else {
+                                $strDescription .= $buffer;
+                            }
+                            break;
                     }
                 }
 
@@ -176,7 +166,7 @@ class News extends \Contao\News
                 // Enclosures
                 if ($objArticle->addEnclosure)
                 {
-                    $arrEnclosure = deserialize($objArticle->enclosure, true);
+                    $arrEnclosure = \StringUtil::deserialize($objArticle->enclosure, true);
 
                     if (is_array($arrEnclosure))
                     {
@@ -197,10 +187,6 @@ class News extends \Contao\News
         }
 
         // Create the file
-        if (class_exists('Contao\CoreBundle\ContaoCoreBundle')) {
-            \File::putContent('web/share/'.$strFile.'.xml', $this->replaceInsertTags($objFeed->$strType(), false));
-        } else {
-            \File::putContent('share/'.$strFile.'.xml', $this->replaceInsertTags($objFeed->$strType(), false));
-        }
+        \File::putContent('web/share/' . $strFile . '.xml', $this->replaceInsertTags($objFeed->$strType(), false));
     }
 }

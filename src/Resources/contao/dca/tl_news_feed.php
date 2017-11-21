@@ -1,6 +1,13 @@
 <?php
 
 /**
+ * Replace the feed generation callback
+ */
+if (($index = array_search(['tl_news_feed', 'generateFeed'] ,$GLOBALS['TL_DCA']['tl_news_feed']['config']['onload_callback'])) !== false) {
+    $GLOBALS['TL_DCA']['tl_news_feed']['config']['onload_callback'][$index] = ['codefog_news_categories.listener.feed', 'onLoadCallback'];
+}
+
+/**
  * Extend palettes
  */
 \Contao\CoreBundle\DataContainer\PaletteManipulator::create()

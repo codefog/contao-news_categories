@@ -10,7 +10,6 @@ use Contao\FrontendTemplate;
 use Contao\Module;
 use Contao\PageModel;
 use Contao\StringUtil;
-use Haste\Model\Model;
 
 class TemplateListener
 {
@@ -45,18 +44,10 @@ class TemplateListener
      */
     public function onParseArticles(FrontendTemplate $template, array $data, Module $module)
     {
-        /** @var Model $modelAdapter */
-        $modelAdapter = $this->framework->getAdapter(Model::class);
-        $ids = array_unique($modelAdapter->getRelatedValues('tl_news', 'categories', $data['id']));
-
-        if (count($ids) === 0) {
-            return;
-        }
-
         /** @var NewsCategoryModel $newsCategoryModelAdapter */
         $newsCategoryModelAdapter = $this->framework->getAdapter(NewsCategoryModel::class);
 
-        if (($models = $newsCategoryModelAdapter->findPublishedByIds($ids)) === null) {
+        if (($models = $newsCategoryModelAdapter->findPublishedByNews($data['id'])) === null) {
             return;
         }
 

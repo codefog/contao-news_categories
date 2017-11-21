@@ -17,7 +17,11 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
         'enableVersioning' => true,
         'backlink' => 'do=news',
         'onload_callback' => [
+            ['codefog_news_categories.listener.feed', 'onLoadCallback'],
             ['codefog_news_categories.listener.data_container.news_category', 'onLoadCallback'],
+        ],
+        'onsubmit_callback' => [
+            ['codefog_news_categories.listener.feed', 'onSubmitCallback'],
         ],
         'sql' => [
             'keys' => [
