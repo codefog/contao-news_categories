@@ -8,16 +8,10 @@ use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\Model\Collection;
 use Contao\ModuleNewsList;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class NewsListener implements FrameworkAwareInterface
 {
     use FrameworkAwareTrait;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
 
     /**
      * @var SearchBuilder
@@ -27,12 +21,10 @@ class NewsListener implements FrameworkAwareInterface
     /**
      * InsertTagsListener constructor.
      *
-     * @param RequestStack  $requestStack
      * @param SearchBuilder $searchBuilder
      */
-    public function __construct(RequestStack $requestStack, SearchBuilder $searchBuilder)
+    public function __construct(SearchBuilder $searchBuilder)
     {
-        $this->requestStack = $requestStack;
         $this->searchBuilder = $searchBuilder;
     }
 
@@ -92,11 +84,6 @@ class NewsListener implements FrameworkAwareInterface
      */
     private function getCriteria(array $archives, $featured, ModuleNewsList $module)
     {
-        return $this->searchBuilder->getCriteriaForListModule(
-            $archives,
-            $featured,
-            $module,
-            $this->requestStack->getCurrentRequest()
-        );
+        return $this->searchBuilder->getCriteriaForListModule($archives, $featured, $module);
     }
 }

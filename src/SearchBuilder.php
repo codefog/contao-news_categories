@@ -6,11 +6,11 @@ use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\Input;
 use Contao\Module;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Haste\Model\Model;
-use Symfony\Component\HttpFoundation\Request;
 
 class SearchBuilder implements FrameworkAwareInterface
 {
@@ -45,11 +45,10 @@ class SearchBuilder implements FrameworkAwareInterface
      * @param int     $begin
      * @param int     $end
      * @param Module  $module
-     * @param Request $request
      *
      * @return Criteria|null
      */
-    public function getCriteriaForArchiveModule(array $archives, $begin, $end, Module $module, Request $request)
+    public function getCriteriaForArchiveModule(array $archives, $begin, $end, Module $module)
     {
         $criteria = new Criteria($this->framework);
 
@@ -60,7 +59,7 @@ class SearchBuilder implements FrameworkAwareInterface
             $criteria->setTimeFrame($begin, $end);
 
             // Set the regular list criteria
-            $this->setRegularListCriteria($criteria, $module, $request);
+            $this->setRegularListCriteria($criteria, $module);
         } catch (NoNewsException $e) {
             return null;
         }
@@ -74,11 +73,10 @@ class SearchBuilder implements FrameworkAwareInterface
      * @param array     $archives
      * @param bool|null $featured
      * @param Module    $module
-     * @param Request   $request
      *
      * @return Criteria|null
      */
-    public function getCriteriaForListModule(array $archives, $featured, Module $module, Request $request)
+    public function getCriteriaForListModule(array $archives, $featured, Module $module)
     {
         $criteria = new Criteria($this->framework);
 
@@ -95,7 +93,7 @@ class SearchBuilder implements FrameworkAwareInterface
                 $this->setRelatedListCriteria($criteria, $module);
             } else {
                 // Set the regular list criteria
-                $this->setRegularListCriteria($criteria, $module, $request);
+                $this->setRegularListCriteria($criteria, $module);
             }
         } catch (NoNewsException $e) {
             return null;
@@ -107,13 +105,12 @@ class SearchBuilder implements FrameworkAwareInterface
     /**
      * Get the criteria for menu module
      *
-     * @param array   $archives
-     * @param Module  $module
-     * @param Request $request
+     * @param array  $archives
+     * @param Module $module
      *
      * @return Criteria|null
      */
-    public function getCriteriaForMenuModule(array $archives, Module $module, Request $request)
+    public function getCriteriaForMenuModule(array $archives, Module $module)
     {
         $criteria = new Criteria($this->framework);
 
@@ -121,7 +118,7 @@ class SearchBuilder implements FrameworkAwareInterface
             $criteria->setBasicCriteria($archives);
 
             // Set the regular list criteria
-            $this->setRegularListCriteria($criteria, $module, $request);
+            $this->setRegularListCriteria($criteria, $module);
         } catch (NoNewsException $e) {
             return null;
         }
@@ -134,11 +131,10 @@ class SearchBuilder implements FrameworkAwareInterface
      *
      * @param Criteria $criteria
      * @param Module   $module
-     * @param Request  $request
      *
      * @throws NoNewsException
      */
-    private function setRegularListCriteria(Criteria $criteria, Module $module, Request $request)
+    private function setRegularListCriteria(Criteria $criteria, Module $module)
     {
         // Filter by default categories
         if (count($default = StringUtil::deserialize($module->news_filterDefault, true)) > 0) {
@@ -147,16 +143,16 @@ class SearchBuilder implements FrameworkAwareInterface
 
         // Filter by active category
         if ($module->news_filterCategories) {
+            /** @var Input $input */
+            $input = $this->framework->getAdapter(Input::class);
             $param = $this->urlGenerator->getParameterName();
 
-            if ($request->query->has($param)) {
+            if ($alias = $input->get($param)) {
                 /** @var NewsCategoryModel $model */
                 $model = $this->framework->getAdapter(NewsCategoryModel::class);
 
-                $category = $model->findPublishedByIdOrAlias($request->query->get($param));
-
                 // Return null if the category does not exist
-                if ($category === null) {
+                if (($category = $model->findPublishedByIdOrAlias($alias)) === null) {
                     throw new NoNewsException();
                 }
 

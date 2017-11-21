@@ -230,12 +230,9 @@ class NewsMenuModule extends ModuleNewsMenu
      */
     protected function getFilteredNewsIds()
     {
-        $container = System::getContainer();
-        $request = $container->get('request_stack')->getCurrentRequest();
-
-        $criteria = $container
+        $criteria = System::getContainer()
             ->get('codefog_news_categories.search_builder')
-            ->getCriteriaForMenuModule($this->news_archives, $this, $request);
+            ->getCriteriaForMenuModule($this->news_archives, $this);
 
         if ($criteria === null) {
             return [];

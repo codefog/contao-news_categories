@@ -32,10 +32,10 @@ class NewsCategoriesModule extends ModuleNews
     protected $activeCategory = null;
 
     /**
-     * Active news categories
+     * News categories of the current news item
      * @var array
      */
-    protected $activeNewsCategories = [];
+    protected $currentNewsCategories = [];
 
     /**
      * Display a wildcard in the back end
@@ -62,7 +62,7 @@ class NewsCategoriesModule extends ModuleNews
             return '';
         }
 
-        $this->activeNewsCategories = $this->getActiveNewsCategories();
+        $this->currentNewsCategories = $this->getCurrentNewsCategories();
 
         return parent::generate();
     }
@@ -126,11 +126,11 @@ class NewsCategoriesModule extends ModuleNews
     }
 
     /**
-     * Get the category IDs of the active news item
+     * Get the category IDs of the current news item
      *
      * @return array
      */
-    protected function getActiveNewsCategories()
+    protected function getCurrentNewsCategories()
     {
         if (!($alias = Input::getAutoItem('items'))
             || ($news = NewsModel::findPublishedByParentAndIdOrAlias($alias, $this->news_archives)) === null
@@ -183,7 +183,7 @@ class NewsCategoriesModule extends ModuleNews
                 $GLOBALS['TL_LANG']['MSC']['resetCategories'][0],
                 $GLOBALS['TL_LANG']['MSC']['resetCategories'][1],
                 'reset',
-                count($this->activeNewsCategories) > 0 && Input::get($urlGenerator->getParameterName()) ? false : true
+                count($this->currentNewsCategories) === 0 && $this->activeCategory === null
             );
         }
 
@@ -195,7 +195,7 @@ class NewsCategoriesModule extends ModuleNews
             $category = new NewsCategory($categoryModel);
 
             $categories[] = $this->generateItem(
-                urlencode(urldecode($urlGenerator->generateUrl($category, $this->getTargetPage()))),
+                $urlGenerator->generateUrl($category, $this->getTargetPage()),
                 $category->getTitle(),
                 $category->getTitle(),
                 $this->generateItemCssClass($category),
@@ -282,7 +282,7 @@ class NewsCategoriesModule extends ModuleNews
         }
 
         // Add the news trail class
-        if (in_array((int) $category->getModel()->id, $this->activeNewsCategories, true)) {
+        if (in_array((int) $category->getModel()->id, $this->currentNewsCategories, true)) {
             $cssClasses[] = 'news_trail';
         }
 

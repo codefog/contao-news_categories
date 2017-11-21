@@ -20,7 +20,6 @@ services:
     codefog_news_categories.listener.news:
         class: Codefog\NewsCategoriesBundle\EventListener\NewsListener
         arguments:
-          - "@request_stack"
           - "@codefog_news_categories.search_builder"
 
     codefog_news_categories.listener.template:
