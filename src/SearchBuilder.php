@@ -177,7 +177,7 @@ class SearchBuilder implements FrameworkAwareInterface
 
         /** @var Model $adapter */
         $adapter = $this->framework->getAdapter(Model::class);
-        $categories = array_unique($adapter->getReferenceValues($news->getTable(), 'categories', $news->id));
+        $categories = array_unique($adapter->getRelatedValues($news->getTable(), 'categories', $news->id));
 
         // This news has no news categories assigned
         if (count($categories) === 0) {
