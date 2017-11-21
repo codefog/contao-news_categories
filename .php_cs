@@ -35,6 +35,10 @@ return PhpCsFixer\Config::create()
         )
     )
     ->setFinder(
-        PhpCsFixer\Finder::create()->in([__DIR__.'/src'])
+        PhpCsFixer\Finder::create()
+            ->notPath('src/FrontendModule/NewsArchiveModule.php')
+            ->notPath('src/FrontendModule/NewsListModule.php')
+            ->notPath('src/FrontendModule/NewsMenuModule.php')
+            ->in([__DIR__.'/src'])
     )
 ;
