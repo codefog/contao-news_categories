@@ -6,7 +6,6 @@ use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategory;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\Database;
-use Contao\Environment;
 use Contao\Input;
 use Contao\ModuleNewsMenu;
 use Contao\PageModel;
@@ -202,22 +201,24 @@ class NewsMenuModule extends ModuleNewsMenu
      */
     protected function generateCategoryUrl()
     {
-        $url = Environment::get('script');
-
         /** @var $target PageModel */
         if ($this->jumpTo && ($target = $this->objModel->getRelated('jumpTo')) instanceof PageModel) {
-            $urlGenerator = System::getContainer()->get('codefog_news_categories.url_generator');
+            $page = $target;
+        } else {
+            $page = $GLOBALS['objPage'];
+        }
 
-            /** @var NewsCategoryModel $category */
-            $category = NewsCategoryModel::findPublishedByIdOrAlias(Input::get($urlGenerator->getParameterName()));
+        $urlGenerator = System::getContainer()->get('codefog_news_categories.url_generator');
 
-            // Generate the category URL
-            if ($category !== null) {
-                $url = $urlGenerator->generateUrl(new NewsCategory($category), $target);
-            } else {
-                // Generate the regular URL
-                $url = $target->getFrontendUrl();
-            }
+        /** @var NewsCategoryModel $category */
+        $category = NewsCategoryModel::findPublishedByIdOrAlias(Input::get($urlGenerator->getParameterName()));
+
+        // Generate the category URL
+        if ($category !== null) {
+            $url = $urlGenerator->generateUrl(new NewsCategory($category), $page);
+        } else {
+            // Generate the regular URL
+            $url = $page->getFrontendUrl();
         }
 
         return $url;
