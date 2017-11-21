@@ -99,6 +99,13 @@ class NewsCategoryListener implements FrameworkAwareInterface
         /** @var Image $imageAdapter */
         $imageAdapter = $this->framework->getAdapter(Image::class);
 
+        // Align the icon with the text
+        if (stripos($attributes, 'style="') !== false) {
+            $attributes = str_replace('style="', 'style="vertical-align:text-top;', $attributes);
+        } else {
+            $attributes .= trim($attributes . ' style="vertical-align:text-top;"');
+        }
+
         return $imageAdapter->getHtml('iconPLAIN.svg', '', $attributes) . ' ' . $label;
     }
 

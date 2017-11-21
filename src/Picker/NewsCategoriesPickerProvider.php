@@ -31,6 +31,10 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
     {
         $attributes = ['fieldType' => 'checkbox'];
 
+        if ($fieldType = $config->getExtra('fieldType')) {
+            $attributes['fieldType'] = $fieldType;
+        }
+
         if ($this->supportsValue($config)) {
             $attributes['value'] = array_map('intval', explode(',', $config->getValue()));
         }
