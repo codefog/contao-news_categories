@@ -46,7 +46,7 @@ class InsertTagsListener implements FrameworkAwareInterface
                 /** @var NewsCategoryModel $model */
                 $model = $this->framework->getAdapter(NewsCategoryModel::class);
 
-                if (($category = $model->findPublishedByIdOrAlias($input->get($alias))) !== null) {
+                if (($category = $model->findPublishedByIdOrAlias($alias)) !== null) {
                     return $category->{$chunks[1]};
                 }
             }
