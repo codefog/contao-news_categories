@@ -23,7 +23,7 @@ $GLOBALS['TL_LANG']['tl_news_category']['description']       = array('Descriptio
 $GLOBALS['TL_LANG']['tl_news_category']['hideInList']        = array('Hide in list/archive module', 'Do not display category in the news list/archive module (affects only the <em>news_</em> templates).');
 $GLOBALS['TL_LANG']['tl_news_category']['hideInReader']      = array('Hide in reader module', 'Do not display category in the news reader module (affects only the <em>news_</em> templates).');
 $GLOBALS['TL_LANG']['tl_news_category']['excludeInRelated']  = array('Exclude in related news list', 'Exclude the news of this category in the related list module.');
-$GLOBALS['TL_LANG']['tl_news_category']['jumpTo']            = array('Redirect page', 'Here you can choose the page to which visitors will be redirected when clicking a category link in the news template.');
+$GLOBALS['TL_LANG']['tl_news_category']['jumpTo']            = array('Redirect page', 'Here you can choose the page to which visitors will be redirected when clicking a category link in the news template or categories list module (configurable). This setting is inherited!');
 $GLOBALS['TL_LANG']['tl_news_category']['published']         = array('Publish category', 'Make the news category publicly visible on the website.');
 
 /**

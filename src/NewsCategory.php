@@ -8,6 +8,7 @@ use Contao\Module;
 use Contao\ModuleNewsArchive;
 use Contao\ModuleNewsList;
 use Contao\ModuleNewsReader;
+use Contao\PageModel;
 
 class NewsCategory
 {
@@ -93,6 +94,33 @@ class NewsCategory
     public function getUsage(array $archives = [])
     {
         return NewsCategoryModel::getUsage($archives, $this->model->id);
+    }
+
+    /**
+     * Get the category target page
+     *
+     * @return PageModel|null
+     */
+    public function getTargetPage()
+    {
+        $pageId = $this->model->jumpTo;
+
+        // Inherit the page from parent if there is none set
+        if (!$pageId) {
+            $pid = $this->model->pid;
+
+            do {
+                /** @var NewsCategoryModel $parent */
+                $parent = $this->model->findByPk($pid);
+
+                if ($parent !== null) {
+                    $pid = $parent->pid;
+                    $pageId = $parent->jumpTo;
+                }
+            } while ($pid && !$pageId);
+        }
+
+        return $pageId ? PageModel::findPublishedById($pageId) : null;
     }
 
     /**

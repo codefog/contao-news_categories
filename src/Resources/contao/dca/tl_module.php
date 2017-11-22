@@ -4,7 +4,7 @@
  * Extend palettes
  */
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'news_customCategories';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_resetCategories,news_showEmptyCategories,news_showQuantity,news_categoriesRoot,news_customCategories;{redirect_legend:hide},jumpTo;{template_legend:hide},navigationTpl,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_showQuantity,news_resetCategories,news_showEmptyCategories,news_forceCategoryUrl,news_categoriesRoot,news_customCategories;{redirect_legend:hide},jumpTo;{template_legend:hide},navigationTpl,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_customCategories'] = 'news_categories';
 
 \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
@@ -90,11 +90,19 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_showEmptyCategories'] = [
     'sql' => ['type' => 'boolean'],
 ];
 
+$GLOBALS['TL_DCA']['tl_module']['fields']['news_forceCategoryUrl'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['news_forceCategoryUrl'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => ['tl_class' => 'w50'],
+    'sql' => ['type' => 'boolean'],
+];
+
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoriesRoot'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['news_categoriesRoot'],
     'exclude' => true,
     'inputType' => 'newsCategoriesPicker',
     'foreignKey' => 'tl_news_category.title',
-    'eval' => ['fieldType' => 'radio'],
+    'eval' => ['fieldType' => 'radio', 'tl_class' => 'clr'],
     'sql' => ['type' => 'integer', 'unsigned' => true],
 ];

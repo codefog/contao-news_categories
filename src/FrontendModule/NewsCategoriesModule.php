@@ -198,13 +198,19 @@ class NewsCategoriesModule extends ModuleNews
 
         $level++;
 
-        // Generate categories
         /** @var NewsCategoryModel $categoryModel */
         foreach ($categoryModels as $categoryModel) {
             $category = new NewsCategory($categoryModel);
 
+            // Generate the category individual URL or the filter-link
+            if ($this->news_forceCategoryUrl && ($targetPage = $category->getTargetPage()) !== null) {
+                $url = $targetPage->getFrontendUrl();
+            } else {
+                $url = $urlGenerator->generateUrl($category, $this->getTargetPage());
+            }
+
             $categories[] = $this->generateItem(
-                $urlGenerator->generateUrl($category, $this->getTargetPage()),
+                $url,
                 $category->getTitle(),
                 $category->getTitle(),
                 $this->generateItemCssClass($category),

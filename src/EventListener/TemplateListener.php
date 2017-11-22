@@ -124,7 +124,7 @@ class TemplateListener
         $data['targetPage'] = null;
 
         // Add the target page and URLs
-        if (($targetPage = $this->urlGenerator->getTargetPage($category)) !== null) {
+        if (($targetPage = $category->getTargetPage()) !== null) {
             $data['href'] = $targetPage->getFrontendUrl();
             $data['hrefWithParam'] = $this->urlGenerator->generateUrl($category, $targetPage);
             $data['targetPage'] = $targetPage;
