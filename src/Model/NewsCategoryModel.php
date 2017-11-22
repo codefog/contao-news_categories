@@ -138,14 +138,11 @@ class NewsCategoryModel extends ParentModel
      */
     public static function findPublishedByNews($newsId)
     {
-        $ids = Model::getRelatedValues('tl_news', 'categories', $newsId);
-        $ids = array_unique($ids);
-
-        if (count($ids) === 0) {
+        if (count($ids = Model::getRelatedValues('tl_news', 'categories', $newsId)) === 0) {
             return null;
         }
 
-        return static::findPublishedByIds($ids);
+        return static::findPublishedByIds(array_unique($ids));
     }
 
     /**
@@ -163,9 +160,8 @@ class NewsCategoryModel extends ParentModel
         }
 
         $t = NewsModel::getTable();
-        $ids = Model::getReferenceValues($t, 'categories', $category);
 
-        if (count($ids) === 0) {
+        if (count($ids = Model::getReferenceValues($t, 'categories', $category)) === 0) {
             return 0;
         }
 

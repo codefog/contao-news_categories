@@ -206,8 +206,6 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
             'inputType' => 'pageTree',
             'eval' => ['fieldType' => 'radio'],
             'sql' => ['type' => 'integer', 'unsigned' => true],
-            // @todo – do not use eager relations
-            'relation' => ['type' => 'hasOne', 'load' => 'eager', 'table' => 'tl_page'],
         ],
         'published' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['published'],

@@ -36,6 +36,7 @@ return PhpCsFixer\Config::create()
     )
     ->setFinder(
         PhpCsFixer\Finder::create()
+            ->notPath('src/FeedGenerator.php')
             ->notPath('src/FrontendModule/NewsArchiveModule.php')
             ->notPath('src/FrontendModule/NewsListModule.php')
             ->notPath('src/FrontendModule/NewsMenuModule.php')
