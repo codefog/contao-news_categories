@@ -8,6 +8,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_customCategories'] = 'news_categories';
 
 \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
+    ->addField('news_categoryFilterPage', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField('news_relatedCategories', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField('news_filterPreserve', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField('news_filterDefault', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
@@ -24,6 +25,11 @@ $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_customCategories'] = 'news_
     ->applyToPalette('newsmenu', 'tl_module');
 
 \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
+    ->addField('news_categoryFilterPage', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+    ->applyToPalette('newsarchive', 'tl_module');
+
+\Contao\CoreBundle\DataContainer\PaletteManipulator::create()
+    ->addField('news_categoryFilterPage', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField('news_categoryImgSize', 'imgSize', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->applyToPalette('newsreader', 'tl_module');
 
@@ -109,6 +115,14 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoriesRoot'] = [
     'exclude' => true,
     'inputType' => 'newsCategoriesPicker',
     'foreignKey' => 'tl_news_category.title',
+    'eval' => ['fieldType' => 'radio', 'tl_class' => 'clr'],
+    'sql' => ['type' => 'integer', 'unsigned' => true],
+];
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryFilterPage'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['news_categoryFilterPage'],
+    'exclude' => true,
+    'inputType' => 'pageTree',
     'eval' => ['fieldType' => 'radio', 'tl_class' => 'clr'],
     'sql' => ['type' => 'integer', 'unsigned' => true],
 ];

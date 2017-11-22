@@ -121,8 +121,13 @@ class TemplateListener implements FrameworkAwareInterface
         $data['hrefWithParam'] = '';
         $data['targetPage'] = null;
 
-        // Add the target page and URLs
-        if (($targetPage = $category->getTargetPage()) !== null) {
+        // Overwrite the category links with filter page set in module
+        if ($module->news_categoryFilterPage && ($targetPage = PageModel::findPublishedById($module->news_categoryFilterPage)) !== null) {
+            $data['href'] = $this->urlGenerator->generateUrl($category, $targetPage);
+            $data['hrefWithParam'] = $data['href'];
+            $data['targetPage'] = $targetPage;
+        } elseif (($targetPage = $category->getTargetPage()) !== null) {
+            // Add the category target page and URLs
             $data['href'] = $targetPage->getFrontendUrl();
             $data['hrefWithParam'] = $this->urlGenerator->generateUrl($category, $targetPage);
             $data['targetPage'] = $targetPage;
