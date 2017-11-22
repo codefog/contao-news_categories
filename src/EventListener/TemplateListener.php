@@ -72,6 +72,7 @@ class TemplateListener
     {
         $data = [];
         $list = [];
+        $cssClasses = trimsplit(' ', $template->class);
 
         /** @var NewsCategory $category */
         foreach ($categories as $category) {
@@ -82,8 +83,12 @@ class TemplateListener
 
             $model = $category->getModel();
 
+            // Add category to data and list
             $data[$model->id] = $this->generateCategoryData($category);
             $list[$model->id] = $category->getTitle();
+
+            // Add the category CSS classes to news class
+            $cssClasses = array_merge($cssClasses, trimsplit(' ', $category->getCssClass()));
         }
 
         // Sort the categories data alphabetically
@@ -96,6 +101,7 @@ class TemplateListener
 
         $template->categories = $data;
         $template->categoriesList = $list;
+        $template->class = implode(' ', array_unique($cssClasses));
     }
 
     /**
