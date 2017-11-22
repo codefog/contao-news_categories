@@ -118,7 +118,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
 
     // Palettes
     'palettes' => [
-        'default' => '{title_legend},title,alias,frontendTitle,cssClass;{modules_legend:hide},hideInList,hideInReader,excludeInRelated;{redirect_legend:hide},jumpTo;{publish_legend},published',
+        'default' => '{title_legend},title,alias,frontendTitle,cssClass;{description_legend:hide},description;{modules_legend:hide},hideInList,hideInReader,excludeInRelated;{redirect_legend:hide},jumpTo;{publish_legend},published',
     ],
 
     // Fields
@@ -176,6 +176,15 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
             'eval' => ['tl_class' => 'w50'],
             'sql' => ['type' => 'string', 'default' => ''],
         ],
+        'description' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_news_category']['description'],
+            'exclude' => true,
+            'search' => true,
+            'inputType' => 'textarea',
+            'eval' => ['rte' => 'tinyMCE', 'helpwizard' => true, 'tl_class' => 'clr'],
+            'explanation' => 'insertTags',
+            'sql' => ['type' => 'text'],
+        ],
         'hideInList' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['hideInList'],
             'exclude' => true,
@@ -232,4 +241,5 @@ if (array_key_exists('Terminal42DcMultilingualBundle', System::getContainer()->g
     $GLOBALS['TL_DCA']['tl_news_category']['fields']['lid']['sql'] = ['type' => 'integer', 'unsigned' => true];
     $GLOBALS['TL_DCA']['tl_news_category']['fields']['title']['eval']['translatableFor'] = '*';
     $GLOBALS['TL_DCA']['tl_news_category']['fields']['frontendTitle']['eval']['translatableFor'] = '*';
+    $GLOBALS['TL_DCA']['tl_news_category']['fields']['description']['eval']['translatableFor'] = '*';
 }
