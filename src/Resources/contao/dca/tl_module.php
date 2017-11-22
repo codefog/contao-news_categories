@@ -4,7 +4,7 @@
  * Extend palettes
  */
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'news_customCategories';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_resetCategories,news_showQuantity,news_categoriesRoot,news_customCategories;{redirect_legend:hide},jumpTo;{template_legend:hide},navigationTpl,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_resetCategories,news_showEmptyCategories,news_showQuantity,news_categoriesRoot,news_customCategories;{redirect_legend:hide},jumpTo;{template_legend:hide},navigationTpl,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_customCategories'] = 'news_categories';
 
 \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
@@ -53,7 +53,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_relatedCategories'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['news_relatedCategories'],
     'exclude' => true,
     'inputType' => 'checkbox',
-    'eval' => ['tl_class' => 'w50'],
+    'eval' => ['tl_class' => 'clr'],
     'sql' => ['type' => 'boolean'],
 ];
 
@@ -70,7 +70,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterPreserve'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['news_filterPreserve'],
     'exclude' => true,
     'inputType' => 'checkbox',
-    'eval' => ['tl_class' => 'w50'],
+    'eval' => ['tl_class' => 'clr'],
     'sql' => ['type' => 'boolean'],
 ];
 
@@ -78,7 +78,15 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_resetCategories'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['news_resetCategories'],
     'exclude' => true,
     'inputType' => 'checkbox',
-    'eval' => ['tl_class' => 'clr'],
+    'eval' => ['tl_class' => 'w50'],
+    'sql' => ['type' => 'boolean'],
+];
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['news_showEmptyCategories'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['news_showEmptyCategories'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => ['tl_class' => 'w50'],
     'sql' => ['type' => 'boolean'],
 ];
 

@@ -97,22 +97,45 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (" 
     }
 
     /**
-     * Find published news categories by parent ID and IDs
-     *
-     * @param integer $pid
-     * @param array   $ids
+     * Find published news categories
      *
      * @return Collection|null
      */
-    public static function findPublishedByPidAndIds($pid, array $ids)
+    public static function findPublished()
+    {
+        $t = static::getTableAlias();
+        $options = ['order' => "$t.sorting"];
+
+        if (BE_USER_LOGGED_IN) {
+            return static::findAll($options);
+        }
+
+        return static::findBy('published', 1, $options);
+    }
+
+    /**
+     * Find published news categories by parent ID and IDs
+     *
+     * @param array    $ids
+     * @param int|null $pid
+     *
+     * @return Collection|null
+     */
+    public static function findPublishedByIds(array $ids, $pid = null)
     {
         if (count($ids) === 0) {
             return null;
         }
 
         $t = static::getTableAlias();
-        $columns = ["$t.pid=?", "$t.id IN (" . implode(',', array_map('intval', $ids)) . ")"];
-        $values = [$pid];
+        $columns = ["$t.id IN (" . implode(',', array_map('intval', $ids)) . ")"];
+        $values = [];
+
+        // Filter by pid
+        if ($pid !== null) {
+            $columns[] = "$t.pid=?";
+            $values[] = $pid;
+        }
 
         if (!BE_USER_LOGGED_IN) {
             $columns[] = "$t.published=?";

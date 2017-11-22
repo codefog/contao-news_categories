@@ -72,10 +72,19 @@ class NewsCategoriesModule extends ModuleNews
      */
     protected function compile()
     {
-        $categories = NewsCategoryModel::findPublishedByArchives(
-            $this->news_archives,
-            $this->news_customCategories ? StringUtil::deserialize($this->news_categories, true) : []
-        );
+        $customCategories = $this->news_customCategories ? StringUtil::deserialize($this->news_categories, true) : [];
+
+        // Get all categories whether they have news or not
+        if ($this->news_showEmptyCategories) {
+            if (count($customCategories) > 0) {
+                $categories = NewsCategoryModel::findPublishedByIds($customCategories);
+            } else {
+                $categories = NewsCategoryModel::findPublished();
+            }
+        } else {
+            // Get the categories that do have news assigned
+            $categories = NewsCategoryModel::findPublishedByArchives($this->news_archives, $customCategories);
+        }
 
         // Return if no categories are found
         if ($categories === null) {
@@ -155,7 +164,7 @@ class NewsCategoriesModule extends ModuleNews
      */
     protected function renderNewsCategories($pid, array $ids, $level = 1)
     {
-        $categoryModels = NewsCategoryModel::findPublishedByPidAndIds($pid, $ids);
+        $categoryModels = NewsCategoryModel::findPublishedByIds($ids, $pid);
 
         if ($categoryModels === null) {
             return '';
