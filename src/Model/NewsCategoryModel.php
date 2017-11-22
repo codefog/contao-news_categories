@@ -2,11 +2,11 @@
 
 namespace Codefog\NewsCategoriesBundle\Model;
 
+use Codefog\NewsCategoriesBundle\MultilingualHelper;
 use Contao\Database;
 use Contao\Date;
 use Contao\Model\Collection;
 use Contao\NewsModel;
-use Contao\System;
 use Haste\Model\Model;
 use Haste\Model\Relations;
 

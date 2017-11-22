@@ -1,6 +1,6 @@
 <?php
 
-namespace Codefog\NewsCategoriesBundle\Model;
+namespace Codefog\NewsCategoriesBundle;
 
 use Contao\System;
 
