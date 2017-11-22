@@ -5,6 +5,7 @@ namespace Codefog\NewsCategoriesBundle\Model;
 use Codefog\NewsCategoriesBundle\MultilingualHelper;
 use Contao\Database;
 use Contao\Date;
+use Contao\FilesModel;
 use Contao\Model\Collection;
 use Contao\NewsModel;
 use Haste\Model\Model;
@@ -26,6 +27,16 @@ class NewsCategoryModel extends ParentModel
      * @var string
      */
     protected static $strTable = 'tl_news_category';
+
+    /**
+     * Get the image
+     *
+     * @return FilesModel|null
+     */
+    public function getImage()
+    {
+        return FilesModel::findByPk($this->image);
+    }
 
     /**
      * Find published news categories by news criteria

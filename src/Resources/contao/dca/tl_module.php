@@ -4,7 +4,7 @@
  * Extend palettes
  */
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'news_customCategories';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_showQuantity,news_resetCategories,news_showEmptyCategories,news_forceCategoryUrl,news_categoriesRoot,news_customCategories;{redirect_legend:hide},jumpTo;{template_legend:hide},navigationTpl,customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_showQuantity,news_resetCategories,news_showEmptyCategories,news_forceCategoryUrl,news_categoriesRoot,news_customCategories;{redirect_legend:hide},jumpTo;{template_legend:hide},navigationTpl,customTpl;{image_legend:hide},news_categoryImgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_customCategories'] = 'news_categories';
 
 \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
@@ -12,14 +12,20 @@ $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_customCategories'] = 'news_
     ->addField('news_filterPreserve', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField('news_filterDefault', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField('news_filterCategories', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+    ->addField('news_categoryImgSize', 'imgSize', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->applyToPalette('newslist', 'tl_module');
 
 \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
     ->addField('news_filterPreserve', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField('news_filterDefault', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField('news_filterCategories', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+    ->addField('news_categoryImgSize', 'imgSize', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->applyToPalette('newsarchive', 'tl_module')
     ->applyToPalette('newsmenu', 'tl_module');
+
+\Contao\CoreBundle\DataContainer\PaletteManipulator::create()
+    ->addField('news_categoryImgSize', 'imgSize', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+    ->applyToPalette('newsreader', 'tl_module');
 
 /**
  * Add fields
@@ -106,3 +112,11 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoriesRoot'] = [
     'eval' => ['fieldType' => 'radio', 'tl_class' => 'clr'],
     'sql' => ['type' => 'integer', 'unsigned' => true],
 ];
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryImgSize'] = array_merge(
+    $GLOBALS['TL_DCA']['tl_module']['fields']['imgSize'],
+    ['label' => [
+        $GLOBALS['TL_LANG']['tl_module']['news_categoryImgSize'][0],
+        $GLOBALS['TL_DCA']['tl_module']['fields']['imgSize']['label'][1]
+    ]]
+);

@@ -3,16 +3,28 @@
     <?php foreach ($this->items as $item): ?>
         <?php if ($item['isActive']): ?>
             <li class="<?= $item['class']; ?>">
+                <?php if ($item['image']): ?>
+                    <?php $this->insert('picture_default', $item['image']->picture) ?>
+                <?php endif; ?>
+
                 <span class="<?= $item['class']; ?>"><?= $item['link']; ?></span>
+
                 <?php if ($this->showQuantity): ?> <span class="quantity">(<?= $item['quantity']; ?>)</span><?php endif; ?>
+
                 <?= $item['subitems']; ?>
             </li>
         <?php else: ?>
             <li class="<?= $item['class']; ?>">
                 <a href="<?= $item['href']; ?>" class="<?= $item['class']; ?>" title="<?= $item['linkTitle']; ?>">
+                    <?php if ($item['image']): ?>
+                        <?php $this->insert('picture_default', $item['image']->picture) ?>
+                    <?php endif; ?>
+
                     <?= $item['link']; ?>
+
                     <?php if ($this->showQuantity): ?> <span class="quantity">(<?= $item['quantity']; ?>)</span><?php endif; ?>
                 </a>
+
                 <?= $item['subitems']; ?>
             </li>
         <?php endif; ?>

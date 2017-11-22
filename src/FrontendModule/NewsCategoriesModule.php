@@ -4,6 +4,7 @@ namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategory;
+use Contao\Controller;
 use Contao\Database;
 use Contao\FrontendTemplate;
 use Contao\ModuleNews;
@@ -272,6 +273,14 @@ class NewsCategoriesModule extends ModuleNews
         // Add the news quantity
         if ($this->news_showQuantity) {
             $data['quantity'] = ($category === null) ? NewsCategoryModel::getUsage($this->news_archives) : $category->getUsage($this->news_archives);
+        }
+
+        // Add the image
+        if ($category !== null && ($image = $category->getImage()) !== null) {
+            $data['image'] = new \stdClass();
+            Controller::addImageToTemplate($data['image'], ['singleSRC' => $image->path, 'size' => $this->news_categoryImgSize]);
+        } else {
+            $data['image'] = null;
         }
 
         return $data;

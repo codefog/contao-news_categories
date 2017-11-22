@@ -5,18 +5,17 @@ namespace Codefog\NewsCategoriesBundle\EventListener;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategory;
 use Codefog\NewsCategoriesBundle\UrlGenerator;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\Controller;
+use Contao\CoreBundle\Framework\FrameworkAwareInterface;
+use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\FrontendTemplate;
 use Contao\Module;
 use Contao\PageModel;
 use Contao\StringUtil;
 
-class TemplateListener
+class TemplateListener implements FrameworkAwareInterface
 {
-    /**
-     * @var ContaoFrameworkInterface
-     */
-    private $framework;
+    use FrameworkAwareTrait;
 
     /**
      * @var UrlGenerator
@@ -26,12 +25,10 @@ class TemplateListener
     /**
      * TemplateListener constructor.
      *
-     * @param ContaoFrameworkInterface $framework
-     * @param UrlGenerator             $urlGenerator
+     * @param UrlGenerator $urlGenerator
      */
-    public function __construct(ContaoFrameworkInterface $framework, UrlGenerator $urlGenerator)
+    public function __construct(UrlGenerator $urlGenerator)
     {
-        $this->framework = $framework;
         $this->urlGenerator = $urlGenerator;
     }
 
@@ -84,7 +81,7 @@ class TemplateListener
             $model = $category->getModel();
 
             // Add category to data and list
-            $data[$model->id] = $this->generateCategoryData($category);
+            $data[$model->id] = $this->generateCategoryData($category, $module);
             $list[$model->id] = $category->getTitle();
 
             // Add the category CSS classes to news class
@@ -108,10 +105,11 @@ class TemplateListener
      * Generate the category data
      *
      * @param NewsCategory $category
+     * @param Module       $module
      *
      * @return array
      */
-    private function generateCategoryData(NewsCategory $category)
+    private function generateCategoryData(NewsCategory $category, Module $module)
     {
         $data = $category->getModel()->row();
 
@@ -134,6 +132,16 @@ class TemplateListener
         $data['generateUrl'] = function(PageModel $page, $absolute = false) use ($category) {
             return $this->urlGenerator->generateUrl($category, $page, $absolute);
         };
+
+        // Add the image
+        if (($image = $category->getImage()) !== null) {
+            /** @var Controller $controllerAdapter */
+            $controllerAdapter = $this->framework->getAdapter(Controller::class);
+            $data['image'] = new \stdClass();
+            $controllerAdapter->addImageToTemplate($data['image'], ['singleSRC' => $image->path, 'size' => $module->news_categoryImgSize]);
+        } else {
+            $data['image'] = null;
+        }
 
         return $data;
     }

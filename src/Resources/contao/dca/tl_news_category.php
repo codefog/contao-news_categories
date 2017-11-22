@@ -118,7 +118,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
 
     // Palettes
     'palettes' => [
-        'default' => '{title_legend},title,alias,frontendTitle,cssClass;{description_legend:hide},description;{modules_legend:hide},hideInList,hideInReader,excludeInRelated;{redirect_legend:hide},jumpTo;{publish_legend},published',
+        'default' => '{title_legend},title,alias,frontendTitle,cssClass;{details_legend:hide},description,image;{modules_legend:hide},hideInList,hideInReader,excludeInRelated;{redirect_legend:hide},jumpTo;{publish_legend},published',
     ],
 
     // Fields
@@ -184,6 +184,19 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
             'eval' => ['rte' => 'tinyMCE', 'helpwizard' => true, 'tl_class' => 'clr'],
             'explanation' => 'insertTags',
             'sql' => ['type' => 'text'],
+        ],
+        'image' => [
+            'label' => &$GLOBALS['TL_LANG']['tl_news_category']['image'],
+            'exclude' => true,
+            'inputType' => 'fileTree',
+            'eval' => [
+                'files' => true,
+                'filesOnly' => true,
+                'fieldType' => 'radio',
+                'extensions' => \Contao\Config::get('validImageTypes'),
+                'tl_class' => 'clr',
+            ],
+            'sql' => ['type' => 'binary', 'length' => 16],
         ],
         'hideInList' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['hideInList'],

@@ -97,6 +97,20 @@ class NewsCategory
     }
 
     /**
+     * Get the image
+     *
+     * @return \Contao\FilesModel|null
+     */
+    public function getImage()
+    {
+        if (($model = $this->model->getImage()) === null || !is_file(TL_ROOT . '/' . $model->path)) {
+            return null;
+        }
+
+        return $model;
+    }
+
+    /**
      * Get the category target page
      *
      * @return PageModel|null
