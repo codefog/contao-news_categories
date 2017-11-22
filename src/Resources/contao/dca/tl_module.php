@@ -4,33 +4,36 @@
  * Extend palettes
  */
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'news_customCategories';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_showQuantity,news_resetCategories,news_showEmptyCategories,news_forceCategoryUrl,news_categoriesRoot,news_customCategories;{redirect_legend:hide},jumpTo;{template_legend:hide},navigationTpl,customTpl;{image_legend:hide},news_categoryImgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_showQuantity,news_resetCategories,news_showEmptyCategories;{reference_legend:hide},news_categoriesRoot,news_customCategories;{redirect_legend:hide},news_forceCategoryUrl,jumpTo;{template_legend:hide},navigationTpl,customTpl;{image_legend:hide},news_categoryImgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_customCategories'] = 'news_categories';
 
 \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addField('news_categoryFilterPage', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField('news_relatedCategories', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField('news_filterPreserve', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField('news_filterDefault', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField('news_filterCategories', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField('news_categoryImgSize', 'imgSize', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+    ->addLegend('redirect_legend', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+    ->addField('news_filterCategories', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->addField('news_relatedCategories', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->addField('news_filterDefault', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->addField('news_filterPreserve', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->addField('news_categoryFilterPage', 'redirect_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->addField('news_categoryImgSize', 'image_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('newslist', 'tl_module');
 
 \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addField('news_filterPreserve', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField('news_filterDefault', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField('news_filterCategories', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField('news_categoryImgSize', 'imgSize', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+    ->addField('news_filterCategories', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->addField('news_filterDefault', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->addField('news_filterPreserve', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->addField('news_categoryImgSize', 'image_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('newsarchive', 'tl_module')
     ->applyToPalette('newsmenu', 'tl_module');
 
 \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addField('news_categoryFilterPage', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+    ->addLegend('redirect_legend', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+    ->addField('news_categoryFilterPage', 'redirect_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('newsarchive', 'tl_module');
 
 \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addField('news_categoryFilterPage', 'news_archives', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField('news_categoryImgSize', 'imgSize', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+    ->addLegend('redirect_legend', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
+    ->addField('news_categoryFilterPage', 'redirect_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->addField('news_categoryImgSize', 'image_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('newsreader', 'tl_module');
 
 /**
@@ -57,7 +60,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterCategories'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['news_filterCategories'],
     'exclude' => true,
     'inputType' => 'checkbox',
-    'eval' => ['tl_class' => 'clr'],
+    'eval' => ['tl_class' => 'w50'],
     'sql' => ['type' => 'boolean'],
 ];
 
@@ -65,7 +68,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_relatedCategories'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['news_relatedCategories'],
     'exclude' => true,
     'inputType' => 'checkbox',
-    'eval' => ['tl_class' => 'clr'],
+    'eval' => ['tl_class' => 'w50'],
     'sql' => ['type' => 'boolean'],
 ];
 
@@ -106,7 +109,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_forceCategoryUrl'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['news_forceCategoryUrl'],
     'exclude' => true,
     'inputType' => 'checkbox',
-    'eval' => ['tl_class' => 'w50'],
+    'eval' => ['tl_class' => 'clr'],
     'sql' => ['type' => 'boolean'],
 ];
 
