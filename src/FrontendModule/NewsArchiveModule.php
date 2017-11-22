@@ -3,10 +3,10 @@
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
 use Codefog\NewsCategoriesBundle\Criteria;
-use Codefog\NewsCategoriesBundle\Model\NewsModel;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\Model\Collection;
 use Contao\ModuleNewsArchive;
+use Contao\NewsModel;
 use Contao\PageModel;
 use Contao\System;
 

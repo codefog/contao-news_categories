@@ -7,7 +7,6 @@ use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Date;
 use Contao\NewsModel;
 use Haste\Model\Model;
-use Haste\Model\Relations;
 
 class Criteria
 {
@@ -122,7 +121,9 @@ class Criteria
 
         /** @var Model $model */
         $model = $this->framework->getAdapter(Model::class);
+
         $newsIds = $model->getReferenceValues('tl_news', 'categories', $defaultCategories);
+        $newsIds = $this->parseIds($newsIds);
 
         if (count($newsIds) === 0) {
             throw new NoNewsException();
@@ -145,7 +146,9 @@ class Criteria
     {
         /** @var Model $model */
         $model = $this->framework->getAdapter(Model::class);
+
         $newsIds = $model->getReferenceValues('tl_news', 'categories', (int) $category);
+        $newsIds = $this->parseIds($newsIds);
 
         if (count($newsIds) === 0) {
             throw new NoNewsException();

@@ -84,6 +84,18 @@ class NewsCategory
     }
 
     /**
+     * Get the usage
+     *
+     * @param array $archives
+     *
+     * @return int
+     */
+    public function getUsage(array $archives = [])
+    {
+        return NewsCategoryModel::getUsage($archives, $this->model->id);
+    }
+
+    /**
      * Return true if the category is visible for module
      *
      * @param Module $module

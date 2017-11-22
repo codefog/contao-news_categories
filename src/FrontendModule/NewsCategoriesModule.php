@@ -72,7 +72,7 @@ class NewsCategoriesModule extends ModuleNews
      */
     protected function compile()
     {
-        $categories = NewsCategoryModel::findPublishedByParent(
+        $categories = NewsCategoryModel::findPublishedByArchives(
             $this->news_archives,
             $this->news_customCategories ? StringUtil::deserialize($this->news_categories, true) : []
         );
@@ -200,7 +200,7 @@ class NewsCategoriesModule extends ModuleNews
                 $category->getTitle(),
                 $this->generateItemCssClass($category),
                 $this->activeCategory !== null && (int) $this->activeCategory->getModel()->id === (int) $categoryModel->id,
-                $categoryModel->subcategories ? $this->renderNewsCategories($categoryModel->id, $ids, $level) : '',
+                $this->renderNewsCategories($categoryModel->id, $ids, $level),
                 $category
             );
         }
@@ -256,10 +256,7 @@ class NewsCategoriesModule extends ModuleNews
 
         // Add the news quantity
         if ($this->news_showQuantity) {
-            $data['quantity'] = NewsCategoryModel::countPublishedNewsByArchives(
-                $this->news_archives,
-                ($category !== null) ? $category->getModel()->id : null
-            );
+            $data['quantity'] = ($category === null) ? NewsCategoryModel::getUsage($this->news_archives) : $category->getUsage($this->news_archives);
         }
 
         return $data;
