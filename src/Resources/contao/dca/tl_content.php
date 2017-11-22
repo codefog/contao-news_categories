@@ -12,7 +12,7 @@
 if (\Contao\Input::get('do') === 'news'
     && ($index = array_search(['tl_content_news', 'generateFeed'] ,$GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'])) !== false
 ) {
-    $GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'][$index] = ['codefog_news_categories.listener.feed', 'onLoadCallback'];
+    $GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'][$index] = ['codefog_news_categories.listener.data_container.feed', 'onLoadCallback'];
 }
 
 /**

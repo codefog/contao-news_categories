@@ -1,9 +1,10 @@
 <?php
 
-namespace Codefog\NewsCategoriesBundle;
+namespace Codefog\NewsCategoriesBundle\Criteria;
 
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+use Codefog\NewsCategoriesBundle\UrlGenerator;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\Input;
@@ -12,7 +13,7 @@ use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Haste\Model\Model;
 
-class SearchBuilder implements FrameworkAwareInterface
+class NewsCriteriaBuilder implements FrameworkAwareInterface
 {
     use FrameworkAwareTrait;
 
@@ -27,7 +28,7 @@ class SearchBuilder implements FrameworkAwareInterface
     private $urlGenerator;
 
     /**
-     * SearchBuilder constructor.
+     * NewsCriteriaBuilder constructor.
      *
      * @param Connection   $db
      * @param UrlGenerator $urlGenerator
@@ -46,11 +47,11 @@ class SearchBuilder implements FrameworkAwareInterface
      * @param int     $end
      * @param Module  $module
      *
-     * @return Criteria|null
+     * @return NewsCriteria|null
      */
     public function getCriteriaForArchiveModule(array $archives, $begin, $end, Module $module)
     {
-        $criteria = new Criteria($this->framework);
+        $criteria = new NewsCriteria($this->framework);
 
         try {
             $criteria->setBasicCriteria($archives);
@@ -74,11 +75,11 @@ class SearchBuilder implements FrameworkAwareInterface
      * @param bool|null $featured
      * @param Module    $module
      *
-     * @return Criteria|null
+     * @return NewsCriteria|null
      */
     public function getCriteriaForListModule(array $archives, $featured, Module $module)
     {
-        $criteria = new Criteria($this->framework);
+        $criteria = new NewsCriteria($this->framework);
 
         try {
             $criteria->setBasicCriteria($archives);
@@ -108,11 +109,11 @@ class SearchBuilder implements FrameworkAwareInterface
      * @param array  $archives
      * @param Module $module
      *
-     * @return Criteria|null
+     * @return NewsCriteria|null
      */
     public function getCriteriaForMenuModule(array $archives, Module $module)
     {
-        $criteria = new Criteria($this->framework);
+        $criteria = new NewsCriteria($this->framework);
 
         try {
             $criteria->setBasicCriteria($archives);
@@ -129,12 +130,12 @@ class SearchBuilder implements FrameworkAwareInterface
     /**
      * Set the regular list criteria
      *
-     * @param Criteria $criteria
-     * @param Module   $module
+     * @param NewsCriteria $criteria
+     * @param Module       $module
      *
      * @throws NoNewsException
      */
-    private function setRegularListCriteria(Criteria $criteria, Module $module)
+    private function setRegularListCriteria(NewsCriteria $criteria, Module $module)
     {
         // Filter by default categories
         if (count($default = StringUtil::deserialize($module->news_filterDefault, true)) > 0) {
@@ -164,12 +165,12 @@ class SearchBuilder implements FrameworkAwareInterface
     /**
      * Set the related list criteria
      *
-     * @param Criteria $criteria
-     * @param Module   $module
+     * @param NewsCriteria $criteria
+     * @param Module       $module
      *
      * @throws NoNewsException
      */
-    private function setRelatedListCriteria(Criteria $criteria, Module $module)
+    private function setRelatedListCriteria(NewsCriteria $criteria, Module $module)
     {
         if (($news = $module->currentNews) === null) {
             throw new NoNewsException();

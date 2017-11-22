@@ -2,7 +2,7 @@
 
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
-use Codefog\NewsCategoriesBundle\Criteria;
+use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\Model\Collection;
 use Contao\ModuleNewsArchive;
@@ -185,12 +185,12 @@ class NewsArchiveModule extends ModuleNewsArchive
      * @param int $begin
      * @param int $end
      *
-     * @return Criteria|null
+     * @return NewsCriteria|null
      */
     protected function getSearchCriteria($begin, $end)
     {
         return System::getContainer()
-            ->get('codefog_news_categories.search_builder')
+            ->get('codefog_news_categories.news_criteria_builder')
             ->getCriteriaForArchiveModule($this->news_archives, $begin, $end, $this);
     }
 }

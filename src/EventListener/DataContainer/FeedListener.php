@@ -1,6 +1,6 @@
 <?php
 
-namespace Codefog\NewsCategoriesBundle\EventListener;
+namespace Codefog\NewsCategoriesBundle\EventListener\DataContainer;
 
 use Codefog\NewsCategoriesBundle\FeedGenerator;
 use Contao\Automator;

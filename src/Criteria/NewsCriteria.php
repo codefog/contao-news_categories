@@ -1,6 +1,6 @@
 <?php
 
-namespace Codefog\NewsCategoriesBundle;
+namespace Codefog\NewsCategoriesBundle\Criteria;
 
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
@@ -8,7 +8,7 @@ use Contao\Date;
 use Contao\NewsModel;
 use Haste\Model\Model;
 
-class Criteria
+class NewsCriteria
 {
     /**
      * @var ContaoFrameworkInterface
@@ -31,7 +31,7 @@ class Criteria
     private $options = [];
 
     /**
-     * Criteria constructor.
+     * NewsCriteria constructor.
      *
      * @param ContaoFrameworkInterface $framework
      */

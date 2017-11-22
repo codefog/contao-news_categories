@@ -2,8 +2,8 @@
 
 namespace Codefog\NewsCategoriesBundle\EventListener;
 
-use Codefog\NewsCategoriesBundle\Criteria;
-use Codefog\NewsCategoriesBundle\SearchBuilder;
+use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
+use Codefog\NewsCategoriesBundle\Criteria\NewsCriteriaBuilder;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\Model\Collection;
@@ -14,16 +14,16 @@ class NewsListener implements FrameworkAwareInterface
     use FrameworkAwareTrait;
 
     /**
-     * @var SearchBuilder
+     * @var \Codefog\NewsCategoriesBundle\Criteria\NewsCriteriaBuilder
      */
     private $searchBuilder;
 
     /**
      * InsertTagsListener constructor.
      *
-     * @param SearchBuilder $searchBuilder
+     * @param \Codefog\NewsCategoriesBundle\Criteria\NewsCriteriaBuilder $searchBuilder
      */
-    public function __construct(SearchBuilder $searchBuilder)
+    public function __construct(NewsCriteriaBuilder $searchBuilder)
     {
         $this->searchBuilder = $searchBuilder;
     }
@@ -80,7 +80,7 @@ class NewsListener implements FrameworkAwareInterface
      * @param bool|null      $featured
      * @param ModuleNewsList $module
      *
-     * @return Criteria|null
+     * @return NewsCriteria|null
      */
     private function getCriteria(array $archives, $featured, ModuleNewsList $module)
     {

@@ -12,12 +12,6 @@ services:
         arguments:
             - "@codefog_news_categories.url_generator"
 
-    codefog_news_categories.listener.feed:
-        class: Codefog\NewsCategoriesBundle\EventListener\FeedListener
-        arguments:
-            - "@database_connection"
-            - "@session"
-
     codefog_news_categories.listener.insert_tags:
         class: Codefog\NewsCategoriesBundle\EventListener\InsertTagsListener
         arguments:
@@ -26,7 +20,7 @@ services:
     codefog_news_categories.listener.news:
         class: Codefog\NewsCategoriesBundle\EventListener\NewsListener
         arguments:
-          - "@codefog_news_categories.search_builder"
+          - "@codefog_news_categories.news_criteria_builder"
 
     codefog_news_categories.listener.template:
         class: Codefog\NewsCategoriesBundle\EventListener\TemplateListener
@@ -39,6 +33,12 @@ services:
         class: Codefog\NewsCategoriesBundle\EventListener\DataContainer\ContentListener
         arguments:
             - "@database_connection"
+
+    codefog_news_categories.listener.data_container.feed:
+        class: Codefog\NewsCategoriesBundle\EventListener\DataContainer\FeedListener
+        arguments:
+            - "@database_connection"
+            - "@session"
 
     codefog_news_categories.listener.data_container.news_archive:
         class: Codefog\NewsCategoriesBundle\EventListener\DataContainer\NewsArchiveListener

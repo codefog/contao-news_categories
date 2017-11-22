@@ -232,7 +232,7 @@ class NewsMenuModule extends ModuleNewsMenu
     protected function getFilteredNewsIds()
     {
         $criteria = System::getContainer()
-            ->get('codefog_news_categories.search_builder')
+            ->get('codefog_news_categories.news_criteria_builder')
             ->getCriteriaForMenuModule($this->news_archives, $this);
 
         if ($criteria === null) {

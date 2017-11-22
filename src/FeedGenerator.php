@@ -2,6 +2,7 @@
 
 namespace Codefog\NewsCategoriesBundle;
 
+use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\News;
 
@@ -30,7 +31,7 @@ class FeedGenerator extends News
         $objFeed->language = $arrFeed['language'];
         $objFeed->published = $arrFeed['tstamp'];
 
-        $criteria = new Criteria(\System::getContainer()->get('contao.framework'));
+        $criteria = new NewsCriteria(\System::getContainer()->get('contao.framework'));
         $criteria->setBasicCriteria($arrArchives);
 
         // Filter by categories
