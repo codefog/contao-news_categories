@@ -229,7 +229,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
 /**
  * Enable multilingual features
  */
-if (array_key_exists('Terminal42DcMultilingualBundle', System::getContainer()->getParameter('kernel.bundles'))) {
+if (\Codefog\NewsCategoriesBundle\Model\MultilingualHelper::isActive()) {
     // Config
     $GLOBALS['TL_DCA']['tl_news_category']['config']['dataContainer'] = 'Multilingual';
     $GLOBALS['TL_DCA']['tl_news_category']['config']['langColumn'] = 'language';

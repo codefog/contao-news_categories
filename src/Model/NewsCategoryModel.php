@@ -13,7 +13,7 @@ use Haste\Model\Relations;
 /**
  * Use the multilingual model if available
  */
-if (array_key_exists('Terminal42DcMultilingualBundle', System::getContainer()->getParameter('kernel.bundles'))) {
+if (MultilingualHelper::isActive()) {
     class ParentModel extends \Terminal42\DcMultilingualBundle\Model\Multilingual {}
 } else {
     class ParentModel extends \Contao\Model {}
@@ -185,7 +185,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (" 
      */
     public static function findMultipleByIds($arrIds, array $arrOptions = [])
     {
-        if (!array_key_exists('Terminal42DcMultilingualBundle', System::getContainer()->getParameter('kernel.bundles'))) {
+        if (!MultilingualHelper::isActive()) {
             return parent::findMultipleByIds($arrIds, $arrOptions);
         }
 
@@ -205,7 +205,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (" 
      */
     public static function getTableAlias()
     {
-        if (array_key_exists('Terminal42DcMultilingualBundle', System::getContainer()->getParameter('kernel.bundles'))) {
+        if (MultilingualHelper::isActive()) {
             return 't1';
         }
 
