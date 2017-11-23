@@ -19,6 +19,7 @@ services:
         class: Codefog\NewsCategoriesBundle\PermissionChecker
         public: false
         arguments:
+            - "@database_connection"
             - "@security.token_storage"
 
     codefog_news_categories.news_criteria_builder:

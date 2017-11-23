@@ -5,13 +5,14 @@ namespace Codefog\NewsCategoriesBundle\EventListener\DataContainer;
 use Codefog\NewsCategoriesBundle\PermissionChecker;
 use Contao\Backend;
 use Contao\CoreBundle\Exception\AccessDeniedException;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\DataContainer;
 use Contao\Image;
+use Contao\Input;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class NewsCategoryListener implements FrameworkAwareInterface
 {
@@ -28,24 +29,79 @@ class NewsCategoryListener implements FrameworkAwareInterface
     private $permissionChecker;
 
     /**
+     * @var SessionInterface
+     */
+    private $session;
+
+    /**
      * NewsCategoryListener constructor.
      *
      * @param Connection        $db
      * @param PermissionChecker $permissionChecker
+     * @param SessionInterface  $session
      */
-    public function __construct(Connection $db, PermissionChecker $permissionChecker)
+    public function __construct(Connection $db, PermissionChecker $permissionChecker, SessionInterface $session)
     {
         $this->db = $db;
         $this->permissionChecker = $permissionChecker;
+        $this->session = $session;
     }
 
     /**
      * On data container load
+     *
+     * @param DataContainer $dc
      */
-    public function onLoadCallback()
+    public function onLoadCallback(DataContainer $dc)
     {
         if (!$this->permissionChecker->canUserManageCategories()) {
             throw new AccessDeniedException('User has no permissions to manage news categories');
+        }
+
+        // Limit the allowed roots for the user
+        if (($roots = $this->permissionChecker->getUserAllowedRoots()) !== null) {
+            $GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'] = $roots;
+
+            /** @var Input $input */
+            $input = $this->framework->getAdapter(Input::class);
+
+            // Check current action
+            switch ($action = $input->get('act')) {
+                case 'edit':
+                    $categoryId = (int) $input->get('id');
+
+                    // Dynamically add the record to the user profile
+                    if (!$this->permissionChecker->isUserAllowedNewsCategory($categoryId)) {
+                        /** @var \Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface $sessionBag */
+                        $sessionBag = $this->session->getbag('contao_backend');
+
+                        $newRecords = $sessionBag->get('new_records');
+                        $newRecords = is_array($newRecords[$dc->table]) ? array_map('intval', $newRecords[$dc->table]) : [];
+
+                        if (in_array($categoryId, $newRecords, true)) {
+                            $this->permissionChecker->addCategoryToAllowedRoots($categoryId);
+                        }
+                    }
+                // No break;
+
+                case 'copy':
+                case 'delete':
+                case 'show':
+                    $categoryId = (int) $input->get('id');
+
+                    if (!$this->permissionChecker->isUserAllowedNewsCategory($categoryId)) {
+                        throw new AccessDeniedException(sprintf('Not enough permissions to %s news category ID %s.', $action, $categoryId));
+                    }
+                    break;
+
+                case 'editAll':
+                case 'deleteAll':
+                case 'overrideAll':
+                    $session = $this->session->all();
+                    $session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $roots);
+                    $this->session->replace($session);
+                    break;
+            }
         }
     }
 
@@ -130,7 +186,7 @@ class NewsCategoryListener implements FrameworkAwareInterface
             $value = StringUtil::standardize(StringUtil::restoreBasicEntities($title));
         }
 
-        $exists = $this->db->fetchColumn('SELECT id FROM tl_news_category WHERE alias=? AND id!=?', [$value, $dc->id]);
+        $exists = $this->db->fetchColumn("SELECT id FROM {$dc->table} WHERE alias=? AND id!=?", [$value, $dc->id]);
 
         // Check whether the category alias exists
         if ($exists) {

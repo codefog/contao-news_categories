@@ -55,3 +55,4 @@ $GLOBALS['TL_CRON']['daily']['generateNewsFeeds'][0] = \Codefog\NewsCategoriesBu
  */
 $GLOBALS['TL_PERMISSIONS'][] = 'newscategories';
 $GLOBALS['TL_PERMISSIONS'][] = 'newscategories_default';
+$GLOBALS['TL_PERMISSIONS'][] = 'newscategories_roots';

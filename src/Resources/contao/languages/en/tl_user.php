@@ -17,6 +17,7 @@
  */
 $GLOBALS['TL_LANG']['tl_user']['newscategories']         = array('News categories permissions', 'Here you can set the news categories permissions.');
 $GLOBALS['TL_LANG']['tl_user']['newscategories_default'] = array('Default news categories', 'Here you can set the default news categories that will be used if the user has no permissions to edit the categories field.');
+$GLOBALS['TL_LANG']['tl_user']['newscategories_roots'] = array('News category roots', 'Here you can limit the news category roots the user has access to. Note that the subcategories will included automatically!');
 
 /**
  * Legends

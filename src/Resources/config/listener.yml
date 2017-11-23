@@ -49,6 +49,7 @@ services:
         arguments:
             - "@database_connection"
             - "@codefog_news_categories.permission_checker"
+            - "@session"
 
     codefog_news_categories.listener.data_container.news:
         class: Codefog\NewsCategoriesBundle\EventListener\DataContainer\NewsListener
