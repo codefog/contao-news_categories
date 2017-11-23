@@ -25,6 +25,7 @@ $GLOBALS['TL_DCA']['tl_content']['palettes']['newsfilter'] = '{type_legend},type
  */
 $GLOBALS['TL_DCA']['tl_content']['fields']['news_filterCategories'] = &$GLOBALS['TL_DCA']['tl_module']['fields']['news_filterCategories'];
 $GLOBALS['TL_DCA']['tl_content']['fields']['news_relatedCategories'] = &$GLOBALS['TL_DCA']['tl_module']['fields']['news_relatedCategories'];
+$GLOBALS['TL_DCA']['tl_content']['fields']['news_includeSubcategories'] = &$GLOBALS['TL_DCA']['tl_module']['fields']['news_includeSubcategories'];
 $GLOBALS['TL_DCA']['tl_content']['fields']['news_filterDefault'] = &$GLOBALS['TL_DCA']['tl_module']['fields']['news_filterDefault'];
 $GLOBALS['TL_DCA']['tl_content']['fields']['news_filterPreserve'] = &$GLOBALS['TL_DCA']['tl_module']['fields']['news_filterPreserve'];
 $GLOBALS['TL_DCA']['tl_content']['fields']['news_categoryFilterPage'] = &$GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryFilterPage'];

@@ -3,6 +3,7 @@
 namespace Codefog\NewsCategoriesBundle\Criteria;
 
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
+use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Date;
 use Contao\NewsModel;
@@ -139,15 +140,23 @@ class NewsCriteria
      *
      * @param int  $category
      * @param bool $preserveDefault
+     * @param bool $includeSubcategories
      *
      * @return NoNewsException
      */
-    public function setCategory($category, $preserveDefault = false)
+    public function setCategory($category, $preserveDefault = false, $includeSubcategories = false)
     {
         /** @var Model $model */
         $model = $this->framework->getAdapter(Model::class);
 
-        $newsIds = $model->getReferenceValues('tl_news', 'categories', (int) $category);
+        // Include the subcategories
+        if ($includeSubcategories) {
+            /** @var NewsCategoryModel $newsCategoryModel */
+            $newsCategoryModel = $this->framework->getAdapter(NewsCategoryModel::class);
+            $category = $newsCategoryModel->getAllSubcategoriesIds($category);
+        }
+
+        $newsIds = $model->getReferenceValues('tl_news', 'categories', $category);
         $newsIds = $this->parseIds($newsIds);
 
         if (count($newsIds) === 0) {

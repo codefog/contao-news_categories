@@ -46,6 +46,7 @@ class NewsFilterElement extends ContentModule
         // Override news filter settings
         $module->news_filterCategories = $this->news_filterCategories;
         $module->news_relatedCategories = $this->news_relatedCategories;
+        $module->news_includeSubcategories = $this->news_includeSubcategories;
         $module->news_filterDefault = $this->news_filterDefault;
         $module->news_filterPreserve = $this->news_filterPreserve;
         $module->news_categoryFilterPage = $this->news_categoryFilterPage;

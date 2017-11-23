@@ -186,12 +186,18 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (" 
      *
      * @param array    $archives
      * @param int|null $category
+     * @param bool     $includeSubcategories
      *
      * @return int
      */
-    public static function getUsage(array $archives = [], $category = null)
+    public static function getUsage(array $archives = [], $category = null, $includeSubcategories = false)
     {
         $t = NewsModel::getTable();
+
+        // Include the subcategories
+        if ($category !== null && $includeSubcategories) {
+            $category = static::getAllSubcategoriesIds($category);
+        }
 
         if (count($ids = Model::getReferenceValues($t, 'categories', $category)) === 0) {
             return 0;
@@ -212,6 +218,21 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (" 
         }
 
         return NewsModel::countBy($columns, $values);
+    }
+
+    /**
+     * Get all subcategory IDs
+     *
+     * @param int $category
+     *
+     * @return array
+     */
+    public static function getAllSubcategoriesIds($category)
+    {
+        $ids = Database::getInstance()->getChildRecords($category, static::$strTable, false, [$category], (!BE_USER_LOGGED_IN ? 'published=1' : ''));
+        $ids = array_map('intval', $ids);
+
+        return $ids;
     }
 
     /**

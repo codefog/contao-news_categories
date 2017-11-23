@@ -157,7 +157,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
                     throw new NoNewsException();
                 }
 
-                $criteria->setCategory($category->id, (bool) $module->news_filterPreserve);
+                $criteria->setCategory($category->id, (bool) $module->news_filterPreserve, (bool) $module->news_includeSubcategories);
             }
         }
     }

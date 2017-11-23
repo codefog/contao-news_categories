@@ -88,12 +88,13 @@ class NewsCategory
      * Get the usage
      *
      * @param array $archives
+     * @param bool  $includeSubcategories
      *
      * @return int
      */
-    public function getUsage(array $archives = [])
+    public function getUsage(array $archives = [], $includeSubcategories = false)
     {
-        return NewsCategoryModel::getUsage($archives, $this->model->id);
+        return NewsCategoryModel::getUsage($archives, $this->model->id, $includeSubcategories);
     }
 
     /**

@@ -272,7 +272,11 @@ class NewsCategoriesModule extends ModuleNews
 
         // Add the news quantity
         if ($this->news_showQuantity) {
-            $data['quantity'] = ($category === null) ? NewsCategoryModel::getUsage($this->news_archives) : $category->getUsage($this->news_archives);
+            if ($category === null) {
+                $data['quantity'] = NewsCategoryModel::getUsage($this->news_archives);
+            } else {
+                $data['quantity'] = $category->getUsage($this->news_archives, (bool) $this->news_includeSubcategories);
+            }
         }
 
         // Add the image
