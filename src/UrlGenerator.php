@@ -5,6 +5,7 @@ namespace Codefog\NewsCategoriesBundle;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\PageModel;
+use Terminal42\DcMultilingualBundle\Model\Multilingual;
 
 class UrlGenerator implements FrameworkAwareInterface
 {
@@ -40,8 +41,16 @@ class UrlGenerator implements FrameworkAwareInterface
     public function generateUrl(NewsCategory $category, PageModel $page, $absolute = false)
     {
         $page->loadDetails();
+        $model = $category->getModel();
 
-        $params = '/' . $this->getParameterName($page->rootId) . '/' . $category->getModel()->alias;
+        // Get the alias
+        if ($model instanceof Multilingual) {
+            $alias = $model->getAlias($page->language);
+        } else {
+            $alias = $model->alias;
+        }
+
+        $params = '/' . $this->getParameterName($page->rootId) . '/' . $alias;
 
         return $absolute ? $page->getAbsoluteUrl($params) : $page->getFrontendUrl($params);
     }

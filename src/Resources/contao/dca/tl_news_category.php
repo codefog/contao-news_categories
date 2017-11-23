@@ -17,8 +17,8 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
         'enableVersioning' => true,
         'backlink' => 'do=news',
         'onload_callback' => [
-            ['codefog_news_categories.listener.data_container.news_category', 'onLoadCallback'],
             ['codefog_news_categories.listener.data_container.feed', 'onLoadCallback'],
+            ['codefog_news_categories.listener.data_container.news_category', 'onLoadCallback'],
         ],
         'onsubmit_callback' => [
             ['codefog_news_categories.listener.data_container.feed', 'onSubmitCallback'],
@@ -255,4 +255,8 @@ if (\Codefog\NewsCategoriesBundle\MultilingualHelper::isActive()) {
     $GLOBALS['TL_DCA']['tl_news_category']['fields']['title']['eval']['translatableFor'] = '*';
     $GLOBALS['TL_DCA']['tl_news_category']['fields']['frontendTitle']['eval']['translatableFor'] = '*';
     $GLOBALS['TL_DCA']['tl_news_category']['fields']['description']['eval']['translatableFor'] = '*';
+
+    $GLOBALS['TL_DCA']['tl_news_category']['fields']['alias']['eval']['translatableFor'] = '*';
+    unset($GLOBALS['TL_DCA']['tl_news_category']['fields']['alias']['eval']['spaceToUnderscore']);
+    unset($GLOBALS['TL_DCA']['tl_news_category']['fields']['alias']['eval']['unique']);
 }

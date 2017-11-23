@@ -2,6 +2,7 @@
 
 namespace Codefog\NewsCategoriesBundle\EventListener\DataContainer;
 
+use Codefog\NewsCategoriesBundle\MultilingualHelper;
 use Codefog\NewsCategoriesBundle\PermissionChecker;
 use Contao\Backend;
 use Contao\CoreBundle\Exception\AccessDeniedException;
@@ -13,6 +14,7 @@ use Contao\Input;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Terminal42\DcMultilingualBundle\Driver;
 
 class NewsCategoryListener implements FrameworkAwareInterface
 {
@@ -182,16 +184,25 @@ class NewsCategoryListener implements FrameworkAwareInterface
         // Generate alias if there is none
         if (!$value) {
             $autoAlias = true;
-            $title = $dc->activeRecord->frontendTitle ?: $dc->activeRecord->title;
-            $value = StringUtil::standardize(StringUtil::restoreBasicEntities($title));
+            $value = StringUtil::generateAlias($dc->activeRecord->frontendTitle ?: $dc->activeRecord->title);
         }
 
-        $exists = $this->db->fetchColumn("SELECT id FROM {$dc->table} WHERE alias=? AND id!=?", [$value, $dc->id]);
+        if (MultilingualHelper::isActive() && $dc instanceof Driver) {
+            $exists = $this->db->fetchColumn(
+                "SELECT id FROM {$dc->table} WHERE alias=? AND id!=? AND {$dc->getLanguageColumn()}=?",
+                [$value, $dc->activeRecord->id, $dc->getCurrentLanguage()]
+            );
+        } else {
+            $exists = $this->db->fetchColumn(
+                "SELECT id FROM {$dc->table} WHERE alias=? AND id!=?",
+                [$value, $dc->activeRecord->id]
+            );
+        }
 
         // Check whether the category alias exists
         if ($exists) {
             if ($autoAlias) {
-                $value .= '-' . $dc->id;
+                $value .= '-' . $dc->activeRecord->id;
             } else {
                 throw new \RuntimeException(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $value));
             }
