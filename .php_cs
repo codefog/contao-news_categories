@@ -40,6 +40,7 @@ return PhpCsFixer\Config::create()
             ->notPath('src/FrontendModule/NewsArchiveModule.php')
             ->notPath('src/FrontendModule/NewsListModule.php')
             ->notPath('src/FrontendModule/NewsMenuModule.php')
+            ->notPath('src/Widget/NewsCategoriesPickerWidget.php')
             ->in([__DIR__.'/src'])
     )
 ;
