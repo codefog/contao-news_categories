@@ -89,7 +89,7 @@ class FeedGenerator extends News
                 if ($arrFeed['categories_show'] && ($categoryModels = NewsCategoryModel::findPublishedByNews($objArticle->id)) !== null) {
                     /** @var NewsCategoryModel $categoryModel */
                     foreach ($categoryModels as $categoryModel) {
-                        $categories[] = (new NewsCategory($categoryModel))->getTitle();
+                        $categories[] = $categoryModel->getTitle();
                     }
                 }
 

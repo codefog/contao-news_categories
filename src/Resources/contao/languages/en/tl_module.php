@@ -27,4 +27,4 @@ $GLOBALS['TL_LANG']['tl_module']['news_showEmptyCategories'] = array('Show empty
 $GLOBALS['TL_LANG']['tl_module']['news_forceCategoryUrl'] = array('Force category URL', 'Use the category target page URL (if available) instead of the regular filter-link.');
 $GLOBALS['TL_LANG']['tl_module']['news_categoriesRoot']    = array('Reference category (root)', 'Here you can choose the reference category. It will be used as the starting point (similar to navigation module).');
 $GLOBALS['TL_LANG']['tl_module']['news_categoryFilterPage'] = array('Category target page', 'Here you can choose the news category target page that will override the category URLs with a filter-link to this page.');
-$GLOBALS['TL_LANG']['tl_module']['news_categoryImgSize']    = array('News category image size');
+$GLOBALS['TL_LANG']['tl_module']['news_categoryImgSize']    = array('News category image size', &$GLOBALS['TL_LANG']['tl_module']['imgSize'][1]);

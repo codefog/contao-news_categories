@@ -3,7 +3,8 @@
 namespace Codefog\NewsCategoriesBundle\EventListener;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
-use Codefog\NewsCategoriesBundle\UrlGenerator;
+use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
+use Codefog\NewsCategoriesBundle\manager;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Terminal42\ChangeLanguage\Event\ChangelanguageNavigationEvent;
@@ -14,18 +15,18 @@ class ChangeLanguageListener implements FrameworkAwareInterface
     use FrameworkAwareTrait;
 
     /**
-     * @var UrlGenerator
+     * @var NewsCategoriesManager
      */
-    private $urlGenerator;
+    private $manager;
 
     /**
      * ChangeLanguageListener constructor.
      *
-     * @param UrlGenerator $urlGenerator
+     * @param NewsCategoriesManager $manager
      */
-    public function __construct(UrlGenerator $urlGenerator)
+    public function __construct(NewsCategoriesManager $manager)
     {
-        $this->urlGenerator = $urlGenerator;
+        $this->manager = $manager;
     }
 
     /**
@@ -49,7 +50,7 @@ class ChangeLanguageListener implements FrameworkAwareInterface
         /** @var NewsCategoryModel $modelAdapter */
         $modelAdapter = $this->framework->getAdapter(NewsCategoryModel::class);
 
-        $param = $this->urlGenerator->getParameterName();
+        $param = $this->manager->getParameterName();
 
         if (!($alias = $event->getUrlParameterBag()->getUrlAttribute($param))) {
             return;
@@ -73,8 +74,8 @@ class ChangeLanguageListener implements FrameworkAwareInterface
      */
     private function updateParameter(ChangelanguageNavigationEvent $event)
     {
-        $currentParam = $this->urlGenerator->getParameterName();
-        $newParam = $this->urlGenerator->getParameterName($event->getNavigationItem()->getRootPage()->id);
+        $currentParam = $this->manager->getParameterName();
+        $newParam = $this->manager->getParameterName($event->getNavigationItem()->getRootPage()->id);
 
         $parameters = $event->getUrlParameterBag();
         $attributes = $parameters->getUrlAttributes();

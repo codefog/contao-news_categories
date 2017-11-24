@@ -140,10 +140,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryFilterPage'] = [
     'sql' => ['type' => 'integer', 'unsigned' => true],
 ];
 
-$GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryImgSize'] = array_merge(
-    $GLOBALS['TL_DCA']['tl_module']['fields']['imgSize'],
-    ['label' => [
-        $GLOBALS['TL_LANG']['tl_module']['news_categoryImgSize'][0],
-        $GLOBALS['TL_DCA']['tl_module']['fields']['imgSize']['label'][1]
-    ]]
-);
+$GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryImgSize'] = $GLOBALS['TL_DCA']['tl_module']['fields']['imgSize'];
+unset($GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryImgSize']['label']);
+$GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryImgSize']['label'] = &$GLOBALS['TL_LANG']['tl_module']['news_categoryImgSize'];

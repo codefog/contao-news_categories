@@ -29,6 +29,25 @@ class NewsCategoryModel extends ParentModel
     protected static $strTable = 'tl_news_category';
 
     /**
+     * Get the CSS class
+     *
+     * @return string
+     */
+    public function getCssClass()
+    {
+        $cssClasses = [
+            'news_category_' . $this->id,
+            'category_' . $this->id,
+        ];
+
+        if ($this->cssClass) {
+            $cssClasses[] = $this->cssClass;
+        }
+
+        return implode(' ', array_unique($cssClasses));
+    }
+
+    /**
      * Get the image
      *
      * @return FilesModel|null
@@ -36,6 +55,16 @@ class NewsCategoryModel extends ParentModel
     public function getImage()
     {
         return FilesModel::findByPk($this->image);
+    }
+
+    /**
+     * Get the title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->frontendTitle ?: $this->title;
     }
 
     /**

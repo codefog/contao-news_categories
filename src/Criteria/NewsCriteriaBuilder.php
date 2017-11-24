@@ -4,7 +4,7 @@ namespace Codefog\NewsCategoriesBundle\Criteria;
 
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
-use Codefog\NewsCategoriesBundle\UrlGenerator;
+use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\Input;
@@ -23,20 +23,20 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
     private $db;
 
     /**
-     * @var UrlGenerator
+     * @var NewsCategoriesManager
      */
-    private $urlGenerator;
+    private $manager;
 
     /**
      * NewsCriteriaBuilder constructor.
      *
-     * @param Connection   $db
-     * @param UrlGenerator $urlGenerator
+     * @param Connection            $db
+     * @param NewsCategoriesManager $manager
      */
-    public function __construct(Connection $db, UrlGenerator $urlGenerator)
+    public function __construct(Connection $db, NewsCategoriesManager $manager)
     {
         $this->db = $db;
-        $this->urlGenerator = $urlGenerator;
+        $this->manager = $manager;
     }
 
     /**
@@ -146,7 +146,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
         if ($module->news_filterCategories) {
             /** @var Input $input */
             $input = $this->framework->getAdapter(Input::class);
-            $param = $this->urlGenerator->getParameterName();
+            $param = $this->manager->getParameterName();
 
             if ($alias = $input->get($param)) {
                 /** @var NewsCategoryModel $model */

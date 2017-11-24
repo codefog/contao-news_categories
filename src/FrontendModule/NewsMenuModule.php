@@ -3,7 +3,6 @@
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
-use Codefog\NewsCategoriesBundle\NewsCategory;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\Database;
 use Contao\Input;
@@ -208,14 +207,14 @@ class NewsMenuModule extends ModuleNewsMenu
             $page = $GLOBALS['objPage'];
         }
 
-        $urlGenerator = System::getContainer()->get('codefog_news_categories.url_generator');
+        $manager = System::getContainer()->get('codefog_news_categories.manager');
 
         /** @var NewsCategoryModel $category */
-        $category = NewsCategoryModel::findPublishedByIdOrAlias(Input::get($urlGenerator->getParameterName()));
+        $category = NewsCategoryModel::findPublishedByIdOrAlias(Input::get($manager->getParameterName()));
 
         // Generate the category URL
         if ($category !== null) {
-            $url = $urlGenerator->generateUrl(new NewsCategory($category), $page);
+            $url = $manager->generateUrl($category, $page);
         } else {
             // Generate the regular URL
             $url = $page->getFrontendUrl();

@@ -3,12 +3,12 @@
 namespace Codefog\NewsCategoriesBundle\EventListener;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
-use Codefog\NewsCategoriesBundle\NewsCategory;
-use Codefog\NewsCategoriesBundle\UrlGenerator;
+use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\FrontendTemplate;
+use Contao\Model\Collection;
 use Contao\Module;
 use Contao\PageModel;
 use Contao\StringUtil;
@@ -18,18 +18,18 @@ class TemplateListener implements FrameworkAwareInterface
     use FrameworkAwareTrait;
 
     /**
-     * @var UrlGenerator
+     * @var NewsCategoriesManager
      */
-    private $urlGenerator;
+    private $manager;
 
     /**
      * TemplateListener constructor.
      *
-     * @param UrlGenerator $urlGenerator
+     * @param NewsCategoriesManager $manager
      */
-    public function __construct(UrlGenerator $urlGenerator)
+    public function __construct(NewsCategoriesManager $manager)
     {
-        $this->urlGenerator = $urlGenerator;
+        $this->manager = $manager;
     }
 
     /**
@@ -48,14 +48,7 @@ class TemplateListener implements FrameworkAwareInterface
             return;
         }
 
-        $categories = [];
-
-        /** @var NewsCategoryModel $model */
-        foreach ($models as $model) {
-            $categories[] = new NewsCategory($model);
-        }
-
-        $this->addCategoriesToTemplate($template, $module, $categories);
+        $this->addCategoriesToTemplate($template, $module, $models);
     }
 
     /**
@@ -63,26 +56,24 @@ class TemplateListener implements FrameworkAwareInterface
      *
      * @param FrontendTemplate $template
      * @param Module           $module
-     * @param array            $categories
+     * @param Collection       $categories
      */
-    private function addCategoriesToTemplate(FrontendTemplate $template, Module $module, array $categories)
+    private function addCategoriesToTemplate(FrontendTemplate $template, Module $module, Collection $categories)
     {
         $data = [];
         $list = [];
         $cssClasses = trimsplit(' ', $template->class);
 
-        /** @var NewsCategory $category */
+        /** @var NewsCategoryModel $category */
         foreach ($categories as $category) {
             // Skip the categories not eligible for the current module
-            if (!$category->isVisibleForModule($module)) {
+            if (!$this->manager->isVisibleForModule($category, $module)) {
                 continue;
             }
 
-            $model = $category->getModel();
-
             // Add category to data and list
-            $data[$model->id] = $this->generateCategoryData($category, $module);
-            $list[$model->id] = $category->getTitle();
+            $data[$category->id] = $this->generateCategoryData($category, $module);
+            $list[$category->id] = $category->getTitle();
 
             // Add the category CSS classes to news class
             $cssClasses = array_merge($cssClasses, trimsplit(' ', $category->getCssClass()));
@@ -104,42 +95,48 @@ class TemplateListener implements FrameworkAwareInterface
     /**
      * Generate the category data
      *
-     * @param NewsCategory $category
-     * @param Module       $module
+     * @param NewsCategoryModel $category
+     * @param Module            $module
      *
      * @return array
      */
-    private function generateCategoryData(NewsCategory $category, Module $module)
+    private function generateCategoryData(NewsCategoryModel $category, Module $module)
     {
-        $data = $category->getModel()->row();
+        $data = $category->row();
 
-        $data['instance'] = $category;
+        $data['model'] = $category;
         $data['name'] = $category->getTitle();
         $data['class'] = $category->getCssClass();
-        $data['linkTitle'] = StringUtil::specialchars($data['name']);
         $data['href'] = '';
         $data['hrefWithParam'] = '';
         $data['targetPage'] = null;
 
+        /** @var StringUtil $stringUtilAdapter */
+        $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
+        $data['linkTitle'] = $stringUtilAdapter->specialchars($data['name']);
+
+        /** @var PageModel $pageAdapter */
+        $pageAdapter = $this->framework->getAdapter(PageModel::class);
+
         // Overwrite the category links with filter page set in module
-        if ($module->news_categoryFilterPage && ($targetPage = PageModel::findPublishedById($module->news_categoryFilterPage)) !== null) {
-            $data['href'] = $this->urlGenerator->generateUrl($category, $targetPage);
+        if ($module->news_categoryFilterPage && ($targetPage = $pageAdapter->findPublishedById($module->news_categoryFilterPage)) !== null) {
+            $data['href'] = $this->manager->generateUrl($category, $targetPage);
             $data['hrefWithParam'] = $data['href'];
             $data['targetPage'] = $targetPage;
-        } elseif (($targetPage = $category->getTargetPage()) !== null) {
+        } elseif (($targetPage = $this->manager->getTargetPage($category)) !== null) {
             // Add the category target page and URLs
             $data['href'] = $targetPage->getFrontendUrl();
-            $data['hrefWithParam'] = $this->urlGenerator->generateUrl($category, $targetPage);
+            $data['hrefWithParam'] = $this->manager->generateUrl($category, $targetPage);
             $data['targetPage'] = $targetPage;
         }
 
         // Register a function to generate category URL manually
         $data['generateUrl'] = function(PageModel $page, $absolute = false) use ($category) {
-            return $this->urlGenerator->generateUrl($category, $page, $absolute);
+            return $this->manager->generateUrl($category, $page, $absolute);
         };
 
         // Add the image
-        if (($image = $category->getImage()) !== null) {
+        if (($image = $this->manager->getImage($category)) !== null) {
             /** @var Controller $controllerAdapter */
             $controllerAdapter = $this->framework->getAdapter(Controller::class);
             $data['image'] = new \stdClass();
