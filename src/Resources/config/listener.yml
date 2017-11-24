@@ -6,6 +6,8 @@ services:
 
     codefog_news_categories.listener.ajax:
         class: Codefog\NewsCategoriesBundle\EventListener\AjaxListener
+        arguments:
+            - "@monolog.logger.contao"
 
     codefog_news_categories.listener.change_language:
         class: Codefog\NewsCategoriesBundle\EventListener\ChangeLanguageListener
