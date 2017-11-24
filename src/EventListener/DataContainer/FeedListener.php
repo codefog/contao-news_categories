@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
+ */
+
 namespace Codefog\NewsCategoriesBundle\EventListener\DataContainer;
 
 use Codefog\NewsCategoriesBundle\FeedGenerator;
@@ -38,7 +46,7 @@ class FeedListener implements FrameworkAwareInterface
     }
 
     /**
-     * On data container load callback
+     * On data container load callback.
      *
      * @param DataContainer $dc
      */
@@ -58,14 +66,14 @@ class FeedListener implements FrameworkAwareInterface
     }
 
     /**
-     * On data container submit callback
+     * On data container submit callback.
      *
      * @param DataContainer $dc
      */
     public function onSubmitCallback(DataContainer $dc)
     {
         // Schedule a news feed update
-        if ($dc->table === 'tl_news_category' && $dc->id) {
+        if ('tl_news_category' === $dc->table && $dc->id) {
             /** @var Model $modelAdapter */
             $modelAdapter = $this->framework->getAdapter(Model::class);
 
@@ -74,7 +82,7 @@ class FeedListener implements FrameworkAwareInterface
 
             if (count($newsIds) > 0) {
                 $archiveIds = $this->db
-                    ->executeQuery('SELECT DISTINCT(pid) FROM tl_news WHERE id IN (' . implode(',', $newsIds) . ')')
+                    ->executeQuery('SELECT DISTINCT(pid) FROM tl_news WHERE id IN ('.implode(',', $newsIds).')')
                     ->fetchAll(\PDO::FETCH_COLUMN, 0);
 
                 $session = $this->session->get('news_feed_updater');
@@ -85,7 +93,7 @@ class FeedListener implements FrameworkAwareInterface
     }
 
     /**
-     * Generate the feed
+     * Generate the feed.
      *
      * @param string $method
      */

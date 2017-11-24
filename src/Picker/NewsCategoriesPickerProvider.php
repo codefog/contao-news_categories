@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
+ */
+
 namespace Codefog\NewsCategoriesBundle\Picker;
 
 use Contao\CoreBundle\Picker\AbstractPickerProvider;
@@ -9,15 +17,7 @@ use Contao\CoreBundle\Picker\PickerConfig;
 class NewsCategoriesPickerProvider extends AbstractPickerProvider implements DcaPickerProviderInterface
 {
     /**
-     * @inheritDoc
-     */
-    protected function getRouteParameters(PickerConfig $config = null)
-    {
-        return ['do' => 'news', 'table' => 'tl_news_category'];
-    }
-
-    /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getDcaTable()
     {
@@ -25,7 +25,7 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getDcaAttributes(PickerConfig $config)
     {
@@ -43,7 +43,7 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function convertDcaValue(PickerConfig $config, $value)
     {
@@ -51,7 +51,7 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -59,7 +59,7 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function supportsContext($context)
     {
@@ -67,7 +67,7 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function supportsValue(PickerConfig $config)
     {
@@ -78,5 +78,13 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
         }
 
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getRouteParameters(PickerConfig $config = null)
+    {
+        return ['do' => 'news', 'table' => 'tl_news_category'];
     }
 }

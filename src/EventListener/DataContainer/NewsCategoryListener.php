@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
+ */
+
 namespace Codefog\NewsCategoriesBundle\EventListener\DataContainer;
 
 use Codefog\NewsCategoriesBundle\MultilingualHelper;
@@ -50,7 +58,7 @@ class NewsCategoryListener implements FrameworkAwareInterface
     }
 
     /**
-     * On data container load
+     * On data container load.
      *
      * @param DataContainer $dc
      */
@@ -61,7 +69,7 @@ class NewsCategoryListener implements FrameworkAwareInterface
         }
 
         // Limit the allowed roots for the user
-        if (($roots = $this->permissionChecker->getUserAllowedRoots()) !== null) {
+        if (null !== ($roots = $this->permissionChecker->getUserAllowedRoots())) {
             $GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'] = $roots;
 
             /** @var Input $input */
@@ -84,7 +92,7 @@ class NewsCategoryListener implements FrameworkAwareInterface
                             $this->permissionChecker->addCategoryToAllowedRoots($categoryId);
                         }
                     }
-                // No break;
+                // no break;
 
                 case 'copy':
                 case 'delete':
@@ -95,7 +103,6 @@ class NewsCategoryListener implements FrameworkAwareInterface
                         throw new AccessDeniedException(sprintf('Not enough permissions to %s news category ID %s.', $action, $categoryId));
                     }
                     break;
-
                 case 'editAll':
                 case 'deleteAll':
                 case 'overrideAll':
@@ -108,12 +115,12 @@ class NewsCategoryListener implements FrameworkAwareInterface
     }
 
     /**
-     * On paste button callback
+     * On paste button callback.
      *
      * @param DataContainer $dc
      * @param array         $row
      * @param string        $table
-     * @param boolean       $cr
+     * @param bool          $cr
      * @param array|null    $clipboard
      *
      * @return string
@@ -124,9 +131,9 @@ class NewsCategoryListener implements FrameworkAwareInterface
         $disablePI = false;
 
         // Disable all buttons if there is a circular reference
-        if ($clipboard !== null && (
-                ($clipboard['mode'] === 'cut' && ($cr || (int) $clipboard['id'] === (int) $row['id']))
-                || ($clipboard['mode'] === 'cutAll' && ($cr || in_array($row['id'], $clipboard['id'])))
+        if (null !== $clipboard && (
+                ('cut' === $clipboard['mode'] && ($cr || (int) $clipboard['id'] === (int) $row['id']))
+                || ('cutAll' === $clipboard['mode'] && ($cr || in_array((int) $row['id'], array_map('intval', $clipboard['id']), true)))
             )
         ) {
             $disablePA = true;
@@ -139,11 +146,11 @@ class NewsCategoryListener implements FrameworkAwareInterface
             $return = $this->generatePasteImage('pasteafter', $disablePA, $table, $row, $clipboard);
         }
 
-        return $return . $this->generatePasteImage('pasteinto', $disablePI, $table, $row, $clipboard);
+        return $return.$this->generatePasteImage('pasteinto', $disablePI, $table, $row, $clipboard);
     }
 
     /**
-     * On label callback
+     * On label callback.
      *
      * @param array         $row
      * @param string        $label
@@ -158,24 +165,24 @@ class NewsCategoryListener implements FrameworkAwareInterface
         $imageAdapter = $this->framework->getAdapter(Image::class);
 
         // Align the icon with the text
-        if (stripos($attributes, 'style="') !== false) {
+        if (false !== stripos($attributes, 'style="')) {
             $attributes = str_replace('style="', 'style="vertical-align:text-top;', $attributes);
         } else {
-            $attributes .= trim($attributes . ' style="vertical-align:text-top;"');
+            $attributes .= trim($attributes.' style="vertical-align:text-top;"');
         }
 
-        return $imageAdapter->getHtml('iconPLAIN.svg', '', $attributes) . ' ' . $label;
+        return $imageAdapter->getHtml('iconPLAIN.svg', '', $attributes).' '.$label;
     }
 
     /**
-     * On generate the category alias
+     * On generate the category alias.
      *
      * @param string        $value
      * @param DataContainer $dc
      *
-     * @return string
-     *
      * @throws \RuntimeException
+     *
+     * @return string
      */
     public function onGenerateAlias($value, DataContainer $dc)
     {
@@ -202,7 +209,7 @@ class NewsCategoryListener implements FrameworkAwareInterface
         // Check whether the category alias exists
         if ($exists) {
             if ($autoAlias) {
-                $value .= '-' . $dc->activeRecord->id;
+                $value .= '-'.$dc->activeRecord->id;
             } else {
                 throw new \RuntimeException(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $value));
             }
@@ -212,7 +219,7 @@ class NewsCategoryListener implements FrameworkAwareInterface
     }
 
     /**
-     * Generate the paste image
+     * Generate the paste image.
      *
      * @param string     $type
      * @param bool       $disabled
@@ -225,28 +232,28 @@ class NewsCategoryListener implements FrameworkAwareInterface
     private function generatePasteImage($type, $disabled, $table, array $row, array $clipboard = null)
     {
         /**
-         * @var Backend $backendAdapter
+         * @var Backend
          * @var Image   $imageAdapter
          */
         $backendAdapter = $this->framework->getAdapter(Backend::class);
         $imageAdapter = $this->framework->getAdapter(Image::class);
 
         if ($disabled) {
-            return $imageAdapter->getHtml($type . '_.svg') . ' ';
+            return $imageAdapter->getHtml($type.'_.svg').' ';
         }
 
-        $url = sprintf('act=%s&amp;mode=%s&amp;pid=%s', $clipboard['mode'], ($type === 'pasteafter' ? 1 : 2), $row['id']);
+        $url = sprintf('act=%s&amp;mode=%s&amp;pid=%s', $clipboard['mode'], ('pasteafter' === $type ? 1 : 2), $row['id']);
 
         // Add the ID to the URL if the clipboard does not contain any
         if (!is_array($clipboard['id'])) {
-            $url .= '&amp;id=' . $clipboard['id'];
+            $url .= '&amp;id='.$clipboard['id'];
         }
 
         return sprintf(
             '<a href="%s" title="%s" onclick="Backend.getScrollOffset()">%s</a> ',
             $backendAdapter->addToUrl($url),
             specialchars(sprintf($GLOBALS['TL_LANG'][$table][$type][1], $row['id'])),
-            $imageAdapter->getHtml($type . '.svg', sprintf($GLOBALS['TL_LANG'][$table][$type][1], $row['id']))
+            $imageAdapter->getHtml($type.'.svg', sprintf($GLOBALS['TL_LANG'][$table][$type][1], $row['id']))
         );
     }
 }

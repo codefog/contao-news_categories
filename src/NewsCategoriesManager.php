@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
+ */
+
 namespace Codefog\NewsCategoriesBundle;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
@@ -18,11 +26,11 @@ class NewsCategoriesManager implements FrameworkAwareInterface
     use FrameworkAwareTrait;
 
     /**
-     * Generate the category URL
+     * Generate the category URL.
      *
      * @param NewsCategoryModel $category
-     * @param PageModel    $page
-     * @param boolean      $absolute
+     * @param PageModel         $page
+     * @param bool              $absolute
      *
      * @return string
      */
@@ -37,13 +45,13 @@ class NewsCategoriesManager implements FrameworkAwareInterface
             $alias = $category->alias;
         }
 
-        $params = '/' . $this->getParameterName($page->rootId) . '/' . $alias;
+        $params = '/'.$this->getParameterName($page->rootId).'/'.$alias;
 
         return $absolute ? $page->getAbsoluteUrl($params) : $page->getFrontendUrl($params);
     }
 
     /**
-     * Get the image
+     * Get the image.
      *
      * @param NewsCategoryModel $category
      *
@@ -51,7 +59,7 @@ class NewsCategoriesManager implements FrameworkAwareInterface
      */
     public function getImage(NewsCategoryModel $category)
     {
-        if (($image = $category->getImage()) === null || !is_file(TL_ROOT . '/' . $image->path)) {
+        if (null === ($image = $category->getImage()) || !is_file(TL_ROOT.'/'.$image->path)) {
             return null;
         }
 
@@ -59,7 +67,7 @@ class NewsCategoriesManager implements FrameworkAwareInterface
     }
 
     /**
-     * Get the parameter name
+     * Get the parameter name.
      *
      * @param int|null $rootId
      *
@@ -69,7 +77,7 @@ class NewsCategoriesManager implements FrameworkAwareInterface
     {
         $rootId = $rootId ?: $GLOBALS['objPage']->rootId;
 
-        if (!$rootId || ($rootPage = PageModel::findByPk($rootId)) === null) {
+        if (!$rootId || null === ($rootPage = PageModel::findByPk($rootId))) {
             return '';
         }
 
@@ -77,7 +85,7 @@ class NewsCategoriesManager implements FrameworkAwareInterface
     }
 
     /**
-     * Get the category target page
+     * Get the category target page.
      *
      * @param NewsCategoryModel $category
      *
@@ -95,7 +103,7 @@ class NewsCategoriesManager implements FrameworkAwareInterface
                 /** @var NewsCategoryModel $parent */
                 $parent = $category->findByPk($pid);
 
-                if ($parent !== null) {
+                if (null !== $parent) {
                     $pid = $parent->pid;
                     $pageId = $parent->jumpTo;
                 }
@@ -114,7 +122,7 @@ class NewsCategoriesManager implements FrameworkAwareInterface
     }
 
     /**
-     * Get the category trail IDs
+     * Get the category trail IDs.
      *
      * @param NewsCategoryModel $category
      *
@@ -132,14 +140,14 @@ class NewsCategoriesManager implements FrameworkAwareInterface
             $ids = array_map('intval', array_unique($ids));
 
             // Remove the current category
-            unset($ids[array_search($category->id, $ids)]);
+            unset($ids[array_search($category->id, $ids, true)]);
         }
 
         return $ids;
     }
 
     /**
-     * Return true if the category is visible for module
+     * Return true if the category is visible for module.
      *
      * @param NewsCategoryModel $category
      * @param Module            $module

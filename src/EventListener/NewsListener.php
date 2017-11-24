@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
+ */
+
 namespace Codefog\NewsCategoriesBundle\EventListener;
 
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
@@ -29,7 +37,7 @@ class NewsListener implements FrameworkAwareInterface
     }
 
     /**
-     * On news list count items
+     * On news list count items.
      *
      * @param array          $archives
      * @param bool|null      $featured
@@ -39,7 +47,7 @@ class NewsListener implements FrameworkAwareInterface
      */
     public function onNewsListCountItems(array $archives, $featured, ModuleNewsList $module)
     {
-        if (($criteria = $this->getCriteria($archives, $featured, $module)) === null) {
+        if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
             return 0;
         }
 
@@ -47,7 +55,7 @@ class NewsListener implements FrameworkAwareInterface
     }
 
     /**
-     * On news list fetch items
+     * On news list fetch items.
      *
      * @param array          $archives
      * @param bool|null      $featured
@@ -59,7 +67,7 @@ class NewsListener implements FrameworkAwareInterface
      */
     public function onNewsListFetchItems(array $archives, $featured, $limit, $offset, ModuleNewsList $module)
     {
-        if (($criteria = $this->getCriteria($archives, $featured, $module)) === null) {
+        if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
             return null;
         }
 
@@ -74,7 +82,7 @@ class NewsListener implements FrameworkAwareInterface
     }
 
     /**
-     * Get the criteria
+     * Get the criteria.
      *
      * @param array          $archives
      * @param bool|null      $featured

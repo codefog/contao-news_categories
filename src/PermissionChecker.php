@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
+ */
+
 namespace Codefog\NewsCategoriesBundle;
 
 use Contao\BackendUser;
@@ -37,7 +45,7 @@ class PermissionChecker implements FrameworkAwareInterface
     }
 
     /**
-     * Return true if the user can manage news categories
+     * Return true if the user can manage news categories.
      *
      * @return bool
      */
@@ -47,7 +55,7 @@ class PermissionChecker implements FrameworkAwareInterface
     }
 
     /**
-     * Return true if the user can assign news categories
+     * Return true if the user can assign news categories.
      *
      * @return bool
      */
@@ -59,7 +67,7 @@ class PermissionChecker implements FrameworkAwareInterface
     }
 
     /**
-     * Get the user default categories
+     * Get the user default categories.
      *
      * @return array
      */
@@ -71,7 +79,7 @@ class PermissionChecker implements FrameworkAwareInterface
     }
 
     /**
-     * Get the user allowed roots. Return null if the user has no limitation
+     * Get the user allowed roots. Return null if the user has no limitation.
      *
      * @return array|null
      */
@@ -87,7 +95,7 @@ class PermissionChecker implements FrameworkAwareInterface
     }
 
     /**
-     * Return if the user is allowed to manage the news category
+     * Return if the user is allowed to manage the news category.
      *
      * @param int $categoryId
      *
@@ -95,7 +103,7 @@ class PermissionChecker implements FrameworkAwareInterface
      */
     public function isUserAllowedNewsCategory($categoryId)
     {
-        if (($roots = $this->getUserAllowedRoots()) === null) {
+        if (null === ($roots = $this->getUserAllowedRoots())) {
             return true;
         }
 
@@ -109,13 +117,13 @@ class PermissionChecker implements FrameworkAwareInterface
     }
 
     /**
-     * Add the category to allowed roots
+     * Add the category to allowed roots.
      *
      * @param int $categoryId
      */
     public function addCategoryToAllowedRoots($categoryId)
     {
-        if (($roots = $this->getUserAllowedRoots()) === null) {
+        if (null === ($roots = $this->getUserAllowedRoots())) {
             return;
         }
 
@@ -126,8 +134,8 @@ class PermissionChecker implements FrameworkAwareInterface
         $stringUtil = $this->framework->getAdapter(StringUtil::class);
 
         // Add the permissions on group level
-        if ($user->inherit !== 'custom') {
-            $groups = $this->db->fetchAll('SELECT id, newscategories, newscategories_roots FROM tl_user_group WHERE id IN(' . implode(',', array_map('intval', $user->groups)) . ')');
+        if ('custom' !== $user->inherit) {
+            $groups = $this->db->fetchAll('SELECT id, newscategories, newscategories_roots FROM tl_user_group WHERE id IN('.implode(',', array_map('intval', $user->groups)).')');
 
             foreach ($groups as $group) {
                 $permissions = $stringUtil->deserialize($group['newscategories'], true);
@@ -142,7 +150,7 @@ class PermissionChecker implements FrameworkAwareInterface
         }
 
         // Add the permissions on user level
-        if ($user->inherit !== 'group') {
+        if ('group' !== $user->inherit) {
             $userData = $this->db->fetchAssoc('SELECT newscategories, newscategories_roots FROM tl_user WHERE id=?', [$user->id]);
             $permissions = $stringUtil->deserialize($userData['newscategories'], true);
 
@@ -159,11 +167,11 @@ class PermissionChecker implements FrameworkAwareInterface
     }
 
     /**
-     * Get the user
-     *
-     * @return BackendUser
+     * Get the user.
      *
      * @throws \RuntimeException
+     *
+     * @return BackendUser
      */
     private function getUser()
     {

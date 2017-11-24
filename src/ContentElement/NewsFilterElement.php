@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
+ */
+
 namespace Codefog\NewsCategoriesBundle\ContentElement;
 
 use Contao\ContentModule;
@@ -10,7 +18,7 @@ use Contao\StringUtil;
 class NewsFilterElement extends ContentModule
 {
     /**
-     * Parse the template
+     * Parse the template.
      *
      * @return string
      */
@@ -25,7 +33,7 @@ class NewsFilterElement extends ContentModule
         }
 
         // Return if the module could not be found
-        if (($moduleModel = ModuleModel::findByPk($this->news_module)) === null) {
+        if (null === ($moduleModel = ModuleModel::findByPk($this->news_module))) {
             return '';
         }
 
@@ -56,7 +64,7 @@ class NewsFilterElement extends ContentModule
     }
 
     /**
-     * Merge the CSS/ID stuff
+     * Merge the CSS/ID stuff.
      *
      * @param Module $module
      */
@@ -71,7 +79,7 @@ class NewsFilterElement extends ContentModule
 
         // Merge the CSS classes (see #6011)
         if ($this->cssID[1]) {
-            $cssID[1] = trim($cssID[1] . ' ' . $this->cssID[1]);
+            $cssID[1] = trim($cssID[1].' '.$this->cssID[1]);
         }
 
         $module->cssID = $cssID;

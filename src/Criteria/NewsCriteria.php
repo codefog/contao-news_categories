@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
+ */
+
 namespace Codefog\NewsCategoriesBundle\Criteria;
 
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
@@ -42,7 +50,7 @@ class NewsCriteria
     }
 
     /**
-     * Set the basic criteria
+     * Set the basic criteria.
      *
      * @param array $archives
      *
@@ -52,13 +60,13 @@ class NewsCriteria
     {
         $archives = $this->parseIds($archives);
 
-        if (count($archives) === 0) {
+        if (0 === count($archives)) {
             throw new NoNewsException();
         }
 
         $t = $this->getNewsModelAdapter()->getTable();
 
-        $this->columns[] = "$t.pid IN(" . implode(',', array_map('intval', $archives)) . ")";
+        $this->columns[] = "$t.pid IN(".implode(',', array_map('intval', $archives)).')';
         $this->options['order'] = "$t.date DESC";
 
         // Never return unpublished elements in the back end, so they don't end up in the RSS feed
@@ -73,7 +81,7 @@ class NewsCriteria
     }
 
     /**
-     * Set the features items
+     * Set the features items.
      *
      * @param bool $enable
      */
@@ -81,17 +89,17 @@ class NewsCriteria
     {
         $t = $this->getNewsModelAdapter()->getTable();
 
-        if ($enable === true) {
+        if (true === $enable) {
             $this->columns[] = "$t.featured=?";
             $this->values[] = 1;
-        } elseif ($enable === false) {
+        } elseif (false === $enable) {
             $this->columns[] = "$t.featured=?";
             $this->values[] = '';
         }
     }
 
     /**
-     * Set the time frame
+     * Set the time frame.
      *
      * @param int $begin
      * @param int $end
@@ -106,7 +114,7 @@ class NewsCriteria
     }
 
     /**
-     * Set the default categories
+     * Set the default categories.
      *
      * @param array $defaultCategories
      *
@@ -116,7 +124,7 @@ class NewsCriteria
     {
         $defaultCategories = $this->parseIds($defaultCategories);
 
-        if (count($defaultCategories) === 0) {
+        if (0 === count($defaultCategories)) {
             throw new NoNewsException();
         }
 
@@ -126,17 +134,17 @@ class NewsCriteria
         $newsIds = $model->getReferenceValues('tl_news', 'categories', $defaultCategories);
         $newsIds = $this->parseIds($newsIds);
 
-        if (count($newsIds) === 0) {
+        if (0 === count($newsIds)) {
             throw new NoNewsException();
         }
 
         $t = $this->getNewsModelAdapter()->getTable();
 
-        $this->columns['defaultCategories'] = "$t.id IN(" . implode(',', $newsIds) . ")";
+        $this->columns['defaultCategories'] = "$t.id IN(".implode(',', $newsIds).')';
     }
 
     /**
-     * Set the category
+     * Set the category.
      *
      * @param int  $category
      * @param bool $preserveDefault
@@ -159,7 +167,7 @@ class NewsCriteria
         $newsIds = $model->getReferenceValues('tl_news', 'categories', $category);
         $newsIds = $this->parseIds($newsIds);
 
-        if (count($newsIds) === 0) {
+        if (0 === count($newsIds)) {
             throw new NoNewsException();
         }
 
@@ -170,11 +178,11 @@ class NewsCriteria
 
         $t = $this->getNewsModelAdapter()->getTable();
 
-        $this->columns[] = "$t.id IN(" . implode(',', $newsIds) . ")";
+        $this->columns[] = "$t.id IN(".implode(',', $newsIds).')';
     }
 
     /**
-     * Set the excluded news IDs
+     * Set the excluded news IDs.
      *
      * @param array $newsIds
      */
@@ -182,17 +190,17 @@ class NewsCriteria
     {
         $newsIds = $this->parseIds($newsIds);
 
-        if (count($newsIds) === 0) {
+        if (0 === count($newsIds)) {
             throw new NoNewsException();
         }
 
         $t = $this->getNewsModelAdapter()->getTable();
 
-        $this->columns[] = "$t.id NOT IN (" . implode(',', $newsIds) . ")";
+        $this->columns[] = "$t.id NOT IN (".implode(',', $newsIds).')';
     }
 
     /**
-     * Set the limit
+     * Set the limit.
      *
      * @param int $limit
      */
@@ -202,7 +210,7 @@ class NewsCriteria
     }
 
     /**
-     * Set the offset
+     * Set the offset.
      *
      * @param int $offset
      */
@@ -236,7 +244,7 @@ class NewsCriteria
     }
 
     /**
-     * Get the news model adapter
+     * Get the news model adapter.
      *
      * @return NewsModel
      */
@@ -249,7 +257,7 @@ class NewsCriteria
     }
 
     /**
-     * Parse the record IDs
+     * Parse the record IDs.
      *
      * @param array $ids
      *

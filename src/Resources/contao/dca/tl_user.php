@@ -1,8 +1,13 @@
 <?php
 
-/**
- * Extend palettes
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
  */
+
 \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
     ->addLegend('newsCategories_legend', 'news_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField('newscategories', 'newsCategories_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
@@ -11,7 +16,7 @@
     ->applyToPalette('extend', 'tl_user')
     ->applyToPalette('custom', 'tl_user');
 
-/**
+/*
  * Add fields
  */
 $GLOBALS['TL_DCA']['tl_user']['fields']['newscategories'] = [

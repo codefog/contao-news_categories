@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
+ */
+
 namespace Codefog\NewsCategoriesBundle\EventListener\DataContainer;
 
 use Codefog\NewsCategoriesBundle\PermissionChecker;
@@ -33,7 +41,7 @@ class NewsListener
     }
 
     /**
-     * On data container load. Limit the categories set in the news archive settings
+     * On data container load. Limit the categories set in the news archive settings.
      *
      * @param DataContainer $dc
      */
@@ -45,7 +53,7 @@ class NewsListener
 
         $categories = $this->db->fetchColumn('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=(SELECT pid FROM tl_news WHERE id=?)', [$dc->id]);
 
-        if (!$categories || count($categories = StringUtil::deserialize($categories, true)) === 0) {
+        if (!$categories || 0 === count($categories = StringUtil::deserialize($categories, true))) {
             return;
         }
 
@@ -53,7 +61,7 @@ class NewsListener
     }
 
     /**
-     * On submit record. Update the category relations
+     * On submit record. Update the category relations.
      *
      * @param DataContainer $dc
      */

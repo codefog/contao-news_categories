@@ -1,13 +1,18 @@
 <?php
 
-/**
- * Replace the feed generation callback
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
  */
-if (($index = array_search(['tl_news_feed', 'generateFeed'] ,$GLOBALS['TL_DCA']['tl_news_feed']['config']['onload_callback'])) !== false) {
+
+if (false !== ($index = array_search(['tl_news_feed', 'generateFeed'], $GLOBALS['TL_DCA']['tl_news_feed']['config']['onload_callback'], true))) {
     $GLOBALS['TL_DCA']['tl_news_feed']['config']['onload_callback'][$index] = ['codefog_news_categories.listener.data_container.feed', 'onLoadCallback'];
 }
 
-/**
+/*
  * Extend palettes
  */
 \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
@@ -16,7 +21,7 @@ if (($index = array_search(['tl_news_feed', 'generateFeed'] ,$GLOBALS['TL_DCA'][
     ->addField('categories_show', 'newsCategories_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('default', 'tl_news_feed');
 
-/**
+/*
  * Add fields
  */
 $GLOBALS['TL_DCA']['tl_news_feed']['fields']['categories'] = [

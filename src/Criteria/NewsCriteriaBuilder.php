@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
+ */
+
 namespace Codefog\NewsCategoriesBundle\Criteria;
 
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
@@ -40,12 +48,12 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
     }
 
     /**
-     * Get the criteria for archive module
+     * Get the criteria for archive module.
      *
-     * @param array   $archives
-     * @param int     $begin
-     * @param int     $end
-     * @param Module  $module
+     * @param array  $archives
+     * @param int    $begin
+     * @param int    $end
+     * @param Module $module
      *
      * @return NewsCriteria|null
      */
@@ -69,7 +77,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
     }
 
     /**
-     * Get the criteria for list module
+     * Get the criteria for list module.
      *
      * @param array     $archives
      * @param bool|null $featured
@@ -85,7 +93,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
             $criteria->setBasicCriteria($archives);
 
             // Set the featured filter
-            if ($featured !== null) {
+            if (null !== $featured) {
                 $criteria->setFeatured($featured);
             }
 
@@ -104,7 +112,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
     }
 
     /**
-     * Get the criteria for menu module
+     * Get the criteria for menu module.
      *
      * @param array  $archives
      * @param Module $module
@@ -128,7 +136,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
     }
 
     /**
-     * Set the regular list criteria
+     * Set the regular list criteria.
      *
      * @param NewsCriteria $criteria
      * @param Module       $module
@@ -153,7 +161,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
                 $model = $this->framework->getAdapter(NewsCategoryModel::class);
 
                 // Return null if the category does not exist
-                if (($category = $model->findPublishedByIdOrAlias($alias)) === null) {
+                if (null === ($category = $model->findPublishedByIdOrAlias($alias))) {
                     throw new NoNewsException();
                 }
 
@@ -163,7 +171,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
     }
 
     /**
-     * Set the related list criteria
+     * Set the related list criteria.
      *
      * @param NewsCriteria $criteria
      * @param Module       $module
@@ -172,7 +180,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
      */
     private function setRelatedListCriteria(NewsCriteria $criteria, Module $module)
     {
-        if (($news = $module->currentNews) === null) {
+        if (null === ($news = $module->currentNews)) {
             throw new NoNewsException();
         }
 
@@ -181,7 +189,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
         $categories = array_unique($adapter->getRelatedValues($news->getTable(), 'categories', $news->id));
 
         // This news has no news categories assigned
-        if (count($categories) === 0) {
+        if (0 === count($categories)) {
             throw new NoNewsException();
         }
 
@@ -190,13 +198,13 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
 
         // Exclude the categories
         foreach ($excluded as $category) {
-            if (($index = array_search((int) $category['id'], $categories, true)) !== false) {
+            if (false !== ($index = array_search((int) $category['id'], $categories, true))) {
                 unset($categories[$index]);
             }
         }
 
         // There are no categories left
-        if (count($categories) === 0) {
+        if (0 === count($categories)) {
             throw new NoNewsException();
         }
 

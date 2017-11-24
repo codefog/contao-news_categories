@@ -1,10 +1,17 @@
 <?php
 
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
+ */
+
 namespace Codefog\NewsCategoriesBundle\EventListener;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
-use Codefog\NewsCategoriesBundle\manager;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Terminal42\ChangeLanguage\Event\ChangelanguageNavigationEvent;
@@ -30,7 +37,7 @@ class ChangeLanguageListener implements FrameworkAwareInterface
     }
 
     /**
-     * On change language navigation
+     * On change language navigation.
      *
      * @param ChangelanguageNavigationEvent $event
      */
@@ -41,7 +48,7 @@ class ChangeLanguageListener implements FrameworkAwareInterface
     }
 
     /**
-     * Update the category alias value
+     * Update the category alias value.
      *
      * @param ChangelanguageNavigationEvent $event
      */
@@ -59,7 +66,7 @@ class ChangeLanguageListener implements FrameworkAwareInterface
         $model = $modelAdapter->findPublishedByIdOrAlias($alias);
 
         // Set the alias only for multilingual models
-        if ($model !== null && $model instanceof Multilingual) {
+        if (null !== $model && $model instanceof Multilingual) {
             $event->getUrlParameterBag()->setUrlAttribute(
                 $param,
                 $model->getAlias($event->getNavigationItem()->getRootPage()->rootLanguage)
@@ -68,7 +75,7 @@ class ChangeLanguageListener implements FrameworkAwareInterface
     }
 
     /**
-     * Update the parameter name
+     * Update the parameter name.
      *
      * @param ChangelanguageNavigationEvent $event
      */

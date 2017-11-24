@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
+ */
+
 namespace Codefog\NewsCategoriesBundle\EventListener;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
@@ -28,7 +36,7 @@ class InsertTagsListener implements FrameworkAwareInterface
     }
 
     /**
-     * On replace the insert tags
+     * On replace the insert tags.
      *
      * @param string $tag
      *
@@ -38,7 +46,7 @@ class InsertTagsListener implements FrameworkAwareInterface
     {
         $chunks = trimsplit('::', $tag);
 
-        if ($chunks[0] === 'news_categories') {
+        if ('news_categories' === $chunks[0]) {
             /** @var Input $input */
             $input = $this->framework->getAdapter(Input::class);
 
@@ -46,7 +54,7 @@ class InsertTagsListener implements FrameworkAwareInterface
                 /** @var NewsCategoryModel $model */
                 $model = $this->framework->getAdapter(NewsCategoryModel::class);
 
-                if (($category = $model->findPublishedByIdOrAlias($alias)) !== null) {
+                if (null !== ($category = $model->findPublishedByIdOrAlias($alias))) {
                     return $category->{$chunks[1]};
                 }
             }

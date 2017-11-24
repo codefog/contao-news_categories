@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
+ */
+
 namespace Codefog\NewsCategoriesBundle\EventListener;
 
 use Codefog\NewsCategoriesBundle\Widget\NewsCategoriesPickerWidget;
@@ -37,28 +45,28 @@ class AjaxListener implements FrameworkAwareInterface
     }
 
     /**
-     * On execute the post actions
+     * On execute the post actions.
      *
      * @param string        $action
      * @param DataContainer $dc
      */
     public function onExecutePostActions($action, DataContainer $dc)
     {
-        if ($action === 'reloadNewsCategoriesWidget') {
+        if ('reloadNewsCategoriesWidget' === $action) {
             $this->reloadNewsCategoriesWidget($dc);
         }
     }
 
     /**
-     * Reload the news categories widget
+     * Reload the news categories widget.
      *
      * @param DataContainer $dc
      */
     private function reloadNewsCategoriesWidget(DataContainer $dc)
     {
         /**
-         * @var Database $db
-         * @var Input $input
+         * @var Database
+         * @var Input    $input
          */
         $db = $this->framework->createInstance(Database::class);
         $input = $this->framework->getAdapter(Input::class);
@@ -67,7 +75,7 @@ class AjaxListener implements FrameworkAwareInterface
         $field = $dc->inputName = $input->post('name');
 
         // Handle the keys in "edit multiple" mode
-        if ($input->get('act') === 'editAll') {
+        if ('editAll' === $input->get('act')) {
             $id = preg_replace('/.*_([0-9a-zA-Z]+)$/', '$1', $field);
             $field = preg_replace('/(.*)_[0-9a-zA-Z]+$/', '$1', $field);
         }
@@ -89,8 +97,8 @@ class AjaxListener implements FrameworkAwareInterface
         $value = null;
 
         // Load the value
-        if ($input->get('act') !== 'overrideAll' && $id > 0 && $db->tableExists($dc->table)) {
-            $row = $db->prepare("SELECT * FROM " . $dc->table . " WHERE id=?")->execute($id);
+        if ('overrideAll' !== $input->get('act') && $id > 0 && $db->tableExists($dc->table)) {
+            $row = $db->prepare('SELECT * FROM '.$dc->table.' WHERE id=?')->execute($id);
 
             // The record does not exist
             if ($row->numRows < 1) {

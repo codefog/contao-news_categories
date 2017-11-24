@@ -1,18 +1,14 @@
 <?php
 
-/**
- * news_categories extension for Contao Open Source CMS
+/*
+ * News Categories Bundle for Contao Open Source CMS.
  *
- * Copyright (C) 2011-2014 Codefog
- *
- * @package news_categories
- * @author  Webcontext <http://webcontext.com>
- * @author  Codefog <info@codefog.pl>
- * @author  Kamil Kuzminski <kamil.kuzminski@codefog.pl>
- * @license LGPL
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
  */
 
 /**
- * Fields
+ * Fields.
  */
-$GLOBALS['TL_LANG']['tl_news_feed']['categories'] = array('Kategorien', 'Eine oder mehrere Kategorien auswählen.');
+$GLOBALS['TL_LANG']['tl_news_feed']['categories'] = ['Kategorien', 'Eine oder mehrere Kategorien auswählen.'];

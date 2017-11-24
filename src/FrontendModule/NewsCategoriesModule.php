@@ -1,14 +1,22 @@
 <?php
 
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
+ */
+
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
+use Contao\BackendTemplate;
 use Contao\Controller;
 use Contao\Database;
 use Contao\FrontendTemplate;
 use Contao\ModuleNews;
-use Contao\BackendTemplate;
 use Contao\NewsModel;
 use Contao\PageModel;
 use Contao\StringUtil;
@@ -21,19 +29,22 @@ use Patchwork\Utf8;
 class NewsCategoriesModule extends ModuleNews
 {
     /**
-     * Template
+     * Template.
+     *
      * @var string
      */
     protected $strTemplate = 'mod_newscategories';
 
     /**
-     * Active category
+     * Active category.
+     *
      * @var NewsCategoryModel
      */
     protected $activeCategory = null;
 
     /**
-     * News categories of the current news item
+     * News categories of the current news item.
+     *
      * @var array
      */
     protected $currentNewsCategories = [];
@@ -44,7 +55,8 @@ class NewsCategoriesModule extends ModuleNews
     protected $manager;
 
     /**
-     * Display a wildcard in the back end
+     * Display a wildcard in the back end.
+     *
      * @return string
      */
     public function generate()
@@ -52,11 +64,11 @@ class NewsCategoriesModule extends ModuleNews
         if (TL_MODE === 'BE') {
             $template = new BackendTemplate('be_wildcard');
 
-            $template->wildcard = '### ' . Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['newscategories'][0]) . ' ###';
+            $template->wildcard = '### '.Utf8::strtoupper($GLOBALS['TL_LANG']['FMD']['newscategories'][0]).' ###';
             $template->title = $this->headline;
             $template->id = $this->id;
             $template->link = $this->name;
-            $template->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
+            $template->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id='.$this->id;
 
             return $template->parse();
         }
@@ -64,7 +76,7 @@ class NewsCategoriesModule extends ModuleNews
         $this->news_archives = $this->sortOutProtected(StringUtil::deserialize($this->news_archives, true));
 
         // Return if there are no archives
-        if (count($this->news_archives) === 0) {
+        if (0 === count($this->news_archives)) {
             return '';
         }
 
@@ -75,7 +87,7 @@ class NewsCategoriesModule extends ModuleNews
     }
 
     /**
-     * Generate the module
+     * Generate the module.
      */
     protected function compile()
     {
@@ -94,7 +106,7 @@ class NewsCategoriesModule extends ModuleNews
         }
 
         // Return if no categories are found
-        if ($categories === null) {
+        if (null === $categories) {
             $this->Template->categories = '';
 
             return;
@@ -103,7 +115,7 @@ class NewsCategoriesModule extends ModuleNews
         $param = System::getContainer()->get('codefog_news_categories.manager')->getParameterName();
 
         // Get the active category
-        if (($activeCategory = NewsCategoryModel::findPublishedByIdOrAlias(Input::get($param))) !== null) {
+        if (null !== ($activeCategory = NewsCategoryModel::findPublishedByIdOrAlias(Input::get($param)))) {
             $this->activeCategory = $activeCategory;
         }
 
@@ -119,7 +131,7 @@ class NewsCategoriesModule extends ModuleNews
     }
 
     /**
-     * Get the target page
+     * Get the target page.
      *
      * @return PageModel
      */
@@ -127,10 +139,10 @@ class NewsCategoriesModule extends ModuleNews
     {
         static $page;
 
-        if ($page === null) {
+        if (null === $page) {
             if ($this->jumpTo > 0
                 && (int) $GLOBALS['objPage']->id !== (int) $this->jumpTo
-                && ($target = PageModel::findPublishedById($this->jumpTo)) !== null
+                && null !== ($target = PageModel::findPublishedById($this->jumpTo))
             ) {
                 $page = $target;
             } else {
@@ -142,14 +154,14 @@ class NewsCategoriesModule extends ModuleNews
     }
 
     /**
-     * Get the category IDs of the current news item
+     * Get the category IDs of the current news item.
      *
      * @return array
      */
     protected function getCurrentNewsCategories()
     {
         if (!($alias = Input::getAutoItem('items'))
-            || ($news = NewsModel::findPublishedByParentAndIdOrAlias($alias, $this->news_archives)) === null
+            || null === ($news = NewsModel::findPublishedByParentAndIdOrAlias($alias, $this->news_archives))
         ) {
             return [];
         }
@@ -161,17 +173,17 @@ class NewsCategoriesModule extends ModuleNews
     }
 
     /**
-     * Recursively compile the news categories and return it as HTML string
+     * Recursively compile the news categories and return it as HTML string.
      *
-     * @param integer $pid
-     * @param array   $ids
-     * @param integer $level
+     * @param int   $pid
+     * @param array $ids
+     * @param int   $level
      *
      * @return string
      */
     protected function renderNewsCategories($pid, array $ids, $level = 1)
     {
-        if (($categories = NewsCategoryModel::findPublishedByIds($ids, $pid)) === null) {
+        if (null === ($categories = NewsCategoryModel::findPublishedByIds($ids, $pid))) {
             return '';
         }
 
@@ -183,28 +195,28 @@ class NewsCategoriesModule extends ModuleNews
         $template = new FrontendTemplate($this->navigationTpl);
         $template->type = get_class($this);
         $template->cssID = $this->cssID;
-        $template->level = 'level_' . $level;
+        $template->level = 'level_'.$level;
         $template->showQuantity = $this->news_showQuantity;
 
         $items = [];
 
         // Add the "reset categories" link
-        if ($this->news_resetCategories && $level === 1) {
+        if ($this->news_resetCategories && 1 === $level) {
             $items[] = $this->generateItem(
                 $this->getTargetPage()->getFrontendUrl(),
                 $GLOBALS['TL_LANG']['MSC']['resetCategories'][0],
                 $GLOBALS['TL_LANG']['MSC']['resetCategories'][1],
                 'reset',
-                count($this->currentNewsCategories) === 0 && $this->activeCategory === null
+                0 === count($this->currentNewsCategories) && null === $this->activeCategory
             );
         }
 
-        $level++;
+        ++$level;
 
         /** @var NewsCategoryModel $category */
         foreach ($categories as $category) {
             // Generate the category individual URL or the filter-link
-            if ($this->news_forceCategoryUrl && ($targetPage = $this->manager->getTargetPage($category)) !== null) {
+            if ($this->news_forceCategoryUrl && null !== ($targetPage = $this->manager->getTargetPage($category))) {
                 $url = $targetPage->getFrontendUrl();
             } else {
                 $url = $this->manager->generateUrl($category, $this->getTargetPage());
@@ -215,7 +227,7 @@ class NewsCategoriesModule extends ModuleNews
                 $category->getTitle(),
                 $category->getTitle(),
                 $this->generateItemCssClass($category),
-                $this->activeCategory !== null && (int) $this->activeCategory->id === (int) $category->id,
+                null !== $this->activeCategory && (int) $this->activeCategory->id === (int) $category->id,
                 $this->renderNewsCategories($category->id, $ids, $level),
                 $category
             );
@@ -230,14 +242,14 @@ class NewsCategoriesModule extends ModuleNews
     }
 
     /**
-     * Generate the item
+     * Generate the item.
      *
-     * @param string            $url
-     * @param string            $link
-     * @param string            $title
-     * @param string            $cssClass
-     * @param bool              $isActive
-     * @param string            $subitems
+     * @param string                 $url
+     * @param string                 $link
+     * @param string                 $title
+     * @param string                 $cssClass
+     * @param bool                   $isActive
+     * @param string                 $subitems
      * @param NewsCategoryModel|null $category
      *
      * @return array
@@ -247,7 +259,7 @@ class NewsCategoriesModule extends ModuleNews
         $data = [];
 
         // Set the data from category
-        if ($category !== null) {
+        if (null !== $category) {
             $data = $category->row();
         }
 
@@ -262,17 +274,17 @@ class NewsCategoriesModule extends ModuleNews
 
         // Add the "active" class
         if ($isActive) {
-            $data['class'] = trim($data['class'] . ' active');
+            $data['class'] = trim($data['class'].' active');
         }
 
         // Add the "submenu" class
         if ($subitems) {
-            $data['class'] = trim($data['class'] . ' submenu');
+            $data['class'] = trim($data['class'].' submenu');
         }
 
         // Add the news quantity
         if ($this->news_showQuantity) {
-            if ($category === null) {
+            if (null === $category) {
                 $data['quantity'] = NewsCategoryModel::getUsage($this->news_archives);
             } else {
                 $data['quantity'] = NewsCategoryModel::getUsage($this->news_archives, $category->id, (bool) $this->news_includeSubcategories);
@@ -280,7 +292,7 @@ class NewsCategoriesModule extends ModuleNews
         }
 
         // Add the image
-        if ($category !== null && ($image = $this->manager->getImage($category)) !== null) {
+        if (null !== $category && null !== ($image = $this->manager->getImage($category))) {
             $data['image'] = new \stdClass();
             Controller::addImageToTemplate($data['image'], ['singleSRC' => $image->path, 'size' => $this->news_categoryImgSize]);
         } else {
@@ -291,7 +303,7 @@ class NewsCategoriesModule extends ModuleNews
     }
 
     /**
-     * Generate the item CSS class
+     * Generate the item CSS class.
      *
      * @param NewsCategoryModel $category
      *

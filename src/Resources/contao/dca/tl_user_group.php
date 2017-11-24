@@ -1,12 +1,17 @@
 <?php
 
-/**
- * Load tl_user data container
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
  */
+
 \Contao\Controller::loadDataContainer('tl_user');
 \Contao\System::loadLanguageFile('tl_user');
 
-/**
+/*
  * Extend palettes
  */
 \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
@@ -16,7 +21,7 @@
     ->addField('newscategories_default', 'newsCategories_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('default', 'tl_user_group');
 
-/**
+/*
  * Add fields
  */
 $GLOBALS['TL_DCA']['tl_user_group']['fields']['newscategories'] = &$GLOBALS['TL_DCA']['tl_user']['fields']['newscategories'];

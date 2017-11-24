@@ -1,20 +1,14 @@
 <?php
 
-/**
- * news_categories extension for Contao Open Source CMS
+/*
+ * News Categories Bundle for Contao Open Source CMS.
  *
- * Copyright (C) 2011-2014 Codefog
- *
- * @package news_categories
- * @link    http://codefog.pl
- * @author  Webcontext <http://webcontext.com>
- * @author  Codefog <info@codefog.pl>
- * @author  Kamil Kuzminski <kamil.kuzminski@codefog.pl>
- * @author  Marco Damian <info@zod.it>
- * @license LGPL
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
  */
 
 /**
- * Front end modules
+ * Front end modules.
  */
-$GLOBALS['TL_LANG']['FMD']['newscategories'] = array('Lista categorie news', 'Aggiunge una lista di categorie news alla pagina.');
+$GLOBALS['TL_LANG']['FMD']['newscategories'] = ['Lista categorie news', 'Aggiunge una lista di categorie news alla pagina.'];

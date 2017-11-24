@@ -1,15 +1,19 @@
 <?php
 
-/**
- * Load tl_news_archive language file
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
  */
+
 \Contao\System::loadLanguageFile('tl_news_archive');
 
-/**
+/*
  * Table tl_news_category
  */
 $GLOBALS['TL_DCA']['tl_news_category'] = [
-
     // Config
     'config' => [
         'label' => $GLOBALS['TL_LANG']['tl_news_archive']['categories'][0],
@@ -89,7 +93,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
                 'label' => &$GLOBALS['TL_LANG']['tl_news_category']['delete'],
                 'href' => 'act=delete',
                 'icon' => 'delete.svg',
-                'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"',
+                'attributes' => 'onclick="if(!confirm(\''.$GLOBALS['TL_LANG']['MSC']['deleteConfirm'].'\'))return false;Backend.getScrollOffset()"',
             ],
             'show' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_news_category']['show'],
@@ -239,7 +243,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
     ],
 ];
 
-/**
+/*
  * Enable multilingual features
  */
 if (\Codefog\NewsCategoriesBundle\MultilingualHelper::isActive()) {
@@ -257,6 +261,5 @@ if (\Codefog\NewsCategoriesBundle\MultilingualHelper::isActive()) {
     $GLOBALS['TL_DCA']['tl_news_category']['fields']['description']['eval']['translatableFor'] = '*';
 
     $GLOBALS['TL_DCA']['tl_news_category']['fields']['alias']['eval']['translatableFor'] = '*';
-    unset($GLOBALS['TL_DCA']['tl_news_category']['fields']['alias']['eval']['spaceToUnderscore']);
-    unset($GLOBALS['TL_DCA']['tl_news_category']['fields']['alias']['eval']['unique']);
+    unset($GLOBALS['TL_DCA']['tl_news_category']['fields']['alias']['eval']['spaceToUnderscore'], $GLOBALS['TL_DCA']['tl_news_category']['fields']['alias']['eval']['unique']);
 }

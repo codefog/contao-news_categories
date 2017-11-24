@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
+ */
+
 namespace Codefog\NewsCategoriesBundle\EventListener;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
@@ -33,7 +41,7 @@ class TemplateListener implements FrameworkAwareInterface
     }
 
     /**
-     * On parse the articles
+     * On parse the articles.
      *
      * @param FrontendTemplate $template
      * @param array            $data
@@ -44,7 +52,7 @@ class TemplateListener implements FrameworkAwareInterface
         /** @var NewsCategoryModel $newsCategoryModelAdapter */
         $newsCategoryModelAdapter = $this->framework->getAdapter(NewsCategoryModel::class);
 
-        if (($models = $newsCategoryModelAdapter->findPublishedByNews($data['id'])) === null) {
+        if (null === ($models = $newsCategoryModelAdapter->findPublishedByNews($data['id']))) {
             return;
         }
 
@@ -52,7 +60,7 @@ class TemplateListener implements FrameworkAwareInterface
     }
 
     /**
-     * Add categories to the template
+     * Add categories to the template.
      *
      * @param FrontendTemplate $template
      * @param Module           $module
@@ -80,7 +88,7 @@ class TemplateListener implements FrameworkAwareInterface
         }
 
         // Sort the categories data alphabetically
-        uasort($data, function($a, $b) {
+        uasort($data, function ($a, $b) {
             return strnatcasecmp($a['name'], $b['name']);
         });
 
@@ -93,7 +101,7 @@ class TemplateListener implements FrameworkAwareInterface
     }
 
     /**
-     * Generate the category data
+     * Generate the category data.
      *
      * @param NewsCategoryModel $category
      * @param Module            $module
@@ -119,11 +127,11 @@ class TemplateListener implements FrameworkAwareInterface
         $pageAdapter = $this->framework->getAdapter(PageModel::class);
 
         // Overwrite the category links with filter page set in module
-        if ($module->news_categoryFilterPage && ($targetPage = $pageAdapter->findPublishedById($module->news_categoryFilterPage)) !== null) {
+        if ($module->news_categoryFilterPage && null !== ($targetPage = $pageAdapter->findPublishedById($module->news_categoryFilterPage))) {
             $data['href'] = $this->manager->generateUrl($category, $targetPage);
             $data['hrefWithParam'] = $data['href'];
             $data['targetPage'] = $targetPage;
-        } elseif (($targetPage = $this->manager->getTargetPage($category)) !== null) {
+        } elseif (null !== ($targetPage = $this->manager->getTargetPage($category))) {
             // Add the category target page and URLs
             $data['href'] = $targetPage->getFrontendUrl();
             $data['hrefWithParam'] = $this->manager->generateUrl($category, $targetPage);
@@ -131,12 +139,12 @@ class TemplateListener implements FrameworkAwareInterface
         }
 
         // Register a function to generate category URL manually
-        $data['generateUrl'] = function(PageModel $page, $absolute = false) use ($category) {
+        $data['generateUrl'] = function (PageModel $page, $absolute = false) use ($category) {
             return $this->manager->generateUrl($category, $page, $absolute);
         };
 
         // Add the image
-        if (($image = $this->manager->getImage($category)) !== null) {
+        if (null !== ($image = $this->manager->getImage($category))) {
             /** @var Controller $controllerAdapter */
             $controllerAdapter = $this->framework->getAdapter(Controller::class);
             $data['image'] = new \stdClass();

@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * News Categories Bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
+ */
+
 namespace Codefog\NewsCategoriesBundle\Model;
 
 use Codefog\NewsCategoriesBundle\MultilingualHelper;
@@ -11,33 +19,38 @@ use Contao\NewsModel;
 use Haste\Model\Model;
 use Haste\Model\Relations;
 
-/**
+/*
  * Use the multilingual model if available
  */
 if (MultilingualHelper::isActive()) {
-    class ParentModel extends \Terminal42\DcMultilingualBundle\Model\Multilingual {}
+    class ParentModel extends \Terminal42\DcMultilingualBundle\Model\Multilingual
+    {
+    }
 } else {
-    class ParentModel extends \Contao\Model {}
+    class ParentModel extends \Contao\Model
+    {
+    }
 }
 
 class NewsCategoryModel extends ParentModel
 {
     /**
-     * Table name
+     * Table name.
+     *
      * @var string
      */
     protected static $strTable = 'tl_news_category';
 
     /**
-     * Get the CSS class
+     * Get the CSS class.
      *
      * @return string
      */
     public function getCssClass()
     {
         $cssClasses = [
-            'news_category_' . $this->id,
-            'category_' . $this->id,
+            'news_category_'.$this->id,
+            'category_'.$this->id,
         ];
 
         if ($this->cssClass) {
@@ -48,7 +61,7 @@ class NewsCategoryModel extends ParentModel
     }
 
     /**
-     * Get the image
+     * Get the image.
      *
      * @return FilesModel|null
      */
@@ -58,7 +71,7 @@ class NewsCategoryModel extends ParentModel
     }
 
     /**
-     * Get the title
+     * Get the title.
      *
      * @return string
      */
@@ -68,7 +81,7 @@ class NewsCategoryModel extends ParentModel
     }
 
     /**
-     * Find published news categories by news criteria
+     * Find published news categories by news criteria.
      *
      * @param array $archives
      * @param array $ids
@@ -77,7 +90,7 @@ class NewsCategoryModel extends ParentModel
      */
     public static function findPublishedByArchives(array $archives, array $ids = [])
     {
-        if (count($archives) === 0 || ($relation = Relations::getRelation('tl_news', 'categories')) === false) {
+        if (0 === count($archives) || false === ($relation = Relations::getRelation('tl_news', 'categories'))) {
             return null;
         }
 
@@ -87,24 +100,24 @@ class NewsCategoryModel extends ParentModel
         // Start sub select query for relations
         $subSelect = "SELECT {$relation['related_field']} 
 FROM {$relation['table']} 
-WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (" . implode(',', array_map('intval', $archives)) . ")";
+WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".implode(',', array_map('intval', $archives)).')';
 
         // Include only the published news items
         if (!BE_USER_LOGGED_IN) {
             $time = Date::floorToMinute();
-            $subSelect .= " AND (start=? OR start<=?) AND (stop=? OR stop>?) AND published=?";
+            $subSelect .= ' AND (start=? OR start<=?) AND (stop=? OR stop>?) AND published=?';
             $values = array_merge($values, ['', $time, '', $time + 60, 1]);
         }
 
         // Finish sub select query for relations
-        $subSelect .= ")";
+        $subSelect .= ')';
 
         // Columns definition start
         $columns = ["$t.id IN ($subSelect)"];
 
         // Filter by custom categories
         if (count($ids) > 0) {
-            $columns[] = "$t.id IN (" . implode(',', array_map('intval', $ids)) . ")";
+            $columns[] = "$t.id IN (".implode(',', array_map('intval', $ids)).')';
         }
 
         if (!BE_USER_LOGGED_IN) {
@@ -116,7 +129,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (" 
     }
 
     /**
-     * Find published category by ID or alias
+     * Find published category by ID or alias.
      *
      * @param string $idOrAlias
      *
@@ -129,7 +142,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (" 
 
         // Determine the alias condition
         if (MultilingualHelper::isActive()) {
-            $aliasCondition = "t1.alias=? OR t2.alias=?";
+            $aliasCondition = 't1.alias=? OR t2.alias=?';
             $values[] = $idOrAlias;
             $values[] = $idOrAlias;
         } else {
@@ -148,7 +161,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (" 
     }
 
     /**
-     * Find published news categories
+     * Find published news categories.
      *
      * @return Collection|null
      */
@@ -165,7 +178,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (" 
     }
 
     /**
-     * Find published news categories by parent ID and IDs
+     * Find published news categories by parent ID and IDs.
      *
      * @param array    $ids
      * @param int|null $pid
@@ -174,16 +187,16 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (" 
      */
     public static function findPublishedByIds(array $ids, $pid = null)
     {
-        if (count($ids) === 0) {
+        if (0 === count($ids)) {
             return null;
         }
 
         $t = static::getTableAlias();
-        $columns = ["$t.id IN (" . implode(',', array_map('intval', $ids)) . ")"];
+        $columns = ["$t.id IN (".implode(',', array_map('intval', $ids)).')'];
         $values = [];
 
         // Filter by pid
-        if ($pid !== null) {
+        if (null !== $pid) {
             $columns[] = "$t.pid=?";
             $values[] = $pid;
         }
@@ -197,7 +210,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (" 
     }
 
     /**
-     * Find the published categories by news
+     * Find the published categories by news.
      *
      * @param int|array $newsId
      *
@@ -205,12 +218,12 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (" 
      */
     public static function findPublishedByNews($newsId)
     {
-        if (count($ids = Model::getRelatedValues('tl_news', 'categories', $newsId)) === 0) {
+        if (0 === count($ids = Model::getRelatedValues('tl_news', 'categories', $newsId))) {
             return null;
         }
 
         $t = static::getTableAlias();
-        $columns = ["$t.id IN (" . implode(',', array_map('intval', array_unique($ids))) . ")"];
+        $columns = ["$t.id IN (".implode(',', array_map('intval', array_unique($ids))).')'];
         $values = [];
 
         if (!BE_USER_LOGGED_IN) {
@@ -222,7 +235,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (" 
     }
 
     /**
-     * Count the published news by archives
+     * Count the published news by archives.
      *
      * @param array    $archives
      * @param int|null $category
@@ -235,20 +248,20 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (" 
         $t = NewsModel::getTable();
 
         // Include the subcategories
-        if ($category !== null && $includeSubcategories) {
+        if (null !== $category && $includeSubcategories) {
             $category = static::getAllSubcategoriesIds($category);
         }
 
-        if (count($ids = Model::getReferenceValues($t, 'categories', $category)) === 0) {
+        if (0 === count($ids = Model::getReferenceValues($t, 'categories', $category))) {
             return 0;
         }
 
-        $columns = ["$t.id IN (" . implode(',', array_unique($ids)) . ")"];
+        $columns = ["$t.id IN (".implode(',', array_unique($ids)).')'];
         $values = [];
 
         // Filter by archives
         if (count($archives)) {
-            $columns[] = "$t.pid IN (" . implode(',', array_map('intval', $archives)) . ")";
+            $columns[] = "$t.pid IN (".implode(',', array_map('intval', $archives)).')';
         }
 
         if (!BE_USER_LOGGED_IN) {
@@ -261,7 +274,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (" 
     }
 
     /**
-     * Get all subcategory IDs
+     * Get all subcategory IDs.
      *
      * @param int $category
      *
@@ -276,7 +289,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (" 
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public static function findMultipleByIds($arrIds, array $arrOptions = [])
     {
@@ -290,11 +303,11 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (" 
             $arrOptions['order'] = Database::getInstance()->findInSet("$t.id", $arrIds);
         }
 
-        return static::findBy(["$t.id IN (" . implode(',', array_map('intval', $arrIds)) . ")"], null);
+        return static::findBy(["$t.id IN (".implode(',', array_map('intval', $arrIds)).')'], null);
     }
 
     /**
-     * Get the table alias
+     * Get the table alias.
      *
      * @return string
      */
