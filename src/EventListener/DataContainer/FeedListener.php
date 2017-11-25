@@ -78,16 +78,16 @@ class FeedListener implements FrameworkAwareInterface
             $modelAdapter = $this->framework->getAdapter(Model::class);
 
             $newsIds = $modelAdapter->getReferenceValues('tl_news', 'categories', $dc->id);
-            $newsIds = array_map('intval', array_unique($newsIds));
+            $newsIds = \array_map('intval', \array_unique($newsIds));
 
-            if (count($newsIds) > 0) {
+            if (\count($newsIds) > 0) {
                 $archiveIds = $this->db
-                    ->executeQuery('SELECT DISTINCT(pid) FROM tl_news WHERE id IN ('.implode(',', $newsIds).')')
+                    ->executeQuery('SELECT DISTINCT(pid) FROM tl_news WHERE id IN ('.\implode(',', $newsIds).')')
                     ->fetchAll(\PDO::FETCH_COLUMN, 0);
 
                 $session = $this->session->get('news_feed_updater');
-                $session = array_merge((array) $session, $archiveIds);
-                $this->session->set('news_feed_updater', array_unique($session));
+                $session = \array_merge((array) $session, $archiveIds);
+                $this->session->set('news_feed_updater', \array_unique($session));
             }
         }
     }
@@ -101,7 +101,7 @@ class FeedListener implements FrameworkAwareInterface
     {
         $session = $this->session->get('news_feed_updater');
 
-        if (!is_array($session) || empty($session)) {
+        if (!\is_array($session) || empty($session)) {
             return;
         }
 

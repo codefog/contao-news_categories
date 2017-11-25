@@ -60,13 +60,13 @@ class NewsCriteria
     {
         $archives = $this->parseIds($archives);
 
-        if (0 === count($archives)) {
+        if (0 === \count($archives)) {
             throw new NoNewsException();
         }
 
         $t = $this->getNewsModelAdapter()->getTable();
 
-        $this->columns[] = "$t.pid IN(".implode(',', array_map('intval', $archives)).')';
+        $this->columns[] = "$t.pid IN(".\implode(',', \array_map('intval', $archives)).')';
         $this->options['order'] = "$t.date DESC";
 
         // Never return unpublished elements in the back end, so they don't end up in the RSS feed
@@ -76,7 +76,7 @@ class NewsCriteria
 
             $time = $dateAdapter->floorToMinute();
             $this->columns[] = "($t.start=? OR $t.start<=?) AND ($t.stop=? OR $t.stop>?) AND $t.published=?";
-            $this->values = array_merge($this->values, ['', $time, '', ($time + 60), 1]);
+            $this->values = \array_merge($this->values, ['', $time, '', ($time + 60), 1]);
         }
     }
 
@@ -124,7 +124,7 @@ class NewsCriteria
     {
         $defaultCategories = $this->parseIds($defaultCategories);
 
-        if (0 === count($defaultCategories)) {
+        if (0 === \count($defaultCategories)) {
             throw new NoNewsException();
         }
 
@@ -134,13 +134,13 @@ class NewsCriteria
         $newsIds = $model->getReferenceValues('tl_news', 'categories', $defaultCategories);
         $newsIds = $this->parseIds($newsIds);
 
-        if (0 === count($newsIds)) {
+        if (0 === \count($newsIds)) {
             throw new NoNewsException();
         }
 
         $t = $this->getNewsModelAdapter()->getTable();
 
-        $this->columns['defaultCategories'] = "$t.id IN(".implode(',', $newsIds).')';
+        $this->columns['defaultCategories'] = "$t.id IN(".\implode(',', $newsIds).')';
     }
 
     /**
@@ -167,7 +167,7 @@ class NewsCriteria
         $newsIds = $model->getReferenceValues('tl_news', 'categories', $category);
         $newsIds = $this->parseIds($newsIds);
 
-        if (0 === count($newsIds)) {
+        if (0 === \count($newsIds)) {
             throw new NoNewsException();
         }
 
@@ -178,7 +178,7 @@ class NewsCriteria
 
         $t = $this->getNewsModelAdapter()->getTable();
 
-        $this->columns[] = "$t.id IN(".implode(',', $newsIds).')';
+        $this->columns[] = "$t.id IN(".\implode(',', $newsIds).')';
     }
 
     /**
@@ -190,13 +190,13 @@ class NewsCriteria
     {
         $newsIds = $this->parseIds($newsIds);
 
-        if (0 === count($newsIds)) {
+        if (0 === \count($newsIds)) {
             throw new NoNewsException();
         }
 
         $t = $this->getNewsModelAdapter()->getTable();
 
-        $this->columns[] = "$t.id NOT IN (".implode(',', $newsIds).')';
+        $this->columns[] = "$t.id NOT IN (".\implode(',', $newsIds).')';
     }
 
     /**
@@ -265,10 +265,10 @@ class NewsCriteria
      */
     private function parseIds(array $ids)
     {
-        $ids = array_map('intval', $ids);
-        $ids = array_filter($ids);
-        $ids = array_unique($ids);
+        $ids = \array_map('intval', $ids);
+        $ids = \array_filter($ids);
+        $ids = \array_unique($ids);
 
-        return array_values($ids);
+        return \array_values($ids);
     }
 }

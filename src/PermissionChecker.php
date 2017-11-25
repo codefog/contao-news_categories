@@ -63,7 +63,7 @@ class PermissionChecker implements FrameworkAwareInterface
     {
         $user = $this->getUser();
 
-        return $user->isAdmin || in_array('tl_news::categories', $user->alexf, true);
+        return $user->isAdmin || \in_array('tl_news::categories', $user->alexf, true);
     }
 
     /**
@@ -75,7 +75,7 @@ class PermissionChecker implements FrameworkAwareInterface
     {
         $user = $this->getUser();
 
-        return is_array($user->newscategories_default) ? $user->newscategories_default : [];
+        return \is_array($user->newscategories_default) ? $user->newscategories_default : [];
     }
 
     /**
@@ -91,7 +91,7 @@ class PermissionChecker implements FrameworkAwareInterface
             return null;
         }
 
-        return array_map('intval', (array) $user->newscategories_roots);
+        return \array_map('intval', (array) $user->newscategories_roots);
     }
 
     /**
@@ -111,9 +111,9 @@ class PermissionChecker implements FrameworkAwareInterface
         $db = $this->framework->createInstance(Database::class);
 
         $ids = $db->getChildRecords($roots, 'tl_news_category', false, $roots);
-        $ids = array_map('intval', $ids);
+        $ids = \array_map('intval', $ids);
 
-        return in_array((int) $categoryId, $ids, true);
+        return \in_array((int) $categoryId, $ids, true);
     }
 
     /**
@@ -135,16 +135,16 @@ class PermissionChecker implements FrameworkAwareInterface
 
         // Add the permissions on group level
         if ('custom' !== $user->inherit) {
-            $groups = $this->db->fetchAll('SELECT id, newscategories, newscategories_roots FROM tl_user_group WHERE id IN('.implode(',', array_map('intval', $user->groups)).')');
+            $groups = $this->db->fetchAll('SELECT id, newscategories, newscategories_roots FROM tl_user_group WHERE id IN('.\implode(',', \array_map('intval', $user->groups)).')');
 
             foreach ($groups as $group) {
                 $permissions = $stringUtil->deserialize($group['newscategories'], true);
 
-                if (in_array('manage', $permissions, true)) {
+                if (\in_array('manage', $permissions, true)) {
                     $categoryIds = $stringUtil->deserialize($group['newscategories_roots'], true);
                     $categoryIds[] = $categoryId;
 
-                    $this->db->update('tl_user_group', ['newscategories_roots' => serialize($categoryIds)], ['id' => $group['id']]);
+                    $this->db->update('tl_user_group', ['newscategories_roots' => \serialize($categoryIds)], ['id' => $group['id']]);
                 }
             }
         }
@@ -154,16 +154,16 @@ class PermissionChecker implements FrameworkAwareInterface
             $userData = $this->db->fetchAssoc('SELECT newscategories, newscategories_roots FROM tl_user WHERE id=?', [$user->id]);
             $permissions = $stringUtil->deserialize($userData['newscategories'], true);
 
-            if (in_array('manage', $permissions, true)) {
+            if (\in_array('manage', $permissions, true)) {
                 $categoryIds = $stringUtil->deserialize($userData['newscategories_roots'], true);
                 $categoryIds[] = $categoryId;
 
-                $this->db->update('tl_user', ['newscategories_roots' => serialize($categoryIds)], ['id' => $user->id]);
+                $this->db->update('tl_user', ['newscategories_roots' => \serialize($categoryIds)], ['id' => $user->id]);
             }
         }
 
         // Add the new element to the user object
-        $user->newscategories_roots = array_merge($roots, [$categoryId]);
+        $user->newscategories_roots = \array_merge($roots, [$categoryId]);
     }
 
     /**

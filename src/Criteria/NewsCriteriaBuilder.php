@@ -146,7 +146,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
     private function setRegularListCriteria(NewsCriteria $criteria, Module $module)
     {
         // Filter by default categories
-        if (count($default = StringUtil::deserialize($module->news_filterDefault, true)) > 0) {
+        if (\count($default = StringUtil::deserialize($module->news_filterDefault, true)) > 0) {
             $criteria->setDefaultCategories($default);
         }
 
@@ -186,25 +186,25 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
 
         /** @var Model $adapter */
         $adapter = $this->framework->getAdapter(Model::class);
-        $categories = array_unique($adapter->getRelatedValues($news->getTable(), 'categories', $news->id));
+        $categories = \array_unique($adapter->getRelatedValues($news->getTable(), 'categories', $news->id));
 
         // This news has no news categories assigned
-        if (0 === count($categories)) {
+        if (0 === \count($categories)) {
             throw new NoNewsException();
         }
 
-        $categories = array_map('intval', $categories);
+        $categories = \array_map('intval', $categories);
         $excluded = $this->db->fetchAll('SELECT id FROM tl_news_category WHERE excludeInRelated=1');
 
         // Exclude the categories
         foreach ($excluded as $category) {
-            if (false !== ($index = array_search((int) $category['id'], $categories, true))) {
+            if (false !== ($index = \array_search((int) $category['id'], $categories, true))) {
                 unset($categories[$index]);
             }
         }
 
         // There are no categories left
-        if (0 === count($categories)) {
+        if (0 === \count($categories)) {
             throw new NoNewsException();
         }
 

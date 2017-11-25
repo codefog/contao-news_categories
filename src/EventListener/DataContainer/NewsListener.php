@@ -53,7 +53,7 @@ class NewsListener
 
         $categories = $this->db->fetchColumn('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=(SELECT pid FROM tl_news WHERE id=?)', [$dc->id]);
 
-        if (!$categories || 0 === count($categories = StringUtil::deserialize($categories, true))) {
+        if (!$categories || 0 === \count($categories = StringUtil::deserialize($categories, true))) {
             return;
         }
 

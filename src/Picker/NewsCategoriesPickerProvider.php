@@ -36,7 +36,7 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
         }
 
         if ($this->supportsValue($config)) {
-            $attributes['value'] = array_map('intval', explode(',', $config->getValue()));
+            $attributes['value'] = \array_map('intval', \explode(',', $config->getValue()));
         }
 
         return $attributes;
@@ -71,8 +71,8 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
      */
     public function supportsValue(PickerConfig $config)
     {
-        foreach (explode(',', $config->getValue()) as $id) {
-            if (!is_numeric($id)) {
+        foreach (\explode(',', $config->getValue()) as $id) {
+            if (!\is_numeric($id)) {
                 return false;
             }
         }

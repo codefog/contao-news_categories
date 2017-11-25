@@ -76,7 +76,7 @@ class NewsCategoriesModule extends ModuleNews
         $this->news_archives = $this->sortOutProtected(StringUtil::deserialize($this->news_archives, true));
 
         // Return if there are no archives
-        if (0 === count($this->news_archives)) {
+        if (0 === \count($this->news_archives)) {
             return '';
         }
 
@@ -95,7 +95,7 @@ class NewsCategoriesModule extends ModuleNews
 
         // Get all categories whether they have news or not
         if ($this->news_showEmptyCategories) {
-            if (count($customCategories) > 0) {
+            if (\count($customCategories) > 0) {
                 $categories = NewsCategoryModel::findPublishedByIds($customCategories);
             } else {
                 $categories = NewsCategoryModel::findPublished();
@@ -124,10 +124,10 @@ class NewsCategoriesModule extends ModuleNews
         // Get the parent categories IDs
         /** @var NewsCategoryModel $category */
         foreach ($categories as $category) {
-            $ids = array_merge($ids, Database::getInstance()->getParentRecords($category->id, $category->getTable()));
+            $ids = \array_merge($ids, Database::getInstance()->getParentRecords($category->id, $category->getTable()));
         }
 
-        $this->Template->categories = $this->renderNewsCategories((int) $this->news_categoriesRoot, array_unique($ids));
+        $this->Template->categories = $this->renderNewsCategories((int) $this->news_categoriesRoot, \array_unique($ids));
     }
 
     /**
@@ -167,7 +167,7 @@ class NewsCategoriesModule extends ModuleNews
         }
 
         $ids = Model::getRelatedValues('tl_news', 'categories', $news->id);
-        $ids = array_map('intval', array_unique($ids));
+        $ids = \array_map('intval', \array_unique($ids));
 
         return $ids;
     }
@@ -193,7 +193,7 @@ class NewsCategoriesModule extends ModuleNews
         }
 
         $template = new FrontendTemplate($this->navigationTpl);
-        $template->type = get_class($this);
+        $template->type = \get_class($this);
         $template->cssID = $this->cssID;
         $template->level = 'level_'.$level;
         $template->showQuantity = $this->news_showQuantity;
@@ -207,7 +207,7 @@ class NewsCategoriesModule extends ModuleNews
                 $GLOBALS['TL_LANG']['MSC']['resetCategories'][0],
                 $GLOBALS['TL_LANG']['MSC']['resetCategories'][1],
                 'reset',
-                0 === count($this->currentNewsCategories) && null === $this->activeCategory
+                0 === \count($this->currentNewsCategories) && null === $this->activeCategory
             );
         }
 
@@ -274,12 +274,12 @@ class NewsCategoriesModule extends ModuleNews
 
         // Add the "active" class
         if ($isActive) {
-            $data['class'] = trim($data['class'].' active');
+            $data['class'] = \trim($data['class'].' active');
         }
 
         // Add the "submenu" class
         if ($subitems) {
-            $data['class'] = trim($data['class'].' submenu');
+            $data['class'] = \trim($data['class'].' submenu');
         }
 
         // Add the news quantity
@@ -314,15 +314,15 @@ class NewsCategoriesModule extends ModuleNews
         $cssClasses = [$category->getCssClass()];
 
         // Add the trail class
-        if (in_array((int) $category->id, $this->manager->getTrailIds($category), true)) {
+        if (\in_array((int) $category->id, $this->manager->getTrailIds($category), true)) {
             $cssClasses[] = 'trail';
         }
 
         // Add the news trail class
-        if (in_array((int) $category->id, $this->currentNewsCategories, true)) {
+        if (\in_array((int) $category->id, $this->currentNewsCategories, true)) {
             $cssClasses[] = 'news_trail';
         }
 
-        return implode(' ', $cssClasses);
+        return \implode(' ', $cssClasses);
     }
 }

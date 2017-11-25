@@ -76,8 +76,8 @@ class AjaxListener implements FrameworkAwareInterface
 
         // Handle the keys in "edit multiple" mode
         if ('editAll' === $input->get('act')) {
-            $id = preg_replace('/.*_([0-9a-zA-Z]+)$/', '$1', $field);
-            $field = preg_replace('/(.*)_[0-9a-zA-Z]+$/', '$1', $field);
+            $id = \preg_replace('/.*_([0-9a-zA-Z]+)$/', '$1', $field);
+            $field = \preg_replace('/(.*)_[0-9a-zA-Z]+$/', '$1', $field);
         }
 
         $dc->field = $field;
@@ -86,7 +86,7 @@ class AjaxListener implements FrameworkAwareInterface
         if (!isset($GLOBALS['TL_DCA'][$dc->table]['fields'][$field])) {
             $this->logger->log(
                 LogLevel::ERROR,
-                sprintf('Field "%s" does not exist in DCA "%s"', $field, $dc->table),
+                \sprintf('Field "%s" does not exist in DCA "%s"', $field, $dc->table),
                 ['contao' => new ContaoContext(__METHOD__, TL_ERROR)]
             );
 
@@ -104,7 +104,7 @@ class AjaxListener implements FrameworkAwareInterface
             if ($row->numRows < 1) {
                 $this->logger->log(
                     LogLevel::ERROR,
-                    sprintf('A record with the ID "%s" does not exist in table "%s"', $id, $dc->table),
+                    \sprintf('A record with the ID "%s" does not exist in table "%s"', $id, $dc->table),
                     ['contao' => new ContaoContext(__METHOD__, TL_ERROR)]
                 );
 
@@ -116,14 +116,14 @@ class AjaxListener implements FrameworkAwareInterface
         }
 
         // Call the load_callback
-        if (is_array($GLOBALS['TL_DCA'][$dc->table]['fields'][$field]['load_callback'])) {
+        if (\is_array($GLOBALS['TL_DCA'][$dc->table]['fields'][$field]['load_callback'])) {
             /** @var System $systemAdapter */
             $systemAdapter = $this->framework->getAdapter(System::class);
 
             foreach ($GLOBALS['TL_DCA'][$dc->table]['fields'][$field]['load_callback'] as $callback) {
-                if (is_array($callback)) {
+                if (\is_array($callback)) {
                     $value = $systemAdapter->importStatic($callback[0])->{$callback[1]}($value, $dc);
-                } elseif (is_callable($callback)) {
+                } elseif (\is_callable($callback)) {
                     $value = $callback($value, $dc);
                 }
             }
@@ -137,7 +137,7 @@ class AjaxListener implements FrameworkAwareInterface
             /** @var StringUtil $stringUtilAdapter */
             $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
             $value = $stringUtilAdapter->trimsplit("\t", $value);
-            $value = serialize($value);
+            $value = \serialize($value);
         }
 
         /** @var NewsCategoriesPickerWidget $strClass */

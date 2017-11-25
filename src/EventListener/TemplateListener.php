@@ -84,20 +84,20 @@ class TemplateListener implements FrameworkAwareInterface
             $list[$category->id] = $category->getTitle();
 
             // Add the category CSS classes to news class
-            $cssClasses = array_merge($cssClasses, trimsplit(' ', $category->getCssClass()));
+            $cssClasses = \array_merge($cssClasses, trimsplit(' ', $category->getCssClass()));
         }
 
         // Sort the categories data alphabetically
-        uasort($data, function ($a, $b) {
-            return strnatcasecmp($a['name'], $b['name']);
+        \uasort($data, function ($a, $b) {
+            return \strnatcasecmp($a['name'], $b['name']);
         });
 
         // Sort the category list alphabetically
-        asort($list);
+        \asort($list);
 
         $template->categories = $data;
         $template->categoriesList = $list;
-        $template->class = implode(' ', array_unique($cssClasses));
+        $template->class = \implode(' ', \array_unique($cssClasses));
     }
 
     /**

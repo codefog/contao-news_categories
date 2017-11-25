@@ -59,7 +59,7 @@ class NewsCategoriesManager implements FrameworkAwareInterface
      */
     public function getImage(NewsCategoryModel $category)
     {
-        if (null === ($image = $category->getImage()) || !is_file(TL_ROOT.'/'.$image->path)) {
+        if (null === ($image = $category->getImage()) || !\is_file(TL_ROOT.'/'.$image->path)) {
             return null;
         }
 
@@ -132,15 +132,15 @@ class NewsCategoriesManager implements FrameworkAwareInterface
     {
         static $ids;
 
-        if (!is_array($ids)) {
+        if (!\is_array($ids)) {
             /** @var Database $db */
             $db = $this->framework->createInstance(Database::class);
 
             $ids = $db->getParentRecords($category->id, $category->getTable());
-            $ids = array_map('intval', array_unique($ids));
+            $ids = \array_map('intval', \array_unique($ids));
 
             // Remove the current category
-            unset($ids[array_search($category->id, $ids, true)]);
+            unset($ids[\array_search($category->id, $ids, true)]);
         }
 
         return $ids;

@@ -21,6 +21,6 @@ class MultilingualHelper
      */
     public static function isActive()
     {
-        return array_key_exists('Terminal42DcMultilingualBundle', System::getContainer()->getParameter('kernel.bundles'));
+        return \array_key_exists('Terminal42DcMultilingualBundle', System::getContainer()->getParameter('kernel.bundles'));
     }
 }

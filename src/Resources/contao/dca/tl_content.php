@@ -15,7 +15,7 @@
  * Replace the feed generation callback
  */
 if ('news' === \Contao\Input::get('do')
-    && false !== ($index = array_search(['tl_content_news', 'generateFeed'], $GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'], true))
+    && false !== ($index = \array_search(['tl_content_news', 'generateFeed'], $GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'], true))
 ) {
     $GLOBALS['TL_DCA']['tl_content']['config']['onload_callback'][$index] = ['codefog_news_categories.listener.data_container.feed', 'onLoadCallback'];
 }

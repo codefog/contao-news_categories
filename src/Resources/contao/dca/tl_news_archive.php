@@ -16,7 +16,7 @@ $GLOBALS['TL_DCA']['tl_news_archive']['config']['onload_callback'][] = [
 /*
  * Replace the feed generation callback
  */
-if (false !== ($index = array_search(['tl_news_archive', 'generateFeed'], $GLOBALS['TL_DCA']['tl_news_archive']['config']['onload_callback'], true))) {
+if (false !== ($index = \array_search(['tl_news_archive', 'generateFeed'], $GLOBALS['TL_DCA']['tl_news_archive']['config']['onload_callback'], true))) {
     $GLOBALS['TL_DCA']['tl_news_archive']['config']['onload_callback'][$index] = ['codefog_news_categories.listener.data_container.feed', 'onLoadCallback'];
 }
 
