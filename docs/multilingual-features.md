@@ -28,7 +28,7 @@ at the top of the form:
 If you have the website in other language than English or have multiple languages on your installation, you can set 
 the custom category URL parameter per each website root:
 
-![](images/category-page-settings.png)
+![](images/page-settings.png)
 
 Take a look at the example table below:
 
