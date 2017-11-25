@@ -57,7 +57,7 @@ class NewsListener
             return;
         }
 
-        $GLOBALS['TL_DCA'][$dc->table]['fields']['categories']['rootNodes'] = $categories;
+        $GLOBALS['TL_DCA'][$dc->table]['fields']['categories']['eval']['rootNodes'] = $categories;
     }
 
     /**

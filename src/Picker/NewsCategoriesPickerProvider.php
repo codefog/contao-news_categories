@@ -39,6 +39,10 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
             $attributes['value'] = \array_map('intval', \explode(',', $config->getValue()));
         }
 
+        if (is_array($rootNodes = $config->getExtra('rootNodes'))) {
+            $attributes['rootNodes'] = $rootNodes;
+        }
+
         return $attributes;
     }
 
