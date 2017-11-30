@@ -1,8 +1,8 @@
 # News Categories bundle for Contao CMS
 
-![](https://img.shields.io/packagist/v/codefog/contao-news_categories.svg)
-![](https://img.shields.io/packagist/l/codefog/contao-news_categories.svg)
-![](https://img.shields.io/packagist/dt/codefog/contao-news_categories.svg)
+[![](https://img.shields.io/packagist/v/codefog/contao-news_categories.svg)](https://packagist.org/packages/codefog/contao-news_categories)
+[![](https://img.shields.io/packagist/l/codefog/contao-news_categories.svg)](https://github.com/codefog/contao-news_categories/blob/master/LICENSE.txt)
+[![](https://img.shields.io/packagist/dt/codefog/contao-news_categories.svg)](https://packagist.org/packages/codefog/contao-news_categories)
 
 News Categories is a bundle for the [Contao CMS](https://contao.org).
 
