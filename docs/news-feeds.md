@@ -1,4 +1,4 @@
-# News feeds – News Categories Bundle
+# News feeds – News Categories bundle
 
 1. [Installation](installation.md)
 2. [Configuration](configuration.md)

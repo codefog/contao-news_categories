@@ -1,4 +1,4 @@
-# Configuration – News Categories Bundle
+# Configuration – News Categories bundle
 
 1. [Installation](installation.md)
 2. [**Configuration**](configuration.md)

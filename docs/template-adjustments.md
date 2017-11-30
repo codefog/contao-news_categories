@@ -1,4 +1,4 @@
-# Template adjustments – News Categories Bundle
+# Template adjustments – News Categories bundle
 
 1. [Installation](installation.md)
 2. [Configuration](configuration.md)

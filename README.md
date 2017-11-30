@@ -1,10 +1,10 @@
-# News Categories Bundle for Contao CMS
+# News Categories bundle for Contao CMS
 
 ![](https://img.shields.io/packagist/v/codefog/contao-news_categories.svg)
 ![](https://img.shields.io/packagist/l/codefog/contao-news_categories.svg)
 ![](https://img.shields.io/packagist/dt/codefog/contao-news_categories.svg)
 
-News Categories is a Bundle for the [Contao CMS](https://contao.org).
+News Categories is a bundle for the [Contao CMS](https://contao.org).
 
 Extend the Contao news module with categories which allows for better news organization in the frontend and backend.
 Every category has its own title, alias, front end title, description and other useful features. Additionally, each 

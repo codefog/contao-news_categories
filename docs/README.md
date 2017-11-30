@@ -1,4 +1,4 @@
-# News Categories Bundle – Documentation
+# News Categories bundle – Documentation
 
 1. [Installation](installation.md)
 2. [Configuration](configuration.md)
