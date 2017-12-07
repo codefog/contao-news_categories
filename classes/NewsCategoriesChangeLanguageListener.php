@@ -35,6 +35,10 @@ class NewsCategoriesChangeLanguageListener
         $parameters = $event->getUrlParameterBag();
         $attributes = $parameters->getUrlAttributes();
 
+        if (!isset($attributes[$currentParam])) {
+            return;
+        }
+
         $attributes[$newParam] = $attributes[$currentParam];
         unset($attributes[$currentParam]);
 
