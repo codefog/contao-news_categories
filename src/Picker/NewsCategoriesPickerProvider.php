@@ -1,7 +1,7 @@
 <?php
 
 /*
- * News Categories Bundle for Contao Open Source CMS.
+ * News Categories bundle for Contao Open Source CMS.
  *
  * @copyright  Copyright (c) 2017, Codefog
  * @author     Codefog <https://codefog.pl>
@@ -39,7 +39,7 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
             $attributes['value'] = \array_map('intval', \explode(',', $config->getValue()));
         }
 
-        if (is_array($rootNodes = $config->getExtra('rootNodes'))) {
+        if (\is_array($rootNodes = $config->getExtra('rootNodes'))) {
             $attributes['rootNodes'] = $rootNodes;
         }
 
