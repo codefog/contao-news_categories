@@ -1,2 +1,4 @@
-# PHPStorm
-.idea
+/.php_cs.cache
+/composer.lock
+/node_modules
+/vendor
