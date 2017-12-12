@@ -148,7 +148,7 @@ class NewsCategoriesPickerWidget extends Widget
             $ids = array_map('intval', array_filter(explode(',', $input)));
         }
 
-        if (count(array_diff($ids, array_merge($this->rootNodes, Database::getInstance()->getChildRecords($this->rootNodes, 'tl_news_categories')))) > 0) {
+        if (count(array_diff($ids, array_merge($this->rootNodes, Database::getInstance()->getChildRecords($this->rootNodes, 'tl_news_category')))) > 0) {
             $this->addError($GLOBALS['TL_LANG']['ERR']['invalidPages']);
         }
     }
