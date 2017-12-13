@@ -16,6 +16,7 @@ use Contao\BackendTemplate;
 use Contao\Controller;
 use Contao\Database;
 use Contao\FrontendTemplate;
+use Contao\Model\Collection;
 use Contao\ModuleNews;
 use Contao\NewsModel;
 use Contao\PageModel;
@@ -91,19 +92,7 @@ class NewsCategoriesModule extends ModuleNews
      */
     protected function compile()
     {
-        $customCategories = $this->news_customCategories ? StringUtil::deserialize($this->news_categories, true) : [];
-
-        // Get all categories whether they have news or not
-        if ($this->news_showEmptyCategories) {
-            if (\count($customCategories) > 0) {
-                $categories = NewsCategoryModel::findPublishedByIds($customCategories);
-            } else {
-                $categories = NewsCategoryModel::findPublished();
-            }
-        } else {
-            // Get the categories that do have news assigned
-            $categories = NewsCategoryModel::findPublishedByArchives($this->news_archives, $customCategories);
-        }
+        $categories = $this->getCategories();
 
         // Return if no categories are found
         if (null === $categories) {
@@ -128,6 +117,35 @@ class NewsCategoriesModule extends ModuleNews
         }
 
         $this->Template->categories = $this->renderNewsCategories((int) $this->news_categoriesRoot, \array_unique($ids));
+    }
+
+    /**
+     * Get the categories
+     *
+     * @return Collection|null
+     */
+    protected function getCategories()
+    {
+        $customCategories = $this->news_customCategories ? StringUtil::deserialize($this->news_categories, true) : [];
+
+        // Get the subcategories of custom categories
+        if (\count($customCategories) > 0) {
+            $customCategories = NewsCategoryModel::getAllSubcategoriesIds($customCategories);
+        }
+
+        // Get all categories whether they have news or not
+        if ($this->news_showEmptyCategories) {
+            if (\count($customCategories) > 0) {
+                $categories = NewsCategoryModel::findPublishedByIds($customCategories);
+            } else {
+                $categories = NewsCategoryModel::findPublished();
+            }
+        } else {
+            // Get the categories that do have news assigned
+            $categories = NewsCategoryModel::findPublishedByArchives($this->news_archives, $customCategories);
+        }
+
+        return $categories;
     }
 
     /**
