@@ -67,7 +67,7 @@ class NewsCategoryModel extends ParentModel
      */
     public function getImage()
     {
-        return FilesModel::findByPk($this->image);
+        return $this->image ? FilesModel::findByPk($this->image) : null;
     }
 
     /**
