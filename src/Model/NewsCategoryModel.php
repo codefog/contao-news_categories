@@ -67,7 +67,7 @@ class NewsCategoryModel extends ParentModel
      */
     public function getImage()
     {
-        return FilesModel::findByPk($this->image);
+        return $this->image ? FilesModel::findByPk($this->image) : null;
     }
 
     /**
@@ -276,13 +276,13 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
     /**
      * Get all subcategory IDs.
      *
-     * @param int $category
+     * @param array|int $category
      *
      * @return array
      */
     public static function getAllSubcategoriesIds($category)
     {
-        $ids = Database::getInstance()->getChildRecords($category, static::$strTable, false, [$category], (!BE_USER_LOGGED_IN ? 'published=1' : ''));
+        $ids = Database::getInstance()->getChildRecords($category, static::$strTable, false, (array) $category, (!BE_USER_LOGGED_IN ? 'published=1' : ''));
         $ids = \array_map('intval', $ids);
 
         return $ids;

@@ -117,15 +117,23 @@ class NewsCriteria
      * Set the default categories.
      *
      * @param array $defaultCategories
+     * @param bool  $includeSubcategories
      *
      * @throws NoNewsException
      */
-    public function setDefaultCategories(array $defaultCategories)
+    public function setDefaultCategories(array $defaultCategories, $includeSubcategories = true)
     {
         $defaultCategories = $this->parseIds($defaultCategories);
 
         if (0 === \count($defaultCategories)) {
             throw new NoNewsException();
+        }
+
+        // Include the subcategories
+        if ($includeSubcategories) {
+            /** @var NewsCategoryModel $newsCategoryModel */
+            $newsCategoryModel = $this->framework->getAdapter(NewsCategoryModel::class);
+            $defaultCategories = $newsCategoryModel->getAllSubcategoriesIds($defaultCategories);
         }
 
         /** @var Model $model */
