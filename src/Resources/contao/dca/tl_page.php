@@ -21,5 +21,5 @@ $GLOBALS['TL_DCA']['tl_page']['fields']['newsCategories_param'] = [
     'exclude' => true,
     'inputType' => 'text',
     'eval' => ['maxlength' => 64, 'rgxp' => 'alias', 'tl_class' => 'w50'],
-    'sql' => ['type' => 'string', 'length' => 64],
+    'sql' => ['type' => 'string', 'length' => 64, 'default' => ''],
 ];

@@ -43,5 +43,5 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['news_module'] = [
     'options_callback' => ['codefog_news_categories.listener.data_container.content', 'onGetNewsModules'],
     'eval' => ['mandatory' => true, 'chosen' => true, 'submitOnChange' => true],
     'wizard' => [['tl_content', 'editModule']],
-    'sql' => ['type' => 'integer', 'unsigned' => true],
+    'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
 ];

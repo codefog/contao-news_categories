@@ -26,7 +26,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['newscategories'] = [
     'options' => ['manage'],
     'reference' => &$GLOBALS['TL_LANG']['tl_user']['newscategoriesRef'],
     'eval' => ['multiple' => true, 'tl_class' => 'clr'],
-    'sql' => ['type' => 'string', 'length' => 32],
+    'sql' => ['type' => 'string', 'length' => 32, 'default' => ''],
 ];
 
 $GLOBALS['TL_DCA']['tl_user']['fields']['newscategories_roots'] = [
@@ -35,7 +35,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['newscategories_roots'] = [
     'inputType' => 'newsCategoriesPicker',
     'foreignKey' => 'tl_news_category.title',
     'eval' => ['multiple' => true, 'fieldType' => 'checkbox'],
-    'sql' => ['type' => 'blob'],
+    'sql' => ['type' => 'blob', 'notnull' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_user']['fields']['newscategories_default'] = [
@@ -44,5 +44,5 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['newscategories_default'] = [
     'inputType' => 'newsCategoriesPicker',
     'foreignKey' => 'tl_news_category.title',
     'eval' => ['multiple' => true, 'fieldType' => 'checkbox'],
-    'sql' => ['type' => 'blob'],
+    'sql' => ['type' => 'blob', 'notnull' => false],
 ];
