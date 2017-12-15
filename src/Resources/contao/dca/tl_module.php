@@ -52,7 +52,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_categories'] = [
     'inputType' => 'newsCategoriesPicker',
     'foreignKey' => 'tl_news_category.title',
     'eval' => ['multiple' => true, 'fieldType' => 'checkbox'],
-    'sql' => ['type' => 'blob'],
+    'sql' => ['type' => 'blob', 'notnull' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_customCategories'] = [
@@ -60,7 +60,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_customCategories'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['submitOnChange' => true, 'tl_class' => 'clr'],
-    'sql' => ['type' => 'boolean'],
+    'sql' => ['type' => 'boolean', 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterCategories'] = [
@@ -68,7 +68,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterCategories'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'w50'],
-    'sql' => ['type' => 'boolean'],
+    'sql' => ['type' => 'boolean', 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_relatedCategories'] = [
@@ -76,7 +76,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_relatedCategories'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'w50'],
-    'sql' => ['type' => 'boolean'],
+    'sql' => ['type' => 'boolean', 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_includeSubcategories'] = [
@@ -84,7 +84,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_includeSubcategories'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'clr'],
-    'sql' => ['type' => 'boolean'],
+    'sql' => ['type' => 'boolean', 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterDefault'] = [
@@ -93,7 +93,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterDefault'] = [
     'inputType' => 'newsCategoriesPicker',
     'foreignKey' => 'tl_news_category.title',
     'eval' => ['multiple' => true, 'fieldType' => 'checkbox', 'tl_class' => 'clr'],
-    'sql' => ['type' => 'blob'],
+    'sql' => ['type' => 'blob', 'notnull' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterPreserve'] = [
@@ -101,7 +101,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterPreserve'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'clr'],
-    'sql' => ['type' => 'boolean'],
+    'sql' => ['type' => 'boolean', 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_resetCategories'] = [
@@ -109,7 +109,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_resetCategories'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'w50'],
-    'sql' => ['type' => 'boolean'],
+    'sql' => ['type' => 'boolean', 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_showEmptyCategories'] = [
@@ -117,7 +117,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_showEmptyCategories'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'w50'],
-    'sql' => ['type' => 'boolean'],
+    'sql' => ['type' => 'boolean', 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_forceCategoryUrl'] = [
@@ -125,7 +125,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_forceCategoryUrl'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'clr'],
-    'sql' => ['type' => 'boolean'],
+    'sql' => ['type' => 'boolean', 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoriesRoot'] = [
@@ -134,7 +134,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoriesRoot'] = [
     'inputType' => 'newsCategoriesPicker',
     'foreignKey' => 'tl_news_category.title',
     'eval' => ['fieldType' => 'radio', 'tl_class' => 'clr'],
-    'sql' => ['type' => 'integer', 'unsigned' => true],
+    'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryFilterPage'] = [
@@ -142,7 +142,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryFilterPage'] = [
     'exclude' => true,
     'inputType' => 'pageTree',
     'eval' => ['fieldType' => 'radio', 'tl_class' => 'clr'],
-    'sql' => ['type' => 'integer', 'unsigned' => true],
+    'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryImgSize'] = $GLOBALS['TL_DCA']['tl_module']['fields']['imgSize'];
