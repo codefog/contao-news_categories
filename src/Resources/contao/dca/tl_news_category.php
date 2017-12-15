@@ -187,7 +187,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
             'inputType' => 'textarea',
             'eval' => ['rte' => 'tinyMCE', 'helpwizard' => true, 'tl_class' => 'clr'],
             'explanation' => 'insertTags',
-            'sql' => ['type' => 'text'],
+            'sql' => ['type' => 'text', 'notnull' => false],
         ],
         'image' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['image'],
@@ -200,7 +200,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
                 'extensions' => \Contao\Config::get('validImageTypes'),
                 'tl_class' => 'clr',
             ],
-            'sql' => ['type' => 'binary', 'length' => 16],
+            'sql' => ['type' => 'binary', 'length' => 16, 'notnull' => false],
         ],
         'hideInList' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['hideInList'],
@@ -208,7 +208,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
             'filter' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50'],
-            'sql' => ['type' => 'boolean'],
+            'sql' => ['type' => 'boolean', 'default' => 0],
         ],
         'hideInReader' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['hideInReader'],
@@ -216,7 +216,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
             'filter' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50'],
-            'sql' => ['type' => 'boolean'],
+            'sql' => ['type' => 'boolean', 'default' => 0],
         ],
         'excludeInRelated' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['excludeInRelated'],
@@ -224,21 +224,21 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
             'filter' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50'],
-            'sql' => ['type' => 'boolean'],
+            'sql' => ['type' => 'boolean', 'default' => 0],
         ],
         'jumpTo' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['jumpTo'],
             'exclude' => true,
             'inputType' => 'pageTree',
             'eval' => ['fieldType' => 'radio'],
-            'sql' => ['type' => 'integer', 'unsigned' => true],
+            'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
         ],
         'published' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['published'],
             'exclude' => true,
             'filter' => true,
             'inputType' => 'checkbox',
-            'sql' => ['type' => 'boolean'],
+            'sql' => ['type' => 'boolean', 'default' => 0],
         ],
     ],
 ];

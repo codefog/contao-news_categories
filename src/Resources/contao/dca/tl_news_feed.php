@@ -31,7 +31,7 @@ $GLOBALS['TL_DCA']['tl_news_feed']['fields']['categories'] = [
     'inputType' => 'newsCategoriesPicker',
     'foreignKey' => 'tl_news_category.title',
     'eval' => ['multiple' => true, 'fieldType' => 'checkbox'],
-    'sql' => ['type' => 'blob'],
+    'sql' => ['type' => 'blob', 'notnull' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_news_feed']['fields']['categories_show'] = [

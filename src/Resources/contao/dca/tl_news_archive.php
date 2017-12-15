@@ -53,7 +53,7 @@ $GLOBALS['TL_DCA']['tl_news_archive']['fields']['limitCategories'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['submitOnChange' => true],
-    'sql' => ['type' => 'boolean'],
+    'sql' => ['type' => 'boolean', 'default' => 0],
 ];
 
 $GLOBALS['TL_DCA']['tl_news_archive']['fields']['categories'] = [
@@ -63,5 +63,5 @@ $GLOBALS['TL_DCA']['tl_news_archive']['fields']['categories'] = [
     'inputType' => 'newsCategoriesPicker',
     'foreignKey' => 'tl_news_category.title',
     'eval' => ['mandatory' => true, 'multiple' => true, 'fieldType' => 'checkbox'],
-    'sql' => ['type' => 'blob'],
+    'sql' => ['type' => 'blob', 'notnull' => false],
 ];
