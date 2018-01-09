@@ -97,7 +97,10 @@ class TemplateListener implements FrameworkAwareInterface
 
         $template->categories = $data;
         $template->categoriesList = $list;
-        $template->class = \implode(' ', \array_unique($cssClasses));
+
+        if (count($cssClasses = \array_unique($cssClasses)) > 0) {
+            $template->class = ' ' . \implode(' ', $cssClasses);
+        }
     }
 
     /**
