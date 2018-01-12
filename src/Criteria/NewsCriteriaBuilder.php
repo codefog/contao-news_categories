@@ -62,7 +62,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
         $criteria = new NewsCriteria($this->framework);
 
         try {
-            $criteria->setBasicCriteria($archives);
+            $criteria->setBasicCriteria($archives, $module->news_order);
 
             // Set the time frame
             $criteria->setTimeFrame($begin, $end);
@@ -90,7 +90,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
         $criteria = new NewsCriteria($this->framework);
 
         try {
-            $criteria->setBasicCriteria($archives);
+            $criteria->setBasicCriteria($archives, $module->news_order);
 
             // Set the featured filter
             if (null !== $featured) {
@@ -124,7 +124,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
         $criteria = new NewsCriteria($this->framework);
 
         try {
-            $criteria->setBasicCriteria($archives);
+            $criteria->setBasicCriteria($archives, $module->news_order);
 
             // Set the regular list criteria
             $this->setRegularListCriteria($criteria, $module);
