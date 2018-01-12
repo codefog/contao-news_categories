@@ -14,7 +14,6 @@ use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Date;
-use Contao\Module;
 use Contao\NewsModel;
 use Haste\Model\Model;
 
@@ -53,12 +52,12 @@ class NewsCriteria
     /**
      * Set the basic criteria.
      *
-     * @param array $archives
-     * @param Module $module
+     * @param array  $archives
+     * @param string $sorting
      *
      * @throws NoNewsException
      */
-    public function setBasicCriteria(array $archives, Module $module = null)
+    public function setBasicCriteria(array $archives, $sorting = null)
     {
         $archives = $this->parseIds($archives);
 
@@ -70,28 +69,23 @@ class NewsCriteria
 
         $this->columns[] = "$t.pid IN(".\implode(',', \array_map('intval', $archives)).')';
 
-        // Determine sorting
-        $this->options['order'] = "$t.date DESC";
-
-        if (null !== $module) {
-            switch ($module->news_order) {
-
-                case 'order_headline_asc':
-                    $this->options['order'] = "$t.headline";
-                    break;
-
-                case 'order_headline_desc':
-                    $this->options['order'] = "$t.headline DESC";
-                    break;
-
-                case 'order_random':
-                    $this->options['order'] = "RAND()";
-                    break;
-
-                case 'order_date_asc':
-                    $this->options['order'] = "$t.date";
-                    break;
-            }
+        // Set the sorting
+        switch ($sorting) {
+            case 'order_headline_asc':
+                $this->options['order'] = "$t.headline";
+                break;
+            case 'order_headline_desc':
+                $this->options['order'] = "$t.headline DESC";
+                break;
+            case 'order_random':
+                $this->options['order'] = 'RAND()';
+                break;
+            case 'order_date_asc':
+                $this->options['order'] = "$t.date";
+                break;
+            default:
+                $this->options['order'] = "$t.date DESC";
+                break;
         }
 
         // Never return unpublished elements in the back end, so they don't end up in the RSS feed
