@@ -52,11 +52,12 @@ class NewsCriteria
     /**
      * Set the basic criteria.
      *
-     * @param array $archives
+     * @param array  $archives
+     * @param string $sorting
      *
      * @throws NoNewsException
      */
-    public function setBasicCriteria(array $archives)
+    public function setBasicCriteria(array $archives, $sorting = null)
     {
         $archives = $this->parseIds($archives);
 
@@ -67,7 +68,25 @@ class NewsCriteria
         $t = $this->getNewsModelAdapter()->getTable();
 
         $this->columns[] = "$t.pid IN(".\implode(',', \array_map('intval', $archives)).')';
-        $this->options['order'] = "$t.date DESC";
+
+        // Set the sorting
+        switch ($sorting) {
+            case 'order_headline_asc':
+                $this->options['order'] = "$t.headline";
+                break;
+            case 'order_headline_desc':
+                $this->options['order'] = "$t.headline DESC";
+                break;
+            case 'order_random':
+                $this->options['order'] = 'RAND()';
+                break;
+            case 'order_date_asc':
+                $this->options['order'] = "$t.date";
+                break;
+            default:
+                $this->options['order'] = "$t.date DESC";
+                break;
+        }
 
         // Never return unpublished elements in the back end, so they don't end up in the RSS feed
         if (!BE_USER_LOGGED_IN || TL_MODE === 'BE') {
