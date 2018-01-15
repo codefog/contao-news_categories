@@ -27,6 +27,9 @@ class NewsMenuModule extends ModuleNewsMenu
     {
         $this->strUrl = $this->generateCategoryUrl();
 
+        // Support Contao 4.5 news module
+        $this->news_order = ($this->news_order === 'order_date_asc') ? 'ascending' : $this->news_order;
+
         parent::compile();
     }
 
