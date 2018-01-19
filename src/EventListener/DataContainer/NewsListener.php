@@ -11,13 +11,18 @@
 namespace Codefog\NewsCategoriesBundle\EventListener\DataContainer;
 
 use Codefog\NewsCategoriesBundle\PermissionChecker;
+use Contao\CoreBundle\Framework\FrameworkAwareInterface;
+use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\DataContainer;
+use Contao\Input;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Haste\Model\Relations;
 
-class NewsListener
+class NewsListener implements FrameworkAwareInterface
 {
+    use FrameworkAwareTrait;
+
     /**
      * @var Connection
      */
@@ -51,7 +56,15 @@ class NewsListener
             return;
         }
 
-        $categories = $this->db->fetchColumn('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=(SELECT pid FROM tl_news WHERE id=?)', [$dc->id]);
+        /** @var Input $input */
+        $input = $this->framework->getAdapter(Input::class);
+
+        // Handle the edit all modes differently
+        if ($input->get('act') === 'editAll' || $input->get('act') === 'overrideAll') {
+            $categories = $this->db->fetchColumn('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=?', [$dc->id]);
+        } else {
+            $categories = $this->db->fetchColumn('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=(SELECT pid FROM tl_news WHERE id=?)', [$dc->id]);
+        }
 
         if (!$categories || 0 === \count($categories = StringUtil::deserialize($categories, true))) {
             return;
