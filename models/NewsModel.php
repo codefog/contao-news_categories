@@ -96,7 +96,9 @@ class NewsModel extends \Contao\NewsModel
             $objCategory = $strClass::findPublishedByIdOrAlias(\Input::get($strParam));
 
             if ($objCategory === null) {
-                return ["$t.id=0"];
+                $handler = new $GLOBALS['TL_PTY']['error_404']();
+                $handler->generate($GLOBALS['objPage']->id);
+                exit;
             }
 
             $arrCategories = static::getCategoriesCache();
