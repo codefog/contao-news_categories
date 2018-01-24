@@ -10,6 +10,7 @@
 
 namespace Codefog\NewsCategoriesBundle\Criteria;
 
+use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
@@ -141,6 +142,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
      * @param NewsCriteria $criteria
      * @param Module       $module
      *
+     * @throws CategoryNotFoundException
      * @throws NoNewsException
      */
     private function setRegularListCriteria(NewsCriteria $criteria, Module $module)
@@ -162,7 +164,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
 
                 // Return null if the category does not exist
                 if (null === ($category = $model->findPublishedByIdOrAlias($alias))) {
-                    throw new NoNewsException();
+                    throw new CategoryNotFoundException(sprintf('News category "%s" was not found', $alias));
                 }
 
                 $criteria->setCategory($category->id, (bool) $module->news_filterPreserve, (bool) $module->news_includeSubcategories);

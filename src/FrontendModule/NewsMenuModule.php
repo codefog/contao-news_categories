@@ -10,6 +10,7 @@
 
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
+use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\Database;
@@ -238,12 +239,18 @@ class NewsMenuModule extends ModuleNewsMenu
      * Get the filtered news IDs
      *
      * @return array
+     *
+     * @throws PageNotFoundException
      */
     protected function getFilteredNewsIds()
     {
-        $criteria = System::getContainer()
-            ->get('codefog_news_categories.news_criteria_builder')
-            ->getCriteriaForMenuModule($this->news_archives, $this);
+        try {
+            $criteria = System::getContainer()
+                ->get('codefog_news_categories.news_criteria_builder')
+                ->getCriteriaForMenuModule($this->news_archives, $this);
+        } catch (CategoryNotFoundException $e) {
+            throw new PageNotFoundException($e->getMessage());
+        }
 
         if ($criteria === null) {
             return [];
