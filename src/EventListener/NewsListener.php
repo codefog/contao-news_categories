@@ -12,6 +12,8 @@ namespace Codefog\NewsCategoriesBundle\EventListener;
 
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteriaBuilder;
+use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
+use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\Model\Collection;
@@ -89,9 +91,17 @@ class NewsListener implements FrameworkAwareInterface
      * @param ModuleNewsList $module
      *
      * @return NewsCriteria|null
+     *
+     * @throws PageNotFoundException
      */
     private function getCriteria(array $archives, $featured, ModuleNewsList $module)
     {
-        return $this->searchBuilder->getCriteriaForListModule($archives, $featured, $module);
+        try {
+            $criteria = $this->searchBuilder->getCriteriaForListModule($archives, $featured, $module);
+        } catch (CategoryNotFoundException $e) {
+            throw new PageNotFoundException($e->getMessage());
+        }
+
+        return $criteria;
     }
 }

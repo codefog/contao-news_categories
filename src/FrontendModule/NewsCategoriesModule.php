@@ -178,7 +178,7 @@ class NewsCategoriesModule extends ModuleNews
      */
     protected function getCurrentNewsCategories()
     {
-        if (!($alias = Input::getAutoItem('items'))
+        if (!($alias = Input::getAutoItem('items', false, true))
             || null === ($news = NewsModel::findPublishedByParentAndIdOrAlias($alias, $this->news_archives))
         ) {
             return [];
