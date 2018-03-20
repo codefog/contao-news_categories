@@ -254,8 +254,8 @@ if (\Codefog\NewsCategoriesBundle\MultilingualHelper::isActive()) {
     $GLOBALS['TL_DCA']['tl_news_category']['config']['sql']['keys']['language,lid'] = 'index';
 
     // Fields
-    $GLOBALS['TL_DCA']['tl_news_category']['fields']['language']['sql'] = ['type' => 'string', 'length' => 5];
-    $GLOBALS['TL_DCA']['tl_news_category']['fields']['lid']['sql'] = ['type' => 'integer', 'unsigned' => true];
+    $GLOBALS['TL_DCA']['tl_news_category']['fields']['language']['sql'] = ['type' => 'string', 'length' => 5, 'default' => ''];
+    $GLOBALS['TL_DCA']['tl_news_category']['fields']['lid']['sql'] = ['type' => 'integer', 'unsigned' => true, 'default' => 0];
     $GLOBALS['TL_DCA']['tl_news_category']['fields']['title']['eval']['translatableFor'] = '*';
     $GLOBALS['TL_DCA']['tl_news_category']['fields']['frontendTitle']['eval']['translatableFor'] = '*';
     $GLOBALS['TL_DCA']['tl_news_category']['fields']['description']['eval']['translatableFor'] = '*';
