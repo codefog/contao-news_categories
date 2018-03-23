@@ -68,12 +68,24 @@ class NewsCategoryListener implements FrameworkAwareInterface
             throw new AccessDeniedException('User has no permissions to manage news categories');
         }
 
+        /** @var Input $input */
+        $input = $this->framework->getAdapter(Input::class);
+
+        // Get the news categories root set previously in session (see #137)
+        if (isset($_SESSION['NEWS_CATEGORIES_ROOT']) && $input->get('picker')) {
+            $GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'] = $_SESSION['NEWS_CATEGORIES_ROOT'];
+            unset($_SESSION['NEWS_CATEGORIES_ROOT']);
+        } else {
+            unset($GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root']);
+        }
+
         // Limit the allowed roots for the user
         if (null !== ($roots = $this->permissionChecker->getUserAllowedRoots())) {
-            $GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'] = $roots;
-
-            /** @var Input $input */
-            $input = $this->framework->getAdapter(Input::class);
+            if (isset($GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root']) && is_array($GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'])) {
+                $GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'] = array_intersect($GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'], $roots);
+            } else {
+                $GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'] = $roots;
+            }
 
             // Check current action
             switch ($action = $input->get('act')) {
