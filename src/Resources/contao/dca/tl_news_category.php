@@ -131,13 +131,13 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
             'sql' => ['type' => 'integer', 'unsigned' => true, 'autoincrement' => true],
         ],
         'pid' => [
-            'sql' => ['type' => 'integer', 'unsigned' => true],
+            'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
         ],
         'sorting' => [
-            'sql' => ['type' => 'integer', 'unsigned' => true],
+            'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
         ],
         'tstamp' => [
-            'sql' => ['type' => 'integer', 'unsigned' => true],
+            'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
         ],
         'title' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['title'],
