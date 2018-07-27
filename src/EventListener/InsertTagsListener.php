@@ -15,6 +15,7 @@ use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\Input;
+use Contao\StringUtil;
 
 class InsertTagsListener implements FrameworkAwareInterface
 {
@@ -55,7 +56,14 @@ class InsertTagsListener implements FrameworkAwareInterface
                 $model = $this->framework->getAdapter(NewsCategoryModel::class);
 
                 if (null !== ($category = $model->findPublishedByIdOrAlias($alias))) {
-                    return $category->{$chunks[1]};
+                    $value = $category->{$chunks[1]};
+
+                    // Convert the binary to UUID for images (#147)
+                    if ($chunks[1] === 'image' && $value) {
+                        return StringUtil::binToUuid($value);
+                    }
+
+                    return $value;
                 }
             }
         }
