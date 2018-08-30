@@ -144,13 +144,11 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
         if (MultilingualHelper::isActive()) {
             $aliasCondition = 't1.alias=? OR t2.alias=?';
             $values[] = $idOrAlias;
-            $values[] = $idOrAlias;
         } else {
             $aliasCondition = "$t.alias=?";
-            $values[] = $idOrAlias;
         }
 
-        $columns = ["($t.id=? OR $aliasCondition)"];
+        $columns = is_numeric($idOrAlias) ? ["$t.id=?"] : [$aliasCondition];
 
         if (!BE_USER_LOGGED_IN) {
             $columns[] = "$t.published=?";
