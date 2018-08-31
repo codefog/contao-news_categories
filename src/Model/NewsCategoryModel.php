@@ -144,7 +144,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
         // Determine the alias condition
         if (is_numeric($idOrAlias)) {
             $columns[] = "$t.id=?";
-            $values[] = $idOrAlias;
+            $values[] = (int) $idOrAlias;
         } else {
             if (MultilingualHelper::isActive()) {
                 $columns[] = '(t1.alias=? OR t2.alias=?)';
@@ -152,7 +152,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
                 $values[] = $idOrAlias;
             } else {
                 $columns[] = "$t.alias=?";
-                $values[] = (int) $idOrAlias;
+                $values[] = $idOrAlias;
             }
         }
 
