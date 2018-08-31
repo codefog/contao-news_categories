@@ -137,20 +137,24 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
      */
     public static function findPublishedByIdOrAlias($idOrAlias)
     {
-        $values = [$idOrAlias];
+        $values = [];
+        $columns = [];
         $t = static::getTableAlias();
 
         // Determine the alias condition
-        if (MultilingualHelper::isActive()) {
-            $aliasCondition = 't1.alias=? OR t2.alias=?';
-            $values[] = $idOrAlias;
-            $values[] = $idOrAlias;
+        if (is_numeric($idOrAlias)) {
+            $columns[] = "$t.id=?";
+            $values[] = (int) $idOrAlias;
         } else {
-            $aliasCondition = "$t.alias=?";
-            $values[] = $idOrAlias;
+            if (MultilingualHelper::isActive()) {
+                $columns[] = '(t1.alias=? OR t2.alias=?)';
+                $values[] = $idOrAlias;
+                $values[] = $idOrAlias;
+            } else {
+                $columns[] = "$t.alias=?";
+                $values[] = $idOrAlias;
+            }
         }
-
-        $columns = ["($t.id=? OR $aliasCondition)"];
 
         if (!BE_USER_LOGGED_IN) {
             $columns[] = "$t.published=?";
