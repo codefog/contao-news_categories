@@ -147,12 +147,12 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             $values[] = $idOrAlias;
         } else {
             if (MultilingualHelper::isActive()) {
-                $columns[] = 't1.alias=? OR t2.alias=?';
+                $columns[] = '(t1.alias=? OR t2.alias=?)';
                 $values[] = $idOrAlias;
                 $values[] = $idOrAlias;
             } else {
                 $columns[] = "$t.alias=?";
-                $values[] = $idOrAlias;
+                $values[] = (int) $idOrAlias;
             }
         }
 
