@@ -93,4 +93,46 @@ class NewsListener implements FrameworkAwareInterface
         // Reset back the field property
         $dc->field = null;
     }
+
+    /**
+     * On categories options callback
+     *
+     * @return array
+     */
+    public function onCategoriesOptionsCallback()
+    {
+        /** @var Input $input */
+        $input = $this->framework->getAdapter(Input::class);
+
+        // Do not generate the options for other views than listings
+        if ($input->get('act') && $input->get('act') !== 'select') {
+            return [];
+        }
+
+        return $this->generateOptionsRecursively();
+    }
+
+    /**
+     * Generate the options recursively
+     *
+     * @param int    $pid
+     * @param string $prefix
+     *
+     * @return array
+     */
+    private function generateOptionsRecursively($pid = 0, $prefix = '')
+    {
+        $options = [];
+        $records = $this->db->fetchAll('SELECT * FROM tl_news_category WHERE pid=? ORDER BY sorting', [$pid]);
+
+        foreach ($records as $record) {
+            $options[$record['id']] = $prefix . $record['title'];
+
+            foreach ($this->generateOptionsRecursively($record['id'], $record['title'] . ' / ') as $k => $v) {
+                $options[$k] = $v;
+            }
+        }
+
+        return $options;
+    }
 }
