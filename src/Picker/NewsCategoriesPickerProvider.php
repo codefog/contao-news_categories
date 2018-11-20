@@ -10,12 +10,26 @@
 
 namespace Codefog\NewsCategoriesBundle\Picker;
 
+use Codefog\NewsCategoriesBundle\PermissionChecker;
 use Contao\CoreBundle\Picker\AbstractPickerProvider;
 use Contao\CoreBundle\Picker\DcaPickerProviderInterface;
 use Contao\CoreBundle\Picker\PickerConfig;
 
 class NewsCategoriesPickerProvider extends AbstractPickerProvider implements DcaPickerProviderInterface
 {
+    /**
+     * @var PermissionChecker
+     */
+    private $permissionChecker;
+
+    /**
+     * @param PermissionChecker $permissionChecker
+     */
+    public function setPermissionChecker(PermissionChecker $permissionChecker)
+    {
+        $this->permissionChecker = $permissionChecker;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -82,7 +96,11 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
      */
     public function supportsContext($context)
     {
-        return 'newsCategories' === $context && $this->getUser()->hasAccess('manage', 'newscategories');
+        if ($this->permissionChecker === null) {
+            return false;
+        }
+
+        return 'newsCategories' === $context && ($this->permissionChecker->canUserManageCategories() || $this->permissionChecker->canUserAssignCategories());
     }
 
     /**
