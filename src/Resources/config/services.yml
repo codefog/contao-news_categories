@@ -18,6 +18,7 @@ services:
             - "@router"
         calls:
             - [setTokenStorage, ["@security.token_storage"]]
+            - [setPermissionChecker, ["@codefog_news_categories.permission_checker"]]
         tags:
             - { name: contao.picker_provider, priority: 132 }
 
