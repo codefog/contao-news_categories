@@ -35,7 +35,7 @@ class NewsArchiveListener
     public function onLoadCallback()
     {
         if (!$this->permissionChecker->canUserManageCategories()) {
-            unset($GLOBALS['TL_DCA']['tl_news_archive']['list']['global_operations']['limitCategories']);
+            unset($GLOBALS['TL_DCA']['tl_news_archive']['list']['global_operations']['categories']);
         }
     }
 }

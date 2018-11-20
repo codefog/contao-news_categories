@@ -35,6 +35,7 @@ $GLOBALS['TL_DCA']['tl_news']['fields']['categories'] = [
     'filter' => true,
     'inputType' => 'newsCategoriesPicker',
     'foreignKey' => 'tl_news_category.title',
+    'options_callback' => ['codefog_news_categories.listener.data_container.news', 'onCategoriesOptionsCallback'],
     'eval' => ['multiple' => true, 'fieldType' => 'checkbox'],
     'relation' => [
         'type' => 'haste-ManyToMany',

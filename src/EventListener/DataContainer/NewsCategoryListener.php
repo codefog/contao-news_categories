@@ -64,8 +64,24 @@ class NewsCategoryListener implements FrameworkAwareInterface
      */
     public function onLoadCallback(DataContainer $dc)
     {
-        if (!$this->permissionChecker->canUserManageCategories()) {
+        if (!$this->permissionChecker->canUserManageCategories() && !$this->permissionChecker->canUserAssignCategories()) {
             throw new AccessDeniedException('User has no permissions to manage news categories');
+        }
+
+        // Disable some features if user is not allowed to manage categories
+        if (!$this->permissionChecker->canUserManageCategories()) {
+            $GLOBALS['TL_DCA'][$dc->table]['config']['closed'] = true;
+            $GLOBALS['TL_DCA'][$dc->table]['config']['notEditable'] = true;
+            $GLOBALS['TL_DCA'][$dc->table]['config']['notDeletable'] = true;
+            $GLOBALS['TL_DCA'][$dc->table]['config']['notCopyable'] = true;
+            $GLOBALS['TL_DCA'][$dc->table]['config']['notSortable'] = true;
+
+            unset($GLOBALS['TL_DCA'][$dc->table]['list']['global_operations']['all']);
+
+            $GLOBALS['TL_DCA'][$dc->table]['list']['operations'] = array_intersect_key(
+                $GLOBALS['TL_DCA'][$dc->table]['list']['operations'],
+                array_flip(['show'])
+            );
         }
 
         /** @var Input $input */
