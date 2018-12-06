@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] - 2018-12-06
+
+### Changed
+- contao 4 branch only
+- replaced dependency `heimrichhannot/contao-fieldpalette` with `heimrichhannot/contao-fieldpalette-bundle`
+
 ## [1.0.0] - 2017-10-20
 
 Fork from `https://github.com/codefog/contao-news_categories` 2.8.6
