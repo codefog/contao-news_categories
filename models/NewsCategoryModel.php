@@ -15,7 +15,7 @@
 
 namespace NewsCategories;
 
-use HeimrichHannot\FieldPalette\FieldPaletteModel;
+use HeimrichHannot\FieldpaletteBundle\Model\FieldPaletteModel;
 
 /**
  * Reads and writes news categories

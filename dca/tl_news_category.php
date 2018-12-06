@@ -477,7 +477,7 @@ class tl_news_category extends Backend
 
         $options = $archives->fetchEach('title');
 
-        $existing = \HeimrichHannot\FieldPalette\FieldPaletteModel::findByPidAndTableAndField($dc->activeRecord->pid, 'tl_news_category', 'archiveConfig');
+        $existing = \HeimrichHannot\FieldpaletteBundle\Model\FieldPaletteModel::findByPidAndTableAndField($dc->activeRecord->pid, 'tl_news_category', 'archiveConfig');
 
         if ($existing !== null) {
             while ($existing->next()) {
