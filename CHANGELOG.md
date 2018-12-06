@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.0.3] - 2018-12-06
+
+### Fixed
+- FieldpaletteModel instance call in CategoryHelper
+
 ## [2.0.2] - 2018-12-06
 
 ### Fixed

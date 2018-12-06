@@ -10,6 +10,7 @@
 
 namespace NewsCategories;
 
+use Contao\System;
 use HeimrichHannot\FieldpaletteBundle\Model\FieldPaletteModel;
 
 class CategoryHelper
@@ -120,7 +121,10 @@ class CategoryHelper
      */
     public static function getNewsArchiveCategoryConfig($idCategory, $idArchive)
     {
-        return FieldPaletteModel::findPublishedByPidAndTableAndField($idCategory, 'tl_news_category', 'archiveConfig', ['limit' => 1], ['news_category_news_archive = ?'], [$idArchive]);
+        /** @var FieldPaletteModel $fieldPaletteModel */
+        $fieldPaletteModel = System::getContainer()->get('contao.framework')->createInstance(FieldPaletteModel::class);
+
+        return $fieldPaletteModel->findPublishedByPidAndTableAndField($idCategory, 'tl_news_category', 'archiveConfig', ['limit' => 1], ['news_category_news_archive = ?'], [$idArchive]);
     }
 
     /**
