@@ -15,6 +15,7 @@
 
 namespace NewsCategories;
 
+use Contao\System;
 use HeimrichHannot\FieldpaletteBundle\Model\FieldPaletteModel;
 
 /**
@@ -154,7 +155,10 @@ class NewsCategoryModel extends \Model
             return $cache[$this->id];
         }
 
-        if (($references = FieldPaletteModel::findPublishedByPidAndTableAndField($this->id, 'tl_news_category', 'archiveConfig')) === null) {
+        /** @var FieldPaletteModel $fieldPaletteModel */
+        $fieldPaletteModel = System::getContainer()->get('contao.framework')->createInstance(FieldPaletteModel::class);
+
+        if (($references = $fieldPaletteModel->findPublishedByPidAndTableAndField($this->id, 'tl_news_category', 'archiveConfig')) === null) {
             return null;
         }
 
