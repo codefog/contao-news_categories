@@ -11,6 +11,7 @@
 namespace Codefog\NewsCategoriesBundle;
 
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
+use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\News;
 
@@ -40,19 +41,24 @@ class FeedGenerator extends News
         $objFeed->published = $arrFeed['tstamp'];
 
         $criteria = new NewsCriteria(\System::getContainer()->get('contao.framework'));
-        $criteria->setBasicCriteria($arrArchives);
 
-        // Filter by categories
-        if (count($categories = \StringUtil::deserialize($arrFeed['categories'], true)) > 0) {
-            $criteria->setDefaultCategories($categories);
+        try {
+            $criteria->setBasicCriteria($arrArchives);
+
+            // Filter by categories
+            if (count($categories = \StringUtil::deserialize($arrFeed['categories'], true)) > 0) {
+                $criteria->setDefaultCategories($categories);
+            }
+
+            // Set the limit
+            if ($arrFeed['maxItems'] > 0) {
+                $criteria->setLimit($arrFeed['maxItems']);
+            }
+
+            $objArticle = \NewsModel::findBy($criteria->getColumns(), $criteria->getValues(), $criteria->getOptions());
+        } catch (NoNewsException $e) {
+            $objArticle = null;
         }
-
-        // Set the limit
-        if ($arrFeed['maxItems'] > 0) {
-            $criteria->setLimit($arrFeed['maxItems']);
-        }
-
-        $objArticle = \NewsModel::findBy($criteria->getColumns(), $criteria->getValues(), $criteria->getOptions());
 
         // Parse the items
         if ($objArticle !== null)
