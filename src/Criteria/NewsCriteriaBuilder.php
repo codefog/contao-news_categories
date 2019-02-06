@@ -12,6 +12,7 @@ namespace Codefog\NewsCategoriesBundle\Criteria;
 
 use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
+use Codefog\NewsCategoriesBundle\FrontendModule\CumulativeFilterModule;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
@@ -151,6 +152,34 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
         // Filter by default categories
         if (\count($default = StringUtil::deserialize($module->news_filterDefault, true)) > 0) {
             $criteria->setDefaultCategories($default);
+        }
+
+        // Filter by multiple active categories
+        if ($module->news_filterCategoriesCumulative) {
+            /** @var Input $input */
+            $input = $this->framework->getAdapter(Input::class);
+            $param = $this->manager->getParameterName();
+
+            if ($aliases = $input->get($param)) {
+                $aliases = StringUtil::trimsplit(CumulativeFilterModule::getCategorySeparator(), $aliases);
+                $aliases = array_unique(array_filter($aliases));
+
+                if (count($aliases) > 0) {
+                    /** @var NewsCategoryModel $model */
+                    $model = $this->framework->getAdapter(NewsCategoryModel::class);
+
+                    foreach ($aliases as $alias) {
+                        // Return null if the category does not exist
+                        if (null === ($category = $model->findPublishedByIdOrAlias($alias))) {
+                            throw new CategoryNotFoundException(sprintf('News category "%s" was not found', $alias));
+                        }
+
+                        $criteria->setCategory($category->id, (bool) $module->news_filterPreserve, (bool) $module->news_includeSubcategories);
+                    }
+                }
+            }
+
+            return;
         }
 
         // Filter by active category

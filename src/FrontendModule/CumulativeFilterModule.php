@@ -1,0 +1,467 @@
+<?php
+
+/*
+ * News Categories bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2017, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
+ */
+
+namespace Codefog\NewsCategoriesBundle\FrontendModule;
+
+use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
+use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
+use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
+use Contao\BackendTemplate;
+use Contao\Controller;
+use Contao\Database;
+use Contao\FrontendTemplate;
+use Contao\Model\Collection;
+use Contao\ModuleNews;
+use Contao\NewsModel;
+use Contao\PageModel;
+use Contao\StringUtil;
+use Contao\System;
+use Haste\Generator\RowClass;
+use Haste\Input\Input;
+use Haste\Model\Model;
+use Patchwork\Utf8;
+
+class CumulativeFilterModule extends ModuleNews
+{
+    /**
+     * Template.
+     *
+     * @var string
+     */
+    protected $strTemplate = 'mod_newscategories_cumulative';
+
+    /**
+     * Active categories.
+     *
+     * @var Collection|null
+     */
+    protected $activeCategories;
+
+    /**
+     * News categories of the current news item.
+     *
+     * @var array
+     */
+    protected $currentNewsCategories = [];
+
+    /**
+     * @var NewsCategoriesManager
+     */
+    protected $manager;
+
+    /**
+     * Display a wildcard in the back end.
+     *
+     * @return string
+     */
+    public function generate()
+    {
+        if (TL_MODE === 'BE') {
+            $template = new BackendTemplate('be_wildcard');
+
+            $template->wildcard = '### '.Utf8::strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0]).' ###';
+            $template->title = $this->headline;
+            $template->id = $this->id;
+            $template->link = $this->name;
+            $template->href = 'contao/?do=themes&amp;table=tl_module&amp;act=edit&amp;id='.$this->id;
+
+            return $template->parse();
+        }
+
+        $this->news_archives = $this->sortOutProtected(StringUtil::deserialize($this->news_archives, true));
+
+        // Return if there are no archives
+        if (0 === \count($this->news_archives)) {
+            return '';
+        }
+
+        $this->manager = System::getContainer()->get('codefog_news_categories.manager');
+        $this->currentNewsCategories = $this->getCurrentNewsCategories();
+
+        return parent::generate();
+    }
+
+    /**
+     * Get the URL category separator character
+     *
+     * @return string
+     */
+    public static function getCategorySeparator()
+    {
+        return '__';
+    }
+
+    /**
+     * Generate the module.
+     */
+    protected function compile()
+    {
+        $customCategories = $this->news_customCategories ? StringUtil::deserialize($this->news_categories, true) : [];
+
+        // Get the subcategories of custom categories
+        if (\count($customCategories) > 0) {
+            $customCategories = NewsCategoryModel::getAllSubcategoriesIds($customCategories);
+        }
+
+        // First, fetch the active categories
+        $this->activeCategories = $this->getActiveCategories($customCategories);
+
+        // Then, fetch the inactive categories
+        $inactiveCategories = $this->getInactiveCategories($customCategories);
+
+        // Generate active categories
+        if ($this->activeCategories !== null) {
+            $activeIds = [];
+
+            // Get the parent active categories IDs
+            /** @var NewsCategoryModel $category */
+            foreach ($this->activeCategories as $category) {
+                $activeIds = \array_merge($activeIds, Database::getInstance()->getParentRecords($category->id, $category->getTable()));
+            }
+
+            $this->Template->activeCategories = $this->renderNewsCategories((int) $this->news_categoriesRoot, \array_unique($activeIds), 1, true);
+        } else {
+            $this->Template->activeCategories = '';
+        }
+
+        // Generate inactive categories
+        if ($inactiveCategories !== null) {
+            $inactiveIds = [];
+
+            // Get the parent inactive categories IDs
+            /** @var NewsCategoryModel $category */
+            foreach ($inactiveCategories as $category) {
+                $inactiveIds = \array_merge($inactiveIds, Database::getInstance()->getParentRecords($category->id, $category->getTable()));
+            }
+
+            $this->Template->inactiveCategories = $this->renderNewsCategories((int) $this->news_categoriesRoot, \array_unique($inactiveIds));
+        } else {
+            $this->Template->inactiveCategories = '';
+        }
+    }
+
+    /**
+     * Get the active categories
+     *
+     * @param array $customCategories
+     *
+     * @return Collection|null
+     */
+    protected function getActiveCategories(array $customCategories = [])
+    {
+        $param = System::getContainer()->get('codefog_news_categories.manager')->getParameterName();
+
+        if (!($aliases = Input::get($param))) {
+            return null;
+        }
+
+        $aliases = StringUtil::trimsplit(static::getCategorySeparator(), $aliases);
+        $aliases = array_unique(array_filter($aliases));
+
+        if (count($aliases) === 0) {
+            return null;
+        }
+
+        // Get the categories that do have news assigned
+        return NewsCategoryModel::findPublishedByArchives($this->news_archives, $customCategories, $aliases);
+    }
+
+    /**
+     * Get the inactive categories
+     *
+     * @param array $customCategories
+     *
+     * @return Collection|null
+     */
+    protected function getInactiveCategories(array $customCategories = [])
+    {
+        // Find only the categories that still can display some results combined with active categories
+        if ($this->activeCategories !== null) {
+            $newsIds = null;
+
+            // Collect the news that match all active categories
+            /** @var NewsCategoryModel $activeCategory */
+            foreach ($this->activeCategories as $activeCategory) {
+                $criteria = new NewsCriteria(System::getContainer()->get('contao.framework'));
+
+                try {
+                    $criteria->setBasicCriteria($this->news_archives);
+                    $criteria->setCategory($activeCategory->id);
+                } catch (NoNewsException $e) {
+                    continue;
+                }
+
+                $ids = Database::getInstance()
+                    ->prepare('SELECT id FROM tl_news WHERE ' . implode(' AND ', $criteria->getColumns()))
+                    ->execute($criteria->getValues())
+                    ->fetchEach('id')
+                ;
+
+                // First iteration, just set the IDs
+                if ($newsIds === null) {
+                    $newsIds = $ids;
+                } else {
+                    // Further iterations, intersect the IDs
+                    $newsIds = array_intersect($newsIds, $ids);
+                }
+            }
+
+            // Should not happen but you never know
+            if (count($newsIds) === 0) {
+                return null;
+            }
+
+            $categoryIds = Model::getRelatedValues('tl_news', 'categories', $newsIds);
+            $categoryIds = \array_map('intval', $categoryIds);
+            $categoryIds = \array_unique(\array_filter($categoryIds));
+
+            // Remove the active categories, so they are not considered again
+            $categoryIds = array_diff($categoryIds, $this->activeCategories->fetchEach('id'));
+
+            // Filter by custom categories
+            if (count($customCategories) > 0) {
+                $categoryIds = array_intersect($categoryIds, $customCategories);
+            }
+
+            if (count($categoryIds) === 0) {
+                return null;
+            }
+
+            return NewsCategoryModel::findPublishedByArchives($this->news_archives, $categoryIds);
+        }
+
+        // Get the categories that do have news assigned
+        return NewsCategoryModel::findPublishedByArchives($this->news_archives, $customCategories);
+    }
+
+    /**
+     * Get the target page.
+     *
+     * @return PageModel
+     */
+    protected function getTargetPage()
+    {
+        static $page;
+
+        if (null === $page) {
+            if ($this->jumpTo > 0
+                && (int) $GLOBALS['objPage']->id !== (int) $this->jumpTo
+                && null !== ($target = PageModel::findPublishedById($this->jumpTo))
+            ) {
+                $page = $target;
+            } else {
+                $page = $GLOBALS['objPage'];
+            }
+        }
+
+        return $page;
+    }
+
+    /**
+     * Get the category IDs of the current news item.
+     *
+     * @return array
+     */
+    protected function getCurrentNewsCategories()
+    {
+        if (!($alias = Input::getAutoItem('items', false, true))
+            || null === ($news = NewsModel::findPublishedByParentAndIdOrAlias($alias, $this->news_archives))
+        ) {
+            return [];
+        }
+
+        $ids = Model::getRelatedValues('tl_news', 'categories', $news->id);
+        $ids = \array_map('intval', \array_unique($ids));
+
+        return $ids;
+    }
+
+    /**
+     * Recursively compile the news categories and return it as HTML string.
+     *
+     * @param int   $pid
+     * @param array $ids
+     * @param int   $level
+     * @param bool  $isActiveCategories
+     *
+     * @return string
+     */
+    protected function renderNewsCategories($pid, array $ids, $level = 1, $isActiveCategories = false)
+    {
+        if (null === ($categories = NewsCategoryModel::findPublishedByIds($ids, $pid))) {
+            return '';
+        }
+
+        // Layout template fallback
+        if (!$this->navigationTpl) {
+            $this->navigationTpl = 'nav_newscategories';
+        }
+
+        $template = new FrontendTemplate($this->navigationTpl);
+        $template->type = \get_class($this);
+        $template->cssID = $this->cssID;
+        $template->level = 'level_'.$level;
+        $template->showQuantity = $isActiveCategories ? false : (bool) $this->news_showQuantity;
+
+        $items = [];
+        $activeAliases = [];
+        $resetUrl = $this->getTargetPage()->getFrontendUrl();
+
+        // Collect the active category parameters
+        if ($this->activeCategories !== null) {
+            /** @var NewsCategoryModel $activeCategory */
+            foreach ($this->activeCategories as $activeCategory) {
+                $activeAliases[] = $this->manager->getCategoryAlias($activeCategory, $GLOBALS['objPage']);
+            }
+        }
+
+        // Add the "reset categories" link
+        if ($isActiveCategories && (bool) $this->news_resetCategories && count($activeAliases) > 0 && 1 === $level) {
+            $items[] = $this->generateItem(
+                $resetUrl,
+                $GLOBALS['TL_LANG']['MSC']['resetCategoriesCumulative'][0],
+                $GLOBALS['TL_LANG']['MSC']['resetCategoriesCumulative'][1],
+                'reset',
+                0 === \count($this->currentNewsCategories) && null === $this->activeCategories
+            );
+        }
+
+        ++$level;
+
+        $parameterName = $this->manager->getParameterName($GLOBALS['objPage']->rootId);
+
+        /** @var NewsCategoryModel $category */
+        foreach ($categories as $category) {
+            $categoryAlias = $this->manager->getCategoryAlias($category, $GLOBALS['objPage']);
+
+            // Add/remove the category alias to the active ones
+            if (in_array($categoryAlias, $activeAliases, true)) {
+                $aliases = array_diff($activeAliases, [$categoryAlias]);
+            } else {
+                $aliases = array_merge($activeAliases, [$categoryAlias]);
+            }
+
+            // Generate the category URL if there are any aliases to add, otherwise use the reset URL
+            if (count($aliases) > 0) {
+                $url = $this->getTargetPage()->getFrontendUrl(sprintf('/%s/%s', $parameterName, implode(static::getCategorySeparator(), $aliases)));
+            } else {
+                $url = $resetUrl;
+            }
+
+            $items[] = $this->generateItem(
+                $url,
+                $category->getTitle(),
+                $category->getTitle(),
+                $this->generateItemCssClass($category),
+                in_array($categoryAlias, $activeAliases, true),
+                $this->renderNewsCategories($category->id, $ids, $level, $isActiveCategories),
+                $category
+            );
+        }
+
+        // Add first/last/even/odd classes
+        RowClass::withKey('class')->addFirstLast()->addEvenOdd()->applyTo($items);
+
+        $template->items = $items;
+
+        return $template->parse();
+    }
+
+    /**
+     * Generate the item.
+     *
+     * @param string                 $url
+     * @param string                 $link
+     * @param string                 $title
+     * @param string                 $cssClass
+     * @param bool                   $isActive
+     * @param string                 $subitems
+     * @param NewsCategoryModel|null $category
+     *
+     * @return array
+     */
+    protected function generateItem($url, $link, $title, $cssClass, $isActive, $subitems = '', NewsCategoryModel $category = null)
+    {
+        $data = [];
+
+        // Set the data from category
+        if (null !== $category) {
+            $data = $category->row();
+        }
+
+        $data['isActive'] = $isActive;
+        $data['subitems'] = $subitems;
+        $data['class'] = $cssClass;
+        $data['title'] = StringUtil::specialchars($title);
+        $data['linkTitle'] = StringUtil::specialchars($title);
+        $data['link'] = $link;
+        $data['href'] = ampersand($url);
+        $data['quantity'] = 0;
+
+        // Add the "active" class
+        if ($isActive) {
+            $data['class'] = \trim($data['class'].' active');
+        }
+
+        // Add the "submenu" class
+        if ($subitems) {
+            $data['class'] = \trim($data['class'].' submenu');
+        }
+
+        // Add the news quantity
+        if ($this->news_showQuantity) {
+            if (null === $category) {
+                $data['quantity'] = NewsCategoryModel::getUsage($this->news_archives);
+            } else {
+                $data['quantity'] = NewsCategoryModel::getUsage(
+                    $this->news_archives,
+                    $category->id,
+                    false,
+                    ($this->activeCategories !== null) ? $this->activeCategories->fetchEach('id') : []
+                );
+            }
+        }
+
+        // Add the image
+        if (null !== $category && null !== ($image = $this->manager->getImage($category))) {
+            $data['image'] = new \stdClass();
+            Controller::addImageToTemplate($data['image'], ['singleSRC' => $image->path, 'size' => $this->news_categoryImgSize]);
+        } else {
+            $data['image'] = null;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Generate the item CSS class.
+     *
+     * @param NewsCategoryModel $category
+     *
+     * @return string
+     */
+    protected function generateItemCssClass(NewsCategoryModel $category)
+    {
+        $cssClasses = [$category->getCssClass()];
+
+        // Add the trail class
+        if (\in_array((int) $category->id, $this->manager->getTrailIds($category), true)) {
+            $cssClasses[] = 'trail';
+        }
+
+        // Add the news trail class
+        if (\in_array((int) $category->id, $this->currentNewsCategories, true)) {
+            $cssClasses[] = 'news_trail';
+        }
+
+        return \implode(' ', $cssClasses);
+    }
+}

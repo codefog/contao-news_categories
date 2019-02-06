@@ -1,0 +1,19 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<?php if ($this->activeCategories): ?>
+    <div class="active-categories">
+        <h6><?= $GLOBALS['TL_LANG']['MSC']['activeCategories'] ?></h6>
+        <?= $this->activeCategories ?>
+    </div>
+<?php endif; ?>
+
+<?php if ($this->inactiveCategories): ?>
+    <div class="inactive-categories">
+        <h6><?= $GLOBALS['TL_LANG']['MSC']['inactiveCategories'] ?></h6>
+        <?= $this->inactiveCategories ?>
+    </div>
+<?php endif; ?>
+
+<?php $this->endblock(); ?>

@@ -85,10 +85,11 @@ class NewsCategoryModel extends ParentModel
      *
      * @param array $archives
      * @param array $ids
+     * @param array $aliases
      *
      * @return Collection|null
      */
-    public static function findPublishedByArchives(array $archives, array $ids = [])
+    public static function findPublishedByArchives(array $archives, array $ids = [], array $aliases = [])
     {
         if (0 === \count($archives) || false === ($relation = Relations::getRelation('tl_news', 'categories'))) {
             return null;
@@ -118,6 +119,11 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
         // Filter by custom categories
         if (\count($ids) > 0) {
             $columns[] = "$t.id IN (".\implode(',', \array_map('intval', $ids)).')';
+        }
+
+        // Filter by custom aliases
+        if (\count($aliases) > 0) {
+            $columns[] = "$t.alias IN ('".\implode("','", $aliases)."')";
         }
 
         if (!BE_USER_LOGGED_IN) {
@@ -244,10 +250,11 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
      * @param array    $archives
      * @param int|null $category
      * @param bool     $includeSubcategories
+     * @param array    $cumulativeCategories
      *
      * @return int
      */
-    public static function getUsage(array $archives = [], $category = null, $includeSubcategories = false)
+    public static function getUsage(array $archives = [], $category = null, $includeSubcategories = false, array $cumulativeCategories = [])
     {
         $t = NewsModel::getTable();
 
@@ -256,7 +263,26 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             $category = static::getAllSubcategoriesIds($category);
         }
 
-        if (0 === \count($ids = Model::getReferenceValues($t, 'categories', $category))) {
+        $ids = Model::getReferenceValues($t, 'categories', $category);
+
+        // Also filter by cumulative categories
+        if (count($cumulativeCategories) > 0) {
+            $cumulativeIds = null;
+
+            foreach ($cumulativeCategories as $cumulativeCategory) {
+                $tmp = Model::getReferenceValues($t, 'categories', $cumulativeCategory);
+
+                if ($cumulativeIds === null) {
+                    $cumulativeIds = $tmp;
+                } else {
+                    $cumulativeIds = array_intersect($cumulativeIds, $tmp);
+                }
+            }
+
+            $ids = array_intersect($ids, $cumulativeIds);
+        }
+
+        if (0 === \count($ids)) {
             return 0;
         }
 

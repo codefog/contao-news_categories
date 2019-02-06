@@ -14,6 +14,7 @@
 $GLOBALS['TL_LANG']['tl_module']['news_categories'] = ['News categories', 'Please choose the news categories.'];
 $GLOBALS['TL_LANG']['tl_module']['news_customCategories'] = ['Limit categories display', 'Choose which categories should be displayed.'];
 $GLOBALS['TL_LANG']['tl_module']['news_filterCategories'] = ['Filter by categories', 'Filter the news list by the categories list module.'];
+$GLOBALS['TL_LANG']['tl_module']['news_filterCategoriesCumulative'] = ['Filter by categories (cumulative)', 'Filter the news list by the cumulative filter module. Takes priority over the previous checkbox for filter.'];
 $GLOBALS['TL_LANG']['tl_module']['news_relatedCategories'] = ['Related categories mode', 'Use categories of the current news item to filter by. Note: the module must be on the same page as news reader module.'];
 $GLOBALS['TL_LANG']['tl_module']['news_relatedCategoriesOrder'] = ['Related categories order', 'Here you can choose the related categories order.'];
 $GLOBALS['TL_LANG']['tl_module']['news_includeSubcategories'] = ['Include the subcategories', 'Include the subcategories in the filtering if the parent category is active.'];
