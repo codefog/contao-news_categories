@@ -104,11 +104,14 @@ class CumulativeFilterModule extends ModuleNews
      */
     protected function compile()
     {
-        $customCategories = $this->news_customCategories ? StringUtil::deserialize($this->news_categories, true) : [];
+        $rootCategoryId = (int) $this->news_categoriesRoot;
 
-        // Get the subcategories of custom categories
-        if (\count($customCategories) > 0) {
-            $customCategories = NewsCategoryModel::getAllSubcategoriesIds($customCategories);
+        // Set the custom categories either by root ID or by manual selection
+        if ($this->news_customCategories) {
+            $customCategories = StringUtil::deserialize($this->news_categories, true);
+        } else {
+            $subcategories = NewsCategoryModel::findPublishedByPid($rootCategoryId);
+            $customCategories = ($subcategories !== null) ? $subcategories->fetchEach('id') : [];
         }
 
         // First, fetch the active categories
@@ -119,30 +122,14 @@ class CumulativeFilterModule extends ModuleNews
 
         // Generate active categories
         if ($this->activeCategories !== null) {
-            $activeIds = [];
-
-            // Get the parent active categories IDs
-            /** @var NewsCategoryModel $category */
-            foreach ($this->activeCategories as $category) {
-                $activeIds = \array_merge($activeIds, Database::getInstance()->getParentRecords($category->id, $category->getTable()));
-            }
-
-            $this->Template->activeCategories = $this->renderNewsCategories((int) $this->news_categoriesRoot, \array_unique($activeIds), 1, true);
+            $this->Template->activeCategories = $this->renderNewsCategories($rootCategoryId, $this->activeCategories->fetchEach('id'), true);
         } else {
             $this->Template->activeCategories = '';
         }
 
         // Generate inactive categories
         if ($inactiveCategories !== null) {
-            $inactiveIds = [];
-
-            // Get the parent inactive categories IDs
-            /** @var NewsCategoryModel $category */
-            foreach ($inactiveCategories as $category) {
-                $inactiveIds = \array_merge($inactiveIds, Database::getInstance()->getParentRecords($category->id, $category->getTable()));
-            }
-
-            $this->Template->inactiveCategories = $this->renderNewsCategories((int) $this->news_categoriesRoot, \array_unique($inactiveIds));
+            $this->Template->inactiveCategories = $this->renderNewsCategories($rootCategoryId, $inactiveCategories->fetchEach('id'));
         } else {
             $this->Template->inactiveCategories = '';
         }
@@ -173,9 +160,13 @@ class CumulativeFilterModule extends ModuleNews
         // Get the categories that do have news assigned
         $models = NewsCategoryModel::findPublishedByArchives($this->news_archives, $customCategories, $aliases);
 
-        // The models have been found but the number does not match, meaning there are probably more aliases provided than categories in fact
-        // In such case redirect to the correct URL instead of showing 404 page
-        if ($models !== null && $models->count() !== count($aliases)) {
+        // No models have been found but there are some aliases present
+        if ($models === null && count($aliases) !== 0) {
+            Controller::redirect($this->getTargetPage()->getFrontendUrl());
+        }
+
+        // Validate the provided aliases with the categories found
+        if ($models !== null) {
             $realAliases = [];
 
             /** @var NewsCategoryModel $model */
@@ -183,11 +174,13 @@ class CumulativeFilterModule extends ModuleNews
                 $realAliases[] = $this->manager->getCategoryAlias($model, $GLOBALS['objPage']);
             }
 
-            Controller::redirect($this->getTargetPage()->getFrontendUrl(sprintf(
-                '/%s/%s',
-                $this->manager->getParameterName($GLOBALS['objPage']->rootId),
-                implode(static::getCategorySeparator(), $realAliases)
-            )));
+            if (count(array_diff($aliases, $realAliases)) > 0) {
+                Controller::redirect($this->getTargetPage()->getFrontendUrl(sprintf(
+                    '/%s/%s',
+                    $this->manager->getParameterName($GLOBALS['objPage']->rootId),
+                    implode(static::getCategorySeparator(), $realAliases)
+                )));
+            }
         }
 
         return $models;
@@ -308,12 +301,11 @@ class CumulativeFilterModule extends ModuleNews
      *
      * @param int   $pid
      * @param array $ids
-     * @param int   $level
      * @param bool  $isActiveCategories
      *
      * @return string
      */
-    protected function renderNewsCategories($pid, array $ids, $level = 1, $isActiveCategories = false)
+    protected function renderNewsCategories($pid, array $ids, $isActiveCategories = false)
     {
         if (null === ($categories = NewsCategoryModel::findPublishedByIds($ids, $pid))) {
             return '';
@@ -327,7 +319,7 @@ class CumulativeFilterModule extends ModuleNews
         $template = new FrontendTemplate($this->navigationTpl);
         $template->type = \get_class($this);
         $template->cssID = $this->cssID;
-        $template->level = 'level_'.$level;
+        $template->level = 'level_1';
         $template->showQuantity = $isActiveCategories ? false : (bool) $this->news_showQuantity;
 
         $items = [];
@@ -343,7 +335,7 @@ class CumulativeFilterModule extends ModuleNews
         }
 
         // Add the "reset categories" link
-        if ($isActiveCategories && (bool) $this->news_resetCategories && count($activeAliases) > 0 && 1 === $level) {
+        if ($isActiveCategories && (bool) $this->news_resetCategories && count($activeAliases) > 0) {
             $items[] = $this->generateItem(
                 $resetUrl,
                 $GLOBALS['TL_LANG']['MSC']['resetCategoriesCumulative'][0],
@@ -352,8 +344,6 @@ class CumulativeFilterModule extends ModuleNews
                 0 === \count($this->currentNewsCategories) && null === $this->activeCategories
             );
         }
-
-        ++$level;
 
         $parameterName = $this->manager->getParameterName($GLOBALS['objPage']->rootId);
 
@@ -381,7 +371,6 @@ class CumulativeFilterModule extends ModuleNews
                 $category->getTitle(),
                 $this->generateItemCssClass($category),
                 in_array($categoryAlias, $activeAliases, true),
-                $this->renderNewsCategories($category->id, $ids, $level, $isActiveCategories),
                 $category
             );
         }
@@ -402,12 +391,11 @@ class CumulativeFilterModule extends ModuleNews
      * @param string                 $title
      * @param string                 $cssClass
      * @param bool                   $isActive
-     * @param string                 $subitems
      * @param NewsCategoryModel|null $category
      *
      * @return array
      */
-    protected function generateItem($url, $link, $title, $cssClass, $isActive, $subitems = '', NewsCategoryModel $category = null)
+    protected function generateItem($url, $link, $title, $cssClass, $isActive, NewsCategoryModel $category = null)
     {
         $data = [];
 
@@ -417,7 +405,7 @@ class CumulativeFilterModule extends ModuleNews
         }
 
         $data['isActive'] = $isActive;
-        $data['subitems'] = $subitems;
+        $data['subitems'] = '';
         $data['class'] = $cssClass;
         $data['title'] = StringUtil::specialchars($title);
         $data['linkTitle'] = StringUtil::specialchars($title);

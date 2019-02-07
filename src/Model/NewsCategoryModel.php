@@ -220,6 +220,27 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
     }
 
     /**
+     * Find published news categories by parent ID.
+     *
+     * @param int $pid
+     *
+     * @return Collection|null
+     */
+    public static function findPublishedByPid($pid)
+    {
+        $t = static::getTableAlias();
+        $columns = ["$t.pid=?"];
+        $values = [$pid];
+
+        if (!BE_USER_LOGGED_IN) {
+            $columns[] = "$t.published=?";
+            $values[] = 1;
+        }
+
+        return static::findBy($columns, $values, ['order' => "$t.sorting"]);
+    }
+
+    /**
      * Find the published categories by news.
      *
      * @param int|array $newsId
