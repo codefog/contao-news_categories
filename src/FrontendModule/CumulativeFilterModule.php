@@ -171,7 +171,26 @@ class CumulativeFilterModule extends ModuleNews
         }
 
         // Get the categories that do have news assigned
-        return NewsCategoryModel::findPublishedByArchives($this->news_archives, $customCategories, $aliases);
+        $models = NewsCategoryModel::findPublishedByArchives($this->news_archives, $customCategories, $aliases);
+
+        // The models have been found but the number does not match, meaning there are probably more aliases provided than categories in fact
+        // In such case redirect to the correct URL instead of showing 404 page
+        if ($models !== null && $models->count() !== count($aliases)) {
+            $realAliases = [];
+
+            /** @var NewsCategoryModel $model */
+            foreach ($models as $model) {
+                $realAliases[] = $this->manager->getCategoryAlias($model, $GLOBALS['objPage']);
+            }
+
+            Controller::redirect($this->getTargetPage()->getFrontendUrl(sprintf(
+                '/%s/%s',
+                $this->manager->getParameterName($GLOBALS['objPage']->rootId),
+                implode(static::getCategorySeparator(), $realAliases)
+            )));
+        }
+
+        return $models;
     }
 
     /**
