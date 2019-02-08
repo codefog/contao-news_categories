@@ -128,6 +128,11 @@ class CumulativeFilterModule extends ModuleNews
         // Generate active categories
         if ($this->activeCategories !== null) {
             $this->Template->activeCategories = $this->renderNewsCategories($rootCategoryId, $this->activeCategories->fetchEach('id'), true);
+
+            // Add the canonical URL tag
+            if ($this->news_enableCanonicalUrls) {
+                $GLOBALS['TL_HEAD'][] = sprintf('<link rel="canonical" href="%s">', $GLOBALS['objPage']->getAbsoluteUrl());
+            }
         } else {
             $this->Template->activeCategories = '';
         }
