@@ -293,6 +293,11 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             foreach ($cumulativeCategories as $cumulativeCategory) {
                 $tmp = Model::getReferenceValues($t, 'categories', $cumulativeCategory);
 
+                // Include the subcategories
+                if ($includeSubcategories) {
+                    $tmp = static::getAllSubcategoriesIds($tmp);
+                }
+
                 if ($cumulativeIds === null) {
                     $cumulativeIds = $tmp;
                 } else {

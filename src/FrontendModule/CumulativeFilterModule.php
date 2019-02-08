@@ -114,6 +114,11 @@ class CumulativeFilterModule extends ModuleNews
             $customCategories = ($subcategories !== null) ? $subcategories->fetchEach('id') : [];
         }
 
+        // Get the subcategories of custom categories
+        if (\count($customCategories) > 0 && $this->news_includeSubcategories) {
+            $customCategories = NewsCategoryModel::getAllSubcategoriesIds($customCategories);
+        }
+
         // First, fetch the active categories
         $this->activeCategories = $this->getActiveCategories($customCategories);
 
@@ -206,7 +211,7 @@ class CumulativeFilterModule extends ModuleNews
 
                 try {
                     $criteria->setBasicCriteria($this->news_archives);
-                    $criteria->setCategory($activeCategory->id);
+                    $criteria->setCategory($activeCategory->id, false, (bool) $this->news_includeSubcategories);
                 } catch (NoNewsException $e) {
                     continue;
                 }
@@ -235,6 +240,13 @@ class CumulativeFilterModule extends ModuleNews
             $categoryIds = \array_map('intval', $categoryIds);
             $categoryIds = \array_unique(\array_filter($categoryIds));
 
+            // Include the parent categories
+            if ($this->news_includeSubcategories) {
+                foreach ($categoryIds as $categoryId) {
+                    $categoryIds = array_merge($categoryIds, Database::getInstance()->getParentRecords($categoryId, 'tl_news_category'));
+                }
+            }
+
             // Remove the active categories, so they are not considered again
             $categoryIds = array_diff($categoryIds, $this->activeCategories->fetchEach('id'));
 
@@ -247,10 +259,9 @@ class CumulativeFilterModule extends ModuleNews
                 return null;
             }
 
-            return NewsCategoryModel::findPublishedByArchives($this->news_archives, $categoryIds);
+            $customCategories = $categoryIds;
         }
 
-        // Get the categories that do have news assigned
         return NewsCategoryModel::findPublishedByArchives($this->news_archives, $customCategories);
     }
 
@@ -335,7 +346,7 @@ class CumulativeFilterModule extends ModuleNews
         }
 
         // Add the "reset categories" link
-        if ($isActiveCategories && (bool) $this->news_resetCategories && count($activeAliases) > 0) {
+        if ($isActiveCategories && $this->news_resetCategories && count($activeAliases) > 0) {
             $items[] = $this->generateItem(
                 $resetUrl,
                 $GLOBALS['TL_LANG']['MSC']['resetCategoriesCumulative'][0],
@@ -418,11 +429,6 @@ class CumulativeFilterModule extends ModuleNews
             $data['class'] = \trim($data['class'].' active');
         }
 
-        // Add the "submenu" class
-        if ($subitems) {
-            $data['class'] = \trim($data['class'].' submenu');
-        }
-
         // Add the news quantity
         if ($this->news_showQuantity) {
             if (null === $category) {
@@ -431,7 +437,7 @@ class CumulativeFilterModule extends ModuleNews
                 $data['quantity'] = NewsCategoryModel::getUsage(
                     $this->news_archives,
                     $category->id,
-                    false,
+                    (bool) $this->news_includeSubcategories,
                     ($this->activeCategories !== null) ? $this->activeCategories->fetchEach('id') : []
                 );
             }
