@@ -18,5 +18,5 @@ Examples:
 ```
 {{news_categories::title}} - prints category title
 {{news_categories::frontendTitle}} - prints category frontend title
-{{image::{{news_categories::image}}}}
+{{image::{{news_categories::image}}}} - prints category image
 ```
