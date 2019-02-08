@@ -106,6 +106,11 @@ class NewsCategoriesModule extends ModuleNews
         // Get the active category
         if (null !== ($activeCategory = NewsCategoryModel::findPublishedByIdOrAlias(Input::get($param)))) {
             $this->activeCategory = $activeCategory;
+
+            // Add the canonical URL tag
+            if ($this->news_enableCanonicalUrls) {
+                $GLOBALS['TL_HEAD'][] = sprintf('<link rel="canonical" href="%s">', $GLOBALS['objPage']->getAbsoluteUrl());
+            }
         }
 
         $ids = [];

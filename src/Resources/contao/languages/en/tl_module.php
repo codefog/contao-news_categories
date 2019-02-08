@@ -16,6 +16,7 @@ $GLOBALS['TL_LANG']['tl_module']['news_customCategories'] = ['Limit categories d
 $GLOBALS['TL_LANG']['tl_module']['news_filterCategories'] = ['Filter by categories', 'Filter the news list by the categories list module.'];
 $GLOBALS['TL_LANG']['tl_module']['news_relatedCategories'] = ['Related categories mode', 'Use categories of the current news item to filter by. Note: the module must be on the same page as news reader module.'];
 $GLOBALS['TL_LANG']['tl_module']['news_includeSubcategories'] = ['Include the subcategories', 'Include the subcategories in the filtering if the parent category is active.'];
+$GLOBALS['TL_LANG']['tl_module']['news_enableCanonicalUrls'] = ['Enable canonical URLs', 'Adds the canonical URL tag when active category is present.'];
 $GLOBALS['TL_LANG']['tl_module']['news_filterDefault'] = ['Default filter', 'Here you can choose the default filter that will be applied to the newslist.'];
 $GLOBALS['TL_LANG']['tl_module']['news_filterPreserve'] = ['Preserve the default filter', 'Preserve the default filter settings even if there is an active category selected.'];
 $GLOBALS['TL_LANG']['tl_module']['news_resetCategories'] = ['Reset categories link', 'Add a link to reset categories filter.'];
