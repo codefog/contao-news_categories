@@ -16,6 +16,7 @@ use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\Database;
 use Contao\Input;
 use Contao\Module;
 use Contao\StringUtil;
@@ -210,7 +211,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
             throw new NoNewsException();
         }
 
-        $criteria->setDefaultCategories($categories);
+        $criteria->setDefaultCategories($categories, (bool) $module->news_includeSubcategories, $module->news_relatedCategoriesOrder);
         $criteria->setExcludedNews([$news->id]);
     }
 }
