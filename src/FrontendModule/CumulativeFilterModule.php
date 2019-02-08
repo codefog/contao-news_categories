@@ -332,6 +332,7 @@ class CumulativeFilterModule extends ModuleNews
         $template->cssID = $this->cssID;
         $template->level = 'level_1';
         $template->showQuantity = $isActiveCategories ? false : (bool) $this->news_showQuantity;
+        $template->isActiveCategories = $isActiveCategories;
 
         $items = [];
         $activeAliases = [];
