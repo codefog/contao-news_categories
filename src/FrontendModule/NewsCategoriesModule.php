@@ -317,7 +317,12 @@ class NewsCategoriesModule extends ModuleNews
         // Add the image
         if (null !== $category && null !== ($image = $this->manager->getImage($category))) {
             $data['image'] = new \stdClass();
-            Controller::addImageToTemplate($data['image'], ['singleSRC' => $image->path, 'size' => $this->news_categoryImgSize]);
+            Controller::addImageToTemplate($data['image'], [
+                'singleSRC' => $image->path,
+                'size' => $this->news_categoryImgSize,
+                'alt' => $title,
+                'imageTitle' => $title,
+            ]);
         } else {
             $data['image'] = null;
         }
