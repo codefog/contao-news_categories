@@ -206,6 +206,11 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
             }
         }
 
+        // Exclude categories by root
+        if ($module->news_categoriesRoot > 0) {
+            $categories = array_intersect($categories, NewsCategoryModel::getAllSubcategoriesIds($module->news_categoriesRoot));
+        }
+
         // There are no categories left
         if (0 === \count($categories)) {
             throw new NoNewsException();

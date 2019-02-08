@@ -12,7 +12,7 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'news_customCate
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'news_relatedCategories';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_showQuantity,news_resetCategories,news_showEmptyCategories,news_enableCanonicalUrls,news_includeSubcategories;{reference_legend:hide},news_categoriesRoot,news_customCategories;{redirect_legend:hide},news_forceCategoryUrl,jumpTo;{template_legend:hide},navigationTpl,customTpl;{image_legend:hide},news_categoryImgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_customCategories'] = 'news_categories';
-$GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_relatedCategories'] = 'news_relatedCategoriesOrder';
+$GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_relatedCategories'] = 'news_relatedCategoriesOrder,news_categoriesRoot';
 
 \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
     ->addLegend('redirect_legend', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
