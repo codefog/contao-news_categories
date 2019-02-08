@@ -202,7 +202,8 @@ class CumulativeFilterModule extends ModuleNews
     {
         // Find only the categories that still can display some results combined with active categories
         if ($this->activeCategories !== null) {
-            $newsIds = null;
+            $columns = [];
+            $values = [];
 
             // Collect the news that match all active categories
             /** @var NewsCategoryModel $activeCategory */
@@ -216,22 +217,21 @@ class CumulativeFilterModule extends ModuleNews
                     continue;
                 }
 
-                $ids = Database::getInstance()
-                    ->prepare('SELECT id FROM tl_news WHERE ' . implode(' AND ', $criteria->getColumns()))
-                    ->execute($criteria->getValues())
-                    ->fetchEach('id')
-                ;
-
-                // First iteration, just set the IDs
-                if ($newsIds === null) {
-                    $newsIds = $ids;
-                } else {
-                    // Further iterations, intersect the IDs
-                    $newsIds = array_intersect($newsIds, $ids);
-                }
+                $columns = array_merge($columns, $criteria->getColumns());
+                $values = array_merge($values, $criteria->getValues());
             }
 
             // Should not happen but you never know
+            if (count($columns) === 0) {
+                return null;
+            }
+
+            $newsIds = Database::getInstance()
+                ->prepare('SELECT id FROM tl_news WHERE ' . implode(' AND ', $columns))
+                ->execute($values)
+                ->fetchEach('id')
+            ;
+
             if (count($newsIds) === 0) {
                 return null;
             }
