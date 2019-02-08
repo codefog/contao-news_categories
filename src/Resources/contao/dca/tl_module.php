@@ -29,6 +29,7 @@ $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_relatedCategories'] = 'news
 
 \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
     ->addField('news_filterCategories', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->addField('news_filterCategoriesCumulative', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
     ->addField('news_includeSubcategories', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
     ->addField('news_filterDefault', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
     ->addField('news_filterPreserve', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
