@@ -11,7 +11,7 @@
 
 <?php if ($this->inactiveCategories): ?>
     <div class="inactive-categories">
-        <h6><?= $GLOBALS['TL_LANG']['MSC']['inactiveCategories'] ?></h6>
+        <h6><?= $this->activeCategories ? $GLOBALS['TL_LANG']['MSC']['inactiveCategoriesAdd'] : $GLOBALS['TL_LANG']['MSC']['inactiveCategories'] ?></h6>
         <?= $this->inactiveCategories ?>
     </div>
 <?php endif; ?>
