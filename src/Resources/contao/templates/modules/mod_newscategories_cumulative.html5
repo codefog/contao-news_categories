@@ -16,4 +16,10 @@
     </div>
 <?php endif; ?>
 
+<?php if ($this->resetUrl): ?>
+    <div class="reset-link">
+        <a href="<?= ampersand($this->resetUrl) ?>" class="reset" title="<?= specialchars($GLOBALS['TL_LANG']['MSC']['resetCategoriesCumulative'][1]) ?>"><?= $GLOBALS['TL_LANG']['MSC']['resetCategoriesCumulative'][0] ?></a>
+    </div>
+<?php endif; ?>
+
 <?php $this->endblock(); ?>

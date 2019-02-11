@@ -133,8 +133,14 @@ class CumulativeFilterModule extends ModuleNews
             if ($this->news_enableCanonicalUrls) {
                 $GLOBALS['TL_HEAD'][] = sprintf('<link rel="canonical" href="%s">', $GLOBALS['objPage']->getAbsoluteUrl());
             }
+
+            // Add the "reset categories" link
+            if ($this->news_resetCategories) {
+                $this->Template->resetUrl = $this->getTargetPage()->getFrontendUrl();
+            }
         } else {
             $this->Template->activeCategories = '';
+            $this->Template->resetUrl = false;
         }
 
         // Generate inactive categories
@@ -341,7 +347,6 @@ class CumulativeFilterModule extends ModuleNews
 
         $items = [];
         $activeAliases = [];
-        $resetUrl = $this->getTargetPage()->getFrontendUrl();
 
         // Collect the active category parameters
         if ($this->activeCategories !== null) {
@@ -351,17 +356,7 @@ class CumulativeFilterModule extends ModuleNews
             }
         }
 
-        // Add the "reset categories" link
-        if ($isActiveCategories && $this->news_resetCategories && count($activeAliases) > 0) {
-            $items[] = $this->generateItem(
-                $resetUrl,
-                $GLOBALS['TL_LANG']['MSC']['resetCategoriesCumulative'][0],
-                $GLOBALS['TL_LANG']['MSC']['resetCategoriesCumulative'][1],
-                'reset',
-                0 === \count($this->currentNewsCategories) && null === $this->activeCategories
-            );
-        }
-
+        $resetUrl = $this->getTargetPage()->getFrontendUrl();
         $parameterName = $this->manager->getParameterName($GLOBALS['objPage']->rootId);
 
         /** @var NewsCategoryModel $category */
