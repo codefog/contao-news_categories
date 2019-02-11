@@ -38,14 +38,7 @@ class NewsCategoriesManager implements FrameworkAwareInterface
     {
         $page->loadDetails();
 
-        // Get the alias
-        if ($category instanceof Multilingual) {
-            $alias = $category->getAlias($page->language);
-        } else {
-            $alias = $category->alias;
-        }
-
-        $params = '/'.$this->getParameterName($page->rootId).'/'.$alias;
+        $params = '/'.$this->getParameterName($page->rootId).'/'.$this->getCategoryAlias($category, $page);
 
         return $absolute ? $page->getAbsoluteUrl($params) : $page->getFrontendUrl($params);
     }
@@ -64,6 +57,23 @@ class NewsCategoriesManager implements FrameworkAwareInterface
         }
 
         return $image;
+    }
+
+    /**
+     * Get the category alias
+     *
+     * @param NewsCategoryModel $category
+     * @param PageModel         $page
+     *
+     * @return string
+     */
+    public function getCategoryAlias(NewsCategoryModel $category, PageModel $page)
+    {
+        if ($category instanceof Multilingual) {
+            return $category->getAlias($page->language);
+        }
+
+        return $category->alias;
     }
 
     /**
