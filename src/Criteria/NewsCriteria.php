@@ -13,6 +13,7 @@ namespace Codefog\NewsCategoriesBundle\Criteria;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\Database;
 use Contao\Date;
 use Contao\NewsModel;
 use Haste\Model\Model;
@@ -135,12 +136,13 @@ class NewsCriteria
     /**
      * Set the default categories.
      *
-     * @param array $defaultCategories
-     * @param bool  $includeSubcategories
+     * @param array       $defaultCategories
+     * @param bool        $includeSubcategories
+     * @param string|null $order
      *
      * @throws NoNewsException
      */
-    public function setDefaultCategories(array $defaultCategories, $includeSubcategories = true)
+    public function setDefaultCategories(array $defaultCategories, $includeSubcategories = true, $order = null)
     {
         $defaultCategories = $this->parseIds($defaultCategories);
 
@@ -168,6 +170,20 @@ class NewsCriteria
         $t = $this->getNewsModelAdapter()->getTable();
 
         $this->columns['defaultCategories'] = "$t.id IN(".\implode(',', $newsIds).')';
+
+        // Order news items by best match
+        if ($order === 'best_match') {
+            $mapper = [];
+
+            // Build the mapper
+            foreach (array_unique($newsIds) as $newsId) {
+                $mapper[$newsId] = count(array_intersect($defaultCategories, array_unique($model->getRelatedValues($t, 'categories', $newsId))));
+            }
+
+            arsort($mapper);
+
+            $this->options['order'] = Database::getInstance()->findInSet("$t.id", array_keys($mapper));
+        }
     }
 
     /**

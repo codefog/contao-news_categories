@@ -1,5 +1,5 @@
 
-<ul class="<?= $this->level ?>">
+<ul class="<?= $this->level ?><?php if ($this->isActiveCategories): ?> active-categories<?php endif; ?>">
     <?php foreach ($this->items as $item): ?>
         <?php if ($item['isActive']): ?>
             <li class="<?= $item['class'] ?>">

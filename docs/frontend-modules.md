@@ -13,10 +13,21 @@
 
 ### News categories list
 
-The extension comes with one extra front end module. It will generate a list of categories as links that allows users to 
+The extension comes with an extra front end module that will generate a list of categories as links, which allows users to 
 filter news items in other news front end modules.
 
 ![](images/frontend-module.png)
+
+### News categories cumulative filter
+
+For a more advanced filtering similar to a tag cloud, you can use the news categories cumulative filter module.
+It displays a flat list of the categories and allows to combine multiple filters. The categories are displayed 
+as two lists: currently active categories and remaining categories that will still produce some results.  
+
+> **Important:** Make sure to check the `Filter by categories (cumulative)` option in the news list/archive front end module settings 
+> or the filtering won't work!  
+
+![](images/cumulative-filter.png)
 
 ### News modules
 

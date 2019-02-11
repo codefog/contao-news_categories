@@ -1,0 +1,25 @@
+<?php $this->extend('block_unsearchable'); ?>
+
+<?php $this->block('content'); ?>
+
+<?php if ($this->activeCategories): ?>
+    <div class="active-categories">
+        <h6><?= $GLOBALS['TL_LANG']['MSC']['activeCategories'] ?></h6>
+        <?= $this->activeCategories ?>
+    </div>
+<?php endif; ?>
+
+<?php if ($this->inactiveCategories): ?>
+    <div class="inactive-categories">
+        <h6><?= $this->activeCategories ? $GLOBALS['TL_LANG']['MSC']['inactiveCategoriesAdd'] : $GLOBALS['TL_LANG']['MSC']['inactiveCategories'] ?></h6>
+        <?= $this->inactiveCategories ?>
+    </div>
+<?php endif; ?>
+
+<?php if ($this->resetUrl): ?>
+    <div class="reset-link">
+        <a href="<?= ampersand($this->resetUrl) ?>" class="reset" title="<?= specialchars($GLOBALS['TL_LANG']['MSC']['resetCategoriesCumulative'][1]) ?>"><?= $GLOBALS['TL_LANG']['MSC']['resetCategoriesCumulative'][0] ?></a>
+    </div>
+<?php endif; ?>
+
+<?php $this->endblock(); ?>

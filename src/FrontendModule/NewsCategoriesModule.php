@@ -106,6 +106,11 @@ class NewsCategoriesModule extends ModuleNews
         // Get the active category
         if (null !== ($activeCategory = NewsCategoryModel::findPublishedByIdOrAlias(Input::get($param)))) {
             $this->activeCategory = $activeCategory;
+
+            // Add the canonical URL tag
+            if ($this->news_enableCanonicalUrls) {
+                $GLOBALS['TL_HEAD'][] = sprintf('<link rel="canonical" href="%s">', $GLOBALS['objPage']->getAbsoluteUrl());
+            }
         }
 
         $ids = [];
@@ -312,7 +317,12 @@ class NewsCategoriesModule extends ModuleNews
         // Add the image
         if (null !== $category && null !== ($image = $this->manager->getImage($category))) {
             $data['image'] = new \stdClass();
-            Controller::addImageToTemplate($data['image'], ['singleSRC' => $image->path, 'size' => $this->news_categoryImgSize]);
+            Controller::addImageToTemplate($data['image'], [
+                'singleSRC' => $image->path,
+                'size' => $this->news_categoryImgSize,
+                'alt' => $title,
+                'imageTitle' => $title,
+            ]);
         } else {
             $data['image'] = null;
         }

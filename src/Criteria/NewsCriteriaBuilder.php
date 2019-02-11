@@ -12,10 +12,12 @@ namespace Codefog\NewsCategoriesBundle\Criteria;
 
 use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
+use Codefog\NewsCategoriesBundle\FrontendModule\CumulativeFilterModule;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\Database;
 use Contao\Input;
 use Contao\Module;
 use Contao\StringUtil;
@@ -152,6 +154,34 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
             $criteria->setDefaultCategories($default);
         }
 
+        // Filter by multiple active categories
+        if ($module->news_filterCategoriesCumulative) {
+            /** @var Input $input */
+            $input = $this->framework->getAdapter(Input::class);
+            $param = $this->manager->getParameterName();
+
+            if ($aliases = $input->get($param)) {
+                $aliases = StringUtil::trimsplit(CumulativeFilterModule::getCategorySeparator(), $aliases);
+                $aliases = array_unique(array_filter($aliases));
+
+                if (count($aliases) > 0) {
+                    /** @var NewsCategoryModel $model */
+                    $model = $this->framework->getAdapter(NewsCategoryModel::class);
+
+                    foreach ($aliases as $alias) {
+                        // Return null if the category does not exist
+                        if (null === ($category = $model->findPublishedByIdOrAlias($alias))) {
+                            throw new CategoryNotFoundException(sprintf('News category "%s" was not found', $alias));
+                        }
+
+                        $criteria->setCategory($category->id, (bool) $module->news_filterPreserve, (bool) $module->news_includeSubcategories);
+                    }
+                }
+            }
+
+            return;
+        }
+
         // Filter by active category
         if ($module->news_filterCategories) {
             /** @var Input $input */
@@ -205,12 +235,17 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
             }
         }
 
+        // Exclude categories by root
+        if ($module->news_categoriesRoot > 0) {
+            $categories = array_intersect($categories, NewsCategoryModel::getAllSubcategoriesIds($module->news_categoriesRoot));
+        }
+
         // There are no categories left
         if (0 === \count($categories)) {
             throw new NoNewsException();
         }
 
-        $criteria->setDefaultCategories($categories);
+        $criteria->setDefaultCategories($categories, (bool) $module->news_includeSubcategories, $module->news_relatedCategoriesOrder);
         $criteria->setExcludedNews([$news->id]);
     }
 }
