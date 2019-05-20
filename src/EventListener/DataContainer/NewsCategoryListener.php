@@ -98,7 +98,13 @@ class NewsCategoryListener implements FrameworkAwareInterface
         // Limit the allowed roots for the user
         if (null !== ($roots = $this->permissionChecker->getUserAllowedRoots())) {
             if (isset($GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root']) && is_array($GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'])) {
-                $GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'] = array_intersect($GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'], $roots);
+                $roots = array_intersect($GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'], $roots);
+                $roots = (count($roots) === 0) ? [0] : $roots;
+            }
+
+            // Unset the root to avoid error with filters (see #157)
+            if (count($roots) === 0) {
+                unset($GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root']);
             } else {
                 $GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'] = $roots;
             }
