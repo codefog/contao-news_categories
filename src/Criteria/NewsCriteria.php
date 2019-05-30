@@ -84,6 +84,9 @@ class NewsCriteria
             case 'order_date_asc':
                 $this->options['order'] = "$t.date";
                 break;
+            case 'order_featured_asc':
+                $this->options['order'] = "$t.featured DESC, $t.date";
+				break;
             case 'order_featured_desc':
                 $this->options['order'] = "$t.featured DESC, $t.date DESC";
                 break;
