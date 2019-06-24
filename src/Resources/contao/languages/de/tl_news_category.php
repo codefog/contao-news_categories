@@ -15,6 +15,8 @@ $GLOBALS['TL_LANG']['tl_news_category']['title'] = ['Titel', 'Bitte Kategorie-Ti
 $GLOBALS['TL_LANG']['tl_news_category']['frontendTitle'] = ['Frontend Titel', 'Titel der im Frontend angezeigt wird.'];
 $GLOBALS['TL_LANG']['tl_news_category']['alias'] = ['Nachrichten-Kategorie-Alias', 'Der Kategorie-Alias ist eine eindeutige Referenz, die anstelle der numerischen ID aufgerufen werden kann.'];
 $GLOBALS['TL_LANG']['tl_news_category']['cssClass'] = ['CSS-Klasse', 'Hier kann eine CSS-Klasse vergeben werden, welche zur Kategorie im Front-End hinzugefügt wird.'];
+$GLOBALS['TL_LANG']['tl_news_category']['description'] = ['Beschreibung', 'Hier können Sie eine Beschreibung der Kategorie eingeben.'];
+$GLOBALS['TL_LANG']['tl_news_category']['image'] = ['Bild', 'Hier können Sie das Bild für die Kategorie auswählen.'];
 $GLOBALS['TL_LANG']['tl_news_category']['hideInList'] = ['Im Listen/Archiv-Modul verstecken', 'Zeigt diese Kategorie nicht im Nachrichtenliste oder -archiv Modul an (wirkt sich nur auf die <em>news_</em> Templates aus).'];
 $GLOBALS['TL_LANG']['tl_news_category']['hideInReader'] = ['Im Leser-Modul verstecken', 'Zeigt diese Kategorie nicht im Nachrichtenleser-Modul an (wirkt sich nur auf die <em>news_</em> Templates aus).'];
 $GLOBALS['TL_LANG']['tl_news_category']['excludeInRelated'] = ['Aus ähnlicher Nachrichtenliste ausschließen', 'Schließt die Nachrichten dieser Kategorie in der Nachrichten-Liste der ähnlichen Nachrichten aus.'];
@@ -25,6 +27,7 @@ $GLOBALS['TL_LANG']['tl_news_category']['published'] = ['Kategorie veröffentlic
  * Legends
  */
 $GLOBALS['TL_LANG']['tl_news_category']['title_legend'] = 'Titel und Alias';
+$GLOBALS['TL_LANG']['tl_news_category']['details_legend'] = 'Kategorie Details';
 $GLOBALS['TL_LANG']['tl_news_category']['modules_legend'] = 'Modul-Einstellungen';
 $GLOBALS['TL_LANG']['tl_news_category']['redirect_legend'] = 'Weiterleitungs-Einstellungen';
 $GLOBALS['TL_LANG']['tl_news_category']['publish_legend'] = 'Veröffentlichung';
