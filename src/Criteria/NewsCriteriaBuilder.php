@@ -93,7 +93,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
         $criteria = new NewsCriteria($this->framework);
 
         try {
-            $criteria->setBasicCriteria($archives, $module->news_order);
+            $criteria->setBasicCriteria($archives, $module->news_order, $module->news_featured);
 
             // Set the featured filter
             if (null !== $featured) {

@@ -58,7 +58,7 @@ class NewsCriteria
      *
      * @throws NoNewsException
      */
-    public function setBasicCriteria(array $archives, $sorting = null)
+    public function setBasicCriteria(array $archives, $sorting = null, $featured = null)
     {
         $archives = $this->parseIds($archives);
 
@@ -70,30 +70,32 @@ class NewsCriteria
 
         $this->columns[] = "$t.pid IN(".\implode(',', \array_map('intval', $archives)).')';
 
+        $order = '';
+
+        if ('featured_first' === $featured) {
+            $order .= "$t.featured DESC, ";
+        }
+
         // Set the sorting
         switch ($sorting) {
             case 'order_headline_asc':
-                $this->options['order'] = "$t.headline";
+                $order .= "$t.headline";
                 break;
             case 'order_headline_desc':
-                $this->options['order'] = "$t.headline DESC";
+                $order .= "$t.headline DESC";
                 break;
             case 'order_random':
-                $this->options['order'] = 'RAND()';
+                $order .= 'RAND()';
                 break;
             case 'order_date_asc':
-                $this->options['order'] = "$t.date";
-                break;
-            case 'order_featured_asc':
-                $this->options['order'] = "$t.featured DESC, $t.date";
-                break;
-            case 'order_featured_desc':
-                $this->options['order'] = "$t.featured DESC, $t.date DESC";
+                $order .= "$t.date";
                 break;
             default:
-                $this->options['order'] = "$t.date DESC";
+                $order .= "$t.date DESC";
                 break;
         }
+
+        $this->options['order'] = $order;
 
         // Never return unpublished elements in the back end, so they don't end up in the RSS feed
         if (!BE_USER_LOGGED_IN || TL_MODE === 'BE') {
