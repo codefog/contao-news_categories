@@ -21,7 +21,7 @@ Minimum requirements:
 Multilingual features requirements:
 
  - [DC_Multilingual](https://github.com/terminal42/contao-dc_multilingual) 3.0
- - [ChangeLangauge](https://github.com/terminal42/contao-changelanguage) 3.1 (recommended)
+ - [ChangeLanguage](https://github.com/terminal42/contao-changelanguage) 3.1 (recommended)
 
 
 ## Install using Composer
