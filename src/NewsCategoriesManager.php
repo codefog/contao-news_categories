@@ -140,9 +140,9 @@ class NewsCategoriesManager implements FrameworkAwareInterface
      */
     public function getTrailIds(NewsCategoryModel $category)
     {
-        static $ids;
+        static $cache;
 
-        if (!\is_array($ids)) {
+        if (!isset($cache[$category->id])) {
             /** @var Database $db */
             $db = $this->framework->createInstance(Database::class);
 
@@ -151,9 +151,11 @@ class NewsCategoriesManager implements FrameworkAwareInterface
 
             // Remove the current category
             unset($ids[\array_search($category->id, $ids, true)]);
+
+            $cache[$category->id] = $ids;
         }
 
-        return $ids;
+        return $cache[$category->id];
     }
 
     /**
