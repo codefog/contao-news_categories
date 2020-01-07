@@ -342,7 +342,7 @@ class NewsCategoriesModule extends ModuleNews
         $cssClasses = [$category->getCssClass()];
 
         // Add the trail class
-        if (\in_array((int) $category->id, $this->manager->getTrailIds($this->activeCategory), true)) {
+        if ($this->activeCategory !== null && \in_array((int) $category->id, $this->manager->getTrailIds($this->activeCategory), true)) {
             $cssClasses[] = 'trail';
         }
 
