@@ -18,4 +18,4 @@ $GLOBALS['TL_LANG']['tl_module']['news_filterCategoriesCumulative'] = ['Nach Kat
 $GLOBALS['TL_LANG']['tl_module']['news_filterDefault'] = ['Standard-Filter', 'Hier kann der Standard-Filter für die Nachrichtenliste gewählt werden.'];
 $GLOBALS['TL_LANG']['tl_module']['news_filterPreserve'] = ['Standard-Filter aktivieren', 'Die Standard-Filtereinstellungen gelten auch dann, wenn eine aktive Kategorie ausgewählt wurde.'];
 $GLOBALS['TL_LANG']['tl_module']['news_resetCategories'] = ['Kategorie-Filter zurücksetzen', 'Fügt einen Link hinzu, um die Filter zurückzusetzen.'];
-$GLOBALS['TL_LANG']['tl_module']['news_enableCanonicalUrls'] = ['Canonical URL einfügen', 'AFügt bei aktiver Kategorieauswahl einen Canonical-Tag im Head der Webseite ein.'];
+$GLOBALS['TL_LANG']['tl_module']['news_enableCanonicalUrls'] = ['Canonical URL einfügen', 'Fügt bei aktiver Kategorieauswahl einen Canonical-Tag im Head der Webseite ein.'];
