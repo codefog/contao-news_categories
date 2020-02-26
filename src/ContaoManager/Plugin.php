@@ -29,7 +29,7 @@ class Plugin implements BundlePluginInterface
                 ContaoCoreBundle::class,
                 ContaoNewsBundle::class,
                 'haste',
-            ]),
+            ])->setReplace(['news_categories']),
         ];
     }
 }
