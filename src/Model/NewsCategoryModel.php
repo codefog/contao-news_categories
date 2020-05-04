@@ -86,10 +86,11 @@ class NewsCategoryModel extends ParentModel
      * @param array $archives
      * @param array $ids
      * @param array $aliases
+     * @param array $excludedIds
      *
      * @return Collection|null
      */
-    public static function findPublishedByArchives(array $archives, array $ids = [], array $aliases = [])
+    public static function findPublishedByArchives(array $archives, array $ids = [], array $aliases = [], array $excludedIds = [])
     {
         if (0 === \count($archives) || false === ($relation = Relations::getRelation('tl_news', 'categories'))) {
             return null;
@@ -119,6 +120,11 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
         // Filter by custom categories
         if (\count($ids) > 0) {
             $columns[] = "$t.id IN (".\implode(',', \array_map('intval', $ids)).')';
+        }
+
+        // Filter by excluded IDs
+        if (\count($excludedIds) > 0) {
+            $columns[] = "$t.id NOT IN (".\implode(',', \array_map('intval', $excludedIds)).')';
         }
 
         // Filter by custom aliases
@@ -272,10 +278,11 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
      * @param int|null $category
      * @param bool     $includeSubcategories
      * @param array    $cumulativeCategories
+     * @param bool     $unionFiltering
      *
      * @return int
      */
-    public static function getUsage(array $archives = [], $category = null, $includeSubcategories = false, array $cumulativeCategories = [])
+    public static function getUsage(array $archives = [], $category = null, $includeSubcategories = false, array $cumulativeCategories = [], $unionFiltering = false)
     {
         $t = NewsModel::getTable();
 
@@ -285,27 +292,29 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
         }
 
         $ids = Model::getReferenceValues($t, 'categories', $category);
+        $ids = array_map('intval', $ids);
 
         // Also filter by cumulative categories
         if (count($cumulativeCategories) > 0) {
             $cumulativeIds = null;
 
             foreach ($cumulativeCategories as $cumulativeCategory) {
-                $tmp = Model::getReferenceValues($t, 'categories', $cumulativeCategory);
-
                 // Include the subcategories
                 if ($includeSubcategories) {
-                    $tmp = static::getAllSubcategoriesIds($tmp);
+                    $cumulativeCategory = static::getAllSubcategoriesIds($cumulativeCategory);
                 }
 
+                $newsIds = Model::getReferenceValues($t, 'categories', $cumulativeCategory);
+                $newsIds = array_map('intval', $newsIds);
+
                 if ($cumulativeIds === null) {
-                    $cumulativeIds = $tmp;
+                    $cumulativeIds = $newsIds;
                 } else {
-                    $cumulativeIds = array_intersect($cumulativeIds, $tmp);
+                    $cumulativeIds = $unionFiltering ? array_merge($cumulativeIds, $newsIds) : array_intersect($cumulativeIds, $newsIds);
                 }
             }
 
-            $ids = array_intersect($ids, $cumulativeIds);
+            $ids = $unionFiltering ? array_merge($ids, $cumulativeIds) : array_intersect($ids, $cumulativeIds);
         }
 
         if (0 === \count($ids)) {

@@ -167,6 +167,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
                 if (count($aliases) > 0) {
                     /** @var NewsCategoryModel $model */
                     $model = $this->framework->getAdapter(NewsCategoryModel::class);
+                    $categories = [];
 
                     foreach ($aliases as $alias) {
                         // Return null if the category does not exist
@@ -174,7 +175,19 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
                             throw new CategoryNotFoundException(sprintf('News category "%s" was not found', $alias));
                         }
 
-                        $criteria->setCategory($category->id, (bool) $module->news_filterPreserve, (bool) $module->news_includeSubcategories);
+                        $categories[] = (int) $category->id;
+                    }
+
+                    if (count($categories) > 0) {
+                        // Union filtering
+                        if ($module->news_filterCategoriesUnion) {
+                            $criteria->setCategories($categories, (bool) $module->news_filterPreserve, (bool) $module->news_includeSubcategories);
+                        } else {
+                            // Intersection filtering
+                            foreach ($categories as $category) {
+                                $criteria->setCategory($category, (bool) $module->news_filterPreserve, (bool) $module->news_includeSubcategories);
+                            }
+                        }
                     }
                 }
             }
