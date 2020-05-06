@@ -211,69 +211,79 @@ class CumulativeFilterModule extends ModuleNews
      */
     protected function getInactiveCategories(array $customCategories = [])
     {
+        $excludedIds = [];
+
         // Find only the categories that still can display some results combined with active categories
         if ($this->activeCategories !== null) {
-            $columns = [];
-            $values = [];
+            // Union filtering
+            if ($this->news_filterCategoriesUnion) {
+                $excludedIds = $this->activeCategories->fetchEach('id');
+            } else {
+                // Intersection filtering
+                $columns = [];
+                $values = [];
 
-            // Collect the news that match all active categories
-            /** @var NewsCategoryModel $activeCategory */
-            foreach ($this->activeCategories as $activeCategory) {
-                $criteria = new NewsCriteria(System::getContainer()->get('contao.framework'));
+                // Collect the news that match all active categories
+                /** @var NewsCategoryModel $activeCategory */
+                foreach ($this->activeCategories as $activeCategory) {
+                    $criteria = new NewsCriteria(System::getContainer()->get('contao.framework'));
 
-                try {
-                    $criteria->setBasicCriteria($this->news_archives);
-                    $criteria->setCategory($activeCategory->id, false, (bool) $this->news_includeSubcategories);
-                } catch (NoNewsException $e) {
-                    continue;
+                    try {
+                        $criteria->setBasicCriteria($this->news_archives);
+                        $criteria->setCategory($activeCategory->id, false, (bool) $this->news_includeSubcategories);
+                    } catch (NoNewsException $e) {
+                        continue;
+                    }
+
+                    $columns = array_merge($columns, $criteria->getColumns());
+                    $values = array_merge($values, $criteria->getValues());
                 }
 
-                $columns = array_merge($columns, $criteria->getColumns());
-                $values = array_merge($values, $criteria->getValues());
-            }
-
-            // Should not happen but you never know
-            if (count($columns) === 0) {
-                return null;
-            }
-
-            $newsIds = Database::getInstance()
-                ->prepare('SELECT id FROM tl_news WHERE ' . implode(' AND ', $columns))
-                ->execute($values)
-                ->fetchEach('id')
-            ;
-
-            if (count($newsIds) === 0) {
-                return null;
-            }
-
-            $categoryIds = Model::getRelatedValues('tl_news', 'categories', $newsIds);
-            $categoryIds = \array_map('intval', $categoryIds);
-            $categoryIds = \array_unique(\array_filter($categoryIds));
-
-            // Include the parent categories
-            if ($this->news_includeSubcategories) {
-                foreach ($categoryIds as $categoryId) {
-                    $categoryIds = array_merge($categoryIds, Database::getInstance()->getParentRecords($categoryId, 'tl_news_category'));
+                // Should not happen but you never know
+                if (count($columns) === 0) {
+                    return null;
                 }
+
+                $newsIds = Database::getInstance()
+                    ->prepare('SELECT id FROM tl_news WHERE ' . implode(' AND ', $columns))
+                    ->execute($values)
+                    ->fetchEach('id')
+                ;
+
+                if (count($newsIds) === 0) {
+                    return null;
+                }
+
+                $categoryIds = Model::getRelatedValues('tl_news', 'categories', $newsIds);
+                $categoryIds = \array_map('intval', $categoryIds);
+                $categoryIds = \array_unique(\array_filter($categoryIds));
+
+                // Include the parent categories
+                if ($this->news_includeSubcategories) {
+                    foreach ($categoryIds as $categoryId) {
+                        $categoryIds = array_merge($categoryIds, \array_map('intval', Database::getInstance()->getParentRecords($categoryId, 'tl_news_category')));
+                    }
+                }
+
+                // Remove the active categories, so they are not considered again
+                $categoryIds = array_diff($categoryIds, $this->activeCategories->fetchEach('id'));
+
+                // Filter by custom categories
+                if (count($customCategories) > 0) {
+                    $categoryIds = array_intersect($categoryIds, $customCategories);
+                }
+
+                $categoryIds = array_values(array_unique($categoryIds));
+
+                if (count($categoryIds) === 0) {
+                    return null;
+                }
+
+                $customCategories = $categoryIds;
             }
-
-            // Remove the active categories, so they are not considered again
-            $categoryIds = array_diff($categoryIds, $this->activeCategories->fetchEach('id'));
-
-            // Filter by custom categories
-            if (count($customCategories) > 0) {
-                $categoryIds = array_intersect($categoryIds, $customCategories);
-            }
-
-            if (count($categoryIds) === 0) {
-                return null;
-            }
-
-            $customCategories = $categoryIds;
         }
 
-        return NewsCategoryModel::findPublishedByArchives($this->news_archives, $customCategories);
+        return NewsCategoryModel::findPublishedByArchives($this->news_archives, $customCategories, [], $excludedIds);
     }
 
     /**
@@ -433,13 +443,14 @@ class CumulativeFilterModule extends ModuleNews
         // Add the news quantity
         if ($this->news_showQuantity) {
             if (null === $category) {
-                $data['quantity'] = NewsCategoryModel::getUsage($this->news_archives);
+                $data['quantity'] = NewsCategoryModel::getUsage($this->news_archives, null, false, [], (bool) $this->news_filterCategoriesUnion);
             } else {
                 $data['quantity'] = NewsCategoryModel::getUsage(
                     $this->news_archives,
                     $category->id,
                     (bool) $this->news_includeSubcategories,
-                    ($this->activeCategories !== null) ? $this->activeCategories->fetchEach('id') : []
+                    ($this->activeCategories !== null) ? $this->activeCategories->fetchEach('id') : [],
+                    (bool) $this->news_filterCategoriesUnion
                 );
             }
         }

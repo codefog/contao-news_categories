@@ -251,7 +251,7 @@ class NewsCategoriesModule extends ModuleNews
                 $category->getTitle(),
                 $this->generateItemCssClass($category),
                 null !== $this->activeCategory && (int) $this->activeCategory->id === (int) $category->id,
-                $this->renderNewsCategories($category->id, $ids, $level),
+                (!$this->showLevel || $this->showLevel >= $level) ? $this->renderNewsCategories($category->id, $ids, $level) : '',
                 $category
             );
         }

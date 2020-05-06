@@ -195,13 +195,13 @@ class NewsCriteria
     }
 
     /**
-     * Set the category.
+     * Set the category (intersection filtering).
      *
      * @param int  $category
      * @param bool $preserveDefault
      * @param bool $includeSubcategories
      *
-     * @return NoNewsException
+     * @throws NoNewsException
      */
     public function setCategory($category, $preserveDefault = false, $includeSubcategories = false)
     {
@@ -230,6 +230,54 @@ class NewsCriteria
         $t = $this->getNewsModelAdapter()->getTable();
 
         $this->columns[] = "$t.id IN(".\implode(',', $newsIds).')';
+    }
+
+    /**
+     * Set the categories (union filtering).
+     *
+     * @param array $categories
+     * @param bool  $preserveDefault
+     * @param bool  $includeSubcategories
+     *
+     * @throws NoNewsException
+     */
+    public function setCategories($categories, $preserveDefault = false, $includeSubcategories = false)
+    {
+        $allNewsIds = [];
+
+        /** @var Model $model */
+        $model = $this->framework->getAdapter(Model::class);
+
+        foreach ($categories as $category) {
+            // Include the subcategories
+            if ($includeSubcategories) {
+                /** @var NewsCategoryModel $newsCategoryModel */
+                $newsCategoryModel = $this->framework->getAdapter(NewsCategoryModel::class);
+                $category = $newsCategoryModel->getAllSubcategoriesIds($category);
+            }
+
+            $newsIds = $model->getReferenceValues('tl_news', 'categories', $category);
+            $newsIds = $this->parseIds($newsIds);
+
+            if (0 === \count($newsIds)) {
+                continue;
+            }
+
+            $allNewsIds = array_merge($allNewsIds, $newsIds);
+        }
+
+        if (\count($allNewsIds) === 0) {
+            throw new NoNewsException();
+        }
+
+        // Do not preserve the default categories
+        if (!$preserveDefault) {
+            unset($this->columns['defaultCategories']);
+        }
+
+        $t = $this->getNewsModelAdapter()->getTable();
+
+        $this->columns[] = "$t.id IN(".\implode(',', $allNewsIds).')';
     }
 
     /**
