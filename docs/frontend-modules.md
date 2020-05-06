@@ -29,6 +29,13 @@ as two lists: currently active categories and remaining categories that will sti
 
 ![](images/cumulative-filter.png)
 
+By default, the cumulative filter uses an intersection (x AND y) to filter news entries. That means, if you select
+categories A and B, then each news must belong to both categories the same time to be displayed.
+
+In case you would like to display news belonging to either category, select the `Filter by categories using union (cumulative only)` 
+option in both cumulative filter module and respective news listing module. It will change the filtering behavior to use
+a union (x OR y) search instead of intersection.
+
 ### News modules
 
 The bundle overwrites the default news modules by adding the extra category related features to them. They are fully

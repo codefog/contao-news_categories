@@ -82,7 +82,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterCategoriesCumulative'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['news_filterCategoriesCumulative'],
     'exclude' => true,
     'inputType' => 'checkbox',
-    'eval' => ['tl_class' => 'w50'],
+    'eval' => ['tl_class' => 'clr'],
     'sql' => ['type' => 'boolean', 'default' => 0],
 ];
 
