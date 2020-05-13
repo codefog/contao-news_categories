@@ -21,10 +21,16 @@ $GLOBALS['TL_DCA']['tl_news']['config']['onsubmit_callback'][] = ['codefog_news_
 /*
  * Extend palettes
  */
-\Contao\CoreBundle\DataContainer\PaletteManipulator::create()
+$paletteManipulator = \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
     ->addLegend('category_legend', 'title_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField('categories', 'category_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->applyToPalette('default', 'tl_news');
+;
+
+foreach ($GLOBALS['TL_DCA']['tl_news']['palettes'] as $name => $palette) {
+    if (is_string($palette)) {
+        $paletteManipulator->applyToPalette($name, 'tl_news');
+    }
+}
 
 /*
  * Add fields
