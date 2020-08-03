@@ -55,9 +55,15 @@ services:
             - "@database_connection"
             - "@codefog_news_categories.permission_checker"
             - "@session"
+            - "@?contao.slug"
 
     codefog_news_categories.listener.data_container.news:
         class: Codefog\NewsCategoriesBundle\EventListener\DataContainer\NewsListener
         arguments:
             - "@database_connection"
             - "@codefog_news_categories.permission_checker"
+
+    codefog_news_categories.listener.data_container.settings:
+        class: Codefog\NewsCategoriesBundle\EventListener\DataContainer\SettingsListener
+        arguments:
+            - "@?contao.slug.valid_characters"

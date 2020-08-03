@@ -13,9 +13,11 @@ namespace Codefog\NewsCategoriesBundle\EventListener\DataContainer;
 use Codefog\NewsCategoriesBundle\MultilingualHelper;
 use Codefog\NewsCategoriesBundle\PermissionChecker;
 use Contao\Backend;
+use Contao\Config;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\CoreBundle\Slug\Slug;
 use Contao\DataContainer;
 use Contao\Image;
 use Contao\Input;
@@ -44,17 +46,23 @@ class NewsCategoryListener implements FrameworkAwareInterface
     private $session;
 
     /**
+     * @var Slug
+     */
+    private $slug;
+
+    /**
      * NewsCategoryListener constructor.
      *
      * @param Connection        $db
      * @param PermissionChecker $permissionChecker
      * @param SessionInterface  $session
      */
-    public function __construct(Connection $db, PermissionChecker $permissionChecker, SessionInterface $session)
+    public function __construct(Connection $db, PermissionChecker $permissionChecker, SessionInterface $session, Slug $slug = null)
     {
         $this->db = $db;
         $this->permissionChecker = $permissionChecker;
         $this->session = $session;
+        $this->slug = $slug;
     }
 
     /**
@@ -225,7 +233,23 @@ class NewsCategoryListener implements FrameworkAwareInterface
         // Generate alias if there is none
         if (!$value) {
             $autoAlias = true;
-            $value = StringUtil::generateAlias($dc->activeRecord->frontendTitle ?: $dc->activeRecord->title);
+            $title = $dc->activeRecord->frontendTitle ?: $dc->activeRecord->title;
+
+            if (null !== $this->slug) {
+                $slugOptions = [];
+
+                if (!empty($validChars = Config::get('news_categorySlugSetting'))) {
+                    $slugOptions['validChars'] = $validChars;
+                }
+
+                if (MultilingualHelper::isActive() && $dc instanceof Driver) {
+                    $slugOptions['locale'] = $dc->getCurrentLanguage();
+                }
+
+                $value = $this->slug->generate($title, $slugOptions);
+            } else {
+                $value = StringUtil::generateAlias($title);
+            }
         }
 
         if (MultilingualHelper::isActive() && $dc instanceof Driver) {
