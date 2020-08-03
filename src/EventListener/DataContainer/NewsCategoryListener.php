@@ -57,7 +57,7 @@ class NewsCategoryListener implements FrameworkAwareInterface
      * @param PermissionChecker $permissionChecker
      * @param SessionInterface  $session
      */
-    public function __construct(Connection $db, PermissionChecker $permissionChecker, SessionInterface $session, ?Slug $slug)
+    public function __construct(Connection $db, PermissionChecker $permissionChecker, SessionInterface $session, Slug $slug = null)
     {
         $this->db = $db;
         $this->permissionChecker = $permissionChecker;
@@ -236,12 +236,9 @@ class NewsCategoryListener implements FrameworkAwareInterface
             $title = $dc->activeRecord->frontendTitle ?: $dc->activeRecord->title;
 
             if (null !== $this->slug) {
-                /** @var Config $configAdapter */
-                $configAdapter = $this->framework->getAdapter(Config::class);
-
                 $slugOptions = [];
 
-                if (!empty($validChars = $configAdapter->get('news_categorySlugSetting'))) {
+                if (!empty($validChars = Config::get('news_categorySlugSetting'))) {
                     $slugOptions['validChars'] = $validChars;
                 }
 
