@@ -122,10 +122,15 @@ class NewsCategoriesManager implements FrameworkAwareInterface
 
         // Get the page model
         if ($pageId) {
-            /** @var PageModel $pageAdapter */
-            $pageAdapter = $this->framework->getAdapter(PageModel::class);
+            static $pageCache = [];
 
-            return $pageAdapter->findPublishedById($pageId);
+            if (!isset($pageCache[$pageId])) {
+                /** @var PageModel $pageAdapter */
+                $pageAdapter = $this->framework->getAdapter(PageModel::class);
+                $pageCache[$pageId] = $pageAdapter->findPublishedById($pageId);
+            }
+
+            return $pageCache[$pageId];
         }
 
         return null;
