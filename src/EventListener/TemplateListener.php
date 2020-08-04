@@ -31,6 +31,11 @@ class TemplateListener implements FrameworkAwareInterface
     private $manager;
 
     /**
+     * @var array
+     */
+    private $urlCache = [];
+
+    /**
      * TemplateListener constructor.
      *
      * @param NewsCategoriesManager $manager
@@ -136,9 +141,15 @@ class TemplateListener implements FrameworkAwareInterface
             $data['targetPage'] = $targetPage;
         } elseif (null !== ($targetPage = $this->manager->getTargetPage($category))) {
             // Add the category target page and URLs
-            $data['href'] = $targetPage->getFrontendUrl();
             $data['hrefWithParam'] = $this->manager->generateUrl($category, $targetPage);
             $data['targetPage'] = $targetPage;
+
+            // Cache URL for better performance
+            if (!isset($this->urlCache[$targetPage->id])) {
+                $this->urlCache[$targetPage->id] = $targetPage->getFrontendUrl();
+            }
+
+            $data['href'] = $this->urlCache[$targetPage->id];
         }
 
         // Register a function to generate category URL manually

@@ -26,6 +26,11 @@ class NewsCategoriesManager implements FrameworkAwareInterface
     use FrameworkAwareTrait;
 
     /**
+     * @var array
+     */
+    private $urlCache = [];
+
+    /**
      * Generate the category URL.
      *
      * @param NewsCategoryModel $category
@@ -37,10 +42,14 @@ class NewsCategoriesManager implements FrameworkAwareInterface
     public function generateUrl(NewsCategoryModel $category, PageModel $page, $absolute = false)
     {
         $page->loadDetails();
+        $cacheKey = $page->id . '-' . ($absolute ? 'abs' : 'rel');
 
-        $params = '/'.$this->getParameterName($page->rootId).'/'.$this->getCategoryAlias($category, $page);
+        if (!isset($this->urlCache[$cacheKey])) {
+            $params = '/%s/%s';
+            $this->urlCache[$cacheKey] = $absolute ? $page->getAbsoluteUrl($params) : $page->getFrontendUrl($params);
+        }
 
-        return $absolute ? $page->getAbsoluteUrl($params) : $page->getFrontendUrl($params);
+        return sprintf($this->urlCache[$cacheKey], $this->getParameterName($page->rootId), $this->getCategoryAlias($category, $page));
     }
 
     /**
