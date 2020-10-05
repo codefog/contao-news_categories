@@ -1,14 +1,8 @@
 <?php
 
-/*
- * News Categories bundle for Contao Open Source CMS.
- *
- * @copyright  Copyright (c) 2017, Codefog
- * @author     Codefog <https://codefog.pl>
- * @license    MIT
- */
 
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
+
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\Database;
@@ -17,7 +11,7 @@ use Contao\System;
 use Haste\Generator\RowClass;
 use Haste\Input\Input;
 
-class NewsCategoriesModule extends NewsModule
+class CumulativeHierarchicalFilterModule extends NewsModule
 {
 
     /**
@@ -59,10 +53,10 @@ class NewsCategoriesModule extends NewsModule
         // Get the parent categories IDs
         /** @var NewsCategoryModel $category */
         foreach ($categories as $category) {
-            $ids = \array_merge($ids, Database::getInstance()->getParentRecords($category->id, $category->getTable()));
+            $ids = array_merge($ids, Database::getInstance()->getParentRecords($category->id, $category->getTable()));
         }
 
-        $this->Template->categories = $this->renderNewsCategories((int) $this->news_categoriesRoot, \array_unique($ids));
+        $this->Template->categories = $this->renderNewsCategories((int)$this->news_categoriesRoot, array_unique($ids));
     }
 
     /**
@@ -82,16 +76,17 @@ class NewsCategoriesModule extends NewsModule
 
         // Layout template fallback
         if (!$this->navigationTpl) {
-            $this->navigationTpl = 'nav_newscategories';
+            $this->navigationTpl = 'nav_newscategories_hierarchical';
         }
 
-        $template = new FrontendTemplate($this->navigationTpl);
-        $template->type = \get_class($this);
-        $template->cssID = $this->cssID;
-        $template->level = 'level_'.$level;
+        $template               = new FrontendTemplate($this->navigationTpl);
+        $template->type         = get_class($this);
+        $template->cssID        = $this->cssID;
+        $template->level        = 'level_'.$level;
         $template->showQuantity = $this->news_showQuantity;
 
-        $items = [];
+        $items            = [];
+        $activeCategories = $this->getActiveCategories($ids);
 
         // Add the "reset categories" link
         if ($this->news_resetCategories && 1 === $level) {
@@ -100,27 +95,54 @@ class NewsCategoriesModule extends NewsModule
                 $GLOBALS['TL_LANG']['MSC']['resetCategories'][0],
                 $GLOBALS['TL_LANG']['MSC']['resetCategories'][1],
                 'reset',
-                0 === \count($this->currentNewsCategories) && null === $this->activeCategory
+                null === $activeCategories || 0 === count($activeCategories)
             );
         }
 
-        ++$level;
+
+        // Collect the active category parameters
+        $activeAliases = [];
+        $parameterName = $this->manager->getParameterName($GLOBALS['objPage']->rootId);
+        if ($activeCategories !== null) {
+            /** @var NewsCategoryModel $activeCategory */
+            foreach ($activeCategories as $activeCategory) {
+                $activeAliases[] = $this->manager->getCategoryAlias($activeCategory, $GLOBALS['objPage']);
+            }
+        }
 
         /** @var NewsCategoryModel $category */
         foreach ($categories as $category) {
             // Generate the category individual URL or the filter-link
-            if ($this->news_forceCategoryUrl && null !== ($targetPage = $this->manager->getTargetPage($category))) {
-                $url = $targetPage->getFrontendUrl();
+
+            $categoryAlias = $this->manager->getCategoryAlias($category, $GLOBALS['objPage']);
+
+            // Add/remove the category alias to the active ones
+            if (in_array($categoryAlias, $activeAliases, true)) {
+                $aliases = array_diff($activeAliases, [$categoryAlias]);
             } else {
-                $url = $this->manager->generateUrl($category, $this->getTargetPage());
+                $aliases = array_merge($activeAliases, [$categoryAlias]);
             }
+
+            $url = $this->getTargetPage()->getFrontendUrl();
+            if (count($aliases) > 0) {
+                $url = $this->getTargetPage()->getFrontendUrl(sprintf('/%s/%s', $parameterName, implode(static::getCategorySeparator(), $aliases)));
+            }
+
+            //$url = $this->manager->generateUrl($category, $this->getTargetPage());
+
+            $isActive = false;
+            if ($activeCategories !== null && in_array($category, $activeCategories->getModels())) {
+                $isActive = true;
+            }
+
+            ++$level;
 
             $items[] = $this->generateItem(
                 $url,
                 $category->getTitle(),
                 $category->getTitle(),
                 $this->generateItemCssClass($category),
-                null !== $this->activeCategory && (int) $this->activeCategory->id === (int) $category->id,
+                $isActive, //null !== $this->activeCategory && (int) $this->activeCategory->id === (int) $category->id,
                 (!$this->showLevel || $this->showLevel >= $level) ? $this->renderNewsCategories($category->id, $ids, $level) : '',
                 $category
             );
@@ -133,5 +155,6 @@ class NewsCategoriesModule extends NewsModule
 
         return $template->parse();
     }
+
 
 }
