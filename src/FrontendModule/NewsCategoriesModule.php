@@ -19,14 +19,12 @@ use Haste\Input\Input;
 
 class NewsCategoriesModule extends NewsModule
 {
-
     /**
      * Template.
      *
      * @var string
      */
     protected $strTemplate = 'mod_newscategories';
-
 
     /**
      * Generate the module.
@@ -50,7 +48,7 @@ class NewsCategoriesModule extends NewsModule
 
             // Add the canonical URL tag
             if ($this->news_enableCanonicalUrls) {
-                $GLOBALS['TL_HEAD'][] = sprintf('<link rel="canonical" href="%s">', $GLOBALS['objPage']->getAbsoluteUrl());
+                $GLOBALS['TL_HEAD'][] = \sprintf('<link rel="canonical" href="%s">', $GLOBALS['objPage']->getAbsoluteUrl());
             }
         }
 
@@ -133,5 +131,4 @@ class NewsCategoriesModule extends NewsModule
 
         return $template->parse();
     }
-
 }

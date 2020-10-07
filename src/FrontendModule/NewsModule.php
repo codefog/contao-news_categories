@@ -3,7 +3,6 @@
 
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
-
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
@@ -11,14 +10,12 @@ use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
 use Contao\BackendTemplate;
 use Contao\Controller;
 use Contao\Database;
-use Contao\FrontendTemplate;
 use Contao\Model\Collection;
 use Contao\ModuleNews;
 use Contao\NewsModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
-use Haste\Generator\RowClass;
 use Haste\Input\Input;
 use Haste\Model\Model;
 use Patchwork\Utf8;
@@ -51,13 +48,12 @@ abstract class NewsModule extends ModuleNews
      */
     protected $manager;
 
-
     /**
      * Display a wildcard in the back end.
      *
      * @return string
      */
-    public function generate() :string
+    public function generate()
     {
         if (TL_MODE === 'BE') {
             $template = new BackendTemplate('be_wildcard');
@@ -84,9 +80,8 @@ abstract class NewsModule extends ModuleNews
         return parent::generate();
     }
 
-
     /**
-     * Get the URL category separator character
+     * Get the URL category separator character.
      *
      * @return string
      */
@@ -96,7 +91,7 @@ abstract class NewsModule extends ModuleNews
     }
 
     /**
-     * Get the categories
+     * Get the categories.
      *
      * @return Collection|null
      */
@@ -125,7 +120,7 @@ abstract class NewsModule extends ModuleNews
     }
 
     /**
-     * Get the active categories
+     * Get the active categories.
      *
      * @param array $customCategories
      *
@@ -140,9 +135,9 @@ abstract class NewsModule extends ModuleNews
         }
 
         $aliases = StringUtil::trimsplit(static::getCategorySeparator(), $aliases);
-        $aliases = array_unique(array_filter($aliases));
+        $aliases = \array_unique(\array_filter($aliases));
 
-        if (count($aliases) === 0) {
+        if (0 === \count($aliases)) {
             return null;
         }
 
@@ -150,12 +145,12 @@ abstract class NewsModule extends ModuleNews
         $models = NewsCategoryModel::findPublishedByArchives($this->news_archives, $customCategories, $aliases);
 
         // No models have been found but there are some aliases present
-        if ($models === null && count($aliases) !== 0) {
+        if (null === $models && 0 !== \count($aliases)) {
             Controller::redirect($this->getTargetPage()->getFrontendUrl());
         }
 
         // Validate the provided aliases with the categories found
-        if ($models !== null) {
+        if (null !== $models) {
             $realAliases = [];
 
             /** @var NewsCategoryModel $model */
@@ -163,11 +158,11 @@ abstract class NewsModule extends ModuleNews
                 $realAliases[] = $this->manager->getCategoryAlias($model, $GLOBALS['objPage']);
             }
 
-            if (count(array_diff($aliases, $realAliases)) > 0) {
-                Controller::redirect($this->getTargetPage()->getFrontendUrl(sprintf(
+            if (\count(\array_diff($aliases, $realAliases)) > 0) {
+                Controller::redirect($this->getTargetPage()->getFrontendUrl(\sprintf(
                     '/%s/%s',
                     $this->manager->getParameterName($GLOBALS['objPage']->rootId),
-                    implode(static::getCategorySeparator(), $realAliases)
+                    \implode(static::getCategorySeparator(), $realAliases)
                 )));
             }
         }
@@ -176,7 +171,7 @@ abstract class NewsModule extends ModuleNews
     }
 
     /**
-     * Get the inactive categories
+     * Get the inactive categories.
      *
      * @param array $customCategories
      *
@@ -187,7 +182,7 @@ abstract class NewsModule extends ModuleNews
         $excludedIds = [];
 
         // Find only the categories that still can display some results combined with active categories
-        if ($this->activeCategories !== null) {
+        if (null !== $this->activeCategories) {
             // Union filtering
             if ($this->news_filterCategoriesUnion) {
                 $excludedIds = $this->activeCategories->fetchEach('id');
@@ -208,22 +203,22 @@ abstract class NewsModule extends ModuleNews
                         continue;
                     }
 
-                    $columns = array_merge($columns, $criteria->getColumns());
-                    $values = array_merge($values, $criteria->getValues());
+                    $columns = \array_merge($columns, $criteria->getColumns());
+                    $values = \array_merge($values, $criteria->getValues());
                 }
 
                 // Should not happen but you never know
-                if (count($columns) === 0) {
+                if (0 === \count($columns)) {
                     return null;
                 }
 
                 $newsIds = Database::getInstance()
-                    ->prepare('SELECT id FROM tl_news WHERE ' . implode(' AND ', $columns))
+                    ->prepare('SELECT id FROM tl_news WHERE '.\implode(' AND ', $columns))
                     ->execute($values)
                     ->fetchEach('id')
                 ;
 
-                if (count($newsIds) === 0) {
+                if (0 === \count($newsIds)) {
                     return null;
                 }
 
@@ -234,21 +229,21 @@ abstract class NewsModule extends ModuleNews
                 // Include the parent categories
                 if ($this->news_includeSubcategories) {
                     foreach ($categoryIds as $categoryId) {
-                        $categoryIds = array_merge($categoryIds, \array_map('intval', Database::getInstance()->getParentRecords($categoryId, 'tl_news_category')));
+                        $categoryIds = \array_merge($categoryIds, \array_map('intval', Database::getInstance()->getParentRecords($categoryId, 'tl_news_category')));
                     }
                 }
 
                 // Remove the active categories, so they are not considered again
-                $categoryIds = array_diff($categoryIds, $this->activeCategories->fetchEach('id'));
+                $categoryIds = \array_diff($categoryIds, $this->activeCategories->fetchEach('id'));
 
                 // Filter by custom categories
-                if (count($customCategories) > 0) {
-                    $categoryIds = array_intersect($categoryIds, $customCategories);
+                if (\count($customCategories) > 0) {
+                    $categoryIds = \array_intersect($categoryIds, $customCategories);
                 }
 
-                $categoryIds = array_values(array_unique($categoryIds));
+                $categoryIds = \array_values(\array_unique($categoryIds));
 
-                if (count($categoryIds) === 0) {
+                if (0 === \count($categoryIds)) {
                     return null;
                 }
 
@@ -351,7 +346,7 @@ abstract class NewsModule extends ModuleNews
                     $this->news_archives,
                     $category->id,
                     (bool) $this->news_includeSubcategories,
-                    ($this->activeCategories !== null) ? $this->activeCategories->fetchEach('id') : [],
+                    (null !== $this->activeCategories) ? $this->activeCategories->fetchEach('id') : [],
                     (bool) $this->news_filterCategoriesUnion
                 );
             }
@@ -387,8 +382,7 @@ abstract class NewsModule extends ModuleNews
         // Add the trail class
         if (\in_array((int) $category->id, $this->manager->getTrailIds($category), true)) {
             $cssClasses[] = 'trail';
-        }
-        elseif ($this->activeCategory !== null && \in_array((int) $category->id, $this->manager->getTrailIds($this->activeCategory), true)) {
+        } elseif (null !== $this->activeCategory && \in_array((int) $category->id, $this->manager->getTrailIds($this->activeCategory), true)) {
             $cssClasses[] = 'trail';
         }
 

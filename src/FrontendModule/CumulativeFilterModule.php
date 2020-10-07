@@ -11,12 +11,9 @@
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
-use Contao\BackendTemplate;
 use Contao\FrontendTemplate;
 use Contao\StringUtil;
-use Contao\System;
 use Haste\Generator\RowClass;
-use Patchwork\Utf8;
 
 class CumulativeFilterModule extends NewsModule
 {
@@ -39,7 +36,7 @@ class CumulativeFilterModule extends NewsModule
             $customCategories = StringUtil::deserialize($this->news_categories, true);
         } else {
             $subcategories = NewsCategoryModel::findPublishedByPid($rootCategoryId);
-            $customCategories = ($subcategories !== null) ? $subcategories->fetchEach('id') : [];
+            $customCategories = (null !== $subcategories) ? $subcategories->fetchEach('id') : [];
         }
 
         // Get the subcategories of custom categories
@@ -54,12 +51,12 @@ class CumulativeFilterModule extends NewsModule
         $inactiveCategories = $this->getInactiveCategories($customCategories);
 
         // Generate active categories
-        if ($this->activeCategories !== null) {
+        if (null !== $this->activeCategories) {
             $this->Template->activeCategories = $this->renderNewsCategories($rootCategoryId, $this->activeCategories->fetchEach('id'), true);
 
             // Add the canonical URL tag
             if ($this->news_enableCanonicalUrls) {
-                $GLOBALS['TL_HEAD'][] = sprintf('<link rel="canonical" href="%s">', $GLOBALS['objPage']->getAbsoluteUrl());
+                $GLOBALS['TL_HEAD'][] = \sprintf('<link rel="canonical" href="%s">', $GLOBALS['objPage']->getAbsoluteUrl());
             }
 
             // Add the "reset categories" link
@@ -72,14 +69,12 @@ class CumulativeFilterModule extends NewsModule
         }
 
         // Generate inactive categories
-        if ($inactiveCategories !== null) {
+        if (null !== $inactiveCategories) {
             $this->Template->inactiveCategories = $this->renderNewsCategories($rootCategoryId, $inactiveCategories->fetchEach('id'));
         } else {
             $this->Template->inactiveCategories = '';
         }
     }
-
-
 
     /**
      * Recursively compile the news categories and return it as HTML string.
@@ -112,7 +107,7 @@ class CumulativeFilterModule extends NewsModule
         $activeAliases = [];
 
         // Collect the active category parameters
-        if ($this->activeCategories !== null) {
+        if (null !== $this->activeCategories) {
             /** @var NewsCategoryModel $activeCategory */
             foreach ($this->activeCategories as $activeCategory) {
                 $activeAliases[] = $this->manager->getCategoryAlias($activeCategory, $GLOBALS['objPage']);
@@ -120,22 +115,22 @@ class CumulativeFilterModule extends NewsModule
         }
 
         $resetUrl = $this->getTargetPage()->getFrontendUrl();
-        $parameterName = $this->manager->getParameterName($GLOBALS['objPage']->rootId);
+        $pageUrl = $this->getTargetPage()->getFrontendUrl(sprintf('/%s', $this->manager->getParameterName($GLOBALS['objPage']->rootId)) . '/%s');
 
         /** @var NewsCategoryModel $category */
         foreach ($categories as $category) {
             $categoryAlias = $this->manager->getCategoryAlias($category, $GLOBALS['objPage']);
 
             // Add/remove the category alias to the active ones
-            if (in_array($categoryAlias, $activeAliases, true)) {
-                $aliases = array_diff($activeAliases, [$categoryAlias]);
+            if (\in_array($categoryAlias, $activeAliases, true)) {
+                $aliases = \array_diff($activeAliases, [$categoryAlias]);
             } else {
-                $aliases = array_merge($activeAliases, [$categoryAlias]);
+                $aliases = \array_merge($activeAliases, [$categoryAlias]);
             }
 
             // Generate the category URL if there are any aliases to add, otherwise use the reset URL
-            if (count($aliases) > 0) {
-                $url = $this->getTargetPage()->getFrontendUrl(sprintf('/%s/%s', $parameterName, implode(static::getCategorySeparator(), $aliases)));
+            if (\count($aliases) > 0) {
+                $url = sprintf($pageUrl, \implode(static::getCategorySeparator(), $aliases));
             } else {
                 $url = $resetUrl;
             }
@@ -145,7 +140,7 @@ class CumulativeFilterModule extends NewsModule
                 $category->getTitle(),
                 $category->getTitle(),
                 $this->generateItemCssClass($category),
-                in_array($categoryAlias, $activeAliases, true),
+                \in_array($categoryAlias, $activeAliases, true),
                 '',
                 $category
             );
@@ -158,5 +153,4 @@ class CumulativeFilterModule extends NewsModule
 
         return $template->parse();
     }
-
 }

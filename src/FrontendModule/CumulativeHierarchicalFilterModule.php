@@ -13,14 +13,12 @@ use Haste\Input\Input;
 
 class CumulativeHierarchicalFilterModule extends NewsModule
 {
-
     /**
      * Template.
      *
      * @var string
      */
     protected $strTemplate = 'mod_newscategories';
-
 
     /**
      * Generate the module.
@@ -79,13 +77,13 @@ class CumulativeHierarchicalFilterModule extends NewsModule
             $this->navigationTpl = 'nav_newscategories_hierarchical';
         }
 
-        $template               = new FrontendTemplate($this->navigationTpl);
-        $template->type         = get_class($this);
-        $template->cssID        = $this->cssID;
-        $template->level        = 'level_'.$level;
+        $template = new FrontendTemplate($this->navigationTpl);
+        $template->type = get_class($this);
+        $template->cssID = $this->cssID;
+        $template->level = 'level_'.$level;
         $template->showQuantity = $this->news_showQuantity;
 
-        $items            = [];
+        $items = [];
         $activeCategories = $this->getActiveCategories($ids);
 
         // Add the "reset categories" link
@@ -99,10 +97,9 @@ class CumulativeHierarchicalFilterModule extends NewsModule
             );
         }
 
+        $activeAliases = [];
 
         // Collect the active category parameters
-        $activeAliases = [];
-        $parameterName = $this->manager->getParameterName($GLOBALS['objPage']->rootId);
         if ($activeCategories !== null) {
             /** @var NewsCategoryModel $activeCategory */
             foreach ($activeCategories as $activeCategory) {
@@ -110,10 +107,12 @@ class CumulativeHierarchicalFilterModule extends NewsModule
             }
         }
 
+        $pageUrl = $this->getTargetPage()->getFrontendUrl(sprintf('/%s', $this->manager->getParameterName($GLOBALS['objPage']->rootId)) . '/%s');
+        $resetUrl = $this->getTargetPage()->getFrontendUrl();
+
         /** @var NewsCategoryModel $category */
         foreach ($categories as $category) {
             // Generate the category individual URL or the filter-link
-
             $categoryAlias = $this->manager->getCategoryAlias($category, $GLOBALS['objPage']);
 
             // Add/remove the category alias to the active ones
@@ -123,26 +122,21 @@ class CumulativeHierarchicalFilterModule extends NewsModule
                 $aliases = array_merge($activeAliases, [$categoryAlias]);
             }
 
-            $url = $this->getTargetPage()->getFrontendUrl();
+            // Get the URL
             if (count($aliases) > 0) {
-                $url = $this->getTargetPage()->getFrontendUrl(sprintf('/%s/%s', $parameterName, implode(static::getCategorySeparator(), $aliases)));
+                $url = sprintf($pageUrl, implode(static::getCategorySeparator(), $aliases));
+            } else {
+                $url = $resetUrl;
             }
 
-            //$url = $this->manager->generateUrl($category, $this->getTargetPage());
-
-            $isActive = false;
-            if ($activeCategories !== null && in_array($category, $activeCategories->getModels())) {
-                $isActive = true;
-            }
-
-            ++$level;
+            $level++;
 
             $items[] = $this->generateItem(
                 $url,
                 $category->getTitle(),
                 $category->getTitle(),
                 $this->generateItemCssClass($category),
-                $isActive, //null !== $this->activeCategory && (int) $this->activeCategory->id === (int) $category->id,
+                $activeCategories !== null && in_array($category, $activeCategories->getModels()),
                 (!$this->showLevel || $this->showLevel >= $level) ? $this->renderNewsCategories($category->id, $ids, $level) : '',
                 $category
             );
@@ -155,6 +149,4 @@ class CumulativeHierarchicalFilterModule extends NewsModule
 
         return $template->parse();
     }
-
-
 }
