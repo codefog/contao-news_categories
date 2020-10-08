@@ -13,3 +13,4 @@
  */
 $GLOBALS['TL_LANG']['FMD']['newscategories'] = ['Liste mit Nachrichten-Kategorien', 'Fügt eine Nachrichten-Kategorieliste in die Seite ein.'];
 $GLOBALS['TL_LANG']['FMD']['newscategories_cumulative'] = ['Kumulativer Kategorie Filter', 'Fügt einen kumulativen Filter nach Kategorien hinzu.'];
+$GLOBALS['TL_LANG']['FMD']['newscategories_cumulativehierarchical'] = ['Kumulativer Hierarchischer Kategorie Filter', 'Fügt einen kumulativen hierarchischen Filter nach Kategorien hinzu.'];

@@ -36,6 +36,11 @@ In case you would like to display news belonging to either category, select the 
 option in both cumulative filter module and respective news listing module. It will change the filtering behavior to use
 a union (x OR y) search instead of intersection.
 
+### News categories cumulative hierarchical filter
+
+As of version 3.4.0, there is a new frontend cumulative hierarchical filter module available. Contrary to the standard 
+cumulative filter module, it can also display subcategories that can be combined to filter the news list module.
+
 ### News modules
 
 The bundle overwrites the default news modules by adding the extra category related features to them. They are fully
