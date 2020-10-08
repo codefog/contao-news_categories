@@ -27,7 +27,8 @@
         "terminal42/dc_multilingual": "^4.0"
     },
     "conflict": {
-        "contao/manager-plugin": "<2.0 || >=3.0"
+        "contao/manager-plugin": "<2.0 || >=3.0",
+        "terminal42/dc_multilingual": "<4.0"
     },
     "autoload": {
         "psr-4": {
