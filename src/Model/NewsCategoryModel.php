@@ -42,6 +42,19 @@ class NewsCategoryModel extends ParentModel
     protected static $strTable = 'tl_news_category';
 
     /**
+     * @inheritDoc
+     */
+    public function __get($name)
+    {
+        // Fix the compatibility with DC_Multilingual v4 (#184)
+        if ($name === 'id' && MultilingualHelper::isActive() && $this->lid) {
+            return $this->lid;
+        }
+
+        return parent::__get($name);
+    }
+
+    /**
      * Get the CSS class.
      *
      * @return string
@@ -129,7 +142,11 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
 
         // Filter by custom aliases
         if (\count($aliases) > 0) {
-            $columns[] = "$t.alias IN ('".\implode("','", $aliases)."')";
+            if (MultilingualHelper::isActive()) {
+                $columns[] = "($t.alias IN ('".\implode("','", $aliases)."') OR translation.alias IN ('".\implode("','", $aliases)."'))";
+            } else {
+                $columns[] = "$t.alias IN ('".\implode("','", $aliases)."')";
+            }
         }
 
         if (!BE_USER_LOGGED_IN) {
