@@ -44,6 +44,7 @@ $GLOBALS['TL_DCA']['tl_news_feed']['fields']['categories_show'] = [
     'eval' => [
         'includeBlankOption' => true,
         'blankOptionLabel' => $GLOBALS['TL_LANG']['tl_news_feed']['categories_show']['empty'],
+        'tl_class' => 'w50',
     ],
     'sql' => ['type' => 'string', 'length' => 16, 'default' => ''],
 ];
