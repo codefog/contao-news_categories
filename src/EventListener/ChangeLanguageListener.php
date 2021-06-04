@@ -91,14 +91,15 @@ class ChangeLanguageListener implements FrameworkAwareInterface
             return;
         }
 
+        // Only add or change category param if the fallback page is a direct fallback
         if ($event->getNavigationItem()->isDirectFallback()) {
-            // only add or change category param if the fallback page is a direct fallback
             $attributes[$newParam] = $attributes[$currentParam];
+
             if ($newParam !== $currentParam) {
                 unset($attributes[$currentParam]);
             }
         } else {
-            // remove category param completely
+            // Remove category param completely
             unset($attributes[$currentParam]);
         }
 
