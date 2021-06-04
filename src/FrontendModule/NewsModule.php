@@ -49,6 +49,11 @@ abstract class NewsModule extends ModuleNews
     protected $manager;
 
     /**
+     * @var PageModel|null
+     */
+    protected $targetPage;
+
+    /**
      * Display a wildcard in the back end.
      *
      * @return string
@@ -261,20 +266,18 @@ abstract class NewsModule extends ModuleNews
      */
     protected function getTargetPage()
     {
-        static $page;
-
-        if (null === $page) {
+        if (null === $this->targetPage) {
             if ($this->jumpTo > 0
                 && (int) $GLOBALS['objPage']->id !== (int) $this->jumpTo
                 && null !== ($target = PageModel::findPublishedById($this->jumpTo))
             ) {
-                $page = $target;
+                $this->targetPage = $target;
             } else {
-                $page = $GLOBALS['objPage'];
+                $this->targetPage = $GLOBALS['objPage'];
             }
         }
 
-        return $page;
+        return $this->targetPage;
     }
 
     /**
