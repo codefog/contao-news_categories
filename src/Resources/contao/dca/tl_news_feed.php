@@ -43,7 +43,7 @@ $GLOBALS['TL_DCA']['tl_news_feed']['fields']['categories_show'] = [
     'reference' => &$GLOBALS['TL_LANG']['tl_news_feed']['categories_show'],
     'eval' => [
         'includeBlankOption' => true,
-        'blankOptionLabel' => $GLOBALS['TL_LANG']['tl_news_feed']['categories_show']['empty'],
+        'blankOptionLabel' => isset($GLOBALS['TL_LANG']['tl_news_feed']['categories_show']['empty']) ? $GLOBALS['TL_LANG']['tl_news_feed']['categories_show']['empty'] : null,
         'tl_class' => 'w50',
     ],
     'sql' => ['type' => 'string', 'length' => 16, 'default' => ''],
