@@ -9,6 +9,12 @@ services:
 
     Codefog\NewsCategoriesBundle\NewsCategoriesManager: '@codefog_news_categories.manager'
 
+    Codefog\NewsCategoriesBundle\Migration\BooleanFieldsMigration:
+        arguments:
+            - '@database_connection'
+        tags:
+            - { name: contao.migration }
+
     codefog_news_categories.manager:
         class: Codefog\NewsCategoriesBundle\NewsCategoriesManager
 
