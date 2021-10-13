@@ -58,6 +58,8 @@ class TemplateListener implements FrameworkAwareInterface
         $newsCategoryModelAdapter = $this->framework->getAdapter(NewsCategoryModel::class);
 
         if (null === ($models = $newsCategoryModelAdapter->findPublishedByNews($data['id']))) {
+            $template->categories = [];
+            $template->categoriesList = [];
             return;
         }
 
