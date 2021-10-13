@@ -66,6 +66,8 @@ class InsertTagsListener implements FrameworkAwareInterface
                     return $value;
                 }
             }
+
+            return '';
         }
 
         return false;
