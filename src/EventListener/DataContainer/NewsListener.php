@@ -61,9 +61,9 @@ class NewsListener implements FrameworkAwareInterface
 
         // Handle the edit all modes differently
         if ($input->get('act') === 'editAll' || $input->get('act') === 'overrideAll') {
-            $categories = $this->db->fetchColumn('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=?', [$dc->id]);
+            $categories = $this->db->fetchFirstColumn('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=?', [$dc->id]);
         } else {
-            $categories = $this->db->fetchColumn('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=(SELECT pid FROM tl_news WHERE id=?)', [$dc->id]);
+            $categories = $this->db->fetchFirstColumn('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=(SELECT pid FROM tl_news WHERE id=?)', [$dc->id]);
         }
 
         if (!$categories || 0 === \count($categories = StringUtil::deserialize($categories, true))) {
@@ -123,7 +123,7 @@ class NewsListener implements FrameworkAwareInterface
     private function generateOptionsRecursively($pid = 0, $prefix = '')
     {
         $options = [];
-        $records = $this->db->fetchAll('SELECT * FROM tl_news_category WHERE pid=? ORDER BY sorting', [$pid]);
+        $records = $this->db->fetchAllAssociative('SELECT * FROM tl_news_category WHERE pid=? ORDER BY sorting', [$pid]);
 
         foreach ($records as $record) {
             $options[$record['id']] = $prefix . $record['title'];

@@ -239,11 +239,11 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
         }
 
         $categories = \array_map('intval', $categories);
-        $excluded = $this->db->fetchAll('SELECT id FROM tl_news_category WHERE excludeInRelated=1');
+        $excluded = $this->db->fetchFirstColumn('SELECT id FROM tl_news_category WHERE excludeInRelated=1');
 
         // Exclude the categories
         foreach ($excluded as $category) {
-            if (false !== ($index = \array_search((int) $category['id'], $categories, true))) {
+            if (false !== ($index = \array_search((int) $category, $categories, true))) {
                 unset($categories[$index]);
             }
         }
