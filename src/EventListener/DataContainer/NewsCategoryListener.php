@@ -253,12 +253,12 @@ class NewsCategoryListener implements FrameworkAwareInterface
         }
 
         if (MultilingualHelper::isActive() && $dc instanceof Driver) {
-            $exists = $this->db->fetchColumn(
+            $exists = $this->db->fetchOne(
                 "SELECT id FROM {$dc->table} WHERE alias=? AND id!=? AND {$dc->getLanguageColumn()}=?",
                 [$value, $dc->activeRecord->id, $dc->getCurrentLanguage()]
             );
         } else {
-            $exists = $this->db->fetchColumn(
+            $exists = $this->db->fetchOne(
                 "SELECT id FROM {$dc->table} WHERE alias=? AND id!=?",
                 [$value, $dc->activeRecord->id]
             );

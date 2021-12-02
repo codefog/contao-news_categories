@@ -81,9 +81,7 @@ class FeedListener implements FrameworkAwareInterface
             $newsIds = \array_map('intval', \array_unique($newsIds));
 
             if (\count($newsIds) > 0) {
-                $archiveIds = $this->db
-                    ->executeQuery('SELECT DISTINCT(pid) FROM tl_news WHERE id IN ('.\implode(',', $newsIds).')')
-                    ->fetchAll(\PDO::FETCH_COLUMN, 0);
+                $archiveIds = $this->db->fetchFirstColumn('SELECT DISTINCT(pid) FROM tl_news WHERE id IN ('.\implode(',', $newsIds).')');
 
                 $session = $this->session->get('news_feed_updater');
                 $session = \array_merge((array) $session, $archiveIds);
