@@ -135,7 +135,7 @@ class PermissionChecker implements FrameworkAwareInterface
 
         // Add the permissions on group level
         if ('custom' !== $user->inherit) {
-            $groups = $this->db->fetchAll('SELECT id, newscategories, newscategories_roots FROM tl_user_group WHERE id IN('.\implode(',', \array_map('intval', $user->groups)).')');
+            $groups = $this->db->fetchAllAssociative('SELECT id, newscategories, newscategories_roots FROM tl_user_group WHERE id IN('.\implode(',', \array_map('intval', $user->groups)).')');
 
             foreach ($groups as $group) {
                 $permissions = $stringUtil->deserialize($group['newscategories'], true);
@@ -151,7 +151,7 @@ class PermissionChecker implements FrameworkAwareInterface
 
         // Add the permissions on user level
         if ('group' !== $user->inherit) {
-            $userData = $this->db->fetchAssoc('SELECT newscategories, newscategories_roots FROM tl_user WHERE id=?', [$user->id]);
+            $userData = $this->db->fetchAssociative('SELECT newscategories, newscategories_roots FROM tl_user WHERE id=?', [$user->id]);
             $permissions = $stringUtil->deserialize($userData['newscategories'], true);
 
             if (\in_array('manage', $permissions, true)) {
