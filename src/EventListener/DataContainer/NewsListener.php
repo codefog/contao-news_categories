@@ -61,9 +61,9 @@ class NewsListener implements FrameworkAwareInterface
 
         // Handle the edit all modes differently
         if ($input->get('act') === 'editAll' || $input->get('act') === 'overrideAll') {
-            $categories = $this->db->fetchFirstColumn('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=?', [$dc->id]);
+            $categories = $this->db->fetchOne('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=?', [$dc->id]);
         } else {
-            $categories = $this->db->fetchFirstColumn('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=(SELECT pid FROM tl_news WHERE id=?)', [$dc->id]);
+            $categories = $this->db->fetchOne('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=(SELECT pid FROM tl_news WHERE id=?)', [$dc->id]);
         }
 
         if (!$categories || 0 === \count($categories = StringUtil::deserialize($categories, true))) {
