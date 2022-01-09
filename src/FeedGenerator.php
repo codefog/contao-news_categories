@@ -14,6 +14,8 @@ use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\News;
+use Contao\System;
+use Symfony\Component\HttpFoundation\Request;
 
 class FeedGenerator extends News
 {
@@ -40,7 +42,8 @@ class FeedGenerator extends News
         $objFeed->language = $arrFeed['language'];
         $objFeed->published = $arrFeed['tstamp'];
 
-        $criteria = new NewsCriteria(\System::getContainer()->get('contao.framework'));
+        $container = System::getContainer();
+        $criteria = new NewsCriteria($container->get('contao.framework'));
 
         try {
             $criteria->setBasicCriteria($arrArchives);
@@ -64,6 +67,9 @@ class FeedGenerator extends News
         if ($objArticle !== null)
         {
             $arrUrls = array();
+
+            /** @var RequestStack $requestStack */
+            $requestStack = $container->get('request_stack');
 
             while ($objArticle->next())
             {
@@ -113,6 +119,10 @@ class FeedGenerator extends News
                 $objItem->title = $objArticle->headline;
                 $objItem->link = $this->getLink($objArticle, $strUrl);
                 $objItem->published = $objArticle->date;
+
+                $request = Request::create($objItem->link);
+                $request->attributes->set('_scope', 'frontend');
+                $requestStack->push($request);
 
                 /** @var \BackendUser $objAuthor */
                 if (($objAuthor = $objArticle->getRelated('author')) !== null)
@@ -198,6 +208,8 @@ class FeedGenerator extends News
                 }
 
                 $objFeed->addItem($objItem);
+
+                $requestStack->pop();
             }
         }
 
