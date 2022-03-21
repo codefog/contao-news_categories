@@ -18,7 +18,6 @@ use Contao\StringUtil;
 use Contao\System;
 use Haste\Input\Input;
 use Haste\Model\Model;
-use Patchwork\Utf8;
 
 abstract class NewsModule extends ModuleNews
 {
@@ -63,7 +62,7 @@ abstract class NewsModule extends ModuleNews
         if (TL_MODE === 'BE') {
             $template = new BackendTemplate('be_wildcard');
 
-            $template->wildcard = '### '.Utf8::strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0]).' ###';
+            $template->wildcard = '### '.mb_strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0]).' ###';
             $template->title = $this->headline;
             $template->id = $this->id;
             $template->link = $this->name;
