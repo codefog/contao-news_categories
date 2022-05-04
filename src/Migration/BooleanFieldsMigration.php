@@ -13,7 +13,6 @@ namespace Codefog\NewsCategoriesBundle\Migration;
 use Contao\CoreBundle\Migration\AbstractMigration;
 use Contao\CoreBundle\Migration\MigrationResult;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Types\BooleanType;
 
 class BooleanFieldsMigration extends AbstractMigration
@@ -33,15 +32,9 @@ class BooleanFieldsMigration extends AbstractMigration
      */
     private $db;
 
-    /**
-     * @var AbstractSchemaManager
-     */
-    private $schemaManager;
-
     public function __construct(Connection $db)
     {
         $this->db = $db;
-        $this->schemaManager = $this->db->getSchemaManager();
     }
 
     public function shouldRun(): bool
@@ -78,7 +71,7 @@ class BooleanFieldsMigration extends AbstractMigration
 
     private function needsMigration(string $table, string $field): bool
     {
-        $columns = $this->schemaManager->listTableColumns($table);
+        $columns = $this->db->getSchemaManager()->listTableColumns($table);
         $column = $columns[\strtolower($field)] ?? null;
 
         if (null === $column || $column->getType() instanceof BooleanType) {
