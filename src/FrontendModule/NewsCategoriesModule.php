@@ -47,7 +47,8 @@ class NewsCategoriesModule extends NewsModule
             $this->activeCategory = $activeCategory;
 
             // Add the canonical URL tag
-            if ($this->news_enableCanonicalUrls) {
+            // TODO: to be dropped when deps require Contao 4.13+
+            if ($this->news_enableCanonicalUrls && !System::getContainer()->has('contao.routing.response_context_accessor')) {
                 $GLOBALS['TL_HEAD'][] = \sprintf('<link rel="canonical" href="%s">', $GLOBALS['objPage']->getAbsoluteUrl());
             }
         }
