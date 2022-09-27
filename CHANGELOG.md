@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.0.4] - 2022-09-27
+- Fixed: invalid namespace
+
 ## [2.0.3] - 2018-12-06
 
 ### Fixed

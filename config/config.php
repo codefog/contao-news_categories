@@ -36,8 +36,8 @@ $GLOBALS['TL_CTE']['includes']['newsfilter'] = 'ContentNewsFilter';
 /**
  * Hooks
  */
-$GLOBALS['TL_HOOKS']['parseArticles']['news_categories']     = ['News', 'addCategoriesToTemplate'];
-$GLOBALS['TL_HOOKS']['replaceInsertTags']['news_categories'] = ['News', 'parseCategoriesTags'];
+$GLOBALS['TL_HOOKS']['parseArticles']['news_categories']     = [\NewsCategories\News::class, 'addCategoriesToTemplate'];
+$GLOBALS['TL_HOOKS']['replaceInsertTags']['news_categories'] = [\NewsCategories\News::class, 'parseCategoriesTags'];
 $GLOBALS['TL_HOOKS']['replaceInsertTags']['news_categories'] = ['NewsCategories\InsertTags', 'replace'];
 
 
