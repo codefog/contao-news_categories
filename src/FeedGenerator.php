@@ -214,6 +214,7 @@ class FeedGenerator extends News
         }
 
         // Create the file
-        \File::putContent('web/share/' . $strFile . '.xml', $this->replaceInsertTags($objFeed->$strType(), false));
+        $webDir = \StringUtil::stripRootDir($container->getParameter('contao.web_dir'));
+        \File::putContent($webDir . '/share/' . $strFile . '.xml', $this->replaceInsertTags($objFeed->$strType(), false));
     }
 }
