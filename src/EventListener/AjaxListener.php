@@ -116,7 +116,7 @@ class AjaxListener implements FrameworkAwareInterface
         }
 
         // Call the load_callback
-        if (\is_array($GLOBALS['TL_DCA'][$dc->table]['fields'][$field]['load_callback'])) {
+        if (\is_array($GLOBALS['TL_DCA'][$dc->table]['fields'][$field]['load_callback'] ?? null)) {
             /** @var System $systemAdapter */
             $systemAdapter = $this->framework->getAdapter(System::class);
 
