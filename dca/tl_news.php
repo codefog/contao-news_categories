@@ -32,9 +32,13 @@ $GLOBALS['TL_DCA']['tl_news']['fields']['categories'] = array
     'label'      => &$GLOBALS['TL_LANG']['tl_news']['categories'],
     'exclude'    => true,
     'filter'     => true,
-    'inputType'  => 'treePicker',
+    'inputType'  => 'picker',
     'foreignKey' => 'tl_news_category.title',
-    'eval'       => array('multiple' => true, 'fieldType' => 'checkbox', 'foreignTable' => 'tl_news_category', 'titleField' => 'title', 'searchField' => 'title', 'managerHref' => 'do=news&table=tl_news_category'),
+    'relation' => ['tl_news_category'],
+    'eval'       => [
+        'multiple' => true,
+        'fieldType' => 'checkbox',
+    ],
     'sql'        => "blob NULL",
 );
 
@@ -43,14 +47,11 @@ $GLOBALS['TL_DCA']['tl_news']['fields']['primaryCategory'] = array
     'label'      => &$GLOBALS['TL_LANG']['tl_news']['primaryCategory'],
     'exclude'    => true,
     'filter'     => true,
-    'inputType'  => 'treePicker',
+    'inputType'  => 'picker',
     'foreignKey' => 'tl_news_category.title',
+    'relation' => ['tl_news_category'],
     'eval'       => [
         'fieldType'    => 'radio',
-        'foreignTable' => 'tl_news_category',
-        'titleField'   => 'title',
-        'searchField'  => 'title',
-        'managerHref'  => 'do=news&table=tl_news_category',
     ],
     'sql'        => "int(10) unsigned NOT NULL default '0'",
 );

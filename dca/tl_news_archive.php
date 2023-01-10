@@ -49,15 +49,15 @@ $GLOBALS['TL_DCA']['tl_news_archive']['fields']['limitCategories'] = array
     'sql'                     => "char(1) NOT NULL default ''"
 );
 
-$GLOBALS['TL_DCA']['tl_news_archive']['fields']['categories'] = array
-(
-    'label'                   => &$GLOBALS['TL_LANG']['tl_news_archive']['categories'],
-    'exclude'                 => true,
-    'inputType'               => 'treePicker',
-    'foreignKey'              => 'tl_news_category.title',
-    'eval'                    => array('mandatory'=>true, 'multiple'=>true, 'fieldType'=>'checkbox', 'foreignTable'=>'tl_news_category', 'titleField'=>'title', 'searchField'=>'title', 'managerHref'=>'do=news&table=tl_news_category'),
-    'sql'                     => "blob NULL"
-);
+$GLOBALS['TL_DCA']['tl_news_archive']['fields']['categories'] = [
+    'label'      => &$GLOBALS['TL_LANG']['tl_news_archive']['categories'],
+    'exclude'    => true,
+    'inputType'  => 'picker',
+    'foreignKey' => 'tl_news_category.title',
+    'relation'   => ['tl_news_category'],
+    'eval'       => ['mandatory' => true, 'multiple' => true, 'fieldType' => 'checkbox',],
+    'sql'        => "blob NULL"
+];
 
 class tl_news_archive_categories extends Backend
 {

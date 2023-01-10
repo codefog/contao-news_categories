@@ -23,7 +23,6 @@
   "require": {
     "php": "^7.1",
     "contao/core-bundle": "^4.4",
-    "codefog/contao-widget_tree_picker": "^2.0.1",
     "heimrichhannot/contao-fieldpalette-bundle": "0.*"
   },
   "suggest": {

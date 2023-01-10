@@ -32,12 +32,12 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['newscategories'] = array
     'sql'                     => "varchar(32) NOT NULL default ''"
 );
 
-$GLOBALS['TL_DCA']['tl_user']['fields']['newscategories_default'] = array
-(
-    'label'                   => &$GLOBALS['TL_LANG']['tl_user']['newscategories_default'],
-    'exclude'                 => true,
-    'inputType'               => 'treePicker',
-    'foreignKey'              => 'tl_news_category.title',
-    'eval'                    => array('multiple'=>true, 'fieldType'=>'checkbox', 'foreignTable'=>'tl_news_category', 'titleField'=>'title', 'searchField'=>'title', 'managerHref'=>'do=news&table=tl_news_category'),
-    'sql'                     => "blob NULL"
-);
+$GLOBALS['TL_DCA']['tl_user']['fields']['newscategories_default'] = [
+    'label'      => &$GLOBALS['TL_LANG']['tl_user']['newscategories_default'],
+    'exclude'    => true,
+    'inputType'  => 'picker',
+    'foreignKey' => 'tl_news_category.title',
+    'relation'   => ['tl_news_category'],
+    'eval'       => ['multiple' => true, 'fieldType' => 'checkbox',],
+    'sql'        => "blob NULL"
+];

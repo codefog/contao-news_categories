@@ -32,9 +32,10 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['newsmenu']    = str_replace('news_a
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_categories'] = [
     'label'      => &$GLOBALS['TL_LANG']['tl_module']['news_categories'],
     'exclude'    => true,
-    'inputType'  => 'treePicker',
+    'inputType'  => 'picker',
     'foreignKey' => 'tl_news_category.title',
-    'eval'       => ['mandatory' => true, 'multiple' => true, 'fieldType' => 'checkbox', 'foreignTable' => 'tl_news_category', 'titleField' => 'title', 'searchField' => 'title', 'managerHref' => 'do=news&table=tl_news_category'],
+    'relation' => ['tl_news_category'],
+    'eval'       => ['mandatory' => true, 'multiple' => true, 'fieldType' => 'checkbox',],
     'sql'        => "blob NULL"
 ];
 
@@ -65,9 +66,10 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_relatedCategories'] = [
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterDefault'] = [
     'label'      => &$GLOBALS['TL_LANG']['tl_module']['news_filterDefault'],
     'exclude'    => true,
-    'inputType'  => 'treePicker',
+    'inputType'  => 'picker',
     'foreignKey' => 'tl_news_category.title',
-    'eval'       => ['multiple' => true, 'fieldType' => 'checkbox', 'foreignTable' => 'tl_news_category', 'titleField' => 'title', 'searchField' => 'title', 'managerHref' => 'do=news&table=tl_news_category', 'tl_class' => 'clr'],
+    'relation' => ['tl_news_category'],
+    'eval'       => ['multiple' => true, 'fieldType' => 'checkbox', 'tl_class' => 'clr'],
     'sql'        => "blob NULL"
 ];
 
@@ -100,9 +102,10 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_resetCategories'] = [
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoriesRoot'] = [
     'label'      => &$GLOBALS['TL_LANG']['tl_module']['news_categoriesRoot'],
     'exclude'    => true,
-    'inputType'  => 'treePicker',
+    'inputType'  => 'picker',
     'foreignKey' => 'tl_news_category.title',
-    'eval'       => ['fieldType' => 'radio', 'foreignTable' => 'tl_news_category', 'titleField' => 'title', 'searchField' => 'title', 'managerHref' => 'do=news&table=tl_news_category'],
+    'relation'   => ['tl_news_category'],
+    'eval'       => ['fieldType' => 'radio',],
     'sql'        => "int(10) unsigned NOT NULL default '0'"
 ];
 

@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 2023-01-10
+- Changed: replace tree_picker with native picker
+
 ## [2.0.4] - 2022-09-27
 - Fixed: invalid namespace
 
