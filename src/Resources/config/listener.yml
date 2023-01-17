@@ -25,7 +25,7 @@ services:
     codefog_news_categories.listener.news:
         class: Codefog\NewsCategoriesBundle\EventListener\NewsListener
         arguments:
-          - "@Codefog\HasteBundle\DcaRelationsManager"
+          - '@Codefog\HasteBundle\DcaRelationsManager'
           - "@codefog_news_categories.news_criteria_builder"
 
     codefog_news_categories.listener.template:
