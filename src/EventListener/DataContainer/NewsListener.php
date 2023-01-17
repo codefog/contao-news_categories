@@ -44,7 +44,7 @@ class NewsListener implements FrameworkAwareInterface
      * @param Connection        $db
      * @param PermissionChecker $permissionChecker
      */
-    public function __construct(Connection $db, DcaRelationsManager  $dcaRelationsManager, PermissionChecker $permissionChecker)
+    public function __construct(Connection $db, DcaRelationsManager $dcaRelationsManager, PermissionChecker $permissionChecker)
     {
         $this->db = $db;
         $this->dcaRelationsManager = $dcaRelationsManager;
