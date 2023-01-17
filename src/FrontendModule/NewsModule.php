@@ -3,6 +3,7 @@
 
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
+use Codefog\HasteBundle\Model\DcaRelationsModel;
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
@@ -10,14 +11,13 @@ use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
 use Contao\BackendTemplate;
 use Contao\Controller;
 use Contao\Database;
+use Contao\Input;
 use Contao\Model\Collection;
 use Contao\ModuleNews;
 use Contao\NewsModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
-use Haste\Input\Input;
-use Haste\Model\Model;
 
 abstract class NewsModule extends ModuleNews
 {
@@ -226,7 +226,7 @@ abstract class NewsModule extends ModuleNews
                     return null;
                 }
 
-                $categoryIds = Model::getRelatedValues('tl_news', 'categories', $newsIds);
+                $categoryIds = DcaRelationsModel::getRelatedValues('tl_news', 'categories', $newsIds);
                 $categoryIds = \array_map('intval', $categoryIds);
                 $categoryIds = \array_unique(\array_filter($categoryIds));
 
@@ -286,13 +286,13 @@ abstract class NewsModule extends ModuleNews
      */
     protected function getCurrentNewsCategories()
     {
-        if (!($alias = Input::getAutoItem('items', false, true))
+        if (!($alias = Input::get('auto_item', false, true))
             || null === ($news = NewsModel::findPublishedByParentAndIdOrAlias($alias, $this->news_archives))
         ) {
             return [];
         }
 
-        $ids = Model::getRelatedValues('tl_news', 'categories', $news->id);
+        $ids = DcaRelationsModel::getRelatedValues('tl_news', 'categories', $news->id);
         $ids = \array_map('intval', \array_unique($ids));
 
         return $ids;

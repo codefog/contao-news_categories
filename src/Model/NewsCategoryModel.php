@@ -10,14 +10,15 @@
 
 namespace Codefog\NewsCategoriesBundle\Model;
 
+use Codefog\HasteBundle\DcaRelationsManager;
+use Codefog\HasteBundle\Model\DcaRelationsModel;
 use Codefog\NewsCategoriesBundle\MultilingualHelper;
 use Contao\Database;
 use Contao\Date;
 use Contao\FilesModel;
 use Contao\Model\Collection;
 use Contao\NewsModel;
-use Haste\Model\Model;
-use Haste\Model\Relations;
+use Contao\System;
 
 /*
  * Use the multilingual model if available
@@ -105,7 +106,14 @@ class NewsCategoryModel extends ParentModel
      */
     public static function findPublishedByArchives(array $archives, array $ids = [], array $aliases = [], array $excludedIds = [])
     {
-        if (0 === \count($archives) || false === ($relation = Relations::getRelation('tl_news', 'categories'))) {
+        if (0 === \count($archives)) {
+            return null;
+        }
+
+        /** @var DcaRelationsManager $dcaRelationsManager */
+        $dcaRelationsManager = System::getContainer()->get(DcaRelationsManager::class);
+
+        if (null === ($relation = $dcaRelationsManager->getRelation('tl_news', 'categories'))) {
             return null;
         }
 
@@ -272,7 +280,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
      */
     public static function findPublishedByNews($newsId)
     {
-        if (0 === \count($ids = Model::getRelatedValues('tl_news', 'categories', $newsId))) {
+        if (0 === \count($ids = DcaRelationsModel::getRelatedValues('tl_news', 'categories', $newsId))) {
             return null;
         }
 
@@ -308,7 +316,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             $category = static::getAllSubcategoriesIds($category);
         }
 
-        $ids = Model::getReferenceValues($t, 'categories', $category);
+        $ids = DcaRelationsModel::getReferenceValues($t, 'categories', $category);
         $ids = array_map('intval', $ids);
 
         // Also filter by cumulative categories
@@ -321,7 +329,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
                     $cumulativeCategory = static::getAllSubcategoriesIds($cumulativeCategory);
                 }
 
-                $newsIds = Model::getReferenceValues($t, 'categories', $cumulativeCategory);
+                $newsIds = DcaRelationsModel::getReferenceValues($t, 'categories', $cumulativeCategory);
                 $newsIds = array_map('intval', $newsIds);
 
                 if ($cumulativeIds === null) {

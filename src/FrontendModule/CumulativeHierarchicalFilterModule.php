@@ -7,9 +7,8 @@ namespace Codefog\NewsCategoriesBundle\FrontendModule;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\Database;
 use Contao\FrontendTemplate;
+use Contao\Input;
 use Contao\System;
-use Haste\Generator\RowClass;
-use Haste\Input\Input;
 
 class CumulativeHierarchicalFilterModule extends NewsModule
 {
@@ -142,9 +141,6 @@ class CumulativeHierarchicalFilterModule extends NewsModule
                 $category
             );
         }
-
-        // Add first/last/even/odd classes
-        RowClass::withKey('class')->addFirstLast()->addEvenOdd()->applyTo($items);
 
         $template->items = $items;
 

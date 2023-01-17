@@ -10,13 +10,13 @@
 
 namespace Codefog\NewsCategoriesBundle\Criteria;
 
+use Codefog\HasteBundle\Model\DcaRelationsModel;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Database;
 use Contao\Date;
 use Contao\NewsModel;
-use Haste\Model\Model;
 
 class NewsCriteria
 {
@@ -165,8 +165,8 @@ class NewsCriteria
             $defaultCategories = $newsCategoryModel->getAllSubcategoriesIds($defaultCategories);
         }
 
-        /** @var Model $model */
-        $model = $this->framework->getAdapter(Model::class);
+        /** @var DcaRelationsModel $model */
+        $model = $this->framework->getAdapter(DcaRelationsModel::class);
 
         $newsIds = $model->getReferenceValues('tl_news', 'categories', $defaultCategories);
         $newsIds = $this->parseIds($newsIds);
@@ -205,8 +205,8 @@ class NewsCriteria
      */
     public function setCategory($category, $preserveDefault = false, $includeSubcategories = false)
     {
-        /** @var Model $model */
-        $model = $this->framework->getAdapter(Model::class);
+        /** @var DcaRelationsModel $model */
+        $model = $this->framework->getAdapter(DcaRelationsModel::class);
 
         // Include the subcategories
         if ($includeSubcategories) {
@@ -245,8 +245,8 @@ class NewsCriteria
     {
         $allNewsIds = [];
 
-        /** @var Model $model */
-        $model = $this->framework->getAdapter(Model::class);
+        /** @var DcaRelationsModel $model */
+        $model = $this->framework->getAdapter(DcaRelationsModel::class);
 
         foreach ($categories as $category) {
             // Include the subcategories

@@ -10,13 +10,13 @@
 
 namespace Codefog\NewsCategoriesBundle\EventListener\DataContainer;
 
+use Codefog\HasteBundle\Model\DcaRelationsModel;
 use Codefog\NewsCategoriesBundle\FeedGenerator;
 use Contao\Automator;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\DataContainer;
 use Doctrine\DBAL\Connection;
-use Haste\Model\Model;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class FeedListener implements FrameworkAwareInterface
@@ -74,8 +74,8 @@ class FeedListener implements FrameworkAwareInterface
     {
         // Schedule a news feed update
         if ('tl_news_category' === $dc->table && $dc->id) {
-            /** @var Model $modelAdapter */
-            $modelAdapter = $this->framework->getAdapter(Model::class);
+            /** @var DcaRelationsModel $modelAdapter */
+            $modelAdapter = $this->framework->getAdapter(DcaRelationsModel::class);
 
             $newsIds = $modelAdapter->getReferenceValues('tl_news', 'categories', $dc->id);
             $newsIds = \array_map('intval', \array_unique($newsIds));

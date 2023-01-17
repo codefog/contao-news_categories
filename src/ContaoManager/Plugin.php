@@ -10,6 +10,7 @@
 
 namespace Codefog\NewsCategoriesBundle\ContaoManager;
 
+use Codefog\HasteBundle\CodefogHasteBundle;
 use Codefog\NewsCategoriesBundle\CodefogNewsCategoriesBundle;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
@@ -28,7 +29,7 @@ class Plugin implements BundlePluginInterface
             BundleConfig::create(CodefogNewsCategoriesBundle::class)->setLoadAfter([
                 ContaoCoreBundle::class,
                 ContaoNewsBundle::class,
-                'haste',
+                CodefogHasteBundle::class,
             ])->setReplace(['news_categories']),
         ];
     }

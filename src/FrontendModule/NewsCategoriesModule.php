@@ -13,9 +13,8 @@ namespace Codefog\NewsCategoriesBundle\FrontendModule;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\Database;
 use Contao\FrontendTemplate;
+use Contao\Input;
 use Contao\System;
-use Haste\Generator\RowClass;
-use Haste\Input\Input;
 
 class NewsCategoriesModule extends NewsModule
 {
@@ -124,9 +123,6 @@ class NewsCategoriesModule extends NewsModule
                 $category
             );
         }
-
-        // Add first/last/even/odd classes
-        RowClass::withKey('class')->addFirstLast()->addEvenOdd()->applyTo($items);
 
         $template->items = $items;
 

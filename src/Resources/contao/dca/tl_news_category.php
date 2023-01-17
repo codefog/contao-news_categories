@@ -102,20 +102,8 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
             ],
             'toggle' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_news_category']['toggle'],
+                'href' => 'act=toggle&amp;field=published',
                 'attributes' => 'onclick="Backend.getScrollOffset();"',
-                'haste_ajax_operation' => [
-                    'field' => 'published',
-                    'options' => [
-                        [
-                            'value' => 0,
-                            'icon' => 'invisible.svg',
-                        ],
-                        [
-                            'value' => 1,
-                            'icon' => 'visible.svg',
-                        ],
-                    ],
-                ],
             ],
         ],
     ],
@@ -237,6 +225,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['published'],
             'exclude' => true,
             'filter' => true,
+            'toggle' => true,
             'inputType' => 'checkbox',
             'sql' => ['type' => 'boolean', 'default' => 0],
         ],

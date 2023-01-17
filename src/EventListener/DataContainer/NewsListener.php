@@ -10,6 +10,7 @@
 
 namespace Codefog\NewsCategoriesBundle\EventListener\DataContainer;
 
+use Codefog\HasteBundle\DcaRelationsManager;
 use Codefog\NewsCategoriesBundle\PermissionChecker;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
@@ -17,7 +18,6 @@ use Contao\DataContainer;
 use Contao\Input;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
-use Haste\Model\Relations;
 
 class NewsListener implements FrameworkAwareInterface
 {
@@ -27,6 +27,11 @@ class NewsListener implements FrameworkAwareInterface
      * @var Connection
      */
     private $db;
+
+    /**
+     * @var DcaRelationsManager
+     */
+    private $dcaRelationsManager;
 
     /**
      * @var PermissionChecker
@@ -39,9 +44,10 @@ class NewsListener implements FrameworkAwareInterface
      * @param Connection        $db
      * @param PermissionChecker $permissionChecker
      */
-    public function __construct(Connection $db, PermissionChecker $permissionChecker)
+    public function __construct(Connection $db, DcaRelationsManager  $dcaRelationsManager, PermissionChecker $permissionChecker)
     {
         $this->db = $db;
+        $this->dcaRelationsManager = $dcaRelationsManager;
         $this->permissionChecker = $permissionChecker;
     }
 
@@ -87,8 +93,7 @@ class NewsListener implements FrameworkAwareInterface
 
         $dc->field = 'categories';
 
-        $relations = new Relations();
-        $relations->updateRelatedRecords($this->permissionChecker->getUserDefaultCategories(), $dc);
+        $this->dcaRelationsManager->updateRelatedRecords($this->permissionChecker->getUserDefaultCategories(), $dc);
 
         // Reset back the field property
         $dc->field = null;

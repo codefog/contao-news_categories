@@ -14,7 +14,6 @@ use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\FrontendTemplate;
 use Contao\StringUtil;
 use Contao\System;
-use Haste\Generator\RowClass;
 
 class CumulativeFilterModule extends NewsModule
 {
@@ -147,9 +146,6 @@ class CumulativeFilterModule extends NewsModule
                 $category
             );
         }
-
-        // Add first/last/even/odd classes
-        RowClass::withKey('class')->addFirstLast()->addEvenOdd()->applyTo($items);
 
         $template->items = $items;
 

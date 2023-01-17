@@ -10,6 +10,7 @@
 
 namespace Codefog\NewsCategoriesBundle\Criteria;
 
+use Codefog\HasteBundle\Model\DcaRelationsModel;
 use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\FrontendModule\CumulativeFilterModule;
@@ -17,12 +18,10 @@ use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
-use Contao\Database;
 use Contao\Input;
 use Contao\Module;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
-use Haste\Model\Model;
 
 class NewsCriteriaBuilder implements FrameworkAwareInterface
 {
@@ -229,8 +228,8 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
             throw new NoNewsException();
         }
 
-        /** @var Model $adapter */
-        $adapter = $this->framework->getAdapter(Model::class);
+        /** @var DcaRelationsModel $adapter */
+        $adapter = $this->framework->getAdapter(DcaRelationsModel::class);
         $categories = \array_unique($adapter->getRelatedValues($news->getTable(), 'categories', $news->id));
 
         // This news has no news categories assigned
