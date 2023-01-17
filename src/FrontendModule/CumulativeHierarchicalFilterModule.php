@@ -38,12 +38,6 @@ class CumulativeHierarchicalFilterModule extends NewsModule
         // Get the active category
         if (null !== ($activeCategory = NewsCategoryModel::findPublishedByIdOrAlias(Input::get($param)))) {
             $this->activeCategory = $activeCategory;
-
-            // Add the canonical URL tag
-            // TODO: to be dropped when deps require Contao 4.13+
-            if ($this->news_enableCanonicalUrls && !System::getContainer()->has('contao.routing.response_context_accessor')) {
-                $GLOBALS['TL_HEAD'][] = sprintf('<link rel="canonical" href="%s">', $GLOBALS['objPage']->getAbsoluteUrl());
-            }
         }
 
         $ids = [];

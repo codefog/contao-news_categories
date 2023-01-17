@@ -19,7 +19,6 @@ $GLOBALS['TL_LANG']['tl_module']['news_relatedCategories'] = ['Related categorie
 $GLOBALS['TL_LANG']['tl_module']['news_relatedCategoriesOrder'] = ['Related categories order', 'Here you can choose the related categories order.'];
 $GLOBALS['TL_LANG']['tl_module']['news_includeSubcategories'] = ['Include the subcategories', 'Include the subcategories in the filtering if the parent category is active.'];
 $GLOBALS['TL_LANG']['tl_module']['news_filterCategoriesUnion'] = ['Filter by categories using union (cumulative only)', 'Filter news and categories using union (x OR y) instead of intersection (x AND y).'];
-$GLOBALS['TL_LANG']['tl_module']['news_enableCanonicalUrls'] = ['Enable canonical URLs', 'Adds the canonical URL tag when active category is present.'];
 $GLOBALS['TL_LANG']['tl_module']['news_filterDefault'] = ['Default filter', 'Here you can choose the default filter that will be applied to the newslist.'];
 $GLOBALS['TL_LANG']['tl_module']['news_filterPreserve'] = ['Preserve the default filter', 'Preserve the default filter settings even if there is an active category selected.'];
 $GLOBALS['TL_LANG']['tl_module']['news_resetCategories'] = ['Reset categories link', 'Add a link to reset categories filter.'];
