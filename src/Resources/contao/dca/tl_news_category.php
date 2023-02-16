@@ -103,6 +103,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
             'toggle' => [
                 'label' => &$GLOBALS['TL_LANG']['tl_news_category']['toggle'],
                 'href' => 'act=toggle&amp;field=published',
+                'icon' => 'visible.svg',
                 'attributes' => 'onclick="Backend.getScrollOffset();"',
             ],
         ],
