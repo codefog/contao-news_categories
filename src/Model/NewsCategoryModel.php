@@ -356,8 +356,8 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
 
         if (!BE_USER_LOGGED_IN) {
             $time = Date::floorToMinute();
-            $columns[] = "($t.start=? OR $t.start<=?) AND ($t.stop=? OR $t.stop>?) AND $t.published=?";
-            $values = \array_merge($values, ['', $time, '', $time + 60, 1]);
+            $columns[] = "$t.published=? AND ($t.start=? OR $t.start<=?) AND ($t.stop=? OR $t.stop>?)";
+            $values = \array_merge($values, [1, '', $time, '', $time]);
         }
 
         return NewsModel::countBy($columns, $values);
