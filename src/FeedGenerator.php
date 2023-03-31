@@ -16,6 +16,9 @@ use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\News;
 use Contao\System;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 class FeedGenerator extends News
 {
@@ -70,6 +73,7 @@ class FeedGenerator extends News
 
             /** @var RequestStack $requestStack */
             $requestStack = $container->get('request_stack');
+            $currentRequest = $requestStack->getCurrentRequest();
 
             while ($objArticle->next())
             {
@@ -120,7 +124,7 @@ class FeedGenerator extends News
                 $objItem->link = $this->getLink($objArticle, $strUrl);
                 $objItem->published = $objArticle->date;
 
-                $request = Request::create($objItem->link);
+                $request = $this->createSubRequest($objItem->link, $currentRequest);
                 $request->attributes->set('_scope', 'frontend');
                 $requestStack->push($request);
 
@@ -216,5 +220,36 @@ class FeedGenerator extends News
         // Create the file
         $webDir = \StringUtil::stripRootDir($container->getParameter('contao.web_dir'));
         \File::putContent($webDir . '/share/' . $strFile . '.xml', $this->replaceInsertTags($objFeed->$strType(), false));
+    }
+
+    /**
+     * Creates a sub request for the given URI.
+     */
+    private function createSubRequest(string $uri, Request $request = null): Request
+    {
+        $cookies = null !== $request ? $request->cookies->all() : array();
+        $server = null !== $request ? $request->server->all() : array();
+
+        unset($server['HTTP_IF_MODIFIED_SINCE'], $server['HTTP_IF_NONE_MATCH']);
+
+        $subRequest = Request::create($uri, 'get', array(), $cookies, array(), $server);
+
+        if (null !== $request)
+        {
+            if ($request->get('_format'))
+            {
+                $subRequest->attributes->set('_format', $request->get('_format'));
+            }
+
+            if ($request->getDefaultLocale() !== $request->getLocale())
+            {
+                $subRequest->setLocale($request->getLocale());
+            }
+        }
+
+        // Always set a session (#3856)
+        $subRequest->setSession(new Session(new MockArraySessionStorage()));
+
+        return $subRequest;
     }
 }
