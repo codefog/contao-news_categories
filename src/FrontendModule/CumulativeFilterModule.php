@@ -51,6 +51,8 @@ class CumulativeFilterModule extends NewsModule
         // Then, fetch the inactive categories
         $inactiveCategories = $this->getInactiveCategories($customCategories);
 
+        $this->Template->resetUrl = null;
+
         // Generate active categories
         if (null !== $this->activeCategories) {
             $this->Template->activeCategories = $this->renderNewsCategories($rootCategoryId, $this->activeCategories->fetchEach('id'), true);
@@ -67,7 +69,6 @@ class CumulativeFilterModule extends NewsModule
             }
         } else {
             $this->Template->activeCategories = '';
-            $this->Template->resetUrl = false;
         }
 
         // Generate inactive categories
