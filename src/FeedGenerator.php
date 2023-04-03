@@ -13,8 +13,11 @@ namespace Codefog\NewsCategoriesBundle;
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+use Contao\Config;
 use Contao\News;
+use Contao\PageModel;
 use Contao\System;
+use Contao\UserModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -22,6 +25,12 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 class FeedGenerator extends News
 {
+    /**
+     * Page cache array
+     * @var array
+     */
+    private static $arrPageCache = array();
+
     /**
      * @inheritDoc
      */
@@ -75,8 +84,17 @@ class FeedGenerator extends News
             $requestStack = $container->get('request_stack');
             $currentRequest = $requestStack->getCurrentRequest();
 
+            $time = time();
+            $origObjPage = $GLOBALS['objPage'] ?? null;
+
             while ($objArticle->next())
             {
+                // Never add unpublished elements to the RSS feeds
+                if (!$objArticle->published || ($objArticle->start && $objArticle->start > $time) || ($objArticle->stop && $objArticle->stop <= $time))
+                {
+                    continue;
+                }
+
                 $jumpTo = $objArticle->getRelated('pid')->jumpTo;
 
                 // No jumpTo page set (see #4784)
@@ -85,26 +103,21 @@ class FeedGenerator extends News
                     continue;
                 }
 
+                $objParent = $this->getPageWithDetails($jumpTo);
+
+                // A jumpTo page is set but does no longer exist (see #5781)
+                if ($objParent === null)
+                {
+                    continue;
+                }
+
+                // Override the global page object (#2946)
+                $GLOBALS['objPage'] = $objParent;
+
                 // Get the jumpTo URL
                 if (!isset($arrUrls[$jumpTo]))
                 {
-                    $objParent = \PageModel::findWithDetails($jumpTo);
-
-                    // A jumpTo page is set but does no longer exist (see #5781)
-                    if ($objParent === null)
-                    {
-                        $arrUrls[$jumpTo] = false;
-                    }
-                    else
-                    {
-                        $arrUrls[$jumpTo] = $objParent->getAbsoluteUrl(\Config::get('useAutoItem') ? '/%s' : '/items/%s');
-                    }
-                }
-
-                // Skip the event if it requires a jumpTo URL but there is none
-                if ($arrUrls[$jumpTo] === false && $objArticle->source == 'default')
-                {
-                    continue;
+                    $arrUrls[$jumpTo] = $objParent->getAbsoluteUrl(Config::get('useAutoItem') ? '/%s' : '/items/%s');
                 }
 
                 $categories = [];
@@ -118,18 +131,19 @@ class FeedGenerator extends News
                 }
 
                 $strUrl = $arrUrls[$jumpTo];
-                $objItem = new \FeedItem();
 
+                $objItem = new \FeedItem();
                 $objItem->title = $objArticle->headline;
                 $objItem->link = $this->getLink($objArticle, $strUrl);
                 $objItem->published = $objArticle->date;
 
+                // Push a new request to the request stack (#3856)
                 $request = $this->createSubRequest($objItem->link, $currentRequest);
                 $request->attributes->set('_scope', 'frontend');
                 $requestStack->push($request);
 
-                /** @var \BackendUser $objAuthor */
-                if (($objAuthor = $objArticle->getRelated('author')) !== null)
+                /** @var UserModel $objAuthor */
+                if (($objAuthor = $objArticle->getRelated('author')) instanceof UserModel)
                 {
                     $objItem->author = $objAuthor->name;
                 }
@@ -156,7 +170,7 @@ class FeedGenerator extends News
                 }
                 else
                 {
-                    $strDescription = $objArticle->teaser;
+                    $strDescription = $objArticle->teaser ?? '';
                 }
 
                 // Add the categories
@@ -178,7 +192,7 @@ class FeedGenerator extends News
                     }
                 }
 
-                $strDescription = $this->replaceInsertTags($strDescription, false);
+                $strDescription = $container->get('contao.insert_tag.parser')->replaceInline($strDescription);
                 $objItem->description = $this->convertRelativeUrls($strDescription, $strLink);
 
                 // Add the article image as enclosure
@@ -215,11 +229,30 @@ class FeedGenerator extends News
 
                 $requestStack->pop();
             }
+
+            $GLOBALS['objPage'] = $origObjPage;
         }
 
-        // Create the file
         $webDir = \StringUtil::stripRootDir($container->getParameter('contao.web_dir'));
+
+        // Create the file
         \File::putContent($webDir . '/share/' . $strFile . '.xml', $this->replaceInsertTags($objFeed->$strType(), false));
+    }
+
+    /**
+     * Return the page object with loaded details for the given page ID
+     *
+     * @param  integer        $intPageId
+     * @return PageModel|null
+     */
+    private function getPageWithDetails($intPageId)
+    {
+        if (!isset(self::$arrPageCache[$intPageId]))
+        {
+            self::$arrPageCache[$intPageId] = PageModel::findWithDetails($intPageId);
+        }
+
+        return self::$arrPageCache[$intPageId];
     }
 
     /**
