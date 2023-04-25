@@ -23,7 +23,7 @@ if ('news' === \Contao\Input::get('do')
 /*
  * Add palettes
  */
-$GLOBALS['TL_DCA']['tl_content']['palettes']['newsfilter'] = '{type_legend},type;{include_legend},news_module,news_filterCategories,news_relatedCategories,news_filterDefault,news_filterPreserve;{link_legend:hide},news_categoryFilterPage;{image_legend:hide},news_categoryImgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
+$GLOBALS['TL_DCA']['tl_content']['palettes']['newsfilter'] = '{type_legend},type,headline;{include_legend},news_module,news_filterCategories,news_relatedCategories,news_filterDefault,news_filterPreserve;{link_legend:hide},news_categoryFilterPage;{image_legend:hide},news_categoryImgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space;{invisible_legend:hide},invisible,start,stop';
 
 /*
  * Add fields
