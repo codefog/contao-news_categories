@@ -51,6 +51,11 @@ class NewsFilterElement extends ContentModule
 
         $this->mergeCssId($module);
 
+        if (!empty($this->headline) && !empty($this->hl)) {
+            $module->hl = $this->hl;
+            $module->headline = $this->headline;
+        }
+
         // Override news filter settings
         $module->news_filterCategories = $this->news_filterCategories;
         $module->news_relatedCategories = $this->news_relatedCategories;
