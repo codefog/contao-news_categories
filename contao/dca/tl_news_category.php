@@ -8,6 +8,9 @@
  * @license    MIT
  */
 
+use Contao\DC_Table;
+use Terminal42\DcMultilingualBundle\Driver;
+
 \Contao\System::loadLanguageFile('tl_news_archive');
 
 /*
@@ -17,7 +20,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
     // Config
     'config' => [
         'label' => $GLOBALS['TL_LANG']['tl_news_archive']['categories'][0],
-        'dataContainer' => 'Table',
+        'dataContainer' => DC_Table::class,
         'enableVersioning' => true,
         'backlink' => 'do=news',
         'onload_callback' => [
@@ -234,7 +237,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
  */
 if (\Codefog\NewsCategoriesBundle\MultilingualHelper::isActive()) {
     // Config
-    $GLOBALS['TL_DCA']['tl_news_category']['config']['dataContainer'] = 'Multilingual';
+    $GLOBALS['TL_DCA']['tl_news_category']['config']['dataContainer'] = Driver::class;
     $GLOBALS['TL_DCA']['tl_news_category']['config']['langColumn'] = 'language';
     $GLOBALS['TL_DCA']['tl_news_category']['config']['langPid'] = 'lid';
     $GLOBALS['TL_DCA']['tl_news_category']['config']['sql']['keys']['language,lid'] = 'index';
