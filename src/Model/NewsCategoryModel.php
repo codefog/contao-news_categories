@@ -274,9 +274,9 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
      *
      * @param int|array $newsId
      *
-     * @return Collection|null
+     * @return Collection|NewsCategoryModel[]|null
      */
-    public static function findPublishedByNews($newsId)
+    public static function findPublishedByNews($newsId, array $arrOptions = [])
     {
         if (0 === \count($ids = DcaRelationsModel::getRelatedValues('tl_news', 'categories', $newsId))) {
             return null;
@@ -291,7 +291,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             $values[] = 1;
         }
 
-        return static::findBy($columns, $values, ['order' => "$t.sorting"]);
+        return static::findBy($columns, $values, array_merge(['order' => "$t.sorting"], $arrOptions));
     }
 
     /**

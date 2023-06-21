@@ -42,15 +42,6 @@ $GLOBALS['TL_HOOKS']['newsListFetchItems'][] = ['codefog_news_categories.listene
 $GLOBALS['TL_HOOKS']['parseArticles'][] = ['codefog_news_categories.listener.template', 'onParseArticles'];
 $GLOBALS['TL_HOOKS']['replaceInsertTags'][] = ['codefog_news_categories.listener.insert_tags', 'onReplace'];
 
-if (false !== ($index = \array_search(['News', 'generateFeeds'], $GLOBALS['TL_HOOKS']['generateXmlFiles'], true))) {
-    $GLOBALS['TL_HOOKS']['generateXmlFiles'][$index][0] = \Codefog\NewsCategoriesBundle\FeedGenerator::class;
-}
-
-/*
- * Cron jobs
- */
-$GLOBALS['TL_CRON']['daily']['generateNewsFeeds'][0] = \Codefog\NewsCategoriesBundle\FeedGenerator::class;
-
 /*
  * Add permissions
  */

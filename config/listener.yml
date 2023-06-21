@@ -22,6 +22,14 @@ services:
         arguments:
           - "@codefog_news_categories.news_criteria_builder"
 
+    codefog_news_categories.listener.news_feed:
+        class: Codefog\NewsCategoriesBundle\EventListener\NewsFeedListener
+        arguments:
+            - '@translator'
+        tags:
+            - { name: kernel.event_listener, event: Contao\NewsBundle\Event\FetchArticlesForFeedEvent, method: onFetchArticlesForFeed }
+            - { name: kernel.event_listener, event: Contao\NewsBundle\Event\TransformArticleForFeedEvent, method: onTransformArticleForFeed }
+
     codefog_news_categories.listener.template:
         class: Codefog\NewsCategoriesBundle\EventListener\TemplateListener
         arguments:
@@ -32,12 +40,6 @@ services:
         class: Codefog\NewsCategoriesBundle\EventListener\DataContainer\ContentListener
         arguments:
             - "@database_connection"
-
-    codefog_news_categories.listener.data_container.feed:
-        class: Codefog\NewsCategoriesBundle\EventListener\DataContainer\FeedListener
-        arguments:
-            - "@database_connection"
-            - "@request_stack"
 
     codefog_news_categories.listener.data_container.news_archive:
         class: Codefog\NewsCategoriesBundle\EventListener\DataContainer\NewsArchiveListener

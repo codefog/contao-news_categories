@@ -11,4 +11,4 @@
 /**
  * Fields.
  */
-$GLOBALS['TL_LANG']['tl_news_feed']['categories'] = ['Categorie', 'Puoi selezionare una o più categorie.'];
+$GLOBALS['TL_LANG']['tl_page']['newsCategories'] = ['Categorie', 'Puoi selezionare una o più categorie.'];

@@ -8,10 +8,6 @@
  * @license    MIT
  */
 
-if (false !== ($index = \array_search(['tl_news', 'generateFeed'], $GLOBALS['TL_DCA']['tl_news']['config']['onload_callback'], true))) {
-    $GLOBALS['TL_DCA']['tl_news']['config']['onload_callback'][$index] = ['codefog_news_categories.listener.data_container.feed', 'onLoadCallback'];
-}
-
 /*
  * Add global callbacks
  */
