@@ -31,18 +31,6 @@ $GLOBALS['TL_CTE']['includes']['newsfilter'] = \Codefog\NewsCategoriesBundle\Con
 $GLOBALS['TL_MODELS']['tl_news_category'] = \Codefog\NewsCategoriesBundle\Model\NewsCategoryModel::class;
 
 /*
- * Hooks
- */
-$GLOBALS['TL_HOOKS']['changelanguageNavigation'][] = [
-    'codefog_news_categories.listener.change_language',
-    'onChangeLanguageNavigation',
-];
-$GLOBALS['TL_HOOKS']['newsListCountItems'][] = ['codefog_news_categories.listener.news', 'onNewsListCountItems'];
-$GLOBALS['TL_HOOKS']['newsListFetchItems'][] = ['codefog_news_categories.listener.news', 'onNewsListFetchItems'];
-$GLOBALS['TL_HOOKS']['parseArticles'][] = ['codefog_news_categories.listener.template', 'onParseArticles'];
-$GLOBALS['TL_HOOKS']['replaceInsertTags'][] = ['codefog_news_categories.listener.insert_tags', 'onReplace'];
-
-/*
  * Add permissions
  */
 $GLOBALS['TL_PERMISSIONS'][] = 'newscategories';

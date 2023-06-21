@@ -11,16 +11,23 @@ services:
         class: Codefog\NewsCategoriesBundle\EventListener\ChangeLanguageListener
         arguments:
             - "@codefog_news_categories.manager"
+        tags:
+            - { name: contao.hook, hook: changelanguageNavigation, method: onChangeLanguageNavigation }
 
     codefog_news_categories.listener.insert_tags:
         class: Codefog\NewsCategoriesBundle\EventListener\InsertTagsListener
         arguments:
             - "@codefog_news_categories.manager"
+        tags:
+            - { name: contao.hook, hook: replaceInsertTags, method: onReplace }
 
     codefog_news_categories.listener.news:
         class: Codefog\NewsCategoriesBundle\EventListener\NewsListener
         arguments:
-          - "@codefog_news_categories.news_criteria_builder"
+            - "@codefog_news_categories.news_criteria_builder"
+        tags:
+            - { name: contao.hook, hook: newsListCountItems, method: onNewsListCountItems }
+            - { name: contao.hook, hook: newsListFetchItems, method: onNewsListFetchItems }
 
     codefog_news_categories.listener.news_feed:
         class: Codefog\NewsCategoriesBundle\EventListener\NewsFeedListener
@@ -34,6 +41,8 @@ services:
         class: Codefog\NewsCategoriesBundle\EventListener\TemplateListener
         arguments:
             - "@codefog_news_categories.manager"
+        tags:
+            - { name: contao.hook, hook: parseArticles, method: onParseArticles }
 
     # Data container
     codefog_news_categories.listener.data_container.content:
