@@ -17,7 +17,6 @@ $GLOBALS['TL_LANG']['MSC']['resetCategoriesCumulative'] = ['Reset categories', '
 $GLOBALS['TL_LANG']['MSC']['activeCategories'] = 'Active categories:';
 $GLOBALS['TL_LANG']['MSC']['inactiveCategories'] = 'Filter by categories:';
 $GLOBALS['TL_LANG']['MSC']['inactiveCategoriesAdd'] = 'Add another category to filter:';
-$GLOBALS['TL_LANG']['MSC']['newsCategoriesPicker'] = 'News categories';
 
 /*
  * Content elements

@@ -32,17 +32,19 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['newscategories'] = [
 $GLOBALS['TL_DCA']['tl_user']['fields']['newscategories_roots'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_user']['newscategories_roots'],
     'exclude' => true,
-    'inputType' => 'newsCategoriesPicker',
+    'inputType' => 'picker',
     'foreignKey' => 'tl_news_category.title',
     'eval' => ['multiple' => true, 'fieldType' => 'checkbox'],
     'sql' => ['type' => 'blob', 'notnull' => false],
+    'relation' => ['type' => 'hasMany', 'load' => 'lazy'],
 ];
 
 $GLOBALS['TL_DCA']['tl_user']['fields']['newscategories_default'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_user']['newscategories_default'],
     'exclude' => true,
-    'inputType' => 'newsCategoriesPicker',
+    'inputType' => 'picker',
     'foreignKey' => 'tl_news_category.title',
     'eval' => ['multiple' => true, 'fieldType' => 'checkbox'],
     'sql' => ['type' => 'blob', 'notnull' => false],
+    'relation' => ['type' => 'hasMany', 'load' => 'lazy'],
 ];

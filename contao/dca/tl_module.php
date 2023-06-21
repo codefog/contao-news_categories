@@ -57,10 +57,11 @@ $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_relatedCategories'] = 'news
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_categories'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['news_categories'],
     'exclude' => true,
-    'inputType' => 'newsCategoriesPicker',
+    'inputType' => 'picker',
     'foreignKey' => 'tl_news_category.title',
     'eval' => ['multiple' => true, 'fieldType' => 'checkbox'],
     'sql' => ['type' => 'blob', 'notnull' => false],
+    'relation' => ['type' => 'hasMany', 'load' => 'lazy'],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_customCategories'] = [
@@ -124,10 +125,11 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterCategoriesUnion'] = [
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterDefault'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['news_filterDefault'],
     'exclude' => true,
-    'inputType' => 'newsCategoriesPicker',
+    'inputType' => 'picker',
     'foreignKey' => 'tl_news_category.title',
     'eval' => ['multiple' => true, 'fieldType' => 'checkbox', 'tl_class' => 'clr'],
     'sql' => ['type' => 'blob', 'notnull' => false],
+    'relation' => ['type' => 'hasMany', 'load' => 'lazy'],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterPreserve'] = [
@@ -165,10 +167,11 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_forceCategoryUrl'] = [
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoriesRoot'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_module']['news_categoriesRoot'],
     'exclude' => true,
-    'inputType' => 'newsCategoriesPicker',
+    'inputType' => 'picker',
     'foreignKey' => 'tl_news_category.title',
     'eval' => ['fieldType' => 'radio', 'tl_class' => 'clr'],
     'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
+    'relation' => ['type' => 'hasMany', 'load' => 'lazy'],
 ];
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryFilterPage'] = [

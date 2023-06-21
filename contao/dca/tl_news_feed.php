@@ -28,10 +28,11 @@ $GLOBALS['TL_DCA']['tl_news_feed']['fields']['categories'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_news_feed']['categories'],
     'exclude' => true,
     'filter' => true,
-    'inputType' => 'newsCategoriesPicker',
+    'inputType' => 'picker',
     'foreignKey' => 'tl_news_category.title',
     'eval' => ['multiple' => true, 'fieldType' => 'checkbox'],
     'sql' => ['type' => 'blob', 'notnull' => false],
+    'relation' => ['type' => 'hasMany', 'load' => 'lazy'],
 ];
 
 $GLOBALS['TL_DCA']['tl_news_feed']['fields']['categories_show'] = [

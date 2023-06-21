@@ -18,18 +18,6 @@ services:
     codefog_news_categories.manager:
         class: Codefog\NewsCategoriesBundle\NewsCategoriesManager
 
-    codefog_news_categories.picker:
-        class: Codefog\NewsCategoriesBundle\Picker\NewsCategoriesPickerProvider
-        public: false
-        arguments:
-            - "@knp_menu.factory"
-            - "@router"
-        calls:
-            - [setTokenStorage, ["@security.token_storage"]]
-            - [setPermissionChecker, ["@codefog_news_categories.permission_checker"]]
-        tags:
-            - { name: contao.picker_provider, priority: 132 }
-
     codefog_news_categories.permission_checker:
         class: Codefog\NewsCategoriesBundle\PermissionChecker
         public: false

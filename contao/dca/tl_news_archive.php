@@ -62,9 +62,10 @@ $GLOBALS['TL_DCA']['tl_news_archive']['fields']['categories'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_news_archive']['categories'],
     'exclude' => true,
     'filter' => true,
-    'inputType' => 'newsCategoriesPicker',
+    'inputType' => 'picker',
     'foreignKey' => 'tl_news_category.title',
     'options_callback' => ['codefog_news_categories.listener.data_container.news', 'onCategoriesOptionsCallback'],
     'eval' => ['mandatory' => true, 'multiple' => true, 'fieldType' => 'checkbox'],
     'sql' => ['type' => 'blob', 'notnull' => false],
+    'relation' => ['type' => 'hasMany', 'load' => 'lazy'],
 ];
