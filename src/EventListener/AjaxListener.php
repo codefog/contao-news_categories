@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -34,11 +36,6 @@ class AjaxListener implements FrameworkAwareInterface
      */
     private $logger;
 
-    /**
-     * AjaxListener constructor.
-     *
-     * @param LoggerInterface $logger
-     */
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
@@ -47,10 +44,9 @@ class AjaxListener implements FrameworkAwareInterface
     /**
      * On execute the post actions.
      *
-     * @param string        $action
-     * @param DataContainer $dc
+     * @param string $action
      */
-    public function onExecutePostActions($action, DataContainer $dc)
+    public function onExecutePostActions($action, DataContainer $dc): void
     {
         if ('reloadNewsCategoriesWidget' === $action) {
             $this->reloadNewsCategoriesWidget($dc);
@@ -59,10 +55,8 @@ class AjaxListener implements FrameworkAwareInterface
 
     /**
      * Reload the news categories widget.
-     *
-     * @param DataContainer $dc
      */
-    private function reloadNewsCategoriesWidget(DataContainer $dc)
+    private function reloadNewsCategoriesWidget(DataContainer $dc): void
     {
         /**
          * @var Database
@@ -76,8 +70,8 @@ class AjaxListener implements FrameworkAwareInterface
 
         // Handle the keys in "edit multiple" mode
         if ('editAll' === $input->get('act')) {
-            $id = \preg_replace('/.*_([0-9a-zA-Z]+)$/', '$1', $field);
-            $field = \preg_replace('/(.*)_[0-9a-zA-Z]+$/', '$1', $field);
+            $id = preg_replace('/.*_([0-9a-zA-Z]+)$/', '$1', $field);
+            $field = preg_replace('/(.*)_[0-9a-zA-Z]+$/', '$1', $field);
         }
 
         $dc->field = $field;
@@ -86,7 +80,7 @@ class AjaxListener implements FrameworkAwareInterface
         if (!isset($GLOBALS['TL_DCA'][$dc->table]['fields'][$field])) {
             $this->logger->log(
                 LogLevel::ERROR,
-                \sprintf('Field "%s" does not exist in DCA "%s"', $field, $dc->table),
+                sprintf('Field "%s" does not exist in DCA "%s"', $field, $dc->table),
                 ['contao' => new ContaoContext(__METHOD__, TL_ERROR)]
             );
 
@@ -104,7 +98,7 @@ class AjaxListener implements FrameworkAwareInterface
             if ($row->numRows < 1) {
                 $this->logger->log(
                     LogLevel::ERROR,
-                    \sprintf('A record with the ID "%s" does not exist in table "%s"', $id, $dc->table),
+                    sprintf('A record with the ID "%s" does not exist in table "%s"', $id, $dc->table),
                     ['contao' => new ContaoContext(__METHOD__, TL_ERROR)]
                 );
 
@@ -135,7 +129,7 @@ class AjaxListener implements FrameworkAwareInterface
         // Convert the selected values
         if ($value) {
             $value = StringUtil::trimsplit("\t", $value);
-            $value = \serialize($value);
+            $value = serialize($value);
         }
 
         /** @var NewsCategoriesPickerWidget $strClass */

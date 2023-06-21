@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -40,9 +42,6 @@ class NewsListener implements FrameworkAwareInterface
 
     /**
      * NewsListener constructor.
-     *
-     * @param Connection        $db
-     * @param PermissionChecker $permissionChecker
      */
     public function __construct(Connection $db, DcaRelationsManager $dcaRelationsManager, PermissionChecker $permissionChecker)
     {
@@ -53,10 +52,8 @@ class NewsListener implements FrameworkAwareInterface
 
     /**
      * On data container load. Limit the categories set in the news archive settings.
-     *
-     * @param DataContainer $dc
      */
-    public function onLoadCallback(DataContainer $dc)
+    public function onLoadCallback(DataContainer $dc): void
     {
         if (!$dc->id) {
             return;
@@ -66,7 +63,7 @@ class NewsListener implements FrameworkAwareInterface
         $input = $this->framework->getAdapter(Input::class);
 
         // Handle the edit all modes differently
-        if ($input->get('act') === 'editAll' || $input->get('act') === 'overrideAll') {
+        if ('editAll' === $input->get('act') || 'overrideAll' === $input->get('act')) {
             $categories = $this->db->fetchOne('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=?', [$dc->id]);
         } else {
             $categories = $this->db->fetchOne('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=(SELECT pid FROM tl_news WHERE id=?)', [$dc->id]);
@@ -81,10 +78,8 @@ class NewsListener implements FrameworkAwareInterface
 
     /**
      * On submit record. Update the category relations.
-     *
-     * @param DataContainer $dc
      */
-    public function onSubmitCallback(DataContainer $dc)
+    public function onSubmitCallback(DataContainer $dc): void
     {
         // Return if the user is allowed to assign categories or the record is not new
         if ($this->permissionChecker->canUserAssignCategories() || $dc->activeRecord->tstamp > 0) {
@@ -100,7 +95,7 @@ class NewsListener implements FrameworkAwareInterface
     }
 
     /**
-     * On categories options callback
+     * On categories options callback.
      *
      * @return array
      */
@@ -110,7 +105,7 @@ class NewsListener implements FrameworkAwareInterface
         $input = $this->framework->getAdapter(Input::class);
 
         // Do not generate the options for other views than listings
-        if ($input->get('act') && $input->get('act') !== 'select') {
+        if ($input->get('act') && 'select' !== $input->get('act')) {
             return [];
         }
 
@@ -118,7 +113,7 @@ class NewsListener implements FrameworkAwareInterface
     }
 
     /**
-     * Generate the options recursively
+     * Generate the options recursively.
      *
      * @param int    $pid
      * @param string $prefix
@@ -131,9 +126,9 @@ class NewsListener implements FrameworkAwareInterface
         $records = $this->db->fetchAllAssociative('SELECT * FROM tl_news_category WHERE pid=? ORDER BY sorting', [$pid]);
 
         foreach ($records as $record) {
-            $options[$record['id']] = $prefix . $record['title'];
+            $options[$record['id']] = $prefix.$record['title'];
 
-            foreach ($this->generateOptionsRecursively($record['id'], $record['title'] . ' / ') as $k => $v) {
+            foreach ($this->generateOptionsRecursively($record['id'], $record['title'].' / ') as $k => $v) {
                 $options[$k] = $v;
             }
         }

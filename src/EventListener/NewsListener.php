@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -24,14 +26,12 @@ class NewsListener implements FrameworkAwareInterface
     use FrameworkAwareTrait;
 
     /**
-     * @var \Codefog\NewsCategoriesBundle\Criteria\NewsCriteriaBuilder
+     * @var NewsCriteriaBuilder
      */
     private $searchBuilder;
 
     /**
      * InsertTagsListener constructor.
-     *
-     * @param \Codefog\NewsCategoriesBundle\Criteria\NewsCriteriaBuilder $searchBuilder
      */
     public function __construct(NewsCriteriaBuilder $searchBuilder)
     {
@@ -41,9 +41,7 @@ class NewsListener implements FrameworkAwareInterface
     /**
      * On news list count items.
      *
-     * @param array          $archives
-     * @param bool|null      $featured
-     * @param ModuleNewsList $module
+     * @param bool|null $featured
      *
      * @return int
      */
@@ -59,11 +57,9 @@ class NewsListener implements FrameworkAwareInterface
     /**
      * On news list fetch items.
      *
-     * @param array          $archives
-     * @param bool|null      $featured
-     * @param int            $limit
-     * @param int            $offset
-     * @param ModuleNewsList $module
+     * @param bool|null $featured
+     * @param int       $limit
+     * @param int       $offset
      *
      * @return Collection|null
      */
@@ -86,9 +82,7 @@ class NewsListener implements FrameworkAwareInterface
     /**
      * Get the criteria.
      *
-     * @param array          $archives
-     * @param bool|null      $featured
-     * @param ModuleNewsList $module
+     * @param bool|null $featured
      *
      * @return NewsCriteria|null
      *

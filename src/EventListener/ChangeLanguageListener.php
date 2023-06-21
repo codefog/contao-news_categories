@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -26,11 +28,6 @@ class ChangeLanguageListener implements FrameworkAwareInterface
      */
     private $manager;
 
-    /**
-     * ChangeLanguageListener constructor.
-     *
-     * @param NewsCategoriesManager $manager
-     */
     public function __construct(NewsCategoriesManager $manager)
     {
         $this->manager = $manager;
@@ -38,10 +35,8 @@ class ChangeLanguageListener implements FrameworkAwareInterface
 
     /**
      * On change language navigation.
-     *
-     * @param ChangelanguageNavigationEvent $event
      */
-    public function onChangelanguageNavigation(ChangelanguageNavigationEvent $event)
+    public function onChangelanguageNavigation(ChangelanguageNavigationEvent $event): void
     {
         $this->updateAlias($event);
         $this->updateParameter($event);
@@ -49,10 +44,8 @@ class ChangeLanguageListener implements FrameworkAwareInterface
 
     /**
      * Update the category alias value.
-     *
-     * @param ChangelanguageNavigationEvent $event
      */
-    private function updateAlias(ChangelanguageNavigationEvent $event)
+    private function updateAlias(ChangelanguageNavigationEvent $event): void
     {
         /** @var NewsCategoryModel $modelAdapter */
         $modelAdapter = $this->framework->getAdapter(NewsCategoryModel::class);
@@ -76,10 +69,8 @@ class ChangeLanguageListener implements FrameworkAwareInterface
 
     /**
      * Update the parameter name.
-     *
-     * @param ChangelanguageNavigationEvent $event
      */
-    private function updateParameter(ChangelanguageNavigationEvent $event)
+    private function updateParameter(ChangelanguageNavigationEvent $event): void
     {
         $currentParam = $this->manager->getParameterName();
         $newParam = $this->manager->getParameterName($event->getNavigationItem()->getRootPage()->id);

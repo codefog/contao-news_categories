@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -22,19 +24,15 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
      */
     private $permissionChecker;
 
-    /**
-     * @param PermissionChecker $permissionChecker
-     */
-    public function setPermissionChecker(PermissionChecker $permissionChecker)
+    public function setPermissionChecker(PermissionChecker $permissionChecker): void
     {
         $this->permissionChecker = $permissionChecker;
     }
 
     /**
      * {@inheritdoc}
-     * @param PickerConfig|null $config
      */
-    public function getDcaTable(PickerConfig $config = null): string
+    public function getDcaTable(PickerConfig|null $config = null): string
     {
         return 'tl_news_category';
     }
@@ -51,7 +49,7 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
         }
 
         if ($this->supportsValue($config)) {
-            $attributes['value'] = \array_map('intval', \explode(',', $config->getValue()));
+            $attributes['value'] = array_map('intval', explode(',', $config->getValue()));
         }
 
         if (\is_array($rootNodes = $config->getExtra('rootNodes'))) {
@@ -64,7 +62,7 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
     /**
      * {@inheritdoc}
      */
-    public function getUrl(PickerConfig $config): ?string
+    public function getUrl(PickerConfig $config): string|null
     {
         // Set the news categories root in session for further reference in onload_callback (see #137)
         if (\is_array($rootNodes = $config->getExtra('rootNodes'))) {
@@ -97,7 +95,7 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
      */
     public function supportsContext($context): bool
     {
-        if ($this->permissionChecker === null) {
+        if (null === $this->permissionChecker) {
             return false;
         }
 
@@ -109,8 +107,8 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
      */
     public function supportsValue(PickerConfig $config): bool
     {
-        foreach (\explode(',', $config->getValue()) as $id) {
-            if (!\is_numeric($id)) {
+        foreach (explode(',', $config->getValue()) as $id) {
+            if (!is_numeric($id)) {
                 return false;
             }
         }
@@ -121,7 +119,7 @@ class NewsCategoriesPickerProvider extends AbstractPickerProvider implements Dca
     /**
      * {@inheritdoc}
      */
-    protected function getRouteParameters(PickerConfig $config = null): array
+    protected function getRouteParameters(PickerConfig|null $config = null): array
     {
         return ['do' => 'news', 'table' => 'tl_news_category'];
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -28,7 +30,7 @@ class NewsCategoriesModule extends NewsModule
     /**
      * Generate the module.
      */
-    protected function compile()
+    protected function compile(): void
     {
         $categories = $this->getCategories();
 
@@ -51,18 +53,17 @@ class NewsCategoriesModule extends NewsModule
         // Get the parent categories IDs
         /** @var NewsCategoryModel $category */
         foreach ($categories as $category) {
-            $ids = \array_merge($ids, Database::getInstance()->getParentRecords($category->id, $category->getTable()));
+            $ids = array_merge($ids, Database::getInstance()->getParentRecords($category->id, $category->getTable()));
         }
 
-        $this->Template->categories = $this->renderNewsCategories((int) $this->news_categoriesRoot, \array_unique($ids));
+        $this->Template->categories = $this->renderNewsCategories((int) $this->news_categoriesRoot, array_unique($ids));
     }
 
     /**
      * Recursively compile the news categories and return it as HTML string.
      *
-     * @param int   $pid
-     * @param array $ids
-     * @param int   $level
+     * @param int $pid
+     * @param int $level
      *
      * @return string
      */
@@ -78,7 +79,7 @@ class NewsCategoriesModule extends NewsModule
         }
 
         $template = new FrontendTemplate($this->navigationTpl);
-        $template->type = \get_class($this);
+        $template->type = static::class;
         $template->cssID = $this->cssID;
         $template->level = 'level_'.$level;
         $template->showQuantity = $this->news_showQuantity;
@@ -113,7 +114,7 @@ class NewsCategoriesModule extends NewsModule
                 $category->getTitle(),
                 $this->generateItemCssClass($category),
                 null !== $this->activeCategory && (int) $this->activeCategory->id === (int) $category->id,
-                (!$this->showLevel || $this->showLevel >= $level) ? $this->renderNewsCategories($category->id, $ids, $level) : '',
+                !$this->showLevel || $this->showLevel >= $level ? $this->renderNewsCategories($category->id, $ids, $level) : '',
                 $category
             );
         }

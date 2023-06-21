@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -14,6 +16,7 @@ use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\Database;
+use Contao\FilesModel;
 use Contao\Module;
 use Contao\ModuleNewsArchive;
 use Contao\ModuleNewsList;
@@ -33,16 +36,14 @@ class NewsCategoriesManager implements FrameworkAwareInterface
     /**
      * Generate the category URL.
      *
-     * @param NewsCategoryModel $category
-     * @param PageModel         $page
-     * @param bool              $absolute
+     * @param bool $absolute
      *
      * @return string
      */
     public function generateUrl(NewsCategoryModel $category, PageModel $page, $absolute = false)
     {
         $page->loadDetails();
-        $cacheKey = $page->id . '-' . ($absolute ? 'abs' : 'rel');
+        $cacheKey = $page->id.'-'.($absolute ? 'abs' : 'rel');
 
         if (!isset($this->urlCache[$cacheKey])) {
             $params = '/%s/%s';
@@ -55,13 +56,11 @@ class NewsCategoriesManager implements FrameworkAwareInterface
     /**
      * Get the image.
      *
-     * @param NewsCategoryModel $category
-     *
-     * @return \Contao\FilesModel|null
+     * @return FilesModel|null
      */
     public function getImage(NewsCategoryModel $category)
     {
-        if (null === ($image = $category->getImage()) || !\is_file(TL_ROOT.'/'.$image->path)) {
+        if (null === ($image = $category->getImage()) || !is_file(TL_ROOT.'/'.$image->path)) {
             return null;
         }
 
@@ -69,10 +68,7 @@ class NewsCategoriesManager implements FrameworkAwareInterface
     }
 
     /**
-     * Get the category alias
-     *
-     * @param NewsCategoryModel $category
-     * @param PageModel         $page
+     * Get the category alias.
      *
      * @return string
      */
@@ -105,8 +101,6 @@ class NewsCategoriesManager implements FrameworkAwareInterface
 
     /**
      * Get the category target page.
-     *
-     * @param NewsCategoryModel $category
      *
      * @return PageModel|null
      */
@@ -148,8 +142,6 @@ class NewsCategoriesManager implements FrameworkAwareInterface
     /**
      * Get the category trail IDs.
      *
-     * @param NewsCategoryModel $category
-     *
      * @return array
      */
     public function getTrailIds(NewsCategoryModel $category)
@@ -161,10 +153,10 @@ class NewsCategoriesManager implements FrameworkAwareInterface
             $db = $this->framework->createInstance(Database::class);
 
             $ids = $db->getParentRecords($category->id, $category->getTable());
-            $ids = \array_map('intval', \array_unique($ids));
+            $ids = array_map('intval', array_unique($ids));
 
             // Remove the current category
-            unset($ids[\array_search($category->id, $ids, true)]);
+            unset($ids[array_search($category->id, $ids, true)]);
 
             $cache[$category->id] = $ids;
         }
@@ -174,9 +166,6 @@ class NewsCategoriesManager implements FrameworkAwareInterface
 
     /**
      * Return true if the category is visible for module.
-     *
-     * @param NewsCategoryModel $category
-     * @param Module            $module
      *
      * @return bool
      */

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -32,12 +34,6 @@ class PermissionChecker implements FrameworkAwareInterface
      */
     private $tokenStorage;
 
-    /**
-     * PermissionChecker constructor.
-     *
-     * @param Connection            $db
-     * @param TokenStorageInterface $tokenStorage
-     */
     public function __construct(Connection $db, TokenStorageInterface $tokenStorage)
     {
         $this->db = $db;
@@ -91,7 +87,7 @@ class PermissionChecker implements FrameworkAwareInterface
             return null;
         }
 
-        return \array_map('intval', (array) $user->newscategories_roots);
+        return array_map('intval', (array) $user->newscategories_roots);
     }
 
     /**
@@ -111,7 +107,7 @@ class PermissionChecker implements FrameworkAwareInterface
         $db = $this->framework->createInstance(Database::class);
 
         $ids = $db->getChildRecords($roots, 'tl_news_category', false, $roots);
-        $ids = \array_map('intval', $ids);
+        $ids = array_map('intval', $ids);
 
         return \in_array((int) $categoryId, $ids, true);
     }
@@ -121,7 +117,7 @@ class PermissionChecker implements FrameworkAwareInterface
      *
      * @param int $categoryId
      */
-    public function addCategoryToAllowedRoots($categoryId)
+    public function addCategoryToAllowedRoots($categoryId): void
     {
         if (null === ($roots = $this->getUserAllowedRoots())) {
             return;
@@ -135,7 +131,7 @@ class PermissionChecker implements FrameworkAwareInterface
 
         // Add the permissions on group level
         if ('custom' !== $user->inherit) {
-            $groups = $this->db->fetchAllAssociative('SELECT id, newscategories, newscategories_roots FROM tl_user_group WHERE id IN('.\implode(',', \array_map('intval', $user->groups)).')');
+            $groups = $this->db->fetchAllAssociative('SELECT id, newscategories, newscategories_roots FROM tl_user_group WHERE id IN('.implode(',', array_map('intval', $user->groups)).')');
 
             foreach ($groups as $group) {
                 $permissions = $stringUtil->deserialize($group['newscategories'], true);
@@ -144,7 +140,7 @@ class PermissionChecker implements FrameworkAwareInterface
                     $categoryIds = $stringUtil->deserialize($group['newscategories_roots'], true);
                     $categoryIds[] = $categoryId;
 
-                    $this->db->update('tl_user_group', ['newscategories_roots' => \serialize($categoryIds)], ['id' => $group['id']]);
+                    $this->db->update('tl_user_group', ['newscategories_roots' => serialize($categoryIds)], ['id' => $group['id']]);
                 }
             }
         }
@@ -158,20 +154,20 @@ class PermissionChecker implements FrameworkAwareInterface
                 $categoryIds = $stringUtil->deserialize($userData['newscategories_roots'], true);
                 $categoryIds[] = $categoryId;
 
-                $this->db->update('tl_user', ['newscategories_roots' => \serialize($categoryIds)], ['id' => $user->id]);
+                $this->db->update('tl_user', ['newscategories_roots' => serialize($categoryIds)], ['id' => $user->id]);
             }
         }
 
         // Add the new element to the user object
-        $user->newscategories_roots = \array_merge($roots, [$categoryId]);
+        $user->newscategories_roots = array_merge($roots, [$categoryId]);
     }
 
     /**
      * Get the user.
      *
-     * @throws \RuntimeException
-     *
      * @return BackendUser
+     *
+     * @throws \RuntimeException
      */
     private function getUser()
     {

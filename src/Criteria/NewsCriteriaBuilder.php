@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -39,9 +41,6 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
 
     /**
      * NewsCriteriaBuilder constructor.
-     *
-     * @param Connection            $db
-     * @param NewsCategoriesManager $manager
      */
     public function __construct(Connection $db, NewsCategoriesManager $manager)
     {
@@ -52,10 +51,8 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
     /**
      * Get the criteria for archive module.
      *
-     * @param array  $archives
-     * @param int    $begin
-     * @param int    $end
-     * @param Module $module
+     * @param int $begin
+     * @param int $end
      *
      * @return NewsCriteria|null
      */
@@ -81,9 +78,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
     /**
      * Get the criteria for list module.
      *
-     * @param array     $archives
      * @param bool|null $featured
-     * @param Module    $module
      *
      * @return NewsCriteria|null
      */
@@ -116,9 +111,6 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
     /**
      * Get the criteria for menu module.
      *
-     * @param array  $archives
-     * @param Module $module
-     *
      * @return NewsCriteria|null
      */
     public function getCriteriaForMenuModule(array $archives, Module $module)
@@ -140,13 +132,10 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
     /**
      * Set the regular list criteria.
      *
-     * @param NewsCriteria $criteria
-     * @param Module       $module
-     *
      * @throws CategoryNotFoundException
      * @throws NoNewsException
      */
-    private function setRegularListCriteria(NewsCriteria $criteria, Module $module)
+    private function setRegularListCriteria(NewsCriteria $criteria, Module $module): void
     {
         // Filter by default categories
         if (\count($default = StringUtil::deserialize($module->news_filterDefault, true)) > 0) {
@@ -163,7 +152,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
                 $aliases = StringUtil::trimsplit(CumulativeFilterModule::getCategorySeparator(), $aliases);
                 $aliases = array_unique(array_filter($aliases));
 
-                if (count($aliases) > 0) {
+                if (\count($aliases) > 0) {
                     /** @var NewsCategoryModel $model */
                     $model = $this->framework->getAdapter(NewsCategoryModel::class);
                     $categories = [];
@@ -177,7 +166,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
                         $categories[] = (int) $category->id;
                     }
 
-                    if (count($categories) > 0) {
+                    if (\count($categories) > 0) {
                         // Union filtering
                         if ($module->news_filterCategoriesUnion) {
                             $criteria->setCategories($categories, (bool) $module->news_filterPreserve, (bool) $module->news_includeSubcategories);
@@ -217,12 +206,9 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
     /**
      * Set the related list criteria.
      *
-     * @param NewsCriteria $criteria
-     * @param Module       $module
-     *
      * @throws NoNewsException
      */
-    private function setRelatedListCriteria(NewsCriteria $criteria, Module $module)
+    private function setRelatedListCriteria(NewsCriteria $criteria, Module $module): void
     {
         if (null === ($news = $module->currentNews)) {
             throw new NoNewsException();
@@ -230,19 +216,19 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
 
         /** @var DcaRelationsModel $adapter */
         $adapter = $this->framework->getAdapter(DcaRelationsModel::class);
-        $categories = \array_unique($adapter->getRelatedValues($news->getTable(), 'categories', $news->id));
+        $categories = array_unique($adapter->getRelatedValues($news->getTable(), 'categories', $news->id));
 
         // This news has no news categories assigned
         if (0 === \count($categories)) {
             throw new NoNewsException();
         }
 
-        $categories = \array_map('intval', $categories);
+        $categories = array_map('intval', $categories);
         $excluded = $this->db->fetchFirstColumn('SELECT id FROM tl_news_category WHERE excludeInRelated=1');
 
         // Exclude the categories
         foreach ($excluded as $category) {
-            if (false !== ($index = \array_search((int) $category, $categories, true))) {
+            if (false !== ($index = array_search((int) $category, $categories, true))) {
                 unset($categories[$index]);
             }
         }

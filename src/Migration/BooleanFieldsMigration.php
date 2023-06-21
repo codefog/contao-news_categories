@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -41,7 +43,7 @@ class BooleanFieldsMigration extends AbstractMigration
     {
         $schemaManager = $this->db->createSchemaManager();
 
-        if (!$schemaManager->tablesExist(\array_keys(self::$fields))) {
+        if (!$schemaManager->tablesExist(array_keys(self::$fields))) {
             return false;
         }
 
@@ -72,7 +74,7 @@ class BooleanFieldsMigration extends AbstractMigration
     private function needsMigration(string $table, string $field): bool
     {
         $columns = $this->db->createSchemaManager()->listTableColumns($table);
-        $column = $columns[\strtolower($field)] ?? null;
+        $column = $columns[strtolower($field)] ?? null;
 
         if (null === $column || $column->getType() instanceof BooleanType) {
             return false;

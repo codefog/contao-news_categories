@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -37,8 +39,6 @@ class TemplateListener implements FrameworkAwareInterface
 
     /**
      * TemplateListener constructor.
-     *
-     * @param NewsCategoriesManager $manager
      */
     public function __construct(NewsCategoriesManager $manager)
     {
@@ -47,12 +47,8 @@ class TemplateListener implements FrameworkAwareInterface
 
     /**
      * On parse the articles.
-     *
-     * @param FrontendTemplate $template
-     * @param array            $data
-     * @param Module           $module
      */
-    public function onParseArticles(FrontendTemplate $template, array $data, Module $module)
+    public function onParseArticles(FrontendTemplate $template, array $data, Module $module): void
     {
         /** @var NewsCategoryModel $newsCategoryModelAdapter */
         $newsCategoryModelAdapter = $this->framework->getAdapter(NewsCategoryModel::class);
@@ -60,6 +56,7 @@ class TemplateListener implements FrameworkAwareInterface
         if (null === ($models = $newsCategoryModelAdapter->findPublishedByNews($data['id']))) {
             $template->categories = [];
             $template->categoriesList = [];
+
             return;
         }
 
@@ -68,12 +65,8 @@ class TemplateListener implements FrameworkAwareInterface
 
     /**
      * Add categories to the template.
-     *
-     * @param FrontendTemplate $template
-     * @param Module           $module
-     * @param Collection       $categories
      */
-    private function addCategoriesToTemplate(FrontendTemplate $template, Module $module, Collection $categories)
+    private function addCategoriesToTemplate(FrontendTemplate $template, Module $module, Collection $categories): void
     {
         $data = [];
         $list = [];
@@ -91,30 +84,25 @@ class TemplateListener implements FrameworkAwareInterface
             $list[$category->id] = $category->getTitle();
 
             // Add the category CSS classes to news class
-            $cssClasses = \array_merge($cssClasses, StringUtil::trimsplit(' ', $category->getCssClass()));
+            $cssClasses = array_merge($cssClasses, StringUtil::trimsplit(' ', $category->getCssClass()));
         }
 
         // Sort the categories data alphabetically
-        \uasort($data, function ($a, $b) {
-            return \strnatcasecmp($a['name'], $b['name']);
-        });
+        uasort($data, static fn ($a, $b) => strnatcasecmp($a['name'], $b['name']));
 
         // Sort the category list alphabetically
-        \asort($list);
+        asort($list);
 
         $template->categories = $data;
         $template->categoriesList = $list;
 
-        if (count($cssClasses = \array_unique($cssClasses)) > 0) {
-            $template->class = ' ' . \implode(' ', $cssClasses);
+        if (\count($cssClasses = array_unique($cssClasses)) > 0) {
+            $template->class = ' '.implode(' ', $cssClasses);
         }
     }
 
     /**
      * Generate the category data.
-     *
-     * @param NewsCategoryModel $category
-     * @param Module            $module
      *
      * @return array
      */
@@ -155,9 +143,7 @@ class TemplateListener implements FrameworkAwareInterface
         }
 
         // Register a function to generate category URL manually
-        $data['generateUrl'] = function (PageModel $page, $absolute = false) use ($category) {
-            return $this->manager->generateUrl($category, $page, $absolute);
-        };
+        $data['generateUrl'] = fn (PageModel $page, $absolute = false) => $this->manager->generateUrl($category, $page, $absolute);
 
         // Add the image
         if (null !== ($image = $this->manager->getImage($category))) {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories Bundle for Contao Open Source CMS.
  *
@@ -19,13 +21,14 @@ use Contao\System;
 class NewsListModule extends ModuleNewsList
 {
     /**
-     * Current news for future reference in search builder
+     * Current news for future reference in search builder.
+     *
      * @var NewsModel
      */
     public $currentNews;
 
     /**
-     * Set the flag to filter news by categories
+     * Set the flag to filter news by categories.
      *
      * @return string
      */
@@ -49,7 +52,7 @@ class NewsListModule extends ModuleNewsList
     }
 
     /**
-     * Generate the list in related categories mode
+     * Generate the list in related categories mode.
      *
      * Use the categories of the current news item. The module must be
      * on the same page as news reader module.
@@ -61,7 +64,7 @@ class NewsListModule extends ModuleNewsList
         $this->news_archives = $this->sortOutProtected(StringUtil::deserialize($this->news_archives, true));
 
         // Return if there are no archives
-        if (count($this->news_archives) === 0) {
+        if (0 === \count($this->news_archives)) {
             return '';
         }
 

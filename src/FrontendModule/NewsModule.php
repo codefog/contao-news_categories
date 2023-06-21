@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
@@ -26,7 +27,7 @@ abstract class NewsModule extends ModuleNews
      *
      * @var NewsCategoryModel
      */
-    protected $activeCategory = null;
+    protected $activeCategory;
 
     /**
      * Active categories.
@@ -131,8 +132,6 @@ abstract class NewsModule extends ModuleNews
     /**
      * Get the active categories.
      *
-     * @param array $customCategories
-     *
      * @return Collection|null
      */
     protected function getActiveCategories(array $customCategories = [])
@@ -144,7 +143,7 @@ abstract class NewsModule extends ModuleNews
         }
 
         $aliases = StringUtil::trimsplit(static::getCategorySeparator(), $aliases);
-        $aliases = \array_unique(\array_filter($aliases));
+        $aliases = array_unique(array_filter($aliases));
 
         if (0 === \count($aliases)) {
             return null;
@@ -167,11 +166,11 @@ abstract class NewsModule extends ModuleNews
                 $realAliases[] = $this->manager->getCategoryAlias($model, $GLOBALS['objPage']);
             }
 
-            if (\count(\array_diff($aliases, $realAliases)) > 0) {
-                Controller::redirect($this->getTargetPage()->getFrontendUrl(\sprintf(
+            if (\count(array_diff($aliases, $realAliases)) > 0) {
+                Controller::redirect($this->getTargetPage()->getFrontendUrl(sprintf(
                     '/%s/%s',
                     $this->manager->getParameterName($GLOBALS['objPage']->rootId),
-                    \implode(static::getCategorySeparator(), $realAliases)
+                    implode(static::getCategorySeparator(), $realAliases)
                 )));
             }
         }
@@ -181,8 +180,6 @@ abstract class NewsModule extends ModuleNews
 
     /**
      * Get the inactive categories.
-     *
-     * @param array $customCategories
      *
      * @return Collection|null
      */
@@ -212,8 +209,8 @@ abstract class NewsModule extends ModuleNews
                         continue;
                     }
 
-                    $columns = \array_merge($columns, $criteria->getColumns());
-                    $values = \array_merge($values, $criteria->getValues());
+                    $columns = array_merge($columns, $criteria->getColumns());
+                    $values = array_merge($values, $criteria->getValues());
                 }
 
                 // Should not happen but you never know
@@ -222,7 +219,7 @@ abstract class NewsModule extends ModuleNews
                 }
 
                 $newsIds = Database::getInstance()
-                    ->prepare('SELECT id FROM tl_news WHERE '.\implode(' AND ', $columns))
+                    ->prepare('SELECT id FROM tl_news WHERE '.implode(' AND ', $columns))
                     ->execute($values)
                     ->fetchEach('id')
                 ;
@@ -232,25 +229,25 @@ abstract class NewsModule extends ModuleNews
                 }
 
                 $categoryIds = DcaRelationsModel::getRelatedValues('tl_news', 'categories', $newsIds);
-                $categoryIds = \array_map('intval', $categoryIds);
-                $categoryIds = \array_unique(\array_filter($categoryIds));
+                $categoryIds = array_map('intval', $categoryIds);
+                $categoryIds = array_unique(array_filter($categoryIds));
 
                 // Include the parent categories
                 if ($this->news_includeSubcategories) {
                     foreach ($categoryIds as $categoryId) {
-                        $categoryIds = \array_merge($categoryIds, \array_map('intval', Database::getInstance()->getParentRecords($categoryId, 'tl_news_category')));
+                        $categoryIds = array_merge($categoryIds, array_map('intval', Database::getInstance()->getParentRecords($categoryId, 'tl_news_category')));
                     }
                 }
 
                 // Remove the active categories, so they are not considered again
-                $categoryIds = \array_diff($categoryIds, $this->activeCategories->fetchEach('id'));
+                $categoryIds = array_diff($categoryIds, $this->activeCategories->fetchEach('id'));
 
                 // Filter by custom categories
                 if (\count($customCategories) > 0) {
-                    $categoryIds = \array_intersect($categoryIds, $customCategories);
+                    $categoryIds = array_intersect($categoryIds, $customCategories);
                 }
 
-                $categoryIds = \array_values(\array_unique($categoryIds));
+                $categoryIds = array_values(array_unique($categoryIds));
 
                 if (0 === \count($categoryIds)) {
                     return null;
@@ -271,7 +268,8 @@ abstract class NewsModule extends ModuleNews
     protected function getTargetPage()
     {
         if (null === $this->targetPage) {
-            if ($this->jumpTo > 0
+            if (
+                $this->jumpTo > 0
                 && (int) $GLOBALS['objPage']->id !== (int) $this->jumpTo
                 && null !== ($target = PageModel::findPublishedById($this->jumpTo))
             ) {
@@ -291,32 +289,31 @@ abstract class NewsModule extends ModuleNews
      */
     protected function getCurrentNewsCategories()
     {
-        if (!($alias = Input::get('auto_item', false, true))
+        if (
+            !($alias = Input::get('auto_item', false, true))
             || null === ($news = NewsModel::findPublishedByParentAndIdOrAlias($alias, $this->news_archives))
         ) {
             return [];
         }
 
         $ids = DcaRelationsModel::getRelatedValues('tl_news', 'categories', $news->id);
-        $ids = \array_map('intval', \array_unique($ids));
 
-        return $ids;
+        return array_map('intval', array_unique($ids));
     }
 
     /**
      * Generate the item.
      *
-     * @param string                 $url
-     * @param string                 $link
-     * @param string                 $title
-     * @param string                 $cssClass
-     * @param bool                   $isActive
-     * @param string                 $subitems
-     * @param NewsCategoryModel|null $category
+     * @param string $url
+     * @param string $link
+     * @param string $title
+     * @param string $cssClass
+     * @param bool   $isActive
+     * @param string $subitems
      *
      * @return array
      */
-    protected function generateItem($url, $link, $title, $cssClass, $isActive, $subitems = '', NewsCategoryModel $category = null)
+    protected function generateItem($url, $link, $title, $cssClass, $isActive, $subitems = '', NewsCategoryModel|null $category = null)
     {
         $data = [];
 
@@ -331,17 +328,17 @@ abstract class NewsModule extends ModuleNews
         $data['title'] = StringUtil::specialchars($title);
         $data['linkTitle'] = StringUtil::specialchars($title);
         $data['link'] = $link;
-        $data['href'] = \Contao\StringUtil::ampersand($url);
+        $data['href'] = StringUtil::ampersand($url);
         $data['quantity'] = 0;
 
         // Add the "active" class
         if ($isActive) {
-            $data['class'] = \trim($data['class'].' active');
+            $data['class'] = trim($data['class'].' active');
         }
 
         // Add the "submenu" class
         if ($subitems) {
-            $data['class'] = \trim($data['class'].' submenu');
+            $data['class'] = trim($data['class'].' submenu');
         }
 
         // Add the news quantity
@@ -353,7 +350,7 @@ abstract class NewsModule extends ModuleNews
                     $this->news_archives,
                     $category->id,
                     (bool) $this->news_includeSubcategories,
-                    (null !== $this->activeCategories) ? $this->activeCategories->fetchEach('id') : [],
+                    null !== $this->activeCategories ? $this->activeCategories->fetchEach('id') : [],
                     (bool) $this->news_filterCategoriesUnion
                 );
             }
@@ -378,8 +375,6 @@ abstract class NewsModule extends ModuleNews
     /**
      * Generate the item CSS class.
      *
-     * @param NewsCategoryModel $category
-     *
      * @return string
      */
     protected function generateItemCssClass(NewsCategoryModel $category)
@@ -398,6 +393,6 @@ abstract class NewsModule extends ModuleNews
             $cssClasses[] = 'news_trail';
         }
 
-        return \implode(' ', $cssClasses);
+        return implode(' ', $cssClasses);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -16,19 +18,21 @@ use Codefog\NewsCategoriesBundle\MultilingualHelper;
 use Contao\Database;
 use Contao\Date;
 use Contao\FilesModel;
+use Contao\Model;
 use Contao\Model\Collection;
 use Contao\NewsModel;
 use Contao\System;
+use Terminal42\DcMultilingualBundle\Model\Multilingual;
 
 /*
  * Use the multilingual model if available
  */
 if (MultilingualHelper::isActive()) {
-    class ParentModel extends \Terminal42\DcMultilingualBundle\Model\Multilingual
+    class ParentModel extends Multilingual
     {
     }
 } else {
-    class ParentModel extends \Contao\Model
+    class ParentModel extends Model
     {
     }
 }
@@ -43,12 +47,12 @@ class NewsCategoryModel extends ParentModel
     protected static $strTable = 'tl_news_category';
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function __get($name)
     {
         // Fix the compatibility with DC_Multilingual v4 (#184)
-        if ($name === 'id' && MultilingualHelper::isActive() && $this->lid) {
+        if ('id' === $name && MultilingualHelper::isActive() && $this->lid) {
             return $this->lid;
         }
 
@@ -71,7 +75,7 @@ class NewsCategoryModel extends ParentModel
             $cssClasses[] = $this->cssClass;
         }
 
-        return \implode(' ', \array_unique($cssClasses));
+        return implode(' ', array_unique($cssClasses));
     }
 
     /**
@@ -97,11 +101,6 @@ class NewsCategoryModel extends ParentModel
     /**
      * Find published news categories by news criteria.
      *
-     * @param array $archives
-     * @param array $ids
-     * @param array $aliases
-     * @param array $excludedIds
-     *
      * @return Collection|null
      */
     public static function findPublishedByArchives(array $archives, array $ids = [], array $aliases = [], array $excludedIds = [])
@@ -121,15 +120,15 @@ class NewsCategoryModel extends ParentModel
         $values = [];
 
         // Start sub select query for relations
-        $subSelect = "SELECT {$relation['related_field']} 
-FROM {$relation['table']} 
-WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".\implode(',', \array_map('intval', $archives)).')';
+        $subSelect = "SELECT {$relation['related_field']}
+FROM {$relation['table']}
+WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".implode(',', array_map('intval', $archives)).')';
 
         // Include only the published news items
         if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
             $time = Date::floorToMinute();
             $subSelect .= ' AND (start=? OR start<=?) AND (stop=? OR stop>?) AND published=?';
-            $values = \array_merge($values, ['', $time, '', $time + 60, 1]);
+            $values = array_merge($values, ['', $time, '', $time + 60, 1]);
         }
 
         // Finish sub select query for relations
@@ -140,20 +139,20 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
 
         // Filter by custom categories
         if (\count($ids) > 0) {
-            $columns[] = "$t.id IN (".\implode(',', \array_map('intval', $ids)).')';
+            $columns[] = "$t.id IN (".implode(',', array_map('intval', $ids)).')';
         }
 
         // Filter by excluded IDs
         if (\count($excludedIds) > 0) {
-            $columns[] = "$t.id NOT IN (".\implode(',', \array_map('intval', $excludedIds)).')';
+            $columns[] = "$t.id NOT IN (".implode(',', array_map('intval', $excludedIds)).')';
         }
 
         // Filter by custom aliases
         if (\count($aliases) > 0) {
             if (MultilingualHelper::isActive()) {
-                $columns[] = "($t.alias IN ('".\implode("','", $aliases)."') OR translation.alias IN ('".\implode("','", $aliases)."'))";
+                $columns[] = "($t.alias IN ('".implode("','", $aliases)."') OR translation.alias IN ('".implode("','", $aliases)."'))";
             } else {
-                $columns[] = "$t.alias IN ('".\implode("','", $aliases)."')";
+                $columns[] = "$t.alias IN ('".implode("','", $aliases)."')";
             }
         }
 
@@ -221,7 +220,6 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
     /**
      * Find published news categories by parent ID and IDs.
      *
-     * @param array    $ids
      * @param int|null $pid
      *
      * @return Collection|null
@@ -233,7 +231,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
         }
 
         $t = static::getTableAlias();
-        $columns = ["$t.id IN (".\implode(',', \array_map('intval', $ids)).')'];
+        $columns = ["$t.id IN (".implode(',', array_map('intval', $ids)).')'];
         $values = [];
 
         // Filter by pid
@@ -285,7 +283,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
         }
 
         $t = static::getTableAlias();
-        $columns = ["$t.id IN (".\implode(',', \array_map('intval', \array_unique($ids))).')'];
+        $columns = ["$t.id IN (".implode(',', array_map('intval', array_unique($ids))).')'];
         $values = [];
 
         if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
@@ -299,10 +297,8 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
     /**
      * Count the published news by archives.
      *
-     * @param array    $archives
      * @param int|null $category
      * @param bool     $includeSubcategories
-     * @param array    $cumulativeCategories
      * @param bool     $unionFiltering
      *
      * @return int
@@ -320,7 +316,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
         $ids = array_map('intval', $ids);
 
         // Also filter by cumulative categories
-        if (count($cumulativeCategories) > 0) {
+        if (\count($cumulativeCategories) > 0) {
             $cumulativeIds = null;
 
             foreach ($cumulativeCategories as $cumulativeCategory) {
@@ -332,7 +328,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
                 $newsIds = DcaRelationsModel::getReferenceValues($t, 'categories', $cumulativeCategory);
                 $newsIds = array_map('intval', $newsIds);
 
-                if ($cumulativeIds === null) {
+                if (null === $cumulativeIds) {
                     $cumulativeIds = $newsIds;
                 } else {
                     $cumulativeIds = $unionFiltering ? array_merge($cumulativeIds, $newsIds) : array_intersect($cumulativeIds, $newsIds);
@@ -346,18 +342,18 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             return 0;
         }
 
-        $columns = ["$t.id IN (".\implode(',', \array_unique($ids)).')'];
+        $columns = ["$t.id IN (".implode(',', array_unique($ids)).')'];
         $values = [];
 
         // Filter by archives
         if (\count($archives)) {
-            $columns[] = "$t.pid IN (".\implode(',', \array_map('intval', $archives)).')';
+            $columns[] = "$t.pid IN (".implode(',', array_map('intval', $archives)).')';
         }
 
         if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
             $time = Date::floorToMinute();
             $columns[] = "$t.published=? AND ($t.start=? OR $t.start<=?) AND ($t.stop=? OR $t.stop>?)";
-            $values = \array_merge($values, [1, '', $time, '', $time]);
+            $values = array_merge($values, [1, '', $time, '', $time]);
         }
 
         return NewsModel::countBy($columns, $values);
@@ -372,8 +368,8 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
      */
     public static function getAllSubcategoriesIds($category)
     {
-        $ids = Database::getInstance()->getChildRecords($category, static::$strTable, false, (array) $category, (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode() ? 'published=1' : ''));
-        $ids = \array_map('intval', $ids);
+        $ids = Database::getInstance()->getChildRecords($category, static::$strTable, false, (array) $category, !System::getContainer()->get('contao.security.token_checker')->isPreviewMode() ? 'published=1' : '');
+        $ids = array_map('intval', $ids);
 
         return $ids;
     }
@@ -393,7 +389,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             $arrOptions['order'] = Database::getInstance()->findInSet("$t.id", $arrIds);
         }
 
-        return static::findBy(["$t.id IN (".\implode(',', \array_map('intval', $arrIds)).')'], null);
+        return static::findBy(["$t.id IN (".implode(',', array_map('intval', $arrIds)).')'], null);
     }
 
     /**

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -21,8 +23,6 @@ class NewsArchiveListener
 
     /**
      * NewsArchiveListener constructor.
-     *
-     * @param PermissionChecker $permissionChecker
      */
     public function __construct(PermissionChecker $permissionChecker)
     {
@@ -32,7 +32,7 @@ class NewsArchiveListener
     /**
      * On data container load.
      */
-    public function onLoadCallback()
+    public function onLoadCallback(): void
     {
         if (!$this->permissionChecker->canUserManageCategories()) {
             unset($GLOBALS['TL_DCA']['tl_news_archive']['list']['global_operations']['categories']);

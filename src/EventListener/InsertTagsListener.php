@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -28,8 +30,6 @@ class InsertTagsListener implements FrameworkAwareInterface
 
     /**
      * InsertTagsListener constructor.
-     *
-     * @param NewsCategoriesManager $manager
      */
     public function __construct(NewsCategoriesManager $manager)
     {
@@ -59,7 +59,7 @@ class InsertTagsListener implements FrameworkAwareInterface
                     $value = $category->{$chunks[1]};
 
                     // Convert the binary to UUID for images (#147)
-                    if ($chunks[1] === 'image' && $value) {
+                    if ('image' === $chunks[1] && $value) {
                         return StringUtil::binToUuid($value);
                     }
 

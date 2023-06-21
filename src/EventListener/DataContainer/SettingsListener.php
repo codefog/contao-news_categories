@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -16,13 +18,13 @@ class SettingsListener
 {
     private $validCharacters;
 
-    public function __construct(ValidCharacters $validCharacters = null)
+    public function __construct(ValidCharacters|null $validCharacters = null)
     {
         $this->validCharacters = $validCharacters;
     }
 
     /**
-     * On slug setting options callback
+     * On slug setting options callback.
      *
      * @return array
      */

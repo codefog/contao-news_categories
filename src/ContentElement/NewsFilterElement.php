@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -26,8 +28,9 @@ class NewsFilterElement extends ContentModule
     public function generate()
     {
         // Return if the element is not published
-        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()
-            && ($this->invisible || ($this->start > 0 && $this->start > \time()) || ($this->stop > 0 && $this->stop < \time()))
+        if (
+            !System::getContainer()->get('contao.security.token_checker')->isPreviewMode()
+            && ($this->invisible || ($this->start > 0 && $this->start > time()) || ($this->stop > 0 && $this->stop < time()))
         ) {
             return '';
         }
@@ -40,7 +43,7 @@ class NewsFilterElement extends ContentModule
         $class = Module::findClass($moduleModel->type);
 
         // Return if the class does not exist
-        if (!\class_exists($class)) {
+        if (!class_exists($class)) {
             return '';
         }
 
@@ -70,10 +73,8 @@ class NewsFilterElement extends ContentModule
 
     /**
      * Merge the CSS/ID stuff.
-     *
-     * @param Module $module
      */
-    private function mergeCssId(Module $module)
+    private function mergeCssId(Module $module): void
     {
         $cssID = StringUtil::deserialize($module->cssID, true);
 
@@ -84,7 +85,7 @@ class NewsFilterElement extends ContentModule
 
         // Merge the CSS classes (see #6011)
         if ($this->cssID[1]) {
-            $cssID[1] = \trim($cssID[1].' '.$this->cssID[1]);
+            $cssID[1] = trim($cssID[1].' '.$this->cssID[1]);
         }
 
         $module->cssID = $cssID;

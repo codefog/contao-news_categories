@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -49,12 +51,11 @@ class NewsCriteria
     /**
      * Set the basic criteria.
      *
-     * @param array  $archives
      * @param string $sorting
      *
      * @throws NoNewsException
      */
-    public function setBasicCriteria(array $archives, $sorting = null, $featured = null)
+    public function setBasicCriteria(array $archives, $sorting = null, $featured = null): void
     {
         $archives = $this->parseIds($archives);
 
@@ -64,7 +65,7 @@ class NewsCriteria
 
         $t = $this->getNewsModelAdapter()->getTable();
 
-        $this->columns[] = "$t.pid IN(".\implode(',', \array_map('intval', $archives)).')';
+        $this->columns[] = "$t.pid IN(".implode(',', array_map('intval', $archives)).')';
 
         $order = '';
 
@@ -100,7 +101,7 @@ class NewsCriteria
 
             $time = $dateAdapter->floorToMinute();
             $this->columns[] = "$t.published=? AND ($t.start=? OR $t.start<=?) AND ($t.stop=? OR $t.stop>?)";
-            $this->values = \array_merge($this->values, [1, '', $time, '', $time]);
+            $this->values = array_merge($this->values, [1, '', $time, '', $time]);
         }
     }
 
@@ -109,7 +110,7 @@ class NewsCriteria
      *
      * @param bool $enable
      */
-    public function setFeatured($enable)
+    public function setFeatured($enable): void
     {
         $t = $this->getNewsModelAdapter()->getTable();
 
@@ -128,7 +129,7 @@ class NewsCriteria
      * @param int $begin
      * @param int $end
      */
-    public function setTimeFrame($begin, $end)
+    public function setTimeFrame($begin, $end): void
     {
         $t = $this->getNewsModelAdapter()->getTable();
 
@@ -140,13 +141,12 @@ class NewsCriteria
     /**
      * Set the default categories.
      *
-     * @param array       $defaultCategories
      * @param bool        $includeSubcategories
      * @param string|null $order
      *
      * @throws NoNewsException
      */
-    public function setDefaultCategories(array $defaultCategories, $includeSubcategories = true, $order = null)
+    public function setDefaultCategories(array $defaultCategories, $includeSubcategories = true, $order = null): void
     {
         $defaultCategories = $this->parseIds($defaultCategories);
 
@@ -173,15 +173,15 @@ class NewsCriteria
 
         $t = $this->getNewsModelAdapter()->getTable();
 
-        $this->columns['defaultCategories'] = "$t.id IN(".\implode(',', $newsIds).')';
+        $this->columns['defaultCategories'] = "$t.id IN(".implode(',', $newsIds).')';
 
         // Order news items by best match
-        if ($order === 'best_match') {
+        if ('best_match' === $order) {
             $mapper = [];
 
             // Build the mapper
             foreach (array_unique($newsIds) as $newsId) {
-                $mapper[$newsId] = count(array_intersect($defaultCategories, array_unique($model->getRelatedValues($t, 'categories', $newsId))));
+                $mapper[$newsId] = \count(array_intersect($defaultCategories, array_unique($model->getRelatedValues($t, 'categories', $newsId))));
             }
 
             arsort($mapper);
@@ -199,7 +199,7 @@ class NewsCriteria
      *
      * @throws NoNewsException
      */
-    public function setCategory($category, $preserveDefault = false, $includeSubcategories = false)
+    public function setCategory($category, $preserveDefault = false, $includeSubcategories = false): void
     {
         /** @var DcaRelationsModel $model */
         $model = $this->framework->getAdapter(DcaRelationsModel::class);
@@ -225,7 +225,7 @@ class NewsCriteria
 
         $t = $this->getNewsModelAdapter()->getTable();
 
-        $this->columns[] = "$t.id IN(".\implode(',', $newsIds).')';
+        $this->columns[] = "$t.id IN(".implode(',', $newsIds).')';
     }
 
     /**
@@ -237,7 +237,7 @@ class NewsCriteria
      *
      * @throws NoNewsException
      */
-    public function setCategories($categories, $preserveDefault = false, $includeSubcategories = false)
+    public function setCategories($categories, $preserveDefault = false, $includeSubcategories = false): void
     {
         $allNewsIds = [];
 
@@ -262,7 +262,7 @@ class NewsCriteria
             $allNewsIds = array_merge($allNewsIds, $newsIds);
         }
 
-        if (\count($allNewsIds) === 0) {
+        if (0 === \count($allNewsIds)) {
             throw new NoNewsException();
         }
 
@@ -273,15 +273,13 @@ class NewsCriteria
 
         $t = $this->getNewsModelAdapter()->getTable();
 
-        $this->columns[] = "$t.id IN(".\implode(',', $allNewsIds).')';
+        $this->columns[] = "$t.id IN(".implode(',', $allNewsIds).')';
     }
 
     /**
      * Set the excluded news IDs.
-     *
-     * @param array $newsIds
      */
-    public function setExcludedNews(array $newsIds)
+    public function setExcludedNews(array $newsIds): void
     {
         $newsIds = $this->parseIds($newsIds);
 
@@ -291,7 +289,7 @@ class NewsCriteria
 
         $t = $this->getNewsModelAdapter()->getTable();
 
-        $this->columns[] = "$t.id NOT IN (".\implode(',', $newsIds).')';
+        $this->columns[] = "$t.id NOT IN (".implode(',', $newsIds).')';
     }
 
     /**
@@ -299,7 +297,7 @@ class NewsCriteria
      *
      * @param int $limit
      */
-    public function setLimit($limit)
+    public function setLimit($limit): void
     {
         $this->options['limit'] = $limit;
     }
@@ -309,7 +307,7 @@ class NewsCriteria
      *
      * @param int $offset
      */
-    public function setOffset($offset)
+    public function setOffset($offset): void
     {
         $this->options['offset'] = $offset;
     }
@@ -346,24 +344,20 @@ class NewsCriteria
     public function getNewsModelAdapter()
     {
         /** @var NewsModel $adapter */
-        $adapter = $this->framework->getAdapter(NewsModel::class);
-
-        return $adapter;
+        return $this->framework->getAdapter(NewsModel::class);
     }
 
     /**
      * Parse the record IDs.
      *
-     * @param array $ids
-     *
      * @return array
      */
     private function parseIds(array $ids)
     {
-        $ids = \array_map('intval', $ids);
-        $ids = \array_filter($ids);
-        $ids = \array_unique($ids);
+        $ids = array_map('intval', $ids);
+        $ids = array_filter($ids);
+        $ids = array_unique($ids);
 
-        return \array_values($ids);
+        return array_values($ids);
     }
 }

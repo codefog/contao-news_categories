@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -24,6 +26,7 @@ use Contao\Input;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface;
 use Terminal42\DcMultilingualBundle\Driver;
 
 class NewsCategoryListener implements FrameworkAwareInterface
@@ -50,7 +53,7 @@ class NewsCategoryListener implements FrameworkAwareInterface
      */
     private $slug;
 
-    public function __construct(Connection $db, PermissionChecker $permissionChecker, RequestStack $requestStack, Slug $slug = null)
+    public function __construct(Connection $db, PermissionChecker $permissionChecker, RequestStack $requestStack, Slug|null $slug = null)
     {
         $this->db = $db;
         $this->permissionChecker = $permissionChecker;
@@ -60,10 +63,8 @@ class NewsCategoryListener implements FrameworkAwareInterface
 
     /**
      * On data container load.
-     *
-     * @param DataContainer $dc
      */
-    public function onLoadCallback(DataContainer $dc)
+    public function onLoadCallback(DataContainer $dc): void
     {
         if (!$this->permissionChecker->canUserManageCategories() && !$this->permissionChecker->canUserAssignCategories()) {
             throw new AccessDeniedException('User has no permissions to manage news categories');
@@ -98,13 +99,13 @@ class NewsCategoryListener implements FrameworkAwareInterface
 
         // Limit the allowed roots for the user
         if (null !== ($roots = $this->permissionChecker->getUserAllowedRoots())) {
-            if (isset($GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root']) && is_array($GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'])) {
+            if (isset($GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root']) && \is_array($GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'])) {
                 $roots = array_intersect($GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'], $roots);
-                $roots = (count($roots) === 0) ? [0] : $roots;
+                $roots = 0 === \count($roots) ? [0] : $roots;
             }
 
             // Unset the root to avoid error with filters (see #157)
-            if (count($roots) === 0) {
+            if (0 === \count($roots)) {
                 unset($GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root']);
             } else {
                 $GLOBALS['TL_DCA'][$dc->table]['list']['sorting']['root'] = $roots;
@@ -117,17 +118,17 @@ class NewsCategoryListener implements FrameworkAwareInterface
 
                     // Dynamically add the record to the user profile
                     if (!$this->permissionChecker->isUserAllowedNewsCategory($categoryId)) {
-                        /** @var \Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface $sessionBag */
+                        /** @var AttributeBagInterface $sessionBag */
                         $sessionBag = $this->requestStack->getSession()->getbag('contao_backend');
 
                         $newRecords = $sessionBag->get('new_records');
-                        $newRecords = \is_array($newRecords[$dc->table]) ? \array_map('intval', $newRecords[$dc->table]) : [];
+                        $newRecords = \is_array($newRecords[$dc->table]) ? array_map('intval', $newRecords[$dc->table]) : [];
 
                         if (\in_array($categoryId, $newRecords, true)) {
                             $this->permissionChecker->addCategoryToAllowedRoots($categoryId);
                         }
                     }
-                // no break;
+                    // no break;
 
                 case 'copy':
                 case 'delete':
@@ -135,14 +136,14 @@ class NewsCategoryListener implements FrameworkAwareInterface
                     $categoryId = (int) $input->get('id');
 
                     if (!$this->permissionChecker->isUserAllowedNewsCategory($categoryId)) {
-                        throw new AccessDeniedException(\sprintf('Not enough permissions to %s news category ID %s.', $action, $categoryId));
+                        throw new AccessDeniedException(sprintf('Not enough permissions to %s news category ID %s.', $action, $categoryId));
                     }
                     break;
                 case 'editAll':
                 case 'deleteAll':
                 case 'overrideAll':
                     $session = $this->requestStack->getSession()->all();
-                    $session['CURRENT']['IDS'] = \array_intersect($session['CURRENT']['IDS'], $roots);
+                    $session['CURRENT']['IDS'] = array_intersect($session['CURRENT']['IDS'], $roots);
                     $this->requestStack->getSession()->replace($session);
                     break;
             }
@@ -152,23 +153,21 @@ class NewsCategoryListener implements FrameworkAwareInterface
     /**
      * On paste button callback.
      *
-     * @param DataContainer $dc
-     * @param array         $row
-     * @param string        $table
-     * @param bool          $cr
-     * @param array|null    $clipboard
+     * @param string $table
+     * @param bool   $cr
      *
      * @return string
      */
-    public function onPasteButtonCallback(DataContainer $dc, array $row, $table, $cr, array $clipboard = null)
+    public function onPasteButtonCallback(DataContainer $dc, array $row, $table, $cr, array|null $clipboard = null)
     {
         $disablePA = false;
         $disablePI = false;
 
         // Disable all buttons if there is a circular reference
-        if (null !== $clipboard && (
+        if (
+            null !== $clipboard && (
                 ('cut' === $clipboard['mode'] && ($cr || (int) $clipboard['id'] === (int) $row['id']))
-                || ('cutAll' === $clipboard['mode'] && ($cr || \in_array((int) $row['id'], \array_map('intval', $clipboard['id']), true)))
+                || ('cutAll' === $clipboard['mode'] && ($cr || \in_array((int) $row['id'], array_map('intval', $clipboard['id']), true)))
             )
         ) {
             $disablePA = true;
@@ -187,10 +186,8 @@ class NewsCategoryListener implements FrameworkAwareInterface
     /**
      * On label callback.
      *
-     * @param array         $row
-     * @param string        $label
-     * @param DataContainer $dc
-     * @param string        $attributes
+     * @param string $label
+     * @param string $attributes
      *
      * @return string
      */
@@ -200,10 +197,10 @@ class NewsCategoryListener implements FrameworkAwareInterface
         $imageAdapter = $this->framework->getAdapter(Image::class);
 
         // Align the icon with the text
-        if (false !== \stripos($attributes, 'style="')) {
-            $attributes = \str_replace('style="', 'style="vertical-align:text-top;', $attributes);
+        if (false !== stripos($attributes, 'style="')) {
+            $attributes = str_replace('style="', 'style="vertical-align:text-top;', $attributes);
         } else {
-            $attributes .= \trim($attributes.' style="vertical-align:text-top;"');
+            $attributes .= trim($attributes.' style="vertical-align:text-top;"');
         }
 
         return $imageAdapter->getHtml('iconPLAIN.svg', '', $attributes).' '.$label;
@@ -212,12 +209,11 @@ class NewsCategoryListener implements FrameworkAwareInterface
     /**
      * On generate the category alias.
      *
-     * @param string        $value
-     * @param DataContainer $dc
-     *
-     * @throws \RuntimeException
+     * @param string $value
      *
      * @return string
+     *
+     * @throws \RuntimeException
      */
     public function onGenerateAlias($value, DataContainer $dc)
     {
@@ -262,7 +258,7 @@ class NewsCategoryListener implements FrameworkAwareInterface
             if ($autoAlias) {
                 $value .= '-'.$dc->activeRecord->id;
             } else {
-                throw new \RuntimeException(\sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $value));
+                throw new \RuntimeException(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $value));
             }
         }
 
@@ -272,15 +268,13 @@ class NewsCategoryListener implements FrameworkAwareInterface
     /**
      * Generate the paste image.
      *
-     * @param string     $type
-     * @param bool       $disabled
-     * @param string     $table
-     * @param array      $row
-     * @param array|null $clipboard
+     * @param string $type
+     * @param bool   $disabled
+     * @param string $table
      *
      * @return string
      */
-    private function generatePasteImage($type, $disabled, $table, array $row, array $clipboard = null)
+    private function generatePasteImage($type, $disabled, $table, array $row, array|null $clipboard = null)
     {
         /**
          * @var Backend
@@ -293,18 +287,18 @@ class NewsCategoryListener implements FrameworkAwareInterface
             return $imageAdapter->getHtml($type.'_.svg').' ';
         }
 
-        $url = \sprintf('act=%s&amp;mode=%s&amp;pid=%s', $clipboard['mode'], ('pasteafter' === $type ? 1 : 2), $row['id']);
+        $url = sprintf('act=%s&amp;mode=%s&amp;pid=%s', $clipboard['mode'], 'pasteafter' === $type ? 1 : 2, $row['id']);
 
         // Add the ID to the URL if the clipboard does not contain any
         if (!\is_array($clipboard['id'])) {
             $url .= '&amp;id='.$clipboard['id'];
         }
 
-        return \sprintf(
+        return sprintf(
             '<a href="%s" title="%s" onclick="Backend.getScrollOffset()">%s</a> ',
             $backendAdapter->addToUrl($url),
-            StringUtil::specialchars(\sprintf($GLOBALS['TL_LANG'][$table][$type][1], $row['id'])),
-            $imageAdapter->getHtml($type.'.svg', \sprintf($GLOBALS['TL_LANG'][$table][$type][1], $row['id']))
+            StringUtil::specialchars(sprintf($GLOBALS['TL_LANG'][$table][$type][1], $row['id'])),
+            $imageAdapter->getHtml($type.'.svg', sprintf($GLOBALS['TL_LANG'][$table][$type][1], $row['id']))
         );
     }
 }
