@@ -42,7 +42,7 @@ services:
         class: Codefog\NewsCategoriesBundle\EventListener\DataContainer\FeedListener
         arguments:
             - "@database_connection"
-            - "@session"
+            - "@request_stack"
 
     codefog_news_categories.listener.data_container.news_archive:
         class: Codefog\NewsCategoriesBundle\EventListener\DataContainer\NewsArchiveListener
@@ -54,7 +54,7 @@ services:
         arguments:
             - "@database_connection"
             - "@codefog_news_categories.permission_checker"
-            - "@session"
+            - "@request_stack"
             - "@?contao.slug"
 
     codefog_news_categories.listener.data_container.news:

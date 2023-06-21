@@ -23,7 +23,7 @@ use Contao\Image;
 use Contao\Input;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Terminal42\DcMultilingualBundle\Driver;
 
 class NewsCategoryListener implements FrameworkAwareInterface
@@ -41,27 +41,20 @@ class NewsCategoryListener implements FrameworkAwareInterface
     private $permissionChecker;
 
     /**
-     * @var SessionInterface
+     * @var RequestStack
      */
-    private $session;
+    private $requestStack;
 
     /**
      * @var Slug
      */
     private $slug;
 
-    /**
-     * NewsCategoryListener constructor.
-     *
-     * @param Connection        $db
-     * @param PermissionChecker $permissionChecker
-     * @param SessionInterface  $session
-     */
-    public function __construct(Connection $db, PermissionChecker $permissionChecker, SessionInterface $session, Slug $slug = null)
+    public function __construct(Connection $db, PermissionChecker $permissionChecker, RequestStack $requestStack, Slug $slug = null)
     {
         $this->db = $db;
         $this->permissionChecker = $permissionChecker;
-        $this->session = $session;
+        $this->requestStack = $requestStack;
         $this->slug = $slug;
     }
 
@@ -125,7 +118,7 @@ class NewsCategoryListener implements FrameworkAwareInterface
                     // Dynamically add the record to the user profile
                     if (!$this->permissionChecker->isUserAllowedNewsCategory($categoryId)) {
                         /** @var \Symfony\Component\HttpFoundation\Session\Attribute\AttributeBagInterface $sessionBag */
-                        $sessionBag = $this->session->getbag('contao_backend');
+                        $sessionBag = $this->requestStack->getSession()->getbag('contao_backend');
 
                         $newRecords = $sessionBag->get('new_records');
                         $newRecords = \is_array($newRecords[$dc->table]) ? \array_map('intval', $newRecords[$dc->table]) : [];
@@ -148,9 +141,9 @@ class NewsCategoryListener implements FrameworkAwareInterface
                 case 'editAll':
                 case 'deleteAll':
                 case 'overrideAll':
-                    $session = $this->session->all();
+                    $session = $this->requestStack->getSession()->all();
                     $session['CURRENT']['IDS'] = \array_intersect($session['CURRENT']['IDS'], $roots);
-                    $this->session->replace($session);
+                    $this->requestStack->getSession()->replace($session);
                     break;
             }
         }

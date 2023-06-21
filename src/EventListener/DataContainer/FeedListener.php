@@ -17,7 +17,7 @@ use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\DataContainer;
 use Doctrine\DBAL\Connection;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class FeedListener implements FrameworkAwareInterface
 {
@@ -28,21 +28,12 @@ class FeedListener implements FrameworkAwareInterface
      */
     private $db;
 
-    /**
-     * @var SessionInterface
-     */
-    private $session;
+    private RequestStack $requestStack;
 
-    /**
-     * FeedListener constructor.
-     *
-     * @param Connection       $db
-     * @param SessionInterface $session
-     */
-    public function __construct(Connection $db, SessionInterface $session)
+    public function __construct(Connection $db, RequestStack $requestStack)
     {
         $this->db = $db;
-        $this->session = $session;
+        $this->requestStack = $requestStack;
     }
 
     /**
@@ -83,9 +74,9 @@ class FeedListener implements FrameworkAwareInterface
             if (\count($newsIds) > 0) {
                 $archiveIds = $this->db->fetchFirstColumn('SELECT DISTINCT(pid) FROM tl_news WHERE id IN ('.\implode(',', $newsIds).')');
 
-                $session = $this->session->get('news_feed_updater');
+                $session = $this->requestStack->getSession()->get('news_feed_updater');
                 $session = \array_merge((array) $session, $archiveIds);
-                $this->session->set('news_feed_updater', \array_unique($session));
+                $this->requestStack->getSession()->set('news_feed_updater', \array_unique($session));
             }
         }
     }
@@ -97,7 +88,7 @@ class FeedListener implements FrameworkAwareInterface
      */
     private function generateFeed($method)
     {
-        $session = $this->session->get('news_feed_updater');
+        $session = $this->requestStack->getSession()->get('news_feed_updater');
 
         if (!\is_array($session) || empty($session)) {
             return;
@@ -111,6 +102,6 @@ class FeedListener implements FrameworkAwareInterface
 
         (new Automator())->generateSitemap();
 
-        $this->session->set('news_feed_updater', null);
+        $this->requestStack->getSession()->set('news_feed_updater', null);
     }
 }
