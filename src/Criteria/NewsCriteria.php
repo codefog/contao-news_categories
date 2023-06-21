@@ -13,7 +13,7 @@ namespace Codefog\NewsCategoriesBundle\Criteria;
 use Codefog\HasteBundle\Model\DcaRelationsModel;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
-use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Database;
 use Contao\Date;
 use Contao\NewsModel;
@@ -22,7 +22,7 @@ use Contao\System;
 class NewsCriteria
 {
     /**
-     * @var ContaoFrameworkInterface
+     * @var ContaoFramework
      */
     private $framework;
 
@@ -41,12 +41,7 @@ class NewsCriteria
      */
     private $options = [];
 
-    /**
-     * NewsCriteria constructor.
-     *
-     * @param ContaoFrameworkInterface $framework
-     */
-    public function __construct(ContaoFrameworkInterface $framework)
+    public function __construct(ContaoFramework $framework)
     {
         $this->framework = $framework;
     }
