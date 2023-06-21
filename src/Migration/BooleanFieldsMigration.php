@@ -39,7 +39,7 @@ class BooleanFieldsMigration extends AbstractMigration
 
     public function shouldRun(): bool
     {
-        $schemaManager = $this->db->getSchemaManager();
+        $schemaManager = $this->db->createSchemaManager();
 
         if (!$schemaManager->tablesExist(\array_keys(self::$fields))) {
             return false;
@@ -71,7 +71,7 @@ class BooleanFieldsMigration extends AbstractMigration
 
     private function needsMigration(string $table, string $field): bool
     {
-        $columns = $this->db->getSchemaManager()->listTableColumns($table);
+        $columns = $this->db->createSchemaManager()->listTableColumns($table);
         $column = $columns[\strtolower($field)] ?? null;
 
         if (null === $column || $column->getType() instanceof BooleanType) {
