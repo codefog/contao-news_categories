@@ -17,6 +17,7 @@ use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
 use Contao\Database;
 use Contao\Date;
 use Contao\NewsModel;
+use Contao\System;
 
 class NewsCriteria
 {
@@ -98,7 +99,7 @@ class NewsCriteria
         $this->options['order'] = $order;
 
         // Never return unpublished elements in the back end, so they don't end up in the RSS feed
-        if (!BE_USER_LOGGED_IN || TL_MODE === 'BE') {
+        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
             /** @var Date $dateAdapter */
             $dateAdapter = $this->framework->getAdapter(Date::class);
 

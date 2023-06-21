@@ -14,6 +14,7 @@ use Contao\ContentModule;
 use Contao\Module;
 use Contao\ModuleModel;
 use Contao\StringUtil;
+use Contao\System;
 
 class NewsFilterElement extends ContentModule
 {
@@ -25,8 +26,7 @@ class NewsFilterElement extends ContentModule
     public function generate()
     {
         // Return if the element is not published
-        if (TL_MODE === 'FE'
-            && !BE_USER_LOGGED_IN
+        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()
             && ($this->invisible || ($this->start > 0 && $this->start > \time()) || ($this->stop > 0 && $this->stop < \time()))
         ) {
             return '';

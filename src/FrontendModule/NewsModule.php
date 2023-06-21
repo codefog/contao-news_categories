@@ -59,7 +59,12 @@ abstract class NewsModule extends ModuleNews
      */
     public function generate()
     {
-        if (TL_MODE === 'BE') {
+        $container = System::getContainer();
+
+        if (
+            ($request = $container->get('request_stack')->getCurrentRequest())
+            && $container->get('contao.routing.scope_matcher')->isBackendRequest($request)
+        ) {
             $template = new BackendTemplate('be_wildcard');
 
             $template->wildcard = '### '.mb_strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0]).' ###';

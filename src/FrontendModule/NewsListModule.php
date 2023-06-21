@@ -14,6 +14,7 @@ use Contao\Input;
 use Contao\ModuleNewsList;
 use Contao\NewsModel;
 use Contao\StringUtil;
+use Contao\System;
 
 class NewsListModule extends ModuleNewsList
 {
@@ -30,7 +31,12 @@ class NewsListModule extends ModuleNewsList
      */
     public function generate()
     {
-        if (TL_MODE === 'BE') {
+        $container = System::getContainer();
+
+        if (
+            ($request = $container->get('request_stack')->getCurrentRequest())
+            && $container->get('contao.routing.scope_matcher')->isBackendRequest($request)
+        ) {
             return parent::generate();
         }
 

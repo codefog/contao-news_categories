@@ -126,7 +126,7 @@ FROM {$relation['table']}
 WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".\implode(',', \array_map('intval', $archives)).')';
 
         // Include only the published news items
-        if (!BE_USER_LOGGED_IN) {
+        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
             $time = Date::floorToMinute();
             $subSelect .= ' AND (start=? OR start<=?) AND (stop=? OR stop>?) AND published=?';
             $values = \array_merge($values, ['', $time, '', $time + 60, 1]);
@@ -157,7 +157,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             }
         }
 
-        if (!BE_USER_LOGGED_IN) {
+        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
             $columns[] = "$t.published=?";
             $values[] = 1;
         }
@@ -193,7 +193,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             }
         }
 
-        if (!BE_USER_LOGGED_IN) {
+        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
             $columns[] = "$t.published=?";
             $values[] = 1;
         }
@@ -211,7 +211,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
         $t = static::getTableAlias();
         $options = ['order' => "$t.sorting"];
 
-        if (BE_USER_LOGGED_IN) {
+        if (System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
             return static::findAll($options);
         }
 
@@ -242,7 +242,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             $values[] = $pid;
         }
 
-        if (!BE_USER_LOGGED_IN) {
+        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
             $columns[] = "$t.published=?";
             $values[] = 1;
         }
@@ -263,7 +263,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
         $columns = ["$t.pid=?"];
         $values = [$pid];
 
-        if (!BE_USER_LOGGED_IN) {
+        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
             $columns[] = "$t.published=?";
             $values[] = 1;
         }
@@ -288,7 +288,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
         $columns = ["$t.id IN (".\implode(',', \array_map('intval', \array_unique($ids))).')'];
         $values = [];
 
-        if (!BE_USER_LOGGED_IN) {
+        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
             $columns[] = "$t.published=?";
             $values[] = 1;
         }
@@ -354,7 +354,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             $columns[] = "$t.pid IN (".\implode(',', \array_map('intval', $archives)).')';
         }
 
-        if (!BE_USER_LOGGED_IN) {
+        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
             $time = Date::floorToMinute();
             $columns[] = "$t.published=? AND ($t.start=? OR $t.start<=?) AND ($t.stop=? OR $t.stop>?)";
             $values = \array_merge($values, [1, '', $time, '', $time]);
@@ -372,7 +372,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
      */
     public static function getAllSubcategoriesIds($category)
     {
-        $ids = Database::getInstance()->getChildRecords($category, static::$strTable, false, (array) $category, (!BE_USER_LOGGED_IN ? 'published=1' : ''));
+        $ids = Database::getInstance()->getChildRecords($category, static::$strTable, false, (array) $category, (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode() ? 'published=1' : ''));
         $ids = \array_map('intval', $ids);
 
         return $ids;
