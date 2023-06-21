@@ -8,7 +8,7 @@
  * @license    MIT
  */
 
-/**
+/*
  * Front end modules.
  */
 $GLOBALS['TL_LANG']['FMD']['newscategories'] = ['Kategorie aktualności', 'Dodaje do strony listę kategorii aktualności.'];

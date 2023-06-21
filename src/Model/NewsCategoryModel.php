@@ -80,10 +80,8 @@ class NewsCategoryModel extends ParentModel
 
     /**
      * Get the image.
-     *
-     * @return FilesModel|null
      */
-    public function getImage()
+    public function getImage(): FilesModel|null
     {
         return $this->image ? FilesModel::findByPk($this->image) : null;
     }
@@ -100,10 +98,8 @@ class NewsCategoryModel extends ParentModel
 
     /**
      * Find published news categories by news criteria.
-     *
-     * @return Collection|null
      */
-    public static function findPublishedByArchives(array $archives, array $ids = [], array $aliases = [], array $excludedIds = [])
+    public static function findPublishedByArchives(array $archives, array $ids = [], array $aliases = [], array $excludedIds = []): Collection|null
     {
         if (0 === \count($archives)) {
             return null;
@@ -168,10 +164,8 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
      * Find published category by ID or alias.
      *
      * @param string $idOrAlias
-     *
-     * @return NewsCategoryModel|null
      */
-    public static function findPublishedByIdOrAlias($idOrAlias)
+    public static function findPublishedByIdOrAlias($idOrAlias): self|null
     {
         $values = [];
         $columns = [];
@@ -202,10 +196,8 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
 
     /**
      * Find published news categories.
-     *
-     * @return Collection|null
      */
-    public static function findPublished()
+    public static function findPublished(): Collection|null
     {
         $t = static::getTableAlias();
         $options = ['order' => "$t.sorting"];
@@ -219,12 +211,8 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
 
     /**
      * Find published news categories by parent ID and IDs.
-     *
-     * @param int|null $pid
-     *
-     * @return Collection|null
      */
-    public static function findPublishedByIds(array $ids, $pid = null)
+    public static function findPublishedByIds(array $ids, int|null $pid = null): Collection|null
     {
         if (0 === \count($ids)) {
             return null;
@@ -252,10 +240,8 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
      * Find published news categories by parent ID.
      *
      * @param int $pid
-     *
-     * @return Collection|null
      */
-    public static function findPublishedByPid($pid)
+    public static function findPublishedByPid($pid): Collection|null
     {
         $t = static::getTableAlias();
         $columns = ["$t.pid=?"];
@@ -272,11 +258,9 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
     /**
      * Find the published categories by news.
      *
-     * @param int|array $newsId
-     *
-     * @return Collection|NewsCategoryModel[]|null
+     * @return Collection|array<NewsCategoryModel>|null
      */
-    public static function findPublishedByNews($newsId, array $arrOptions = [])
+    public static function findPublishedByNews(array|int $newsId, array $arrOptions = []): Collection|array|null
     {
         if (0 === \count($ids = DcaRelationsModel::getRelatedValues('tl_news', 'categories', $newsId))) {
             return null;
@@ -297,13 +281,12 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
     /**
      * Count the published news by archives.
      *
-     * @param int|null $category
-     * @param bool     $includeSubcategories
-     * @param bool     $unionFiltering
+     * @param bool $includeSubcategories
+     * @param bool $unionFiltering
      *
      * @return int
      */
-    public static function getUsage(array $archives = [], $category = null, $includeSubcategories = false, array $cumulativeCategories = [], $unionFiltering = false)
+    public static function getUsage(array $archives = [], int|null $category = null, $includeSubcategories = false, array $cumulativeCategories = [], $unionFiltering = false)
     {
         $t = NewsModel::getTable();
 
@@ -361,8 +344,6 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
 
     /**
      * Get all subcategory IDs.
-     *
-     * @param array|int $category
      *
      * @return array
      */

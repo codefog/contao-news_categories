@@ -112,7 +112,7 @@ class CumulativeHierarchicalFilterModule extends NewsModule
             if (\in_array($categoryAlias, $activeAliases, true)) {
                 $aliases = array_diff($activeAliases, [$categoryAlias]);
             } else {
-                $aliases = array_merge($activeAliases, [$categoryAlias]);
+                $aliases = [...$activeAliases, $categoryAlias];
             }
 
             // Get the URL

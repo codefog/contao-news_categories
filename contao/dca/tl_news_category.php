@@ -8,10 +8,13 @@
  * @license    MIT
  */
 
+use Codefog\NewsCategoriesBundle\MultilingualHelper;
+use Contao\Config;
 use Contao\DC_Table;
+use Contao\System;
 use Terminal42\DcMultilingualBundle\Driver;
 
-\Contao\System::loadLanguageFile('tl_news_archive');
+System::loadLanguageFile('tl_news_archive');
 
 /*
  * Table tl_news_category
@@ -185,7 +188,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
                 'files' => true,
                 'filesOnly' => true,
                 'fieldType' => 'radio',
-                'extensions' => \Contao\Config::get('validImageTypes'),
+                'extensions' => Config::get('validImageTypes'),
                 'tl_class' => 'clr',
             ],
             'sql' => ['type' => 'binary', 'length' => 16, 'notnull' => false],
@@ -235,7 +238,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
 /*
  * Enable multilingual features
  */
-if (\Codefog\NewsCategoriesBundle\MultilingualHelper::isActive()) {
+if (MultilingualHelper::isActive()) {
     // Config
     $GLOBALS['TL_DCA']['tl_news_category']['config']['dataContainer'] = Driver::class;
     $GLOBALS['TL_DCA']['tl_news_category']['config']['langColumn'] = 'language';

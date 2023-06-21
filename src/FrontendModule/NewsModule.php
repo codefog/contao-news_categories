@@ -68,7 +68,7 @@ abstract class NewsModule extends ModuleNews
         ) {
             $template = new BackendTemplate('be_wildcard');
 
-            $template->wildcard = '### '.mb_strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0]).' ###';
+            $template->wildcard = '### '.mb_strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0] ?? '').' ###';
             $template->title = $this->headline;
             $template->id = $this->id;
             $template->link = $this->name;
@@ -110,13 +110,13 @@ abstract class NewsModule extends ModuleNews
         $customCategories = $this->news_customCategories ? StringUtil::deserialize($this->news_categories, true) : [];
 
         // Get the subcategories of custom categories
-        if (\count($customCategories) > 0) {
+        if (!empty($customCategories)) {
             $customCategories = NewsCategoryModel::getAllSubcategoriesIds($customCategories);
         }
 
         // Get all categories whether they have news or not
         if ($this->news_showEmptyCategories) {
-            if (\count($customCategories) > 0) {
+            if (!empty($customCategories)) {
                 $categories = NewsCategoryModel::findPublishedByIds($customCategories);
             } else {
                 $categories = NewsCategoryModel::findPublished();
@@ -205,7 +205,7 @@ abstract class NewsModule extends ModuleNews
                     try {
                         $criteria->setBasicCriteria($this->news_archives);
                         $criteria->setCategory($activeCategory->id, false, (bool) $this->news_includeSubcategories);
-                    } catch (NoNewsException $e) {
+                    } catch (NoNewsException) {
                         continue;
                     }
 

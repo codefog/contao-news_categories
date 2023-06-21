@@ -24,20 +24,10 @@ class PermissionChecker implements FrameworkAwareInterface
 {
     use FrameworkAwareTrait;
 
-    /**
-     * @var Connection
-     */
-    private $db;
-
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-
-    public function __construct(Connection $db, TokenStorageInterface $tokenStorage)
-    {
-        $this->db = $db;
-        $this->tokenStorage = $tokenStorage;
+    public function __construct(
+        private readonly Connection $db,
+        private readonly TokenStorageInterface $tokenStorage,
+    ) {
     }
 
     /**
@@ -76,10 +66,8 @@ class PermissionChecker implements FrameworkAwareInterface
 
     /**
      * Get the user allowed roots. Return null if the user has no limitation.
-     *
-     * @return array|null
      */
-    public function getUserAllowedRoots()
+    public function getUserAllowedRoots(): array|null
     {
         $user = $this->getUser();
 

@@ -8,7 +8,7 @@
  * @license    MIT
  */
 
-/**
+/*
  * Miscellaneous.
  */
 $GLOBALS['TL_LANG']['MSC']['newsCategories'] = 'Categories:';

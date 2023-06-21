@@ -8,7 +8,7 @@
  * @license    MIT
  */
 
-/**
+/*
  * Global operations.
  */
 $GLOBALS['TL_LANG']['tl_news_archive']['categories'] = ['Categorie', 'Aggiungi e gestisci le categorie di news.'];

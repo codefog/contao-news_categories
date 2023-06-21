@@ -8,27 +8,36 @@
  * @license    MIT
  */
 
+use Codefog\NewsCategoriesBundle\ContentElement\NewsFilterElement;
+use Codefog\NewsCategoriesBundle\FrontendModule\CumulativeFilterModule;
+use Codefog\NewsCategoriesBundle\FrontendModule\CumulativeHierarchicalFilterModule;
+use Codefog\NewsCategoriesBundle\FrontendModule\NewsArchiveModule;
+use Codefog\NewsCategoriesBundle\FrontendModule\NewsCategoriesModule;
+use Codefog\NewsCategoriesBundle\FrontendModule\NewsListModule;
+use Codefog\NewsCategoriesBundle\FrontendModule\NewsMenuModule;
+use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+
 $GLOBALS['BE_MOD']['content']['news']['tables'][] = 'tl_news_category';
 
 /*
  * Front end modules
  */
-$GLOBALS['FE_MOD']['news']['newsarchive'] = \Codefog\NewsCategoriesBundle\FrontendModule\NewsArchiveModule::class;
-$GLOBALS['FE_MOD']['news']['newscategories'] = \Codefog\NewsCategoriesBundle\FrontendModule\NewsCategoriesModule::class;
-$GLOBALS['FE_MOD']['news']['newscategories_cumulative'] = \Codefog\NewsCategoriesBundle\FrontendModule\CumulativeFilterModule::class;
-$GLOBALS['FE_MOD']['news']['newscategories_cumulativehierarchical'] = \Codefog\NewsCategoriesBundle\FrontendModule\CumulativeHierarchicalFilterModule::class;
-$GLOBALS['FE_MOD']['news']['newslist'] = \Codefog\NewsCategoriesBundle\FrontendModule\NewsListModule::class;
-$GLOBALS['FE_MOD']['news']['newsmenu'] = \Codefog\NewsCategoriesBundle\FrontendModule\NewsMenuModule::class;
+$GLOBALS['FE_MOD']['news']['newsarchive'] = NewsArchiveModule::class;
+$GLOBALS['FE_MOD']['news']['newscategories'] = NewsCategoriesModule::class;
+$GLOBALS['FE_MOD']['news']['newscategories_cumulative'] = CumulativeFilterModule::class;
+$GLOBALS['FE_MOD']['news']['newscategories_cumulativehierarchical'] = CumulativeHierarchicalFilterModule::class;
+$GLOBALS['FE_MOD']['news']['newslist'] = NewsListModule::class;
+$GLOBALS['FE_MOD']['news']['newsmenu'] = NewsMenuModule::class;
 
 /*
  * Content elements
  */
-$GLOBALS['TL_CTE']['includes']['newsfilter'] = \Codefog\NewsCategoriesBundle\ContentElement\NewsFilterElement::class;
+$GLOBALS['TL_CTE']['includes']['newsfilter'] = NewsFilterElement::class;
 
 /*
  * Models
  */
-$GLOBALS['TL_MODELS']['tl_news_category'] = \Codefog\NewsCategoriesBundle\Model\NewsCategoryModel::class;
+$GLOBALS['TL_MODELS']['tl_news_category'] = NewsCategoryModel::class;
 
 /*
  * Add permissions

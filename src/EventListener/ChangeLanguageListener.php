@@ -23,14 +23,8 @@ class ChangeLanguageListener implements FrameworkAwareInterface
 {
     use FrameworkAwareTrait;
 
-    /**
-     * @var NewsCategoriesManager
-     */
-    private $manager;
-
-    public function __construct(NewsCategoriesManager $manager)
+    public function __construct(private readonly NewsCategoriesManager $manager)
     {
-        $this->manager = $manager;
     }
 
     /**

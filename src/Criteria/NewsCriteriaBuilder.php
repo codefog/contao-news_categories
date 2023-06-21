@@ -30,22 +30,12 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
     use FrameworkAwareTrait;
 
     /**
-     * @var Connection
-     */
-    private $db;
-
-    /**
-     * @var NewsCategoriesManager
-     */
-    private $manager;
-
-    /**
      * NewsCriteriaBuilder constructor.
      */
-    public function __construct(Connection $db, NewsCategoriesManager $manager)
-    {
-        $this->db = $db;
-        $this->manager = $manager;
+    public function __construct(
+        private readonly Connection $db,
+        private readonly NewsCategoriesManager $manager,
+    ) {
     }
 
     /**
@@ -53,10 +43,8 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
      *
      * @param int $begin
      * @param int $end
-     *
-     * @return NewsCriteria|null
      */
-    public function getCriteriaForArchiveModule(array $archives, $begin, $end, Module $module)
+    public function getCriteriaForArchiveModule(array $archives, $begin, $end, Module $module): NewsCriteria|null
     {
         $criteria = new NewsCriteria($this->framework);
 
@@ -68,7 +56,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
 
             // Set the regular list criteria
             $this->setRegularListCriteria($criteria, $module);
-        } catch (NoNewsException $e) {
+        } catch (NoNewsException) {
             return null;
         }
 
@@ -77,12 +65,8 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
 
     /**
      * Get the criteria for list module.
-     *
-     * @param bool|null $featured
-     *
-     * @return NewsCriteria|null
      */
-    public function getCriteriaForListModule(array $archives, $featured, Module $module)
+    public function getCriteriaForListModule(array $archives, bool|null $featured, Module $module): NewsCriteria|null
     {
         $criteria = new NewsCriteria($this->framework);
 
@@ -101,7 +85,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
                 // Set the regular list criteria
                 $this->setRegularListCriteria($criteria, $module);
             }
-        } catch (NoNewsException $e) {
+        } catch (NoNewsException) {
             return null;
         }
 
@@ -110,10 +94,8 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
 
     /**
      * Get the criteria for menu module.
-     *
-     * @return NewsCriteria|null
      */
-    public function getCriteriaForMenuModule(array $archives, Module $module)
+    public function getCriteriaForMenuModule(array $archives, Module $module): NewsCriteria|null
     {
         $criteria = new NewsCriteria($this->framework);
 
@@ -122,7 +104,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
 
             // Set the regular list criteria
             $this->setRegularListCriteria($criteria, $module);
-        } catch (NoNewsException $e) {
+        } catch (NoNewsException) {
             return null;
         }
 
@@ -138,7 +120,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
     private function setRegularListCriteria(NewsCriteria $criteria, Module $module): void
     {
         // Filter by default categories
-        if (\count($default = StringUtil::deserialize($module->news_filterDefault, true)) > 0) {
+        if (!empty($default = StringUtil::deserialize($module->news_filterDefault, true))) {
             $criteria->setDefaultCategories($default);
         }
 

@@ -7,14 +7,16 @@
  * @author     Codefog <https://codefog.pl>
  * @license    MIT
  */
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
-\Contao\CoreBundle\DataContainer\PaletteManipulator::create()
+PaletteManipulator::create()
     ->addLegend('newsCategories_legend', 'news_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField('newscategories', 'newsCategories_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
     ->addField('newscategories_roots', 'newsCategories_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
     ->addField('newscategories_default', 'newsCategories_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('extend', 'tl_user')
-    ->applyToPalette('custom', 'tl_user');
+    ->applyToPalette('custom', 'tl_user')
+;
 
 /*
  * Add fields

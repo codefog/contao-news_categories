@@ -16,9 +16,12 @@ use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\Database;
+use Contao\Date;
+use Contao\Environment;
 use Contao\Input;
 use Contao\ModuleNewsMenu;
 use Contao\PageModel;
+use Contao\StringUtil;
 use Contao\System;
 
 class NewsMenuModule extends ModuleNewsMenu
@@ -42,7 +45,7 @@ class NewsMenuModule extends ModuleNewsMenu
     protected function compileYearlyMenu(): void
     {
         $arrData = [];
-        $time = \Date::floorToMinute();
+        $time = Date::floorToMinute();
         $newsIds = $this->getFilteredNewsIds();
 
         // Get the dates
@@ -67,9 +70,9 @@ class NewsMenuModule extends ModuleNewsMenu
             $arrItems[$intYear]['date'] = $intDate;
             $arrItems[$intYear]['link'] = $intYear;
             $arrItems[$intYear]['href'] = $this->strUrl.'?year='.$intDate;
-            $arrItems[$intYear]['title'] = \StringUtil::specialchars($intYear.' ('.$quantity.')');
+            $arrItems[$intYear]['title'] = StringUtil::specialchars($intYear.' ('.$quantity.')');
             $arrItems[$intYear]['class'] = trim((1 === ++$count ? 'first ' : '').($count === $limit ? 'last' : ''));
-            $arrItems[$intYear]['isActive'] = \Input::get('year') === $intDate;
+            $arrItems[$intYear]['isActive'] = Input::get('year') === $intDate;
             $arrItems[$intYear]['quantity'] = $quantity;
         }
 
@@ -84,7 +87,7 @@ class NewsMenuModule extends ModuleNewsMenu
     protected function compileMonthlyMenu(): void
     {
         $arrData = [];
-        $time = \Date::floorToMinute();
+        $time = Date::floorToMinute();
         $newsIds = $this->getFilteredNewsIds();
 
         // Get the dates
@@ -117,9 +120,9 @@ class NewsMenuModule extends ModuleNewsMenu
                 $arrItems[$intYear][$intMonth]['date'] = $intDate;
                 $arrItems[$intYear][$intMonth]['link'] = $GLOBALS['TL_LANG']['MONTHS'][$intMonth].' '.$intYear;
                 $arrItems[$intYear][$intMonth]['href'] = $this->strUrl.'?month='.$intDate;
-                $arrItems[$intYear][$intMonth]['title'] = \StringUtil::specialchars($GLOBALS['TL_LANG']['MONTHS'][$intMonth].' '.$intYear.' ('.$quantity.')');
+                $arrItems[$intYear][$intMonth]['title'] = StringUtil::specialchars($GLOBALS['TL_LANG']['MONTHS'][$intMonth].' '.$intYear.' ('.$quantity.')');
                 $arrItems[$intYear][$intMonth]['class'] = trim((1 === ++$count ? 'first ' : '').($count === $limit ? 'last' : ''));
-                $arrItems[$intYear][$intMonth]['isActive'] = \Input::get('month') === $intDate;
+                $arrItems[$intYear][$intMonth]['isActive'] = Input::get('month') === $intDate;
                 $arrItems[$intYear][$intMonth]['quantity'] = $quantity;
             }
         }
@@ -127,7 +130,7 @@ class NewsMenuModule extends ModuleNewsMenu
         $this->Template->items = $arrItems;
         $this->Template->showQuantity = '' !== $this->news_showQuantity ? true : false;
         $this->Template->url = $this->strUrl.'?';
-        $this->Template->activeYear = \Input::get('year');
+        $this->Template->activeYear = Input::get('year');
     }
 
     /**
@@ -136,7 +139,7 @@ class NewsMenuModule extends ModuleNewsMenu
     protected function compileDailyMenu(): void
     {
         $arrData = [];
-        $time = \Date::floorToMinute();
+        $time = Date::floorToMinute();
         $newsIds = $this->getFilteredNewsIds();
 
         // Get the dates
@@ -151,9 +154,9 @@ class NewsMenuModule extends ModuleNewsMenu
 
         // Create the date object
         try {
-            $this->Date = \Input::get('day') ? new \Date(\Input::get('day'), 'Ymd') : new \Date();
-        } catch (\OutOfBoundsException $e) {
-            throw new PageNotFoundException('Page not found: '.\Environment::get('uri'));
+            $this->Date = Input::get('day') ? new Date(Input::get('day'), 'Ymd') : new Date();
+        } catch (\OutOfBoundsException) {
+            throw new PageNotFoundException('Page not found: '.Environment::get('uri'));
         }
 
         $intYear = date('Y', $this->Date->tstamp);
@@ -168,7 +171,7 @@ class NewsMenuModule extends ModuleNewsMenu
         $lblPrevious = $GLOBALS['TL_LANG']['MONTHS'][$prevMonth - 1].' '.$prevYear;
 
         $this->Template->prevHref = $this->strUrl.'?day='.$prevYear.(\strlen($prevMonth) < 2 ? '0' : '').$prevMonth.'01';
-        $this->Template->prevTitle = \StringUtil::specialchars($lblPrevious);
+        $this->Template->prevTitle = StringUtil::specialchars($lblPrevious);
         $this->Template->prevLink = $GLOBALS['TL_LANG']['MSC']['news_previous'].' '.$lblPrevious;
         $this->Template->prevLabel = $GLOBALS['TL_LANG']['MSC']['news_previous'];
 
@@ -181,7 +184,7 @@ class NewsMenuModule extends ModuleNewsMenu
         $lblNext = $GLOBALS['TL_LANG']['MONTHS'][$nextMonth - 1].' '.$nextYear;
 
         $this->Template->nextHref = $this->strUrl.'?day='.$nextYear.(\strlen($nextMonth) < 2 ? '0' : '').$nextMonth.'01';
-        $this->Template->nextTitle = \StringUtil::specialchars($lblNext);
+        $this->Template->nextTitle = StringUtil::specialchars($lblNext);
         $this->Template->nextLink = $lblNext.' '.$GLOBALS['TL_LANG']['MSC']['news_next'];
         $this->Template->nextLabel = $GLOBALS['TL_LANG']['MSC']['news_next'];
 

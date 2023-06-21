@@ -8,7 +8,7 @@
  * @license    MIT
  */
 
-/**
+/*
  * Front end modules.
  */
 $GLOBALS['TL_LANG']['FMD']['newscategories'] = ['Liste mit Nachrichten-Kategorien', 'Fügt eine Nachrichten-Kategorieliste in die Seite ein.'];

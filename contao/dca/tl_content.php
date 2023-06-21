@@ -8,8 +8,11 @@
  * @license    MIT
  */
 
-\Contao\Controller::loadDataContainer('tl_module');
-\Contao\System::loadLanguageFile('tl_module');
+use Contao\Controller;
+use Contao\System;
+
+Controller::loadDataContainer('tl_module');
+System::loadLanguageFile('tl_module');
 
 /*
  * Add palettes

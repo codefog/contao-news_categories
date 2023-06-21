@@ -7,6 +7,7 @@
  * @author     Codefog <https://codefog.pl>
  * @license    MIT
  */
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
 /*
  * Add global callbacks
@@ -17,9 +18,9 @@ $GLOBALS['TL_DCA']['tl_news']['config']['onsubmit_callback'][] = ['codefog_news_
 /*
  * Extend palettes
  */
-$paletteManipulator = \Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addLegend('category_legend', 'title_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField('categories', 'category_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+$paletteManipulator = PaletteManipulator::create()
+    ->addLegend('category_legend', 'title_legend', PaletteManipulator::POSITION_AFTER)
+    ->addField('categories', 'category_legend', PaletteManipulator::POSITION_APPEND)
 ;
 
 foreach ($GLOBALS['TL_DCA']['tl_news']['palettes'] as $name => $palette) {

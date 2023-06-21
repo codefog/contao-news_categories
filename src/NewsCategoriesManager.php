@@ -28,10 +28,7 @@ class NewsCategoriesManager implements FrameworkAwareInterface
 {
     use FrameworkAwareTrait;
 
-    /**
-     * @var array
-     */
-    private $urlCache = [];
+    private array $urlCache = [];
 
     /**
      * Generate the category URL.
@@ -55,10 +52,8 @@ class NewsCategoriesManager implements FrameworkAwareInterface
 
     /**
      * Get the image.
-     *
-     * @return FilesModel|null
      */
-    public function getImage(NewsCategoryModel $category)
+    public function getImage(NewsCategoryModel $category): FilesModel|null
     {
         if (null === ($image = $category->getImage()) || !is_file(TL_ROOT.'/'.$image->path)) {
             return null;
@@ -84,11 +79,9 @@ class NewsCategoriesManager implements FrameworkAwareInterface
     /**
      * Get the parameter name.
      *
-     * @param int|null $rootId
-     *
      * @return string
      */
-    public function getParameterName($rootId = null)
+    public function getParameterName(int|null $rootId = null)
     {
         $rootId = $rootId ?: $GLOBALS['objPage']->rootId;
 
@@ -101,10 +94,8 @@ class NewsCategoriesManager implements FrameworkAwareInterface
 
     /**
      * Get the category target page.
-     *
-     * @return PageModel|null
      */
-    public function getTargetPage(NewsCategoryModel $category)
+    public function getTargetPage(NewsCategoryModel $category): PageModel|null
     {
         $pageId = $category->jumpTo;
 

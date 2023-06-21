@@ -23,29 +23,17 @@ use Contao\System;
 
 class NewsCriteria
 {
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
-
-    /**
-     * @var array
-     */
-    private $columns = [];
+    private array $columns = [];
 
     /**
      * @var array
      */
     private $values = [];
 
-    /**
-     * @var array
-     */
-    private $options = [];
+    private array $options = [];
 
-    public function __construct(ContaoFramework $framework)
+    public function __construct(private readonly ContaoFramework $framework)
     {
-        $this->framework = $framework;
     }
 
     /**
@@ -73,24 +61,13 @@ class NewsCriteria
             $order .= "$t.featured DESC, ";
         }
 
-        // Set the sorting
-        switch ($sorting) {
-            case 'order_headline_asc':
-                $order .= "$t.headline";
-                break;
-            case 'order_headline_desc':
-                $order .= "$t.headline DESC";
-                break;
-            case 'order_random':
-                $order .= 'RAND()';
-                break;
-            case 'order_date_asc':
-                $order .= "$t.date";
-                break;
-            default:
-                $order .= "$t.date DESC";
-                break;
-        }
+        match ($sorting) {
+            'order_headline_asc' => $order .= "$t.headline",
+            'order_headline_desc' => $order .= "$t.headline DESC",
+            'order_random' => $order .= 'RAND()',
+            'order_date_asc' => $order .= "$t.date",
+            default => $order .= "$t.date DESC",
+        };
 
         $this->options['order'] = $order;
 
@@ -141,12 +118,11 @@ class NewsCriteria
     /**
      * Set the default categories.
      *
-     * @param bool        $includeSubcategories
-     * @param string|null $order
+     * @param bool $includeSubcategories
      *
      * @throws NoNewsException
      */
-    public function setDefaultCategories(array $defaultCategories, $includeSubcategories = true, $order = null): void
+    public function setDefaultCategories(array $defaultCategories, $includeSubcategories = true, string|null $order = null): void
     {
         $defaultCategories = $this->parseIds($defaultCategories);
 

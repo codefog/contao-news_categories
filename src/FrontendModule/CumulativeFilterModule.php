@@ -41,7 +41,7 @@ class CumulativeFilterModule extends NewsModule
         }
 
         // Get the subcategories of custom categories
-        if (\count($customCategories) > 0 && $this->news_includeSubcategories) {
+        if (!empty($customCategories) && $this->news_includeSubcategories) {
             $customCategories = NewsCategoryModel::getAllSubcategoriesIds($customCategories);
         }
 
@@ -121,7 +121,7 @@ class CumulativeFilterModule extends NewsModule
             if (\in_array($categoryAlias, $activeAliases, true)) {
                 $aliases = array_diff($activeAliases, [$categoryAlias]);
             } else {
-                $aliases = array_merge($activeAliases, [$categoryAlias]);
+                $aliases = [...$activeAliases, $categoryAlias];
             }
 
             // Generate the category URL if there are any aliases to add, otherwise use the reset URL

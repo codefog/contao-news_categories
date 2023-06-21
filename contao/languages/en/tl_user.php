@@ -8,7 +8,7 @@
  * @license    MIT
  */
 
-/**
+/*
  * Fields.
  */
 $GLOBALS['TL_LANG']['tl_user']['newscategories'] = ['News categories permissions', 'Here you can set the news categories permissions.'];

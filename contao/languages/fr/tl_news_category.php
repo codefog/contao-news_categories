@@ -8,7 +8,7 @@
  * @license    MIT
  */
 
-/**
+/*
  * Fields.
  */
 $GLOBALS['TL_LANG']['tl_news_category']['title'] = ['Titre', 'Veuillez, s\'il vous plaît, saisir un titre pour cette catégorie.'];

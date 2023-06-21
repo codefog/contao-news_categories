@@ -8,6 +8,9 @@
  * @license    MIT
  */
 
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
+use Contao\CoreBundle\EventListener\ImageSizeOptionsListener;
+
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'news_customCategories';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'news_relatedCategories';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_showQuantity,news_resetCategories,news_showEmptyCategories,news_includeSubcategories,showLevel;{reference_legend:hide},news_categoriesRoot,news_customCategories;{redirect_legend:hide},news_forceCategoryUrl,jumpTo;{template_legend:hide},navigationTpl,customTpl;{image_legend:hide},news_categoryImgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
@@ -16,40 +19,44 @@ $GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories_cumulativehierarchic
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_customCategories'] = 'news_categories';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_relatedCategories'] = 'news_relatedCategoriesOrder,news_categoriesRoot';
 
-\Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addLegend('redirect_legend', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField('news_filterCategories', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField('news_filterCategoriesCumulative', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField('news_filterCategoriesUnion', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField('news_relatedCategories', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField('news_includeSubcategories', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField('news_filterDefault', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField('news_filterPreserve', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField('news_categoryFilterPage', 'redirect_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField('news_categoryImgSize', 'image_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->applyToPalette('newslist', 'tl_module');
+PaletteManipulator::create()
+    ->addLegend('redirect_legend', 'config_legend', PaletteManipulator::POSITION_AFTER)
+    ->addField('news_filterCategories', 'config_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('news_filterCategoriesCumulative', 'config_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('news_filterCategoriesUnion', 'config_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('news_relatedCategories', 'config_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('news_includeSubcategories', 'config_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('news_filterDefault', 'config_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('news_filterPreserve', 'config_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('news_categoryFilterPage', 'redirect_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('news_categoryImgSize', 'image_legend', PaletteManipulator::POSITION_APPEND)
+    ->applyToPalette('newslist', 'tl_module')
+;
 
-\Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addField('news_filterCategories', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField('news_filterCategoriesCumulative', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField('news_filterCategoriesUnion', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField('news_includeSubcategories', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField('news_filterDefault', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField('news_filterPreserve', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField('news_categoryImgSize', 'image_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+PaletteManipulator::create()
+    ->addField('news_filterCategories', 'config_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('news_filterCategoriesCumulative', 'config_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('news_filterCategoriesUnion', 'config_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('news_includeSubcategories', 'config_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('news_filterDefault', 'config_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('news_filterPreserve', 'config_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('news_categoryImgSize', 'image_legend', PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('newsarchive', 'tl_module')
-    ->applyToPalette('newsmenu', 'tl_module');
+    ->applyToPalette('newsmenu', 'tl_module')
+;
 
-\Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addLegend('redirect_legend', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField('news_categoryFilterPage', 'redirect_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->applyToPalette('newsarchive', 'tl_module');
+PaletteManipulator::create()
+    ->addLegend('redirect_legend', 'config_legend', PaletteManipulator::POSITION_AFTER)
+    ->addField('news_categoryFilterPage', 'redirect_legend', PaletteManipulator::POSITION_APPEND)
+    ->applyToPalette('newsarchive', 'tl_module')
+;
 
-\Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addLegend('redirect_legend', 'config_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField('news_categoryFilterPage', 'redirect_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField('news_categoryImgSize', 'image_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->applyToPalette('newsreader', 'tl_module');
+PaletteManipulator::create()
+    ->addLegend('redirect_legend', 'config_legend', PaletteManipulator::POSITION_AFTER)
+    ->addField('news_categoryFilterPage', 'redirect_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('news_categoryImgSize', 'image_legend', PaletteManipulator::POSITION_APPEND)
+    ->applyToPalette('newsreader', 'tl_module')
+;
 
 /*
  * Add fields
@@ -186,6 +193,6 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryImgSize'] = $GLOBALS['TL
 unset($GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryImgSize']['label']);
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryImgSize']['label'] = &$GLOBALS['TL_LANG']['tl_module']['news_categoryImgSize'];
 
-if (class_exists(\Contao\CoreBundle\EventListener\ImageSizeOptionsListener::class)) {
+if (class_exists(ImageSizeOptionsListener::class)) {
     $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryImgSize']['options_callback'] = ['contao.listener.image_size_options', '__invoke'];
 }

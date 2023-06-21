@@ -8,7 +8,7 @@
  * @license    MIT
  */
 
-/**
+/*
  * Fields.
  */
 $GLOBALS['TL_LANG']['tl_user']['newscategories'] = ['Nachrichten-Kategorien verwalten', 'Benutzer erlauben, Kategorien zu verwalten'];

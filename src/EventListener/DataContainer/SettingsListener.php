@@ -16,11 +16,8 @@ use Contao\CoreBundle\Slug\ValidCharacters;
 
 class SettingsListener
 {
-    private $validCharacters;
-
-    public function __construct(ValidCharacters|null $validCharacters = null)
+    public function __construct(private readonly ValidCharacters|null $validCharacters = null)
     {
-        $this->validCharacters = $validCharacters;
     }
 
     /**

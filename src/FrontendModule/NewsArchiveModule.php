@@ -14,11 +14,16 @@ namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
 use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
+use Contao\Config;
 use Contao\CoreBundle\Exception\PageNotFoundException;
+use Contao\Date;
+use Contao\Environment;
+use Contao\Input;
 use Contao\Model\Collection;
 use Contao\ModuleNewsArchive;
 use Contao\NewsModel;
 use Contao\PageModel;
+use Contao\Pagination;
 use Contao\System;
 
 class NewsArchiveModule extends ModuleNewsArchive
@@ -36,9 +41,9 @@ class NewsArchiveModule extends ModuleNewsArchive
         $intBegin = 0;
         $intEnd = 0;
 
-        $intYear = \Input::get('year');
-        $intMonth = \Input::get('month');
-        $intDay = \Input::get('day');
+        $intYear = Input::get('year');
+        $intMonth = Input::get('month');
+        $intDay = Input::get('day');
 
         // Jump to the current period
         if (!isset($_GET['year']) && !isset($_GET['month']) && !isset($_GET['day']) && 'all_items' !== $this->news_jumpToCurrent) {
@@ -62,28 +67,28 @@ class NewsArchiveModule extends ModuleNewsArchive
         try {
             if ($intYear) {
                 $strDate = $intYear;
-                $objDate = new \Date($strDate, 'Y');
+                $objDate = new Date($strDate, 'Y');
                 $intBegin = $objDate->yearBegin;
                 $intEnd = $objDate->yearEnd;
                 $this->headline .= ' '.date('Y', $objDate->tstamp);
             } elseif ($intMonth) {
                 $strDate = $intMonth;
-                $objDate = new \Date($strDate, 'Ym');
+                $objDate = new Date($strDate, 'Ym');
                 $intBegin = $objDate->monthBegin;
                 $intEnd = $objDate->monthEnd;
-                $this->headline .= ' '.\Date::parse('F Y', $objDate->tstamp);
+                $this->headline .= ' '.Date::parse('F Y', $objDate->tstamp);
             } elseif ($intDay) {
                 $strDate = $intDay;
-                $objDate = new \Date($strDate, 'Ymd');
+                $objDate = new Date($strDate, 'Ymd');
                 $intBegin = $objDate->dayBegin;
                 $intEnd = $objDate->dayEnd;
-                $this->headline .= ' '.\Date::parse($objPage->dateFormat, $objDate->tstamp);
+                $this->headline .= ' '.Date::parse($objPage->dateFormat, $objDate->tstamp);
             } elseif ('all_items' === $this->news_jumpToCurrent) {
                 $intBegin = 0;
                 $intEnd = time();
             }
-        } catch (\OutOfBoundsException $e) {
-            throw new PageNotFoundException('Page not found: '.\Environment::get('uri'));
+        } catch (\OutOfBoundsException) {
+            throw new PageNotFoundException('Page not found: '.Environment::get('uri'));
         }
 
         $this->Template->articles = [];
@@ -98,11 +103,11 @@ class NewsArchiveModule extends ModuleNewsArchive
 
                 // Get the current page
                 $id = 'page_a'.$this->id;
-                $page = null !== \Input::get($id) ? \Input::get($id) : 1;
+                $page = Input::get($id) ?? 1;
 
                 // Do not index or cache the page if the page number is outside the range
                 if ($page < 1 || $page > max(ceil($total / $this->perPage), 1)) {
-                    throw new PageNotFoundException('Page not found: '.\Environment::get('uri'));
+                    throw new PageNotFoundException('Page not found: '.Environment::get('uri'));
                 }
 
                 // Set limit and offset
@@ -110,7 +115,7 @@ class NewsArchiveModule extends ModuleNewsArchive
                 $offset = (max($page, 1) - 1) * $this->perPage;
 
                 // Add the pagination menu
-                $objPagination = new \Pagination($total, $this->perPage, \Config::get('maxPaginationLinks'), $id);
+                $objPagination = new Pagination($total, $this->perPage, Config::get('maxPaginationLinks'), $id);
                 $this->Template->pagination = $objPagination->generate("\n  ");
             }
         }
@@ -156,10 +161,8 @@ class NewsArchiveModule extends ModuleNewsArchive
      * @param int $end
      * @param int $limit
      * @param int $offset
-     *
-     * @return Collection|null
      */
-    protected function fetchNewsItems($begin, $end, $limit = null, $offset = null)
+    protected function fetchNewsItems($begin, $end, $limit = null, $offset = null): Collection|null
     {
         if (($criteria = $this->getSearchCriteria($begin, $end)) === null) {
             return null;
@@ -177,11 +180,9 @@ class NewsArchiveModule extends ModuleNewsArchive
      * @param int $begin
      * @param int $end
      *
-     * @return NewsCriteria|null
-     *
      * @throws PageNotFoundException
      */
-    protected function getSearchCriteria($begin, $end)
+    protected function getSearchCriteria($begin, $end): NewsCriteria|null
     {
         try {
             $criteria = System::getContainer()

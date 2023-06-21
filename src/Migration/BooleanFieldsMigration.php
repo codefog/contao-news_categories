@@ -19,24 +19,15 @@ use Doctrine\DBAL\Types\BooleanType;
 
 class BooleanFieldsMigration extends AbstractMigration
 {
-    /**
-     * @var array
-     */
-    private static $fields = [
+    private static array $fields = [
         'tl_content' => ['news_filterPreserve', 'news_filterCategories'],
         'tl_module' => ['news_resetCategories', 'news_filterPreserve', 'news_relatedCategories', 'news_filterCategories', 'news_customCategories'],
         'tl_news_archive' => ['limitCategories'],
         'tl_news_category' => ['excludeInRelated', 'hideInReader', 'hideInList', 'published'],
     ];
 
-    /**
-     * @var Connection
-     */
-    private $db;
-
-    public function __construct(Connection $db)
+    public function __construct(private readonly Connection $db)
     {
-        $this->db = $db;
     }
 
     public function shouldRun(): bool

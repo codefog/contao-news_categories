@@ -26,28 +26,13 @@ class NewsListener implements FrameworkAwareInterface
     use FrameworkAwareTrait;
 
     /**
-     * @var Connection
-     */
-    private $db;
-
-    /**
-     * @var DcaRelationsManager
-     */
-    private $dcaRelationsManager;
-
-    /**
-     * @var PermissionChecker
-     */
-    private $permissionChecker;
-
-    /**
      * NewsListener constructor.
      */
-    public function __construct(Connection $db, DcaRelationsManager $dcaRelationsManager, PermissionChecker $permissionChecker)
-    {
-        $this->db = $db;
-        $this->dcaRelationsManager = $dcaRelationsManager;
-        $this->permissionChecker = $permissionChecker;
+    public function __construct(
+        private readonly Connection $db,
+        private readonly DcaRelationsManager $dcaRelationsManager,
+        private readonly PermissionChecker $permissionChecker,
+    ) {
     }
 
     /**
@@ -69,7 +54,7 @@ class NewsListener implements FrameworkAwareInterface
             $categories = $this->db->fetchOne('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=(SELECT pid FROM tl_news WHERE id=?)', [$dc->id]);
         }
 
-        if (!$categories || 0 === \count($categories = StringUtil::deserialize($categories, true))) {
+        if (!$categories || empty($categories = StringUtil::deserialize($categories, true))) {
             return;
         }
 

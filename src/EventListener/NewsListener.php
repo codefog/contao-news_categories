@@ -26,26 +26,18 @@ class NewsListener implements FrameworkAwareInterface
     use FrameworkAwareTrait;
 
     /**
-     * @var NewsCriteriaBuilder
-     */
-    private $searchBuilder;
-
-    /**
      * InsertTagsListener constructor.
      */
-    public function __construct(NewsCriteriaBuilder $searchBuilder)
+    public function __construct(private readonly NewsCriteriaBuilder $searchBuilder)
     {
-        $this->searchBuilder = $searchBuilder;
     }
 
     /**
      * On news list count items.
      *
-     * @param bool|null $featured
-     *
      * @return int
      */
-    public function onNewsListCountItems(array $archives, $featured, ModuleNewsList $module)
+    public function onNewsListCountItems(array $archives, bool|null $featured, ModuleNewsList $module)
     {
         if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
             return 0;
@@ -57,13 +49,10 @@ class NewsListener implements FrameworkAwareInterface
     /**
      * On news list fetch items.
      *
-     * @param bool|null $featured
-     * @param int       $limit
-     * @param int       $offset
-     *
-     * @return Collection|null
+     * @param int $limit
+     * @param int $offset
      */
-    public function onNewsListFetchItems(array $archives, $featured, $limit, $offset, ModuleNewsList $module)
+    public function onNewsListFetchItems(array $archives, bool|null $featured, $limit, $offset, ModuleNewsList $module): Collection|null
     {
         if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
             return null;
@@ -82,13 +71,9 @@ class NewsListener implements FrameworkAwareInterface
     /**
      * Get the criteria.
      *
-     * @param bool|null $featured
-     *
-     * @return NewsCriteria|null
-     *
      * @throws PageNotFoundException
      */
-    private function getCriteria(array $archives, $featured, ModuleNewsList $module)
+    private function getCriteria(array $archives, bool|null $featured, ModuleNewsList $module): NewsCriteria|null
     {
         try {
             $criteria = $this->searchBuilder->getCriteriaForListModule($archives, $featured, $module);

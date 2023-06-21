@@ -33,32 +33,12 @@ class NewsCategoryListener implements FrameworkAwareInterface
 {
     use FrameworkAwareTrait;
 
-    /**
-     * @var Connection
-     */
-    private $db;
-
-    /**
-     * @var PermissionChecker
-     */
-    private $permissionChecker;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * @var Slug
-     */
-    private $slug;
-
-    public function __construct(Connection $db, PermissionChecker $permissionChecker, RequestStack $requestStack, Slug|null $slug = null)
-    {
-        $this->db = $db;
-        $this->permissionChecker = $permissionChecker;
-        $this->requestStack = $requestStack;
-        $this->slug = $slug;
+    public function __construct(
+        private readonly Connection $db,
+        private readonly PermissionChecker $permissionChecker,
+        private readonly RequestStack $requestStack,
+        private readonly Slug|null $slug = null,
+    ) {
     }
 
     /**

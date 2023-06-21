@@ -8,7 +8,7 @@
  * @license    MIT
  */
 
-/**
+/*
  * Miscellaneous.
  */
 $GLOBALS['TL_LANG']['MSC']['resetCategories'] = ['Tutte le categorie', 'Mostra tutte le news'];

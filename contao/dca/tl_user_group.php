@@ -7,19 +7,23 @@
  * @author     Codefog <https://codefog.pl>
  * @license    MIT
  */
+use Contao\Controller;
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
+use Contao\System;
 
-\Contao\Controller::loadDataContainer('tl_user');
-\Contao\System::loadLanguageFile('tl_user');
+Controller::loadDataContainer('tl_user');
+System::loadLanguageFile('tl_user');
 
 /*
  * Extend palettes
  */
-\Contao\CoreBundle\DataContainer\PaletteManipulator::create()
+PaletteManipulator::create()
     ->addLegend('newsCategories_legend', 'news_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
     ->addField('newscategories', 'newsCategories_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
     ->addField('newscategories_roots', 'newsCategories_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
     ->addField('newscategories_default', 'newsCategories_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->applyToPalette('default', 'tl_user_group');
+    ->applyToPalette('default', 'tl_user_group')
+;
 
 /*
  * Add fields

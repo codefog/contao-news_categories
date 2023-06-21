@@ -17,16 +17,10 @@ use Doctrine\DBAL\Connection;
 class ContentListener
 {
     /**
-     * @var Connection
-     */
-    private $db;
-
-    /**
      * ContentListener constructor.
      */
-    public function __construct(Connection $db)
+    public function __construct(private readonly Connection $db)
     {
-        $this->db = $db;
     }
 
     /**

@@ -27,22 +27,13 @@ class TemplateListener implements FrameworkAwareInterface
 {
     use FrameworkAwareTrait;
 
-    /**
-     * @var NewsCategoriesManager
-     */
-    private $manager;
-
-    /**
-     * @var array
-     */
-    private $urlCache = [];
+    private array $urlCache = [];
 
     /**
      * TemplateListener constructor.
      */
-    public function __construct(NewsCategoriesManager $manager)
+    public function __construct(private readonly NewsCategoriesManager $manager)
     {
-        $this->manager = $manager;
     }
 
     /**
@@ -88,7 +79,7 @@ class TemplateListener implements FrameworkAwareInterface
         }
 
         // Sort the categories data alphabetically
-        uasort($data, static fn ($a, $b) => strnatcasecmp($a['name'], $b['name']));
+        uasort($data, static fn ($a, $b) => strnatcasecmp((string) $a['name'], (string) $b['name']));
 
         // Sort the category list alphabetically
         asort($list);

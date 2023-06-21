@@ -24,26 +24,18 @@ class InsertTagsListener implements FrameworkAwareInterface
     use FrameworkAwareTrait;
 
     /**
-     * @var NewsCategoriesManager
-     */
-    private $manager;
-
-    /**
      * InsertTagsListener constructor.
      */
-    public function __construct(NewsCategoriesManager $manager)
+    public function __construct(private readonly NewsCategoriesManager $manager)
     {
-        $this->manager = $manager;
     }
 
     /**
      * On replace the insert tags.
      *
      * @param string $tag
-     *
-     * @return string|bool
      */
-    public function onReplace($tag)
+    public function onReplace($tag): string|false
     {
         $chunks = StringUtil::trimsplit('::', $tag);
 

@@ -17,16 +17,10 @@ use Codefog\NewsCategoriesBundle\PermissionChecker;
 class NewsArchiveListener
 {
     /**
-     * @var PermissionChecker
-     */
-    private $permissionChecker;
-
-    /**
      * NewsArchiveListener constructor.
      */
-    public function __construct(PermissionChecker $permissionChecker)
+    public function __construct(private readonly PermissionChecker $permissionChecker)
     {
-        $this->permissionChecker = $permissionChecker;
     }
 
     /**

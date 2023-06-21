@@ -8,7 +8,7 @@
  * @license    MIT
  */
 
-/**
+/*
  * Fields.
  */
 $GLOBALS['TL_LANG']['tl_page']['newsCategories_param'] = ['Custom URL parameter name', 'Here you can enter a custom parameter name that is used in URL. For example, by entering "kategorie" you can change the default <em>/category/music.html</em> to <em>/kategorie/music.html</em>.'];

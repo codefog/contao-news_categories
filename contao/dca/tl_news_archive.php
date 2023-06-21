@@ -9,6 +9,7 @@
  */
 
 use Contao\ArrayUtil;
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
 $GLOBALS['TL_DCA']['tl_news_archive']['config']['onload_callback'][] = [
     'codefog_news_categories.listener.data_container.news_archive',
@@ -35,10 +36,11 @@ ArrayUtil::arrayInsert(
 $GLOBALS['TL_DCA']['tl_news_archive']['palettes']['__selector__'][] = 'limitCategories';
 $GLOBALS['TL_DCA']['tl_news_archive']['subpalettes']['limitCategories'] = 'categories';
 
-\Contao\CoreBundle\DataContainer\PaletteManipulator::create()
-    ->addLegend('categories_legend', 'title_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField('limitCategories', 'categories_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->applyToPalette('default', 'tl_news_archive');
+PaletteManipulator::create()
+    ->addLegend('categories_legend', 'title_legend', PaletteManipulator::POSITION_AFTER)
+    ->addField('limitCategories', 'categories_legend', PaletteManipulator::POSITION_APPEND)
+    ->applyToPalette('default', 'tl_news_archive')
+;
 
 /*
  * Add fields to tl_news_archive

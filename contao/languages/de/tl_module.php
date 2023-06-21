@@ -8,7 +8,7 @@
  * @license    MIT
  */
 
-/**
+/*
  * Fields.
  */
 $GLOBALS['TL_LANG']['tl_module']['news_categories'] = ['Nachrichten-Kategorien', 'Bitte wähle die Nachrichten-Kategorien.'];
