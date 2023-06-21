@@ -77,7 +77,7 @@ class TemplateListener implements FrameworkAwareInterface
     {
         $data = [];
         $list = [];
-        $cssClasses = trimsplit(' ', $template->class);
+        $cssClasses = StringUtil::trimsplit(' ', $template->class);
 
         /** @var NewsCategoryModel $category */
         foreach ($categories as $category) {
@@ -91,7 +91,7 @@ class TemplateListener implements FrameworkAwareInterface
             $list[$category->id] = $category->getTitle();
 
             // Add the category CSS classes to news class
-            $cssClasses = \array_merge($cssClasses, trimsplit(' ', $category->getCssClass()));
+            $cssClasses = \array_merge($cssClasses, StringUtil::trimsplit(' ', $category->getCssClass()));
         }
 
         // Sort the categories data alphabetically

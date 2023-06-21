@@ -13,7 +13,6 @@ namespace Codefog\NewsCategoriesBundle\FrontendModule;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\FrontendTemplate;
 use Contao\StringUtil;
-use Contao\System;
 
 class CumulativeFilterModule extends NewsModule
 {

@@ -45,7 +45,7 @@ class InsertTagsListener implements FrameworkAwareInterface
      */
     public function onReplace($tag)
     {
-        $chunks = trimsplit('::', $tag);
+        $chunks = StringUtil::trimsplit('::', $tag);
 
         if ('news_categories' === $chunks[0]) {
             /** @var Input $input */

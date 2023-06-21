@@ -134,9 +134,7 @@ class AjaxListener implements FrameworkAwareInterface
 
         // Convert the selected values
         if ($value) {
-            /** @var StringUtil $stringUtilAdapter */
-            $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
-            $value = $stringUtilAdapter->trimsplit("\t", $value);
+            $value = StringUtil::trimsplit("\t", $value);
             $value = \serialize($value);
         }
 

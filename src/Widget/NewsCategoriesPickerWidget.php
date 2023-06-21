@@ -74,7 +74,7 @@ class NewsCategoriesPickerWidget extends Widget
             }
 
             $return .= '
-	<p><a href="'.ampersand($pickerBuilder->getUrl('newsCategories', $extras)).'" class="tl_submit" id="pt_'.$this->strName.'">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
+	<p><a href="'.\Contao\StringUtil::ampersand($pickerBuilder->getUrl('newsCategories', $extras)).'" class="tl_submit" id="pt_'.$this->strName.'">'.$GLOBALS['TL_LANG']['MSC']['changeSelection'].'</a></p>
 	<script>
 	  $("pt_'.$this->strName.'").addEvent("click", function(e) {
 		e.preventDefault();

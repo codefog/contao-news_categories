@@ -310,7 +310,7 @@ class NewsCategoryListener implements FrameworkAwareInterface
         return \sprintf(
             '<a href="%s" title="%s" onclick="Backend.getScrollOffset()">%s</a> ',
             $backendAdapter->addToUrl($url),
-            specialchars(\sprintf($GLOBALS['TL_LANG'][$table][$type][1], $row['id'])),
+            StringUtil::specialchars(\sprintf($GLOBALS['TL_LANG'][$table][$type][1], $row['id'])),
             $imageAdapter->getHtml($type.'.svg', \sprintf($GLOBALS['TL_LANG'][$table][$type][1], $row['id']))
         );
     }

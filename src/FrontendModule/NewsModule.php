@@ -326,7 +326,7 @@ abstract class NewsModule extends ModuleNews
         $data['title'] = StringUtil::specialchars($title);
         $data['linkTitle'] = StringUtil::specialchars($title);
         $data['link'] = $link;
-        $data['href'] = ampersand($url);
+        $data['href'] = \Contao\StringUtil::ampersand($url);
         $data['quantity'] = 0;
 
         // Add the "active" class

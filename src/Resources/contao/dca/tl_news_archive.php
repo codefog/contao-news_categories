@@ -8,6 +8,8 @@
  * @license    MIT
  */
 
+use Contao\ArrayUtil;
+
 $GLOBALS['TL_DCA']['tl_news_archive']['config']['onload_callback'][] = [
     'codefog_news_categories.listener.data_container.news_archive',
     'onLoadCallback',
@@ -23,7 +25,7 @@ if (false !== ($index = \array_search(['tl_news_archive', 'generateFeed'], $GLOB
 /*
  * Add global operations
  */
-array_insert(
+ArrayUtil::arrayInsert(
     $GLOBALS['TL_DCA']['tl_news_archive']['list']['global_operations'], 1, [
         'categories' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_archive']['categories'],
