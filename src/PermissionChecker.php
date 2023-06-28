@@ -12,12 +12,13 @@ declare(strict_types=1);
 
 namespace Codefog\NewsCategoriesBundle;
 
+use Codefog\NewsCategoriesBundle\Security\NewsCategoriesPermissions;
 use Contao\BackendUser;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
-use Contao\Database;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class PermissionChecker implements FrameworkAwareInterface
@@ -27,6 +28,7 @@ class PermissionChecker implements FrameworkAwareInterface
     public function __construct(
         private readonly Connection $db,
         private readonly TokenStorageInterface $tokenStorage,
+        private readonly Security $security,
     ) {
     }
 
@@ -37,7 +39,9 @@ class PermissionChecker implements FrameworkAwareInterface
      */
     public function canUserManageCategories()
     {
-        return $this->getUser()->hasAccess('manage', 'newscategories');
+        trigger_deprecation('codefog/contao-news_categories', '3.5', __METHOD__.' has been deprecated, use $security->isGranted(NewsCategoriesPermissions::USER_CAN_MANAGE_CATEGORIES) instead.');
+
+        return $this->security->isGranted(NewsCategoriesPermissions::USER_CAN_MANAGE_CATEGORIES);
     }
 
     /**
@@ -47,9 +51,9 @@ class PermissionChecker implements FrameworkAwareInterface
      */
     public function canUserAssignCategories()
     {
-        $user = $this->getUser();
+        trigger_deprecation('codefog/contao-news_categories', '3.5', __METHOD__.' has been deprecated, use $security->isGranted(NewsCategoriesPermissions::USER_CAN_ASSIGN_CATEGORIES) instead.');
 
-        return $user->isAdmin || \in_array('tl_news::categories', $user->alexf, true);
+        return $this->security->isGranted(NewsCategoriesPermissions::USER_CAN_ASSIGN_CATEGORIES);
     }
 
     /**
@@ -59,6 +63,8 @@ class PermissionChecker implements FrameworkAwareInterface
      */
     public function getUserDefaultCategories()
     {
+        trigger_deprecation('codefog/contao-news_categories', '3.5', __METHOD__.' has been deprecated.');
+
         $user = $this->getUser();
 
         return \is_array($user->newscategories_default) ? $user->newscategories_default : [];
@@ -87,17 +93,9 @@ class PermissionChecker implements FrameworkAwareInterface
      */
     public function isUserAllowedNewsCategory($categoryId)
     {
-        if (null === ($roots = $this->getUserAllowedRoots())) {
-            return true;
-        }
+        trigger_deprecation('codefog/contao-news_categories', '3.5', __METHOD__.' has been deprecated, use $security->isGranted(NewsCategoriesPermissions::USER_CAN_ACCESS_CATEGORY, $categoryId) instead.');
 
-        /** @var Database $db */
-        $db = $this->framework->createInstance(Database::class);
-
-        $ids = $db->getChildRecords($roots, 'tl_news_category', false, $roots);
-        $ids = array_map('intval', $ids);
-
-        return \in_array((int) $categoryId, $ids, true);
+        return $this->security->isGranted(NewsCategoriesPermissions::USER_CAN_ACCESS_CATEGORY, $categoryId);
     }
 
     /**
@@ -107,6 +105,8 @@ class PermissionChecker implements FrameworkAwareInterface
      */
     public function addCategoryToAllowedRoots($categoryId): void
     {
+        trigger_deprecation('codefog/contao-news_categories', '3.5', __METHOD__.' has been deprecated, only children of allowed categories should be allowed.');
+
         if (null === ($roots = $this->getUserAllowedRoots())) {
             return;
         }

@@ -20,6 +20,11 @@ use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 $GLOBALS['BE_MOD']['content']['news']['tables'][] = 'tl_news_category';
 
 /*
+ * Back end form fields
+ */
+$GLOBALS['BE_FFL']['newsCategoriesPicker'] = \Codefog\NewsCategoriesBundle\Widget\NewsCategoriesPickerWidget::class;
+
+/*
  * Front end modules
  */
 $GLOBALS['FE_MOD']['news']['newsarchive'] = NewsArchiveModule::class;

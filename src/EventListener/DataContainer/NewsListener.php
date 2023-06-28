@@ -14,12 +14,14 @@ namespace Codefog\NewsCategoriesBundle\EventListener\DataContainer;
 
 use Codefog\HasteBundle\DcaRelationsManager;
 use Codefog\NewsCategoriesBundle\PermissionChecker;
+use Codefog\NewsCategoriesBundle\Security\NewsCategoriesPermissions;
+use Contao\BackendUser;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\DataContainer;
 use Contao\Input;
-use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class NewsListener implements FrameworkAwareInterface
 {
@@ -32,48 +34,29 @@ class NewsListener implements FrameworkAwareInterface
         private readonly Connection $db,
         private readonly DcaRelationsManager $dcaRelationsManager,
         private readonly PermissionChecker $permissionChecker,
+        private readonly Security $security,
     ) {
     }
 
     /**
-     * On data container load. Limit the categories set in the news archive settings.
-     */
-    public function onLoadCallback(DataContainer $dc): void
-    {
-        if (!$dc->id) {
-            return;
-        }
-
-        /** @var Input $input */
-        $input = $this->framework->getAdapter(Input::class);
-
-        // Handle the edit all modes differently
-        if ('editAll' === $input->get('act') || 'overrideAll' === $input->get('act')) {
-            $categories = $this->db->fetchOne('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=?', [$dc->id]);
-        } else {
-            $categories = $this->db->fetchOne('SELECT categories FROM tl_news_archive WHERE limitCategories=1 AND id=(SELECT pid FROM tl_news WHERE id=?)', [$dc->id]);
-        }
-
-        if (!$categories || empty($categories = StringUtil::deserialize($categories, true))) {
-            return;
-        }
-
-        $GLOBALS['TL_DCA'][$dc->table]['fields']['categories']['eval']['rootNodes'] = $categories;
-    }
-
-    /**
-     * On submit record. Update the category relations.
+     * On submit record. Adds the default user categories for new records.
      */
     public function onSubmitCallback(DataContainer $dc): void
     {
         // Return if the user is allowed to assign categories or the record is not new
-        if ($this->permissionChecker->canUserAssignCategories() || $dc->activeRecord->tstamp > 0) {
+        if ($dc->activeRecord->tstamp > 0 || $this->security->isGranted(NewsCategoriesPermissions::USER_CAN_ASSIGN_CATEGORIES)) {
+            return;
+        }
+
+        $user = $this->security->getUser();
+
+        if (!$user instanceof BackendUser || empty($user->newscategories_default)) {
             return;
         }
 
         $dc->field = 'categories';
 
-        $this->dcaRelationsManager->updateRelatedRecords($this->permissionChecker->getUserDefaultCategories(), $dc);
+        $this->dcaRelationsManager->updateRelatedRecords((array) $user->newscategories_default, $dc);
 
         // Reset back the field property
         $dc->field = null;

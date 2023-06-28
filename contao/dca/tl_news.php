@@ -12,7 +12,6 @@ use Contao\CoreBundle\DataContainer\PaletteManipulator;
 /*
  * Add global callbacks
  */
-$GLOBALS['TL_DCA']['tl_news']['config']['onload_callback'][] = ['codefog_news_categories.listener.data_container.news', 'onLoadCallback'];
 $GLOBALS['TL_DCA']['tl_news']['config']['onsubmit_callback'][] = ['codefog_news_categories.listener.data_container.news', 'onSubmitCallback'];
 
 /*
@@ -36,7 +35,7 @@ $GLOBALS['TL_DCA']['tl_news']['fields']['categories'] = [
     'label' => &$GLOBALS['TL_LANG']['tl_news']['categories'],
     'exclude' => true,
     'filter' => true,
-    'inputType' => 'picker',
+    'inputType' => 'newsCategoriesPicker',
     'foreignKey' => 'tl_news_category.title',
     'options_callback' => ['codefog_news_categories.listener.data_container.news', 'onCategoriesOptionsCallback'],
     'eval' => ['multiple' => true, 'fieldType' => 'checkbox'],

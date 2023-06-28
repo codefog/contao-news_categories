@@ -12,14 +12,12 @@ declare(strict_types=1);
 
 namespace Codefog\NewsCategoriesBundle\EventListener\DataContainer;
 
-use Codefog\NewsCategoriesBundle\PermissionChecker;
+use Codefog\NewsCategoriesBundle\Security\NewsCategoriesPermissions;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class NewsArchiveListener
 {
-    /**
-     * NewsArchiveListener constructor.
-     */
-    public function __construct(private readonly PermissionChecker $permissionChecker)
+    public function __construct(private readonly Security $security)
     {
     }
 
@@ -28,7 +26,7 @@ class NewsArchiveListener
      */
     public function onLoadCallback(): void
     {
-        if (!$this->permissionChecker->canUserManageCategories()) {
+        if (!$this->security->isGranted(NewsCategoriesPermissions::USER_CAN_MANAGE_CATEGORIES)) {
             unset($GLOBALS['TL_DCA']['tl_news_archive']['list']['global_operations']['categories']);
         }
     }

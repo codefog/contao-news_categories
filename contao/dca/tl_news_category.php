@@ -26,9 +26,6 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
         'dataContainer' => DC_Table::class,
         'enableVersioning' => true,
         'backlink' => 'do=news',
-        'onload_callback' => [
-            ['codefog_news_categories.listener.data_container.news_category', 'onLoadCallback'],
-        ],
         'sql' => [
             'keys' => [
                 'id' => 'primary',
@@ -42,17 +39,13 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
     'list' => [
         'sorting' => [
             'mode' => 5,
+            'rootPaste' => true,
             'icon' => 'bundles/codefognewscategories/icon.png',
-            'paste_button_callback' => [
-                'codefog_news_categories.listener.data_container.news_category',
-                'onPasteButtonCallback',
-            ],
             'panelLayout' => 'filter;search',
         ],
         'label' => [
             'fields' => ['title', 'frontendTitle'],
             'format' => '%s <span style="padding-left:3px;color:#b3b3b3;">[%s]</span>',
-            'label_callback' => ['codefog_news_categories.listener.data_container.news_category', 'onLabelCallback'],
         ],
         'global_operations' => [
             'toggleNodes' => [
@@ -65,48 +58,6 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
                 'href' => 'act=select',
                 'class' => 'header_edit_all',
                 'attributes' => 'onclick="Backend.getScrollOffset()" accesskey="e"',
-            ],
-        ],
-        'operations' => [
-            'edit' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_news_category']['edit'],
-                'href' => 'act=edit',
-                'icon' => 'edit.svg',
-            ],
-            'copy' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_news_category']['copy'],
-                'href' => 'act=paste&amp;mode=copy',
-                'icon' => 'copy.svg',
-                'attributes' => 'onclick="Backend.getScrollOffset()"',
-            ],
-            'copyChilds' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_news_category']['copyChilds'],
-                'href' => 'act=paste&amp;mode=copy&amp;childs=1',
-                'icon' => 'copychilds.svg',
-                'attributes' => 'onclick="Backend.getScrollOffset()"',
-            ],
-            'cut' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_news_category']['cut'],
-                'href' => 'act=paste&amp;mode=cut',
-                'icon' => 'cut.svg',
-                'attributes' => 'onclick="Backend.getScrollOffset()"',
-            ],
-            'delete' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_news_category']['delete'],
-                'href' => 'act=delete',
-                'icon' => 'delete.svg',
-                'attributes' => 'onclick="if(!confirm(\''.($GLOBALS['TL_LANG']['MSC']['deleteConfirm'] ?? '').'\'))return false;Backend.getScrollOffset()"',
-            ],
-            'show' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_news_category']['show'],
-                'href' => 'act=show',
-                'icon' => 'show.svg',
-            ],
-            'toggle' => [
-                'label' => &$GLOBALS['TL_LANG']['tl_news_category']['toggle'],
-                'href' => 'act=toggle&amp;field=published',
-                'icon' => 'visible.svg',
-                'attributes' => 'onclick="Backend.getScrollOffset();"',
             ],
         ],
     ],
@@ -132,7 +83,6 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
         ],
         'title' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['title'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['mandatory' => true, 'tl_class' => 'w50'],
@@ -140,7 +90,6 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
         ],
         'frontendTitle' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['frontendTitle'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['tl_class' => 'w50'],
@@ -148,7 +97,6 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
         ],
         'alias' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['alias'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => [
@@ -165,7 +113,6 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
         ],
         'cssClass' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['cssClass'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'text',
             'eval' => ['tl_class' => 'w50'],
@@ -173,7 +120,6 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
         ],
         'description' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['description'],
-            'exclude' => true,
             'search' => true,
             'inputType' => 'textarea',
             'eval' => ['rte' => 'tinyMCE', 'helpwizard' => true, 'tl_class' => 'clr'],
@@ -182,7 +128,6 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
         ],
         'image' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['image'],
-            'exclude' => true,
             'inputType' => 'fileTree',
             'eval' => [
                 'files' => true,
@@ -195,7 +140,6 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
         ],
         'hideInList' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['hideInList'],
-            'exclude' => true,
             'filter' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50'],
@@ -203,7 +147,6 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
         ],
         'hideInReader' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['hideInReader'],
-            'exclude' => true,
             'filter' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50'],
@@ -211,7 +154,6 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
         ],
         'excludeInRelated' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['excludeInRelated'],
-            'exclude' => true,
             'filter' => true,
             'inputType' => 'checkbox',
             'eval' => ['tl_class' => 'w50'],
@@ -219,14 +161,12 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
         ],
         'jumpTo' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['jumpTo'],
-            'exclude' => true,
             'inputType' => 'pageTree',
             'eval' => ['fieldType' => 'radio'],
             'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
         ],
         'published' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['published'],
-            'exclude' => true,
             'filter' => true,
             'toggle' => true,
             'inputType' => 'checkbox',

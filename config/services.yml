@@ -18,15 +18,44 @@ services:
     codefog_news_categories.manager:
         class: Codefog\NewsCategoriesBundle\NewsCategoriesManager
 
+    codefog_news_categories.picker:
+        class: Codefog\NewsCategoriesBundle\Picker\NewsCategoriesPickerProvider
+        public: false
+        arguments:
+            - '@contao.framework'
+            - '@knp_menu.factory'
+            - '@router'
+            - '@translator'
+            - '@database_connection'
+            - '@security.helper'
+        tags:
+            - { name: contao.picker_provider, priority: 132 }
+
     codefog_news_categories.permission_checker:
         class: Codefog\NewsCategoriesBundle\PermissionChecker
         public: false
         arguments:
-            - "@database_connection"
-            - "@security.token_storage"
+            - '@database_connection'
+            - '@security.token_storage'
+            - '@security.helper'
 
     codefog_news_categories.news_criteria_builder:
         class: Codefog\NewsCategoriesBundle\Criteria\NewsCriteriaBuilder
         arguments:
             - "@database_connection"
             - "@codefog_news_categories.manager"
+
+    codefog_news_categories.security.backend_access:
+        class: Codefog\NewsCategoriesBundle\Security\Voter\BackendAccessVoter
+        arguments:
+            - '@contao.framework'
+        tags:
+            - { name: security.voter, priority: 8 }
+            - { name: kernel.reset, method: reset }
+
+    codefog_news_categories.security.data_container.news_categories:
+        class: Codefog\NewsCategoriesBundle\Security\Voter\DataContainer\NewsCategoriesVoter
+        arguments:
+            - '@security.helper'
+        tags:
+            - security.voter
