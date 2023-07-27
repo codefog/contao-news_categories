@@ -17,6 +17,8 @@ services:
 
     codefog_news_categories.manager:
         class: Codefog\NewsCategoriesBundle\NewsCategoriesManager
+        tags:
+            - { name: kernel.reset, method: reset }
 
     codefog_news_categories.picker:
         class: Codefog\NewsCategoriesBundle\Picker\NewsCategoriesPickerProvider
