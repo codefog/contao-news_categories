@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Codefog\NewsCategoriesBundle\ContentElement;
 
 use Contao\ContentModule;
-use Contao\Module;
+use Contao\Controller;
 use Contao\ModuleModel;
 use Contao\StringUtil;
 use Contao\System;
@@ -28,10 +28,7 @@ class NewsFilterElement extends ContentModule
     public function generate()
     {
         // Return if the element is not published
-        if (
-            !System::getContainer()->get('contao.security.token_checker')->isPreviewMode()
-            && ($this->invisible || ($this->start > 0 && $this->start > time()) || ($this->stop > 0 && $this->stop < time()))
-        ) {
+        if ($this->isHidden()) {
             return '';
         }
 
@@ -40,52 +37,51 @@ class NewsFilterElement extends ContentModule
             return '';
         }
 
-        $class = Module::findClass($moduleModel->type);
+        // Clone the model, so we do not modify the shared model in the registry
+        $objModel = $moduleModel->cloneOriginal();
 
-        // Return if the class does not exist
-        if (!class_exists($class)) {
-            return '';
-        }
-
-        $moduleModel->typePrefix = 'ce_';
-
-        /** @var Module $module */
-        $module = new $class($moduleModel, $this->strColumn);
-
-        $this->mergeCssId($module);
+        $this->mergeCssId($objModel);
 
         if (!empty($this->headline) && !empty($this->hl)) {
-            $module->hl = $this->hl;
-            $module->headline = $this->headline;
+            $objModel->hl = $this->hl;
+            $objModel->headline = $this->headline;
         }
 
         // Override news filter settings
-        $module->news_filterCategories = $this->news_filterCategories;
-        $module->news_relatedCategories = $this->news_relatedCategories;
-        $module->news_includeSubcategories = $this->news_includeSubcategories;
-        $module->news_filterDefault = $this->news_filterDefault;
-        $module->news_filterPreserve = $this->news_filterPreserve;
-        $module->news_categoryFilterPage = $this->news_categoryFilterPage;
-        $module->news_categoryImgSize = $this->news_categoryImgSize;
+        $objModel->news_filterCategories = $this->news_filterCategories;
+        $objModel->news_relatedCategories = $this->news_relatedCategories;
+        $objModel->news_includeSubcategories = $this->news_includeSubcategories;
+        $objModel->news_filterDefault = $this->news_filterDefault;
+        $objModel->news_filterPreserve = $this->news_filterPreserve;
+        $objModel->news_categoryFilterPage = $this->news_categoryFilterPage;
+        $objModel->news_categoryImgSize = $this->news_categoryImgSize;
 
-        return $module->generate();
+        // Make the original content element accessible from the module template
+        $objModel->newsFilterElement = $this;
+
+        // Tag the content element (see #2137)
+        if ($this->objModel !== null) {
+            System::getContainer()->get('contao.cache.entity_tags')?->tagWithModelInstance($this->objModel);
+        }
+
+        return Controller::getFrontendModule($objModel, $this->strColumn);
     }
 
     /**
      * Merge the CSS/ID stuff.
      */
-    private function mergeCssId(Module $module): void
+    private function mergeCssId(ModuleModel $module): void
     {
         $cssID = StringUtil::deserialize($module->cssID, true);
 
         // Override the CSS ID (see #305)
-        if ($this->cssID[0]) {
+        if (!empty($this->cssID[0])) {
             $cssID[0] = $this->cssID[0];
         }
 
         // Merge the CSS classes (see #6011)
-        if ($this->cssID[1]) {
-            $cssID[1] = trim($cssID[1].' '.$this->cssID[1]);
+        if (!empty($this->cssID[1])) {
+            $cssID[1] = trim(($cssID[1] ?? '').' '.$this->cssID[1]);
         }
 
         $module->cssID = $cssID;
