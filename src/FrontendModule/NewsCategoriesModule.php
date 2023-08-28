@@ -48,17 +48,13 @@ class NewsCategoriesModule extends NewsModule
         if (null !== ($activeCategory = NewsCategoryModel::findPublishedByIdOrAlias(Input::get($param)))) {
             $this->activeCategory = $activeCategory;
 
-            // Add the canonical URL tag
-            if ($this->news_enableCanonicalUrls) {
-                if (!$container->has('contao.routing.response_context_accessor')) {
-                    $GLOBALS['TL_HEAD'][] = \sprintf('<link rel="canonical" href="%s">', $GLOBALS['objPage']->getAbsoluteUrl());
-                } elseif ($responseContext = $container->get('contao.routing.response_context_accessor')->getResponseContext()) {
-                    /** @var ResponseContext $responseContext */
-                    if ($responseContext->has(HtmlHeadBag::class)) {
-                        /** @var HtmlHeadBag $htmlHeadBag */
-                        $htmlHeadBag = $responseContext->get(HtmlHeadBag::class);
-                        $htmlHeadBag->setCanonicalUri($GLOBALS['objPage']->getAbsoluteUrl());
-                    }
+            // Set the canonical URL
+            if ($this->news_enableCanonicalUrls && ($responseContext = $container->get('contao.routing.response_context_accessor')->getResponseContext())) {
+                /** @var ResponseContext $responseContext */
+                if ($responseContext->has(HtmlHeadBag::class)) {
+                    /** @var HtmlHeadBag $htmlHeadBag */
+                    $htmlHeadBag = $responseContext->get(HtmlHeadBag::class);
+                    $htmlHeadBag->setCanonicalUri($GLOBALS['objPage']->getAbsoluteUrl());
                 }
             }
         }

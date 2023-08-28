@@ -10,9 +10,9 @@
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'news_customCategories';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'news_relatedCategories';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_showQuantity,news_resetCategories,news_showEmptyCategories,news_includeSubcategories,showLevel;{reference_legend:hide},news_categoriesRoot,news_customCategories;{redirect_legend:hide},news_forceCategoryUrl,jumpTo;{template_legend:hide},navigationTpl,customTpl;{image_legend:hide},news_categoryImgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories_cumulative'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_showQuantity,news_resetCategories,news_includeSubcategories,news_filterCategoriesUnion;{reference_legend:hide},news_categoriesRoot,news_customCategories;{redirect_legend:hide},jumpTo;{template_legend:hide},navigationTpl,customTpl;{image_legend:hide},news_categoryImgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
-$GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories_cumulativehierarchical'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_showQuantity,news_resetCategories,news_showEmptyCategories,news_filterCategoriesUnion,news_includeSubcategories,showLevel;{reference_legend:hide},news_categoriesRoot,news_customCategories;{redirect_legend:hide},news_forceCategoryUrl,jumpTo;{template_legend:hide},navigationTpl,customTpl;{image_legend:hide},news_categoryImgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_showQuantity,news_resetCategories,news_showEmptyCategories,news_enableCanonicalUrls,news_includeSubcategories,showLevel;{reference_legend:hide},news_categoriesRoot,news_customCategories;{redirect_legend:hide},news_forceCategoryUrl,jumpTo;{template_legend:hide},navigationTpl,customTpl;{image_legend:hide},news_categoryImgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories_cumulative'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_showQuantity,news_resetCategories,news_enableCanonicalUrls,news_includeSubcategories,news_filterCategoriesUnion;{reference_legend:hide},news_categoriesRoot,news_customCategories;{redirect_legend:hide},jumpTo;{template_legend:hide},navigationTpl,customTpl;{image_legend:hide},news_categoryImgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
+$GLOBALS['TL_DCA']['tl_module']['palettes']['newscategories_cumulativehierarchical'] = '{title_legend},name,headline,type;{config_legend},news_archives,news_showQuantity,news_resetCategories,news_showEmptyCategories,news_enableCanonicalUrls,news_filterCategoriesUnion,news_includeSubcategories,showLevel;{reference_legend:hide},news_categoriesRoot,news_customCategories;{redirect_legend:hide},news_forceCategoryUrl,jumpTo;{template_legend:hide},navigationTpl,customTpl;{image_legend:hide},news_categoryImgSize;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID,space';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_customCategories'] = 'news_categories';
 $GLOBALS['TL_DCA']['tl_module']['subpalettes']['news_relatedCategories'] = 'news_relatedCategoriesOrder,news_categoriesRoot';
 
@@ -118,6 +118,14 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterCategoriesUnion'] = [
     'exclude' => true,
     'inputType' => 'checkbox',
     'eval' => ['tl_class' => 'clr'],
+    'sql' => ['type' => 'boolean', 'default' => 0],
+];
+
+$GLOBALS['TL_DCA']['tl_module']['fields']['news_enableCanonicalUrls'] = [
+    'label' => &$GLOBALS['TL_LANG']['tl_module']['news_enableCanonicalUrls'],
+    'exclude' => true,
+    'inputType' => 'checkbox',
+    'eval' => ['tl_class' => 'w50'],
     'sql' => ['type' => 'boolean', 'default' => 0],
 ];
 

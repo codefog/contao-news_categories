@@ -56,6 +56,12 @@ class CumulativeFilterModule extends NewsModule
         if (null !== $this->activeCategories) {
             $this->Template->activeCategories = $this->renderNewsCategories($rootCategoryId, $this->activeCategories->fetchEach('id'), true);
 
+            // Add the canonical URL tag
+            // TODO: to be dropped when deps require Contao 4.13+
+            if ($this->news_enableCanonicalUrls && !System::getContainer()->has('contao.routing.response_context_accessor')) {
+                $GLOBALS['TL_HEAD'][] = \sprintf('<link rel="canonical" href="%s">', $GLOBALS['objPage']->getAbsoluteUrl());
+            }
+
             // Add the "reset categories" link
             if ($this->news_resetCategories) {
                 $this->Template->resetUrl = $this->getTargetPage()->getFrontendUrl();
