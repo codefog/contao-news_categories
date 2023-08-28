@@ -13,8 +13,12 @@ namespace Codefog\NewsCategoriesBundle;
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+use Contao\Config;
+use Contao\LayoutModel;
 use Contao\News;
+use Contao\PageModel;
 use Contao\System;
+use Contao\ThemeModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -22,6 +26,12 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 class FeedGenerator extends News
 {
+    /**
+     * Page cache array
+     * @var array
+     */
+    private static $arrPageCache = array();
+
     /**
      * @inheritDoc
      */
@@ -85,28 +95,24 @@ class FeedGenerator extends News
                     continue;
                 }
 
-                // Get the jumpTo URL
-                if (!isset($arrUrls[$jumpTo]))
-                {
-                    $objParent = \PageModel::findWithDetails($jumpTo);
+                $objParent = $this->getPageWithDetails($jumpTo);
 
-                    // A jumpTo page is set but does no longer exist (see #5781)
-                    if ($objParent === null)
-                    {
-                        $arrUrls[$jumpTo] = false;
-                    }
-                    else
-                    {
-                        $arrUrls[$jumpTo] = $objParent->getAbsoluteUrl(\Config::get('useAutoItem') ? '/%s' : '/items/%s');
-                    }
-                }
-
-                // Skip the event if it requires a jumpTo URL but there is none
-                if ($arrUrls[$jumpTo] === false && $objArticle->source == 'default')
+                // A jumpTo page is set but does no longer exist (see #5781)
+                if ($objParent === null)
                 {
                     continue;
                 }
 
+                // Override the global page object (#2946)
+                $GLOBALS['objPage'] = $objParent;
+
+                // Get the jumpTo URL
+                if (!isset($arrUrls[$jumpTo]))
+                {
+                    $arrUrls[$jumpTo] = $objParent->getAbsoluteUrl(Config::get('useAutoItem') ? '/%s' : '/items/%s');
+                }
+
+                $strUrl = $arrUrls[$jumpTo];
                 $categories = [];
 
                 // Get the categories
@@ -117,7 +123,6 @@ class FeedGenerator extends News
                     }
                 }
 
-                $strUrl = $arrUrls[$jumpTo];
                 $objItem = new \FeedItem();
 
                 $objItem->title = $objArticle->headline;
@@ -251,5 +256,37 @@ class FeedGenerator extends News
         $subRequest->setSession(new Session(new MockArraySessionStorage()));
 
         return $subRequest;
+    }
+
+    /**
+     * Return the page object with loaded details for the given page ID
+     *
+     * @param  integer        $intPageId
+     * @return PageModel|null
+     */
+    private function getPageWithDetails($intPageId)
+    {
+        if (!\array_key_exists($intPageId, self::$arrPageCache))
+        {
+            $objPage = self::$arrPageCache[$intPageId] = PageModel::findWithDetails($intPageId);
+
+            if (null === $objPage)
+            {
+                return null;
+            }
+
+            $objLayout = $objPage->getRelated('layout');
+
+            if (!$objLayout instanceof LayoutModel)
+            {
+                return $objPage;
+            }
+
+            /** @var ThemeModel $objTheme */
+            $objTheme = $objLayout->getRelated('pid');
+            $objPage->templateGroup = $objTheme->templates ?? null;
+        }
+
+        return self::$arrPageCache[$intPageId];
     }
 }
