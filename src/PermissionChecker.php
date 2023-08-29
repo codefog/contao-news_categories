@@ -15,6 +15,7 @@ use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\Database;
 use Contao\StringUtil;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -91,7 +92,19 @@ class PermissionChecker implements FrameworkAwareInterface
             return null;
         }
 
-        return \array_map('intval', (array) $user->newscategories_roots);
+        $rootIds = \array_map('intval', (array) $user->newscategories_roots);
+
+        if (empty($rootIds)) {
+            return [];
+        }
+
+        $existingIds = $this->db->fetchFirstColumn('SELECT id FROM tl_news_category WHERE id IN (?)', [$rootIds], [ArrayParameterType::INTEGER]);
+
+        if (empty($existingIds)) {
+            return [];
+        }
+
+        return array_intersect($rootIds, $existingIds);
     }
 
     /**
