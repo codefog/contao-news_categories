@@ -14,6 +14,7 @@ use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\Config;
+use Contao\Controller;
 use Contao\News;
 use Contao\PageModel;
 use Contao\System;
@@ -192,7 +193,12 @@ class FeedGenerator extends News
                     }
                 }
 
-                $strDescription = $container->get('contao.insert_tag.parser')->replaceInline($strDescription);
+                if ($container->has('contao.insert_tag.parser')) {
+                    $strDescription = $container->get('contao.insert_tag.parser')->replaceInline($strDescription);
+                } else {
+                    $strDescription = Controller::replaceInsertTags($strDescription);
+                }
+
                 $objItem->description = $this->convertRelativeUrls($strDescription, $strLink);
 
                 // Add the article image as enclosure
