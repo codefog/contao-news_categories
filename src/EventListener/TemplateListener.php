@@ -17,6 +17,7 @@ use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
 use Contao\Controller;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
 use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\CoreBundle\Image\Studio\Studio;
 use Contao\FrontendTemplate;
 use Contao\Model\Collection;
 use Contao\Module;
@@ -32,7 +33,7 @@ class TemplateListener implements FrameworkAwareInterface
     /**
      * TemplateListener constructor.
      */
-    public function __construct(private readonly NewsCategoriesManager $manager)
+    public function __construct(private readonly NewsCategoriesManager $manager, private readonly Studio $studio)
     {
     }
 
@@ -138,10 +139,14 @@ class TemplateListener implements FrameworkAwareInterface
 
         // Add the image
         if (null !== ($image = $this->manager->getImage($category))) {
-            /** @var Controller $controllerAdapter */
-            $controllerAdapter = $this->framework->getAdapter(Controller::class);
-            $data['image'] = new \stdClass();
-            $controllerAdapter->addImageToTemplate($data['image'], ['singleSRC' => $image->path, 'size' => $module->news_categoryImgSize]);
+            $data['image'] = $this
+                ->studio
+                ->createFigureBuilder()
+                ->fromFilesModel($image)
+                ->setSize($module->news_categoryImgSize)
+                ->build()
+                ->getLegacyTemplateData()
+            ;
         } else {
             $data['image'] = null;
         }

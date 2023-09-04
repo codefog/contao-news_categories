@@ -41,6 +41,7 @@ services:
         class: Codefog\NewsCategoriesBundle\EventListener\TemplateListener
         arguments:
             - "@codefog_news_categories.manager"
+            - "@contao.image.studio"
         tags:
             - { name: contao.hook, hook: parseArticles, method: onParseArticles }
 

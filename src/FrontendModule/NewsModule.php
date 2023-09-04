@@ -11,6 +11,7 @@ use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
 use Contao\BackendTemplate;
 use Contao\Controller;
+use Contao\CoreBundle\File\Metadata;
 use Contao\Database;
 use Contao\Input;
 use Contao\Model\Collection;
@@ -358,13 +359,18 @@ abstract class NewsModule extends ModuleNews
 
         // Add the image
         if (null !== $category && null !== ($image = $this->manager->getImage($category))) {
-            $data['image'] = new \stdClass();
-            Controller::addImageToTemplate($data['image'], [
-                'singleSRC' => $image->path,
-                'size' => $this->news_categoryImgSize,
-                'alt' => $title,
-                'imageTitle' => $title,
-            ]);
+            $data['image'] = System::getContainer()
+                ->get('contao.image.studio')
+                ?->createFigureBuilder()
+                ->fromFilesModel($image)
+                ->setSize($this->news_categoryImgSize)
+                ->setMetadata(new Metadata([
+                    Metadata::VALUE_ALT => $title,
+                    Metadata::VALUE_TITLE => $title,
+                ]))
+                ->build()
+                ->getLegacyTemplateData()
+            ;
         } else {
             $data['image'] = null;
         }
