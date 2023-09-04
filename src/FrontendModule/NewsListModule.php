@@ -18,6 +18,9 @@ use Contao\NewsModel;
 use Contao\StringUtil;
 use Contao\System;
 
+/**
+ * @property string|array $news_relatedCategories
+ */
 class NewsListModule extends ModuleNewsList
 {
     /**

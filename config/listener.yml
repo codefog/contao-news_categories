@@ -69,7 +69,6 @@ services:
         arguments:
             - '@database_connection'
             - '@Codefog\HasteBundle\DcaRelationsManager'
-            - '@codefog_news_categories.permission_checker'
             - '@security.helper'
 
     codefog_news_categories.listener.data_container.settings:

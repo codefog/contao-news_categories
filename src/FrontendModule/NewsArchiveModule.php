@@ -41,9 +41,9 @@ class NewsArchiveModule extends ModuleNewsArchive
         $intBegin = 0;
         $intEnd = 0;
 
-        $intYear = Input::get('year');
-        $intMonth = Input::get('month');
-        $intDay = Input::get('day');
+        $intYear = (int) Input::get('year');
+        $intMonth = (int) Input::get('month');
+        $intDay = (int) Input::get('day');
 
         // Jump to the current period
         if (!isset($_GET['year']) && !isset($_GET['month']) && !isset($_GET['day']) && 'all_items' !== $this->news_jumpToCurrent) {
@@ -66,20 +66,20 @@ class NewsArchiveModule extends ModuleNewsArchive
         // Create the date object
         try {
             if ($intYear) {
-                $strDate = $intYear;
-                $objDate = new Date($strDate, 'Y');
+                $intDate = $intYear;
+                $objDate = new Date($intDate, 'Y');
                 $intBegin = $objDate->yearBegin;
                 $intEnd = $objDate->yearEnd;
                 $this->headline .= ' '.date('Y', $objDate->tstamp);
             } elseif ($intMonth) {
-                $strDate = $intMonth;
-                $objDate = new Date($strDate, 'Ym');
+                $intDate = $intMonth;
+                $objDate = new Date($intDate, 'Ym');
                 $intBegin = $objDate->monthBegin;
                 $intEnd = $objDate->monthEnd;
                 $this->headline .= ' '.Date::parse('F Y', $objDate->tstamp);
             } elseif ($intDay) {
-                $strDate = $intDay;
-                $objDate = new Date($strDate, 'Ymd');
+                $intDate = $intDay;
+                $objDate = new Date($intDate, 'Ymd');
                 $intBegin = $objDate->dayBegin;
                 $intEnd = $objDate->dayEnd;
                 $this->headline .= ' '.Date::parse($objPage->dateFormat, $objDate->tstamp);
@@ -103,7 +103,7 @@ class NewsArchiveModule extends ModuleNewsArchive
 
                 // Get the current page
                 $id = 'page_a'.$this->id;
-                $page = Input::get($id) ?? 1;
+                $page = (int) (Input::get($id) ?? 1);
 
                 // Do not index or cache the page if the page number is outside the range
                 if ($page < 1 || $page > max(ceil($total / $this->perPage), 1)) {
@@ -161,10 +161,12 @@ class NewsArchiveModule extends ModuleNewsArchive
      * @param int $end
      * @param int $limit
      * @param int $offset
+     *
+     * @return Collection<NewsModel>|null
      */
     protected function fetchNewsItems($begin, $end, $limit = null, $offset = null): Collection|null
     {
-        if (($criteria = $this->getSearchCriteria($begin, $end)) === null) {
+        if (null === ($criteria = $this->getSearchCriteria($begin, $end))) {
             return null;
         }
 
@@ -190,7 +192,7 @@ class NewsArchiveModule extends ModuleNewsArchive
                 ->getCriteriaForArchiveModule($this->news_archives, $begin, $end, $this)
             ;
         } catch (CategoryNotFoundException $e) {
-            throw new PageNotFoundException($e->getMessage());
+            throw new PageNotFoundException($e->getMessage(), 0, $e);
         }
 
         return $criteria;

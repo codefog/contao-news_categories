@@ -33,6 +33,10 @@ class NewsCategoriesManager implements FrameworkAwareInterface, ResetInterface
 
     private array $trailCache = [];
 
+    public function __construct(private readonly string $projectDir)
+    {
+    }
+
     /**
      * Generate the category URL.
      */
@@ -56,7 +60,7 @@ class NewsCategoriesManager implements FrameworkAwareInterface, ResetInterface
      */
     public function getImage(NewsCategoryModel $category): FilesModel|null
     {
-        if (null === ($image = $category->getImage()) || !is_file(TL_ROOT.'/'.$image->path)) {
+        if (null === ($image = $category->getImage()) || !is_file($this->projectDir.'/'.$image->path)) {
             return null;
         }
 

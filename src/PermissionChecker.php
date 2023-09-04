@@ -19,7 +19,6 @@ use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class PermissionChecker implements FrameworkAwareInterface
 {
@@ -27,7 +26,6 @@ class PermissionChecker implements FrameworkAwareInterface
 
     public function __construct(
         private readonly Connection $db,
-        private readonly TokenStorageInterface $tokenStorage,
         private readonly Security $security,
     ) {
     }
@@ -125,6 +123,7 @@ class PermissionChecker implements FrameworkAwareInterface
                 $permissions = $stringUtil->deserialize($group['newscategories'], true);
 
                 if (\in_array('manage', $permissions, true)) {
+                    /** @var array $categoryIds */
                     $categoryIds = $stringUtil->deserialize($group['newscategories_roots'], true);
                     $categoryIds[] = $categoryId;
 
@@ -153,23 +152,11 @@ class PermissionChecker implements FrameworkAwareInterface
     /**
      * Get the user.
      *
-     * @return BackendUser
-     *
      * @throws \RuntimeException
      */
-    private function getUser()
+    private function getUser(): BackendUser
     {
-        if (null === $this->tokenStorage) {
-            throw new \RuntimeException('No token storage provided');
-        }
-
-        $token = $this->tokenStorage->getToken();
-
-        if (null === $token) {
-            throw new \RuntimeException('No token provided');
-        }
-
-        $user = $token->getUser();
+        $user = $this->security->getUser();
 
         if (!$user instanceof BackendUser) {
             throw new \RuntimeException('The token does not contain a back end user object');

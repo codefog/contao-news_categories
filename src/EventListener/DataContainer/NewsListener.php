@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace Codefog\NewsCategoriesBundle\EventListener\DataContainer;
 
 use Codefog\HasteBundle\DcaRelationsManager;
-use Codefog\NewsCategoriesBundle\PermissionChecker;
 use Codefog\NewsCategoriesBundle\Security\NewsCategoriesPermissions;
 use Contao\BackendUser;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
@@ -33,7 +32,6 @@ class NewsListener implements FrameworkAwareInterface
     public function __construct(
         private readonly Connection $db,
         private readonly DcaRelationsManager $dcaRelationsManager,
-        private readonly PermissionChecker $permissionChecker,
         private readonly Security $security,
     ) {
     }

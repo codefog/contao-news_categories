@@ -16,28 +16,20 @@ use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteriaBuilder;
 use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\Model\Collection;
 use Contao\ModuleNewsList;
+use Contao\NewsModel;
 
-class NewsListener implements FrameworkAwareInterface
+class NewsListener
 {
-    use FrameworkAwareTrait;
-
-    /**
-     * InsertTagsListener constructor.
-     */
     public function __construct(private readonly NewsCriteriaBuilder $searchBuilder)
     {
     }
 
     /**
      * On news list count items.
-     *
-     * @return int
      */
-    public function onNewsListCountItems(array $archives, bool|null $featured, ModuleNewsList $module)
+    public function onNewsListCountItems(array $archives, bool|null $featured, ModuleNewsList $module): int
     {
         if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
             return 0;
@@ -51,6 +43,8 @@ class NewsListener implements FrameworkAwareInterface
      *
      * @param int $limit
      * @param int $offset
+     *
+     * @return Collection<NewsModel>|null
      */
     public function onNewsListFetchItems(array $archives, bool|null $featured, $limit, $offset, ModuleNewsList $module): Collection|null
     {
@@ -78,7 +72,7 @@ class NewsListener implements FrameworkAwareInterface
         try {
             $criteria = $this->searchBuilder->getCriteriaForListModule($archives, $featured, $module);
         } catch (CategoryNotFoundException $e) {
-            throw new PageNotFoundException($e->getMessage());
+            throw new PageNotFoundException($e->getMessage(), 0, $e);
         }
 
         return $criteria;

@@ -15,6 +15,7 @@ namespace Codefog\NewsCategoriesBundle\Criteria;
 use Codefog\HasteBundle\Model\DcaRelationsModel;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Database;
 use Contao\Date;
@@ -39,7 +40,8 @@ class NewsCriteria
     /**
      * Set the basic criteria.
      *
-     * @param string $sorting
+     * @param string|null $sorting
+     * @param bool|null $featured
      *
      * @throws NoNewsException
      */
@@ -315,7 +317,7 @@ class NewsCriteria
     /**
      * Get the news model adapter.
      *
-     * @return NewsModel
+     * @return Adapter<NewsModel>
      */
     public function getNewsModelAdapter()
     {

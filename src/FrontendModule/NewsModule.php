@@ -21,6 +21,24 @@ use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 
+/**
+ * @property string|array $news_archives
+ * @property bool $news_showQuantity
+ * @property string|array $news_categories
+ * @property bool $news_customCategories
+ * @property bool $news_filterCategoriesCumulative
+ * @property bool $news_relatedCategories
+ * @property string $news_relatedCategoriesOrder
+ * @property bool $news_includeSubcategories
+ * @property bool $news_filterCategoriesUnion
+ * @property string|array $news_filterDefault
+ * @property bool $news_filterPreserve
+ * @property bool $news_resetCategories
+ * @property bool $news_showEmptyCategories
+ * @property bool $news_forceCategoryUrl
+ * @property string|array $news_categoriesRoot
+ * @property int $news_categoryFilterPage
+ */
 abstract class NewsModule extends ModuleNews
 {
     /**
@@ -33,7 +51,7 @@ abstract class NewsModule extends ModuleNews
     /**
      * Active categories.
      *
-     * @var Collection|null
+     * @var Collection<NewsCategoryModel>|null
      */
     protected $activeCategories;
 
@@ -104,9 +122,9 @@ abstract class NewsModule extends ModuleNews
     /**
      * Get the categories.
      *
-     * @return Collection|null
+     * @return Collection<NewsCategoryModel>|null
      */
-    protected function getCategories()
+    protected function getCategories(): Collection|null
     {
         $customCategories = $this->news_customCategories ? StringUtil::deserialize($this->news_categories, true) : [];
 
@@ -133,9 +151,9 @@ abstract class NewsModule extends ModuleNews
     /**
      * Get the active categories.
      *
-     * @return Collection|null
+     * @return Collection<NewsCategoryModel>|null
      */
-    protected function getActiveCategories(array $customCategories = [])
+    protected function getActiveCategories(array $customCategories = []): Collection|null
     {
         $param = System::getContainer()->get('codefog_news_categories.manager')->getParameterName();
 
@@ -182,7 +200,7 @@ abstract class NewsModule extends ModuleNews
     /**
      * Get the inactive categories.
      *
-     * @return Collection|null
+     * @return Collection<NewsCategoryModel>|null
      */
     protected function getInactiveCategories(array $customCategories = [])
     {

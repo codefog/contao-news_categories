@@ -18,6 +18,16 @@ use Contao\ModuleModel;
 use Contao\StringUtil;
 use Contao\System;
 
+/**
+ * @property int $news_module
+ * @property string|array $news_filterCategories
+ * @property bool $news_relatedCategories
+ * @property bool $news_includeSubcategories
+ * @property string|array $news_filterDefault
+ * @property bool $news_filterPreserveefault
+ * @property int $news_categoryFilterPage
+ * @property string|array $news_categoryImgSize
+ */
 class NewsFilterElement extends ContentModule
 {
     /**

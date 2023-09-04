@@ -156,8 +156,8 @@ class NewsMenuModule extends ModuleNewsMenu
             throw new PageNotFoundException('Page not found: '.Environment::get('uri'));
         }
 
-        $intYear = date('Y', $this->Date->tstamp);
-        $intMonth = date('m', $this->Date->tstamp);
+        $intYear = (int) date('Y', $this->Date->tstamp);
+        $intMonth = (int) date('m', $this->Date->tstamp);
 
         $this->Template->intYear = $intYear;
         $this->Template->intMonth = $intMonth;
@@ -241,7 +241,7 @@ class NewsMenuModule extends ModuleNewsMenu
                 ->getCriteriaForMenuModule($this->news_archives, $this)
             ;
         } catch (CategoryNotFoundException $e) {
-            throw new PageNotFoundException($e->getMessage());
+            throw new PageNotFoundException($e->getMessage(), 0, $e);
         }
 
         if (null === $criteria) {

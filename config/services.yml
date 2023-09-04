@@ -17,6 +17,8 @@ services:
 
     codefog_news_categories.manager:
         class: Codefog\NewsCategoriesBundle\NewsCategoriesManager
+        arguments:
+            - '%kernel.project_dir%'
         tags:
             - { name: kernel.reset, method: reset }
 
@@ -37,8 +39,8 @@ services:
         class: Codefog\NewsCategoriesBundle\PermissionChecker
         public: false
         arguments:
+            - '@contao.framework'
             - '@database_connection'
-            - '@security.token_storage'
             - '@security.helper'
 
     codefog_news_categories.news_criteria_builder:

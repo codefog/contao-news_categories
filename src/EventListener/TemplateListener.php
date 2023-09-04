@@ -57,6 +57,8 @@ class TemplateListener implements FrameworkAwareInterface
 
     /**
      * Add categories to the template.
+     *
+     * @param Collection<NewsCategoryModel> $categories
      */
     private function addCategoriesToTemplate(FrontendTemplate $template, Module $module, Collection $categories): void
     {

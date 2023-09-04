@@ -19,6 +19,9 @@ use Symfony\Contracts\Service\ResetInterface;
  */
 class BackendAccessVoter implements CacheableVoterInterface, ResetInterface
 {
+    /**
+     * @var array<string, array<int>>
+     */
     private array $childRecords = [];
 
     public function __construct(private readonly ContaoFramework $framework)
@@ -57,7 +60,7 @@ class BackendAccessVoter implements CacheableVoterInterface, ResetInterface
         $this->childRecords = [];
     }
 
-    private function getChildRecords(array $ids)
+    private function getChildRecords(array $ids): array
     {
         $key = implode(',', $ids);
 

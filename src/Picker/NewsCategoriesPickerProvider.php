@@ -57,7 +57,7 @@ class NewsCategoriesPickerProvider extends AbstractTablePickerProvider
         return 'newsCategoriesPicker';
     }
 
-    public function supportsContext($context): bool
+    public function supportsContext(string $context): bool
     {
         return 'newsCategories' === $context && (
             $this->security->isGranted(NewsCategoriesPermissions::USER_CAN_MANAGE_CATEGORIES)
