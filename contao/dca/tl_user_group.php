@@ -18,10 +18,10 @@ System::loadLanguageFile('tl_user');
  * Extend palettes
  */
 PaletteManipulator::create()
-    ->addLegend('newsCategories_legend', 'news_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_AFTER)
-    ->addField('newscategories', 'newsCategories_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField('newscategories_roots', 'newsCategories_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
-    ->addField('newscategories_default', 'newsCategories_legend', \Contao\CoreBundle\DataContainer\PaletteManipulator::POSITION_APPEND)
+    ->addLegend('newsCategories_legend', 'news_legend', PaletteManipulator::POSITION_AFTER)
+    ->addField('newscategories', 'newsCategories_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('newscategories_roots', 'newsCategories_legend', PaletteManipulator::POSITION_APPEND)
+    ->addField('newscategories_default', 'newsCategories_legend', PaletteManipulator::POSITION_APPEND)
     ->applyToPalette('default', 'tl_user_group')
 ;
 

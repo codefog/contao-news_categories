@@ -170,7 +170,7 @@ abstract class NewsModule extends ModuleNews
                 Controller::redirect($this->getTargetPage()->getFrontendUrl(sprintf(
                     '/%s/%s',
                     $this->manager->getParameterName($GLOBALS['objPage']->rootId),
-                    implode(static::getCategorySeparator(), $realAliases)
+                    implode(static::getCategorySeparator(), $realAliases),
                 )));
             }
         }
@@ -351,7 +351,7 @@ abstract class NewsModule extends ModuleNews
                     $category->id,
                     (bool) $this->news_includeSubcategories,
                     null !== $this->activeCategories ? $this->activeCategories->fetchEach('id') : [],
-                    (bool) $this->news_filterCategoriesUnion
+                    (bool) $this->news_filterCategoriesUnion,
                 );
             }
         }

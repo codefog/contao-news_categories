@@ -86,7 +86,7 @@ class CumulativeHierarchicalFilterModule extends NewsModule
                 $GLOBALS['TL_LANG']['MSC']['resetCategories'][0],
                 $GLOBALS['TL_LANG']['MSC']['resetCategories'][1],
                 'reset',
-                null === $activeCategories || 0 === \count($activeCategories)
+                null === $activeCategories || 0 === \count($activeCategories),
             );
         }
 
@@ -131,7 +131,7 @@ class CumulativeHierarchicalFilterModule extends NewsModule
                 $this->generateItemCssClass($category),
                 null !== $activeCategories && \in_array($category, $activeCategories->getModels(), true),
                 !$this->showLevel || $this->showLevel >= $level ? $this->renderNewsCategories($category->id, $ids, $level) : '',
-                $category
+                $category,
             );
         }
 

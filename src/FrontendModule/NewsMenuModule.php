@@ -26,9 +26,6 @@ use Contao\System;
 
 class NewsMenuModule extends ModuleNewsMenu
 {
-    /**
-     * {@inheritDoc}
-     */
     protected function compile(): void
     {
         $this->strUrl = $this->generateCategoryUrl();

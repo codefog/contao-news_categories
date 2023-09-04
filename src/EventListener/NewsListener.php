@@ -64,7 +64,7 @@ class NewsListener implements FrameworkAwareInterface
         return $criteria->getNewsModelAdapter()->findBy(
             $criteria->getColumns(),
             $criteria->getValues(),
-            $criteria->getOptions()
+            $criteria->getOptions(),
         );
     }
 

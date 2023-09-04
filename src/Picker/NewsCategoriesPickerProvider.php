@@ -31,12 +31,12 @@ class NewsCategoriesPickerProvider extends AbstractTablePickerProvider
         RouterInterface $router,
         TranslatorInterface $translator,
         Connection $connection,
-        private readonly Security $security
+        private readonly Security $security,
     ) {
         parent::__construct($framework, $menuFactory, $router, $translator, $connection);
     }
 
-    public function getTableFromContext(string $context = null): string
+    public function getTableFromContext(string|null $context = null): string
     {
         return 'tl_news_category';
     }
@@ -57,16 +57,16 @@ class NewsCategoriesPickerProvider extends AbstractTablePickerProvider
         return 'newsCategoriesPicker';
     }
 
-    protected function getDataContainer(): string
-    {
-        return DC_Table::class;
-    }
-
     public function supportsContext($context): bool
     {
         return 'newsCategories' === $context && (
-                $this->security->isGranted(NewsCategoriesPermissions::USER_CAN_MANAGE_CATEGORIES)
-                || $this->security->isGranted(NewsCategoriesPermissions::USER_CAN_ASSIGN_CATEGORIES)
-            );
+            $this->security->isGranted(NewsCategoriesPermissions::USER_CAN_MANAGE_CATEGORIES)
+            || $this->security->isGranted(NewsCategoriesPermissions::USER_CAN_ASSIGN_CATEGORIES)
+        );
+    }
+
+    protected function getDataContainer(): string
+    {
+        return DC_Table::class;
     }
 }

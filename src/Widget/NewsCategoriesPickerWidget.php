@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories Bundle for Contao Open Source CMS.
  *
@@ -33,8 +35,7 @@ class NewsCategoriesPickerWidget extends Picker
     {
         $extras = parent::getPickerUrlExtras($values);
 
-        if (\is_array($this->rootNodes))
-        {
+        if (\is_array($this->rootNodes)) {
             $extras['rootNodes'] = array_values($this->rootNodes);
         }
 

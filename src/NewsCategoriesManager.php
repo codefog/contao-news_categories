@@ -30,6 +30,7 @@ class NewsCategoriesManager implements FrameworkAwareInterface, ResetInterface
     use FrameworkAwareTrait;
 
     private array $urlCache = [];
+
     private array $trailCache = [];
 
     /**

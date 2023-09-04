@@ -40,7 +40,7 @@ class NewsFeedListener
         foreach ($articles as $k => $article) {
             $categories = array_map(
                 static fn (NewsCategoryModel $category) => $category->id,
-                NewsCategoryModel::findPublishedByNews($article->id, ['return' => 'Array'])
+                NewsCategoryModel::findPublishedByNews($article->id, ['return' => 'Array']),
             );
 
             if (!array_intersect($ids, $categories)) {
@@ -85,7 +85,7 @@ class NewsFeedListener
                     "<p>%s %s</p>\n%s",
                     $this->translator->trans('MSC.newsCategories', [], 'contao_default'),
                     $categories,
-                    (string) $feedItem->getContent()
+                    (string) $feedItem->getContent(),
                 ));
                 break;
         }

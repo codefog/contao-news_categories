@@ -27,7 +27,7 @@ ArrayUtil::arrayInsert(
             'icon' => 'bundles/codefognewscategories/icon.png',
             'attributes' => 'onclick="Backend.getScrollOffset()"',
         ],
-    ]
+    ],
 );
 
 /*

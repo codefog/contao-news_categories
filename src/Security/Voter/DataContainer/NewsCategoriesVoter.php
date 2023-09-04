@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
 class NewsCategoriesVoter implements CacheableVoterInterface
 {
-    public function __construct(private Security $security)
+    public function __construct(private readonly Security $security)
     {
     }
 
@@ -57,7 +57,7 @@ class NewsCategoriesVoter implements CacheableVoterInterface
         return $this->security->isGranted(NewsCategoriesPermissions::USER_CAN_ACCESS_CATEGORY, $action->getCurrentId());
     }
 
-    private function canWrite(CreateAction|UpdateAction|DeleteAction $action): bool
+    private function canWrite(CreateAction|DeleteAction|UpdateAction $action): bool
     {
         if (!$this->security->isGranted(NewsCategoriesPermissions::USER_CAN_MANAGE_CATEGORIES)) {
             return false;

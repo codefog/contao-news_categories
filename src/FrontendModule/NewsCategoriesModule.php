@@ -93,7 +93,7 @@ class NewsCategoriesModule extends NewsModule
                 $GLOBALS['TL_LANG']['MSC']['resetCategories'][0],
                 $GLOBALS['TL_LANG']['MSC']['resetCategories'][1],
                 'reset',
-                0 === \count($this->currentNewsCategories) && null === $this->activeCategory
+                0 === \count($this->currentNewsCategories) && null === $this->activeCategory,
             );
         }
 
@@ -115,7 +115,7 @@ class NewsCategoriesModule extends NewsModule
                 $this->generateItemCssClass($category),
                 null !== $this->activeCategory && (int) $this->activeCategory->id === (int) $category->id,
                 !$this->showLevel || $this->showLevel >= $level ? $this->renderNewsCategories($category->id, $ids, $level) : '',
-                $category
+                $category,
             );
         }
 

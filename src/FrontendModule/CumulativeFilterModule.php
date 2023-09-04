@@ -138,7 +138,7 @@ class CumulativeFilterModule extends NewsModule
                 $this->generateItemCssClass($category),
                 \in_array($categoryAlias, $activeAliases, true),
                 '',
-                $category
+                $category,
             );
         }
 

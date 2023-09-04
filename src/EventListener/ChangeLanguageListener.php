@@ -56,7 +56,7 @@ class ChangeLanguageListener implements FrameworkAwareInterface
         if (null !== $model && $model instanceof Multilingual) {
             $event->getUrlParameterBag()->setUrlAttribute(
                 $param,
-                $model->getAlias($event->getNavigationItem()->getRootPage()->rootLanguage)
+                $model->getAlias($event->getNavigationItem()->getRootPage()->rootLanguage),
             );
         }
     }

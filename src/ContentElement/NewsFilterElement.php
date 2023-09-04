@@ -60,7 +60,7 @@ class NewsFilterElement extends ContentModule
         $objModel->newsFilterElement = $this;
 
         // Tag the content element (see #2137)
-        if ($this->objModel !== null) {
+        if (null !== $this->objModel) {
             System::getContainer()->get('contao.cache.entity_tags')?->tagWithModelInstance($this->objModel);
         }
 

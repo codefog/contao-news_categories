@@ -46,9 +46,6 @@ class NewsCategoryModel extends ParentModel
      */
     protected static $strTable = 'tl_news_category';
 
-    /**
-     * {@inheritDoc}
-     */
     public function __get($name)
     {
         // Fix the compatibility with DC_Multilingual v4 (#184)
@@ -355,9 +352,6 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
         return $ids;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function findMultipleByIds($arrIds, array $arrOptions = [])
     {
         if (!MultilingualHelper::isActive()) {
