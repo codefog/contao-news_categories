@@ -22,19 +22,6 @@ services:
         tags:
             - { name: kernel.reset, method: reset }
 
-    codefog_news_categories.picker:
-        class: Codefog\NewsCategoriesBundle\Picker\NewsCategoriesPickerProvider
-        public: false
-        arguments:
-            - '@contao.framework'
-            - '@knp_menu.factory'
-            - '@router'
-            - '@translator'
-            - '@database_connection'
-            - '@security.helper'
-        tags:
-            - { name: contao.picker_provider, priority: 132 }
-
     codefog_news_categories.permission_checker:
         class: Codefog\NewsCategoriesBundle\PermissionChecker
         public: false

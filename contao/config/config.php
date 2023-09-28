@@ -16,14 +16,8 @@ use Codefog\NewsCategoriesBundle\FrontendModule\NewsCategoriesModule;
 use Codefog\NewsCategoriesBundle\FrontendModule\NewsListModule;
 use Codefog\NewsCategoriesBundle\FrontendModule\NewsMenuModule;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
-use Codefog\NewsCategoriesBundle\Widget\NewsCategoriesPickerWidget;
 
 $GLOBALS['BE_MOD']['content']['news']['tables'][] = 'tl_news_category';
-
-/*
- * Back end form fields
- */
-$GLOBALS['BE_FFL']['newsCategoriesPicker'] = NewsCategoriesPickerWidget::class;
 
 /*
  * Front end modules

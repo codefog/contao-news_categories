@@ -12,8 +12,8 @@
     ],
     "require": {
         "php": "^8.1",
-        "contao/core-bundle": "^5.1",
-        "contao/news-bundle": "^5.1",
+        "contao/core-bundle": "^5.1.9",
+        "contao/news-bundle": "^5.1.9",
         "codefog/contao-haste": "^5.0"
     },
     "require-dev": {
