@@ -57,6 +57,16 @@ class CumulativeFilterModule extends NewsModule
         if (null !== $this->activeCategories) {
             $this->Template->activeCategories = $this->renderNewsCategories($rootCategoryId, $this->activeCategories->fetchEach('id'), true);
 
+            // Set the canonical URL
+            if ($this->news_enableCanonicalUrls && ($responseContext = System::getContainer()->get('contao.routing.response_context_accessor')->getResponseContext())) {
+                /** @var ResponseContext $responseContext */
+                if ($responseContext->has(HtmlHeadBag::class)) {
+                    /** @var HtmlHeadBag $htmlHeadBag */
+                    $htmlHeadBag = $responseContext->get(HtmlHeadBag::class);
+                    $htmlHeadBag->setCanonicalUri($GLOBALS['objPage']->getAbsoluteUrl());
+                }
+            }
+
             // Add the "reset categories" link
             if ($this->news_resetCategories) {
                 $this->Template->resetUrl = $this->getTargetPage()->getFrontendUrl();

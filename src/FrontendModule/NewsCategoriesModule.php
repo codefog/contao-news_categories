@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+use Contao\CoreBundle\Routing\ResponseContext\HtmlHeadBag\HtmlHeadBag;
+use Contao\CoreBundle\Routing\ResponseContext\ResponseContext;
 use Contao\Database;
 use Contao\FrontendTemplate;
 use Contao\Input;
@@ -41,11 +43,22 @@ class NewsCategoriesModule extends NewsModule
             return;
         }
 
-        $param = System::getContainer()->get('codefog_news_categories.manager')->getParameterName();
+        $container = System::getContainer();
+        $param = $container->get('codefog_news_categories.manager')->getParameterName();
 
         // Get the active category
         if (null !== ($activeCategory = NewsCategoryModel::findPublishedByIdOrAlias(Input::get($param)))) {
             $this->activeCategory = $activeCategory;
+
+            // Set the canonical URL
+            if ($this->news_enableCanonicalUrls && ($responseContext = $container->get('contao.routing.response_context_accessor')->getResponseContext())) {
+                /** @var ResponseContext $responseContext */
+                if ($responseContext->has(HtmlHeadBag::class)) {
+                    /** @var HtmlHeadBag $htmlHeadBag */
+                    $htmlHeadBag = $responseContext->get(HtmlHeadBag::class);
+                    $htmlHeadBag->setCanonicalUri($GLOBALS['objPage']->getAbsoluteUrl());
+                }
+            }
         }
 
         $ids = [];
