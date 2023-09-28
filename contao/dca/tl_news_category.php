@@ -10,6 +10,7 @@
 
 use Codefog\NewsCategoriesBundle\MultilingualHelper;
 use Contao\Config;
+use Contao\DataContainer;
 use Contao\DC_Table;
 use Contao\System;
 use Terminal42\DcMultilingualBundle\Driver;
@@ -38,7 +39,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
     // List
     'list' => [
         'sorting' => [
-            'mode' => 5,
+            'mode' => DataContainer::MODE_TREE,
             'rootPaste' => true,
             'icon' => 'bundles/codefognewscategories/icon.png',
             'panelLayout' => 'filter;search',
