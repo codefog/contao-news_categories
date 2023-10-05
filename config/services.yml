@@ -1,52 +1,11 @@
 services:
     _defaults:
-        public: true
-
-    _instanceof:
-        Contao\CoreBundle\Framework\FrameworkAwareInterface:
-            calls:
-                - ["setFramework", ["@contao.framework"]]
-
-    Codefog\NewsCategoriesBundle\NewsCategoriesManager: '@codefog_news_categories.manager'
-
-    Codefog\NewsCategoriesBundle\Migration\BooleanFieldsMigration:
-        arguments:
-            - '@database_connection'
-        tags:
-            - { name: contao.migration }
-
-    codefog_news_categories.manager:
-        class: Codefog\NewsCategoriesBundle\NewsCategoriesManager
-        arguments:
-            - '%kernel.project_dir%'
-        tags:
-            - { name: kernel.reset, method: reset }
-
-    codefog_news_categories.permission_checker:
-        class: Codefog\NewsCategoriesBundle\PermissionChecker
+        autoconfigure: true
+        autowire: true
         public: false
-        arguments:
-            - '@contao.framework'
-            - '@database_connection'
-            - '@security.helper'
+        bind:
+            $projectDir: '%kernel.project_dir%'
 
-    codefog_news_categories.news_criteria_builder:
-        class: Codefog\NewsCategoriesBundle\Criteria\NewsCriteriaBuilder
-        arguments:
-            - "@database_connection"
-            - "@codefog_news_categories.manager"
-
-    codefog_news_categories.security.backend_access:
-        class: Codefog\NewsCategoriesBundle\Security\Voter\BackendAccessVoter
-        arguments:
-            - '@contao.framework'
-        tags:
-            - { name: security.voter, priority: 8 }
-            - { name: kernel.reset, method: reset }
-
-    codefog_news_categories.security.data_container.news_categories:
-        class: Codefog\NewsCategoriesBundle\Security\Voter\DataContainer\NewsCategoriesVoter
-        arguments:
-            - '@security.helper'
-        tags:
-            - security.voter
+    Codefog\NewsCategoriesBundle\:
+        resource: '../src'
+        exclude: '../../{ContentElement,FrontendModule,Model}'

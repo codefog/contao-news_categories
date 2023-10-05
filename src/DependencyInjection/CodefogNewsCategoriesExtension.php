@@ -12,8 +12,6 @@ declare(strict_types=1);
 
 namespace Codefog\NewsCategoriesBundle\DependencyInjection;
 
-use Codefog\NewsCategoriesBundle\Migration\BooleanFieldsMigration;
-use Contao\CoreBundle\Migration\AbstractMigration;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -24,7 +22,6 @@ class CodefogNewsCategoriesExtension extends Extension
     public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
-        $loader->load('listener.yml');
         $loader->load('services.yml');
     }
 }

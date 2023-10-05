@@ -12,20 +12,17 @@ declare(strict_types=1);
 
 namespace Codefog\NewsCategoriesBundle;
 
-use Codefog\NewsCategoriesBundle\Security\NewsCategoriesPermissions;
 use Contao\BackendUser;
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\StringUtil;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\SecurityBundle\Security;
 
-class PermissionChecker implements FrameworkAwareInterface
+class PermissionChecker
 {
-    use FrameworkAwareTrait;
-
     public function __construct(
+        private readonly ContaoFramework $framework,
         private readonly Connection $db,
         private readonly Security $security,
     ) {
@@ -80,7 +77,7 @@ class PermissionChecker implements FrameworkAwareInterface
             return null;
         }
 
-        $rootIds = \array_map('intval', (array) $user->newscategories_roots);
+        $rootIds = array_map('intval', (array) $user->newscategories_roots);
 
         if (empty($rootIds)) {
             return [];

@@ -7,12 +7,8 @@
  * @author     Codefog <https://codefog.pl>
  * @license    MIT
  */
-use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
-/*
- * Add global callbacks
- */
-$GLOBALS['TL_DCA']['tl_news']['config']['onsubmit_callback'][] = ['codefog_news_categories.listener.data_container.news', 'onSubmitCallback'];
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
 /*
  * Extend palettes
@@ -37,7 +33,7 @@ $GLOBALS['TL_DCA']['tl_news']['fields']['categories'] = [
     'filter' => true,
     'inputType' => 'picker',
     'foreignKey' => 'tl_news_category.title',
-    'options_callback' => ['codefog_news_categories.listener.data_container.news', 'onCategoriesOptionsCallback'],
+    // 'options_callback' => NewsCategoriesOptionsListener
     'eval' => ['multiple' => true, 'fieldType' => 'checkbox'],
     'relation' => [
         'type' => 'haste-ManyToMany',

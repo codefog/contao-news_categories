@@ -12,7 +12,6 @@ use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
 $GLOBALS['TL_DCA']['tl_settings']['fields']['news_categorySlugSetting'] = [
     'inputType' => 'select',
-    'options_callback' => ['codefog_news_categories.listener.data_container.settings', 'onSlugSettingOptionsCallback'],
     'eval' => ['tl_class' => 'w50', 'includeBlankOption' => true, 'decodeEntities' => true],
 ];
 

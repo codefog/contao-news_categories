@@ -14,9 +14,8 @@ namespace Codefog\NewsCategoriesBundle\EventListener;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
-use Contao\Controller;
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Image\Studio\Studio;
 use Contao\FrontendTemplate;
 use Contao\Model\Collection;
@@ -24,23 +23,19 @@ use Contao\Module;
 use Contao\PageModel;
 use Contao\StringUtil;
 
-class TemplateListener implements FrameworkAwareInterface
+#[AsHook('parseArticles')]
+class TemplateListener
 {
-    use FrameworkAwareTrait;
-
     private array $urlCache = [];
 
-    /**
-     * TemplateListener constructor.
-     */
-    public function __construct(private readonly NewsCategoriesManager $manager, private readonly Studio $studio)
-    {
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly NewsCategoriesManager $manager,
+        private readonly Studio $studio,
+    ) {
     }
 
-    /**
-     * On parse the articles.
-     */
-    public function onParseArticles(FrontendTemplate $template, array $data, Module $module): void
+    public function __invoke(FrontendTemplate $template, array $data, Module $module): void
     {
         /** @var NewsCategoryModel $newsCategoryModelAdapter */
         $newsCategoryModelAdapter = $this->framework->getAdapter(NewsCategoryModel::class);

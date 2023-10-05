@@ -14,28 +14,21 @@ namespace Codefog\NewsCategoriesBundle\EventListener;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Input;
 use Contao\StringUtil;
 
-class InsertTagsListener implements FrameworkAwareInterface
+#[AsHook('replaceInsertTags')]
+class InsertTagsListener
 {
-    use FrameworkAwareTrait;
-
-    /**
-     * InsertTagsListener constructor.
-     */
-    public function __construct(private readonly NewsCategoriesManager $manager)
-    {
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly NewsCategoriesManager $manager,
+    ) {
     }
 
-    /**
-     * On replace the insert tags.
-     *
-     * @param string $tag
-     */
-    public function onReplace($tag): string|false
+    public function __invoke(string $tag): string|false
     {
         $chunks = StringUtil::trimsplit('::', $tag);
 

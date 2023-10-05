@@ -23,21 +23,21 @@ use Contao\System;
 
 /**
  * @property string|array $news_archives
- * @property bool $news_showQuantity
+ * @property bool         $news_showQuantity
  * @property string|array $news_categories
- * @property bool $news_customCategories
- * @property bool $news_filterCategoriesCumulative
- * @property bool $news_relatedCategories
- * @property string $news_relatedCategoriesOrder
- * @property bool $news_includeSubcategories
- * @property bool $news_filterCategoriesUnion
+ * @property bool         $news_customCategories
+ * @property bool         $news_filterCategoriesCumulative
+ * @property bool         $news_relatedCategories
+ * @property string       $news_relatedCategoriesOrder
+ * @property bool         $news_includeSubcategories
+ * @property bool         $news_filterCategoriesUnion
  * @property string|array $news_filterDefault
- * @property bool $news_filterPreserve
- * @property bool $news_resetCategories
- * @property bool $news_showEmptyCategories
- * @property bool $news_forceCategoryUrl
+ * @property bool         $news_filterPreserve
+ * @property bool         $news_resetCategories
+ * @property bool         $news_showEmptyCategories
+ * @property bool         $news_forceCategoryUrl
  * @property string|array $news_categoriesRoot
- * @property int $news_categoryFilterPage
+ * @property int          $news_categoryFilterPage
  */
 abstract class NewsModule extends ModuleNews
 {

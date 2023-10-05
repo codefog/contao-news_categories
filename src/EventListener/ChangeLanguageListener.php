@@ -14,23 +14,21 @@ namespace Codefog\NewsCategoriesBundle\EventListener;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Terminal42\ChangeLanguage\Event\ChangelanguageNavigationEvent;
 use Terminal42\DcMultilingualBundle\Model\Multilingual;
 
-class ChangeLanguageListener implements FrameworkAwareInterface
+#[AsHook('changelanguageNavigation')]
+class ChangeLanguageListener
 {
-    use FrameworkAwareTrait;
-
-    public function __construct(private readonly NewsCategoriesManager $manager)
-    {
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly NewsCategoriesManager $manager,
+    ) {
     }
 
-    /**
-     * On change language navigation.
-     */
-    public function onChangelanguageNavigation(ChangelanguageNavigationEvent $event): void
+    public function __invoke(ChangelanguageNavigationEvent $event): void
     {
         $this->updateAlias($event);
         $this->updateParameter($event);

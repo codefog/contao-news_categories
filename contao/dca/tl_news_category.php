@@ -107,9 +107,6 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
                 'maxlength' => 128,
                 'tl_class' => 'w50',
             ],
-            'save_callback' => [
-                ['codefog_news_categories.listener.data_container.news_category', 'onGenerateAlias'],
-            ],
             'sql' => ['type' => 'binary', 'length' => 128, 'default' => ''],
         ],
         'cssClass' => [

@@ -13,8 +13,7 @@ declare(strict_types=1);
 namespace Codefog\NewsCategoriesBundle;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Database;
 use Contao\FilesModel;
 use Contao\Module;
@@ -25,16 +24,16 @@ use Contao\PageModel;
 use Symfony\Contracts\Service\ResetInterface;
 use Terminal42\DcMultilingualBundle\Model\Multilingual;
 
-class NewsCategoriesManager implements FrameworkAwareInterface, ResetInterface
+class NewsCategoriesManager implements ResetInterface
 {
-    use FrameworkAwareTrait;
-
     private array $urlCache = [];
 
     private array $trailCache = [];
 
-    public function __construct(private readonly string $projectDir)
-    {
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly string $projectDir,
+    ) {
     }
 
     /**

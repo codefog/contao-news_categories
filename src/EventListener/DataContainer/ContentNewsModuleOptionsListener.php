@@ -12,23 +12,20 @@ declare(strict_types=1);
 
 namespace Codefog\NewsCategoriesBundle\EventListener\DataContainer;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Doctrine\DBAL\Connection;
 
-class ContentListener
+/**
+ * Get news modules and return them as array.
+ */
+#[AsCallback('tl_content', 'fields.news_module.options')]
+class ContentNewsModuleOptionsListener
 {
-    /**
-     * ContentListener constructor.
-     */
     public function __construct(private readonly Connection $db)
     {
     }
 
-    /**
-     * Get news modules and return them as array.
-     *
-     * @return array
-     */
-    public function onGetNewsModules()
+    public function __invoke(): array
     {
         $modules = [];
         $records = $this->db->fetchAllAssociative("SELECT m.id, m.name, t.name AS theme FROM tl_module m LEFT JOIN tl_theme t ON m.pid=t.id WHERE m.type IN ('newslist', 'newsarchive') ORDER BY t.name, m.name");

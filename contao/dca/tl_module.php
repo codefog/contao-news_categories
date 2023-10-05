@@ -9,7 +9,6 @@
  */
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
-use Contao\CoreBundle\EventListener\ImageSizeOptionsListener;
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'news_customCategories';
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'news_relatedCategories';

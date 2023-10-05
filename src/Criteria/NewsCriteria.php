@@ -40,12 +40,9 @@ class NewsCriteria
     /**
      * Set the basic criteria.
      *
-     * @param string|null $sorting
-     * @param bool|null $featured
-     *
      * @throws NoNewsException
      */
-    public function setBasicCriteria(array $archives, $sorting = null, $featured = null): void
+    public function setBasicCriteria(array $archives, string|null $sorting = null, string|null $featured = null): void
     {
         $archives = $this->parseIds($archives);
 

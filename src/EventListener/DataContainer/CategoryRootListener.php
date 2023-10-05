@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Codefog\NewsCategoriesBundle\EventListener\DataContainer;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\DataContainer;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
@@ -12,6 +13,7 @@ use Symfony\Contracts\Service\ResetInterface;
 /**
  * Limit the categories set in the news archive settings for tl_news.categories field.
  */
+#[AsCallback('tl_news', 'fields.categories.attributes')]
 class CategoryRootListener implements ResetInterface
 {
     private array $rootNodesCache = [];

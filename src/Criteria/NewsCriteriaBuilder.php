@@ -18,21 +18,16 @@ use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\FrontendModule\CumulativeFilterModule;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Input;
 use Contao\Module;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 
-class NewsCriteriaBuilder implements FrameworkAwareInterface
+class NewsCriteriaBuilder
 {
-    use FrameworkAwareTrait;
-
-    /**
-     * NewsCriteriaBuilder constructor.
-     */
     public function __construct(
+        private readonly ContaoFramework $framework,
         private readonly Connection $db,
         private readonly NewsCategoriesManager $manager,
     ) {

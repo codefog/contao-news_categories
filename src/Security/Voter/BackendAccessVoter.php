@@ -8,6 +8,7 @@ use Codefog\NewsCategoriesBundle\Security\NewsCategoriesPermissions;
 use Contao\BackendUser;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Database;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\CacheableVoterInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
@@ -17,6 +18,7 @@ use Symfony\Contracts\Service\ResetInterface;
  * This voter priority-overrides the regular Contao BackendAccessVoter
  * to vote on tl_user.newscategories_roots recursively.
  */
+#[AutoconfigureTag('security.voter', ['priority' => 8])]
 class BackendAccessVoter implements CacheableVoterInterface, ResetInterface
 {
     /**

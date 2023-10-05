@@ -7,6 +7,7 @@
  * @author     Codefog <https://codefog.pl>
  * @license    MIT
  */
+
 use Contao\Controller;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\System;

@@ -17,6 +17,7 @@ use Contao\NewsBundle\Event\FetchArticlesForFeedEvent;
 use Contao\NewsBundle\Event\TransformArticleForFeedEvent;
 use Contao\NewsModel;
 use Contao\StringUtil;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class NewsFeedListener
@@ -25,6 +26,7 @@ class NewsFeedListener
     {
     }
 
+    #[AsEventListener]
     public function onFetchArticlesForFeed(FetchArticlesForFeedEvent $event): void
     {
         $ids = StringUtil::deserialize($event->getPageModel()->newsCategories, true);
@@ -51,6 +53,7 @@ class NewsFeedListener
         $event->setArticles(array_values($articles));
     }
 
+    #[AsEventListener]
     public function onTransformArticleForFeed(TransformArticleForFeedEvent $event): void
     {
         $page = $event->getPageModel();

@@ -15,6 +15,7 @@ namespace Codefog\NewsCategoriesBundle\EventListener;
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteriaBuilder;
 use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\Model\Collection;
 use Contao\ModuleNewsList;
@@ -26,9 +27,7 @@ class NewsListener
     {
     }
 
-    /**
-     * On news list count items.
-     */
+    #[AsHook('newsListCountItems')]
     public function onNewsListCountItems(array $archives, bool|null $featured, ModuleNewsList $module): int
     {
         if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
@@ -39,14 +38,10 @@ class NewsListener
     }
 
     /**
-     * On news list fetch items.
-     *
-     * @param int $limit
-     * @param int $offset
-     *
      * @return Collection<NewsModel>|null
      */
-    public function onNewsListFetchItems(array $archives, bool|null $featured, $limit, $offset, ModuleNewsList $module): Collection|null
+    #[AsHook('onNewsListFetchItems')]
+    public function onNewsListFetchItems(array $archives, bool|null $featured, int $limit, int $offset, ModuleNewsList $module): Collection|null
     {
         if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
             return null;
@@ -62,11 +57,6 @@ class NewsListener
         );
     }
 
-    /**
-     * Get the criteria.
-     *
-     * @throws PageNotFoundException
-     */
     private function getCriteria(array $archives, bool|null $featured, ModuleNewsList $module): NewsCriteria|null
     {
         try {

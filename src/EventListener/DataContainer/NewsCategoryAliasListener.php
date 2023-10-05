@@ -14,38 +14,23 @@ namespace Codefog\NewsCategoriesBundle\EventListener\DataContainer;
 
 use Codefog\NewsCategoriesBundle\MultilingualHelper;
 use Contao\Config;
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Slug\Slug;
 use Contao\DataContainer;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Terminal42\DcMultilingualBundle\Driver;
 
-class NewsCategoryListener implements FrameworkAwareInterface
+#[AsCallback('tl_news_categories', 'fields.alias.save')]
+class NewsCategoryAliasListener
 {
-    use FrameworkAwareTrait;
-
     public function __construct(
         private readonly Connection $db,
-        private readonly Security $security,
-        private readonly RequestStack $requestStack,
         private readonly Slug|null $slug = null,
     ) {
     }
 
-    /**
-     * On generate the category alias.
-     *
-     * @param string $value
-     *
-     * @return string
-     *
-     * @throws \RuntimeException
-     */
-    public function onGenerateAlias($value, DataContainer $dc)
+    public function __invoke(string $value, DataContainer $dc): string
     {
         $autoAlias = false;
 
