@@ -11,14 +11,17 @@ use Contao\CoreBundle\Security\DataContainer\DeleteAction;
 use Contao\CoreBundle\Security\DataContainer\ReadAction;
 use Contao\CoreBundle\Security\DataContainer\UpdateAction;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\CacheableVoterInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
 
 class NewsCategoriesVoter implements CacheableVoterInterface
 {
-    public function __construct(private readonly Security $security)
-    {
+    public function __construct(
+        private readonly Security $security,
+        private readonly RequestStack $requestStack,
+    ) {
     }
 
     public function supportsAttribute(string $attribute): bool
@@ -54,6 +57,10 @@ class NewsCategoriesVoter implements CacheableVoterInterface
 
     private function canRead(ReadAction $action): bool
     {
+        if ($this->isNew($action)) {
+            return true;
+        }
+
         return $this->security->isGranted(NewsCategoriesPermissions::USER_CAN_ACCESS_CATEGORY, $action->getCurrentId());
     }
 
@@ -63,13 +70,17 @@ class NewsCategoriesVoter implements CacheableVoterInterface
             return false;
         }
 
+        if ($this->isNew($action)) {
+            return true;
+        }
+
         // Check if user can access current category to delete
         if ($action instanceof DeleteAction) {
             return $this->security->isGranted(NewsCategoriesPermissions::USER_CAN_ACCESS_CATEGORY, $action->getCurrentId());
         }
 
         // Check the parent ID "to-be" whether the user can write into a category
-        if (null !== $action->getNewPid() && !$this->security->isGranted(NewsCategoriesPermissions::USER_CAN_ACCESS_CATEGORY, $action->getNewPid())) {
+        if ($action->getNewPid() > 0 && !$this->security->isGranted(NewsCategoriesPermissions::USER_CAN_ACCESS_CATEGORY, $action->getNewPid())) {
             return false;
         }
 
@@ -79,5 +90,14 @@ class NewsCategoriesVoter implements CacheableVoterInterface
 
         // Allow new records without PID so the copy operation is available
         return true;
+    }
+
+    private function isNew(CreateAction|DeleteAction|ReadAction|UpdateAction $action): bool
+    {
+        $recordId = $action instanceof CreateAction ? $action->getNewId() : $action->getCurrentId();
+        $newRecords = $this->requestStack->getSession()->getBag('contao_backend')->get('new_records', [])['tl_news_category'] ?? [];
+        $newRecords = array_map('intval', $newRecords);
+
+        return \in_array((int) $recordId, $newRecords, true);
     }
 }
