@@ -12,6 +12,7 @@ use Contao\CoreBundle\Security\DataContainer\ReadAction;
 use Contao\CoreBundle\Security\DataContainer\UpdateAction;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\CacheableVoterInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
@@ -95,7 +96,10 @@ class NewsCategoriesVoter implements CacheableVoterInterface
     private function isNew(CreateAction|DeleteAction|ReadAction|UpdateAction $action): bool
     {
         $recordId = $action instanceof CreateAction ? $action->getNewId() : $action->getCurrentId();
-        $newRecords = $this->requestStack->getSession()->getBag('contao_backend')->get('new_records', [])['tl_news_category'] ?? [];
+
+        /** @var AttributeBag $bag */
+        $bag = $this->requestStack->getSession()->getBag('contao_backend');
+        $newRecords = $bag->get('new_records', [])['tl_news_category'] ?? [];
         $newRecords = array_map('intval', $newRecords);
 
         return \in_array((int) $recordId, $newRecords, true);

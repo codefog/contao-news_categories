@@ -19,6 +19,7 @@ use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 
 #[AsCallback('tl_news_category', 'config.onsubmit')]
 class CategoryPermissionListener
@@ -38,7 +39,10 @@ class CategoryPermissionListener
 
         $categoryId = (int) $dc->id;
         $user = $this->getUser();
-        $newRecords = $this->requestStack->getSession()->getBag('contao_backend')->get('new_records', [])['tl_news_category'] ?? [];
+
+        /** @var AttributeBag $bag */
+        $bag = $this->requestStack->getSession()->getBag('contao_backend');
+        $newRecords = $bag->get('new_records', [])['tl_news_category'] ?? [];
         $newRecords = array_map('intval', $newRecords);
 
         if (

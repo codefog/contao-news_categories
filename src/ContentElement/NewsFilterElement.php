@@ -27,6 +27,7 @@ use Contao\System;
  * @property bool         $news_filterPreserveefault
  * @property int          $news_categoryFilterPage
  * @property string|array $news_categoryImgSize
+ * @property bool         $news_filterPreserve
  */
 class NewsFilterElement extends ContentModule
 {

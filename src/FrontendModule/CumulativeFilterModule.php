@@ -13,8 +13,11 @@ declare(strict_types=1);
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+use Contao\CoreBundle\Routing\ResponseContext\HtmlHeadBag\HtmlHeadBag;
+use Contao\CoreBundle\Routing\ResponseContext\ResponseContext;
 use Contao\FrontendTemplate;
 use Contao\StringUtil;
+use Contao\System;
 
 class CumulativeFilterModule extends NewsModule
 {

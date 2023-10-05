@@ -94,6 +94,8 @@ class NewsCategoryModel extends ParentModel
 
     /**
      * Find published news categories by news criteria.
+     *
+     * @return Collection<NewsCategoryModel>|null
      */
     public static function findPublishedByArchives(array $archives, array $ids = [], array $aliases = [], array $excludedIds = []): Collection|null
     {
@@ -108,7 +110,7 @@ class NewsCategoryModel extends ParentModel
             return null;
         }
 
-        $t = static::getTableAlias();
+        $t = static::getTable();
         $values = [];
 
         // Start sub select query for relations
@@ -165,7 +167,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
     {
         $values = [];
         $columns = [];
-        $t = static::getTableAlias();
+        $t = static::getTable();
 
         // Determine the alias condition
         if (is_numeric($idOrAlias)) {
@@ -192,10 +194,12 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
 
     /**
      * Find published news categories.
+     *
+     * @return Collection<NewsCategoryModel>|null
      */
     public static function findPublished(): Collection|null
     {
-        $t = static::getTableAlias();
+        $t = static::getTable();
         $options = ['order' => "$t.sorting"];
 
         if (System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
@@ -207,6 +211,8 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
 
     /**
      * Find published news categories by parent ID and IDs.
+     *
+     * @return Collection<NewsCategoryModel>
      */
     public static function findPublishedByIds(array $ids, int|null $pid = null): Collection|null
     {
@@ -214,7 +220,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             return null;
         }
 
-        $t = static::getTableAlias();
+        $t = static::getTable();
         $columns = ["$t.id IN (".implode(',', array_map('intval', $ids)).')'];
         $values = [];
 
@@ -235,11 +241,11 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
     /**
      * Find published news categories by parent ID.
      *
-     * @param int $pid
+     * @return Collection<NewsCategoryModel>
      */
-    public static function findPublishedByPid($pid): Collection|null
+    public static function findPublishedByPid(int $pid): Collection|null
     {
-        $t = static::getTableAlias();
+        $t = static::getTable();
         $columns = ["$t.pid=?"];
         $values = [$pid];
 
@@ -254,7 +260,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
     /**
      * Find the published categories by news.
      *
-     * @return Collection|array<NewsCategoryModel>|null
+     * @return Collection<NewsCategoryModel>|array<NewsCategoryModel>|null
      */
     public static function findPublishedByNews(array|int $newsId, array $arrOptions = []): Collection|array|null
     {
@@ -262,7 +268,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             return null;
         }
 
-        $t = static::getTableAlias();
+        $t = static::getTable();
         $columns = ["$t.id IN (".implode(',', array_map('intval', array_unique($ids))).')'];
         $values = [];
 
@@ -340,10 +346,8 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
 
     /**
      * Get all subcategory IDs.
-     *
-     * @return array
      */
-    public static function getAllSubcategoriesIds($category)
+    public static function getAllSubcategoriesIds($category): array
     {
         $ids = Database::getInstance()->getChildRecords($category, static::$strTable, false, (array) $category, !System::getContainer()->get('contao.security.token_checker')->isPreviewMode() ? 'published=1' : '');
         $ids = array_map('intval', $ids);
@@ -351,29 +355,22 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
         return $ids;
     }
 
-    public static function findMultipleByIds($arrIds, array $arrOptions = [])
+    /**
+     * @return Collection<NewsCategoryModel>|null
+     */
+    public static function findMultipleByIds($arrIds, array $arrOptions = []): Collection|null
     {
         if (!self::isMultilingual()) {
             return parent::findMultipleByIds($arrIds, $arrOptions);
         }
 
-        $t = static::getTableAlias();
+        $t = static::getTable();
 
         if (!isset($arrOptions['order'])) {
             $arrOptions['order'] = Database::getInstance()->findInSet("$t.id", $arrIds);
         }
 
-        return static::findBy(["$t.id IN (".implode(',', array_map('intval', $arrIds)).')'], null);
-    }
-
-    /**
-     * Get the table alias.
-     *
-     * @return string
-     */
-    public static function getTableAlias()
-    {
-        return static::$strTable;
+        return static::findBy(["$t.id IN (".implode(',', array_map('intval', $arrIds)).')'], null, $arrOptions);
     }
 
     private static function isMultilingual(): bool

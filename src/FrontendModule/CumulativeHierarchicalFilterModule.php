@@ -13,6 +13,9 @@ declare(strict_types=1);
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
+use Contao\CoreBundle\Routing\ResponseContext\HtmlHeadBag\HtmlHeadBag;
+use Contao\CoreBundle\Routing\ResponseContext\ResponseContext;
 use Contao\Database;
 use Contao\FrontendTemplate;
 use Contao\Input;
@@ -42,7 +45,7 @@ class CumulativeHierarchicalFilterModule extends NewsModule
         }
 
         $container = System::getContainer();
-        $param = $container->get('codefog_news_categories.manager')->getParameterName();
+        $param = $container->get(NewsCategoriesManager::class)->getParameterName();
 
         // Get the active category
         if (null !== ($activeCategory = NewsCategoryModel::findPublishedByIdOrAlias(Input::get($param)))) {

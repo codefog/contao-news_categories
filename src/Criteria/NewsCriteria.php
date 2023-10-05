@@ -17,6 +17,7 @@ use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
 use Contao\Database;
 use Contao\Date;
 use Contao\NewsModel;
@@ -33,8 +34,10 @@ class NewsCriteria
 
     private array $options = [];
 
-    public function __construct(private readonly ContaoFramework $framework)
-    {
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly TokenChecker $tokenChecker,
+    ) {
     }
 
     /**
@@ -71,11 +74,8 @@ class NewsCriteria
         $this->options['order'] = $order;
 
         // Never return unpublished elements in the back end, so they don't end up in the RSS feed
-        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
-            /** @var Date $dateAdapter */
-            $dateAdapter = $this->framework->getAdapter(Date::class);
-
-            $time = $dateAdapter->floorToMinute();
+        if (!$this->tokenChecker->isPreviewMode()) {
+            $time = Date::floorToMinute();
             $this->columns[] = "$t.published=? AND ($t.start=? OR $t.start<=?) AND ($t.stop=? OR $t.stop>?)";
             $this->values = array_merge($this->values, [1, '', $time, '', $time]);
         }
