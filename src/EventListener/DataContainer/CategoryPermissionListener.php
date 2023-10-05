@@ -43,7 +43,7 @@ class CategoryPermissionListener
         // Add the permissions on group level
         if ('custom' !== $user->inherit) {
             $groups = $this->connection->fetchAllAssociative(
-                'SELECT id, newscategories, newscategories_roots FROM tl_user_group WHERE id IN('.implode(',', array_map('intval', $user->groups)).')'
+                'SELECT id, newscategories, newscategories_roots FROM tl_user_group WHERE id IN('.implode(',', array_map('intval', $user->groups)).')',
             );
 
             foreach ($groups as $group) {

@@ -14,7 +14,6 @@ namespace Codefog\NewsCategoriesBundle\Model;
 
 use Codefog\HasteBundle\DcaRelationsManager;
 use Codefog\HasteBundle\Model\DcaRelationsModel;
-use Codefog\NewsCategoriesBundle\MultilingualHelper;
 use Contao\Database;
 use Contao\Date;
 use Contao\FilesModel;
@@ -27,7 +26,7 @@ use Terminal42\DcMultilingualBundle\Model\Multilingual;
 /*
  * Use the multilingual model if available
  */
-if (MultilingualHelper::isActive()) {
+if (class_exists(Multilingual::class)) {
     class ParentModel extends Multilingual
     {
     }
@@ -49,7 +48,7 @@ class NewsCategoryModel extends ParentModel
     public function __get($name)
     {
         // Fix the compatibility with DC_Multilingual v4 (#184)
-        if ('id' === $name && MultilingualHelper::isActive() && $this->lid) {
+        if ('id' === $name && self::isMultilingual() && $this->lid) {
             return $this->lid;
         }
 
@@ -142,7 +141,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
 
         // Filter by custom aliases
         if (\count($aliases) > 0) {
-            if (MultilingualHelper::isActive()) {
+            if (self::isMultilingual()) {
                 $columns[] = "($t.alias IN ('".implode("','", $aliases)."') OR translation.alias IN ('".implode("','", $aliases)."'))";
             } else {
                 $columns[] = "$t.alias IN ('".implode("','", $aliases)."')";
@@ -173,7 +172,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             $columns[] = "$t.id=?";
             $values[] = (int) $idOrAlias;
         } else {
-            if (MultilingualHelper::isActive()) {
+            if (self::isMultilingual()) {
                 $columns[] = "($t.alias=? OR translation.alias=?)";
                 $values[] = $idOrAlias;
                 $values[] = $idOrAlias;
@@ -354,7 +353,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
 
     public static function findMultipleByIds($arrIds, array $arrOptions = [])
     {
-        if (!MultilingualHelper::isActive()) {
+        if (!self::isMultilingual()) {
             return parent::findMultipleByIds($arrIds, $arrOptions);
         }
 
@@ -375,5 +374,10 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
     public static function getTableAlias()
     {
         return static::$strTable;
+    }
+
+    private static function isMultilingual(): bool
+    {
+        return is_a(self::class, Multilingual::class, true);
     }
 }

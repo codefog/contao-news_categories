@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Codefog\NewsCategoriesBundle\EventListener\DataContainer;
 
-use Codefog\NewsCategoriesBundle\MultilingualHelper;
 use Contao\Config;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Slug\Slug;
@@ -46,7 +45,7 @@ class NewsCategoryAliasListener
                     $slugOptions['validChars'] = $validChars;
                 }
 
-                if (MultilingualHelper::isActive() && $dc instanceof Driver) {
+                if ($dc instanceof Driver) {
                     $slugOptions['locale'] = $dc->getCurrentLanguage();
                 }
 
@@ -56,7 +55,7 @@ class NewsCategoryAliasListener
             }
         }
 
-        if ($dc instanceof Driver && MultilingualHelper::isActive()) {
+        if ($dc instanceof Driver) {
             $exists = $this->db->fetchOne(
                 "SELECT id FROM {$dc->table} WHERE alias=? AND id!=? AND {$dc->getLanguageColumn()}=?",
                 [$value, $dc->activeRecord->id, $dc->getCurrentLanguage()],

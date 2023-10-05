@@ -8,7 +8,6 @@
  * @license    MIT
  */
 
-use Codefog\NewsCategoriesBundle\MultilingualHelper;
 use Contao\Config;
 use Contao\DataContainer;
 use Contao\DC_Table;
@@ -176,7 +175,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
 /*
  * Enable multilingual features
  */
-if (MultilingualHelper::isActive()) {
+if (class_exists(Driver::class)) {
     // Config
     $GLOBALS['TL_DCA']['tl_news_category']['config']['dataContainer'] = Driver::class;
     $GLOBALS['TL_DCA']['tl_news_category']['config']['langColumn'] = 'language';
