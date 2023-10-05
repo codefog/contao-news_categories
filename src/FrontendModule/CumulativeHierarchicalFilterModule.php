@@ -48,7 +48,7 @@ class CumulativeHierarchicalFilterModule extends NewsModule
         $param = $container->get(NewsCategoriesManager::class)->getParameterName();
 
         // Get the active category
-        if (null !== ($activeCategory = NewsCategoryModel::findPublishedByIdOrAlias(Input::get($param)))) {
+        if (($alias = Input::get($param)) && null !== ($activeCategory = NewsCategoryModel::findPublishedByIdOrAlias($alias))) {
             $this->activeCategory = $activeCategory;
 
             // Set the canonical URL

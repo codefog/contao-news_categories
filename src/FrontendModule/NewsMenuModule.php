@@ -199,10 +199,8 @@ class NewsMenuModule extends ModuleNewsMenu
 
     /**
      * Generate the menu URL with category.
-     *
-     * @return string
      */
-    protected function generateCategoryUrl()
+    protected function generateCategoryUrl(): string
     {
         /** @var PageModel $target */
         if ($this->jumpTo && ($target = $this->objModel->getRelated('jumpTo')) instanceof PageModel) {
@@ -212,19 +210,21 @@ class NewsMenuModule extends ModuleNewsMenu
         }
 
         $manager = System::getContainer()->get(NewsCategoriesManager::class);
+        $alias = Input::get($manager->getParameterName());
+
+        if (!$alias) {
+            return $page->getFrontendUrl();
+        }
 
         /** @var NewsCategoryModel $category */
-        $category = NewsCategoryModel::findPublishedByIdOrAlias(Input::get($manager->getParameterName()));
+        $category = NewsCategoryModel::findPublishedByIdOrAlias($alias);
 
         // Generate the category URL
         if (null !== $category) {
-            $url = $manager->generateUrl($category, $page);
-        } else {
-            // Generate the regular URL
-            $url = $page->getFrontendUrl();
+            return $manager->generateUrl($category, $page);
         }
 
-        return $url;
+        return $page->getFrontendUrl();
     }
 
     /**
