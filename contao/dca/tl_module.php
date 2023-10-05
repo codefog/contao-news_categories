@@ -200,7 +200,4 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryFilterPage'] = [
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryImgSize'] = $GLOBALS['TL_DCA']['tl_module']['fields']['imgSize'];
 unset($GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryImgSize']['label']);
 $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryImgSize']['label'] = &$GLOBALS['TL_LANG']['tl_module']['news_categoryImgSize'];
-
-if (class_exists(ImageSizeOptionsListener::class)) {
-    $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryImgSize']['options_callback'] = ['contao.listener.image_size_options', '__invoke'];
-}
+$GLOBALS['TL_DCA']['tl_module']['fields']['news_categoryImgSize']['options_callback'] = ['contao.listener.image_size_options', '__invoke'];

@@ -26,10 +26,5 @@ class CodefogNewsCategoriesExtension extends Extension
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../config'));
         $loader->load('listener.yml');
         $loader->load('services.yml');
-
-        // Remove migration service for Contao 4.4
-        if (!class_exists(AbstractMigration::class)) {
-            $container->removeDefinition(BooleanFieldsMigration::class);
-        }
     }
 }
