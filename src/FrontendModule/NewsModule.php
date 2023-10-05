@@ -103,7 +103,7 @@ abstract class NewsModule extends ModuleNews
             return '';
         }
 
-        $this->manager = System::getContainer()->get('codefog_news_categories.manager');
+        $this->manager = System::getContainer()->get(NewsCategoriesManager::class);
         $this->currentNewsCategories = $this->getCurrentNewsCategories();
 
         return parent::generate();
@@ -155,7 +155,7 @@ abstract class NewsModule extends ModuleNews
      */
     protected function getActiveCategories(array $customCategories = []): Collection|null
     {
-        $param = System::getContainer()->get('codefog_news_categories.manager')->getParameterName();
+        $param = System::getContainer()->get(NewsCategoriesManager::class)->getParameterName();
 
         if (!($aliases = Input::get($param))) {
             return null;

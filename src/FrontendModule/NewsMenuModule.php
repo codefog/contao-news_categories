@@ -14,6 +14,7 @@ namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
 use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\Database;
 use Contao\Date;
@@ -210,7 +211,7 @@ class NewsMenuModule extends ModuleNewsMenu
             $page = $GLOBALS['objPage'];
         }
 
-        $manager = System::getContainer()->get('codefog_news_categories.manager');
+        $manager = System::getContainer()->get(NewsCategoriesManager::class);
 
         /** @var NewsCategoryModel $category */
         $category = NewsCategoryModel::findPublishedByIdOrAlias(Input::get($manager->getParameterName()));
