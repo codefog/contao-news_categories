@@ -97,13 +97,12 @@ class NewsCategoryModel extends ParentModel
      *
      * @return Collection<NewsCategoryModel>|null
      */
-    public static function findPublishedByArchives(array $archives, array $ids = [], array $aliases = [], array $excludedIds = []): Collection|null
+    public static function findPublishedByArchives(array $archives, array $ids = [], array $aliases = [], array $excludedIds = [], array $arrOptions = []): Collection|null
     {
         if (0 === \count($archives)) {
             return null;
         }
 
-        /** @var DcaRelationsManager $dcaRelationsManager */
         $dcaRelationsManager = System::getContainer()->get(DcaRelationsManager::class);
 
         if (null === ($relation = $dcaRelationsManager->getRelation('tl_news', 'categories'))) {
@@ -119,7 +118,7 @@ FROM {$relation['table']}
 WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".implode(',', array_map('intval', $archives)).')';
 
         // Include only the published news items
-        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
+        if (!self::isPreviewMode($arrOptions)) {
             $time = Date::floorToMinute();
             $subSelect .= ' AND (start=? OR start<=?) AND (stop=? OR stop>?) AND published=?';
             $values = array_merge($values, ['', $time, '', $time + 60, 1]);
@@ -150,20 +149,18 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             }
         }
 
-        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
+        if (!self::isPreviewMode($arrOptions)) {
             $columns[] = "$t.published=?";
             $values[] = 1;
         }
 
-        return static::findBy($columns, $values, ['order' => "$t.sorting"]);
+        return static::findBy($columns, $values, array_merge(['order' => "$t.sorting"], $arrOptions));
     }
 
     /**
      * Find published category by ID or alias.
-     *
-     * @param string $idOrAlias
      */
-    public static function findPublishedByIdOrAlias($idOrAlias): self|null
+    public static function findPublishedByIdOrAlias(string $idOrAlias, array $arrOptions = []): self|null
     {
         $values = [];
         $columns = [];
@@ -184,12 +181,12 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             }
         }
 
-        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
+        if (!self::isPreviewMode($arrOptions)) {
             $columns[] = "$t.published=?";
             $values[] = 1;
         }
 
-        return static::findOneBy($columns, $values);
+        return static::findOneBy($columns, $values, $arrOptions);
     }
 
     /**
@@ -197,16 +194,16 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
      *
      * @return Collection<NewsCategoryModel>|null
      */
-    public static function findPublished(): Collection|null
+    public static function findPublished(array $arrOptions = []): Collection|null
     {
         $t = static::getTable();
-        $options = ['order' => "$t.sorting"];
+        $arrOptions = array_merge(['order' => "$t.sorting"], $arrOptions);
 
-        if (System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
-            return static::findAll($options);
+        if (self::isPreviewMode($arrOptions)) {
+            return static::findAll($arrOptions);
         }
 
-        return static::findBy('published', 1, $options);
+        return static::findBy('published', 1, $arrOptions);
     }
 
     /**
@@ -214,7 +211,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
      *
      * @return Collection<NewsCategoryModel>
      */
-    public static function findPublishedByIds(array $ids, int|null $pid = null): Collection|null
+    public static function findPublishedByIds(array $ids, int|null $pid = null, array $arrOptions = []): Collection|null
     {
         if (0 === \count($ids)) {
             return null;
@@ -230,12 +227,12 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             $values[] = $pid;
         }
 
-        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
+        if (!self::isPreviewMode($arrOptions)) {
             $columns[] = "$t.published=?";
             $values[] = 1;
         }
 
-        return static::findBy($columns, $values, ['order' => "$t.sorting"]);
+        return static::findBy($columns, $values, array_merge(['order' => "$t.sorting"], $arrOptions));
     }
 
     /**
@@ -243,18 +240,18 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
      *
      * @return Collection<NewsCategoryModel>
      */
-    public static function findPublishedByPid(int $pid): Collection|null
+    public static function findPublishedByPid(int $pid, array $arrOptions = []): Collection|null
     {
         $t = static::getTable();
         $columns = ["$t.pid=?"];
         $values = [$pid];
 
-        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
+        if (!self::isPreviewMode($arrOptions)) {
             $columns[] = "$t.published=?";
             $values[] = 1;
         }
 
-        return static::findBy($columns, $values, ['order' => "$t.sorting"]);
+        return static::findBy($columns, $values, array_merge(['order' => "$t.sorting"], $arrOptions));
     }
 
     /**
@@ -272,7 +269,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
         $columns = ["$t.id IN (".implode(',', array_map('intval', array_unique($ids))).')'];
         $values = [];
 
-        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
+        if (!self::isPreviewMode($arrOptions)) {
             $columns[] = "$t.published=?";
             $values[] = 1;
         }
@@ -288,7 +285,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
      *
      * @return int
      */
-    public static function getUsage(array $archives = [], int|null $category = null, $includeSubcategories = false, array $cumulativeCategories = [], $unionFiltering = false)
+    public static function getUsage(array $archives = [], int|null $category = null, $includeSubcategories = false, array $cumulativeCategories = [], $unionFiltering = false, array $arrOptions = [])
     {
         $t = NewsModel::getTable();
 
@@ -335,13 +332,13 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             $columns[] = "$t.pid IN (".implode(',', array_map('intval', $archives)).')';
         }
 
-        if (!System::getContainer()->get('contao.security.token_checker')->isPreviewMode()) {
+        if (!self::isPreviewMode($arrOptions)) {
             $time = Date::floorToMinute();
             $columns[] = "$t.published=? AND ($t.start=? OR $t.start<=?) AND ($t.stop=? OR $t.stop>?)";
             $values = array_merge($values, [1, '', $time, '', $time]);
         }
 
-        return NewsModel::countBy($columns, $values);
+        return NewsModel::countBy($columns, $values, $arrOptions);
     }
 
     /**
@@ -349,7 +346,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
      */
     public static function getAllSubcategoriesIds($category): array
     {
-        $ids = Database::getInstance()->getChildRecords($category, static::$strTable, false, (array) $category, !System::getContainer()->get('contao.security.token_checker')->isPreviewMode() ? 'published=1' : '');
+        $ids = Database::getInstance()->getChildRecords($category, static::$strTable, false, (array) $category, !self::isPreviewMode([]) ? 'published=1' : '');
         $ids = array_map('intval', $ids);
 
         return $ids;
