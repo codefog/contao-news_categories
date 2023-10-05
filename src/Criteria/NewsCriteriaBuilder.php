@@ -19,6 +19,7 @@ use Codefog\NewsCategoriesBundle\FrontendModule\CumulativeFilterModule;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
 use Contao\Input;
 use Contao\Module;
 use Contao\StringUtil;
@@ -28,6 +29,7 @@ class NewsCriteriaBuilder
 {
     public function __construct(
         private readonly ContaoFramework $framework,
+        private readonly TokenChecker $tokenChecker,
         private readonly Connection $db,
         private readonly NewsCategoriesManager $manager,
     ) {
@@ -41,7 +43,7 @@ class NewsCriteriaBuilder
      */
     public function getCriteriaForArchiveModule(array $archives, $begin, $end, Module $module): NewsCriteria|null
     {
-        $criteria = new NewsCriteria($this->framework);
+        $criteria = new NewsCriteria($this->framework, $this->tokenChecker);
 
         try {
             $criteria->setBasicCriteria($archives, $module->news_order);
@@ -63,7 +65,7 @@ class NewsCriteriaBuilder
      */
     public function getCriteriaForListModule(array $archives, bool|null $featured, Module $module): NewsCriteria|null
     {
-        $criteria = new NewsCriteria($this->framework);
+        $criteria = new NewsCriteria($this->framework, $this->tokenChecker);
 
         try {
             $criteria->setBasicCriteria($archives, $module->news_order, $module->news_featured);
@@ -92,7 +94,7 @@ class NewsCriteriaBuilder
      */
     public function getCriteriaForMenuModule(array $archives, Module $module): NewsCriteria|null
     {
-        $criteria = new NewsCriteria($this->framework);
+        $criteria = new NewsCriteria($this->framework, $this->tokenChecker);
 
         try {
             $criteria->setBasicCriteria($archives, $module->news_order);
