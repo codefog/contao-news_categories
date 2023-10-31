@@ -58,19 +58,19 @@ class NewsCategoryAliasListener
         if ($dc instanceof Driver) {
             $exists = $this->db->fetchOne(
                 "SELECT id FROM {$dc->table} WHERE alias=? AND id!=? AND {$dc->getLanguageColumn()}=?",
-                [$value, $dc->activeRecord->id, $dc->getCurrentLanguage()],
+                [$value, $dc->id, $dc->getCurrentLanguage()],
             );
         } else {
             $exists = $this->db->fetchOne(
                 "SELECT id FROM {$dc->table} WHERE alias=? AND id!=?",
-                [$value, $dc->activeRecord->id],
+                [$value, $dc->id],
             );
         }
 
         // Check whether the category alias exists
         if ($exists) {
             if ($autoAlias) {
-                $value .= '-'.$dc->activeRecord->id;
+                $value .= '-'.$dc->id;
             } else {
                 throw new \RuntimeException(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $value));
             }

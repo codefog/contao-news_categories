@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
+use Codefog\NewsCategoriesBundle\Criteria\NewsCriteriaBuilder;
 use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
 use Contao\Config;
 use Contao\CoreBundle\Exception\PageNotFoundException;
@@ -25,7 +26,11 @@ use Contao\NewsModel;
 use Contao\PageModel;
 use Contao\Pagination;
 use Contao\System;
+use Contao\Template;
 
+/**
+ * @property Template $Template
+ */
 class NewsArchiveModule extends ModuleNewsArchive
 {
     protected function compile(): void
@@ -151,7 +156,7 @@ class NewsArchiveModule extends ModuleNewsArchive
      *
      * @return Collection<NewsModel>|null
      */
-    protected function fetchNewsItems(int $begin, int $end, int $limit = null, int $offset = null): Collection|null
+    protected function fetchNewsItems(int $begin, int $end, int|null $limit = null, int|null $offset = null): Collection|null
     {
         if (null === ($criteria = $this->getSearchCriteria($begin, $end))) {
             return null;
@@ -172,7 +177,7 @@ class NewsArchiveModule extends ModuleNewsArchive
     {
         try {
             $criteria = System::getContainer()
-                ->get('codefog_news_categories.news_criteria_builder')
+                ->get(NewsCriteriaBuilder::class)
                 ->getCriteriaForArchiveModule($this->news_archives, $begin, $end, $this)
             ;
         } catch (CategoryNotFoundException $e) {

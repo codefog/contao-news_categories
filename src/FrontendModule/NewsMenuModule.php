@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
+use Codefog\NewsCategoriesBundle\Criteria\NewsCriteriaBuilder;
 use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
@@ -24,14 +25,17 @@ use Contao\ModuleNewsMenu;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
+use Contao\Template;
 
+/**
+ * @property Template $Template
+ */
 class NewsMenuModule extends ModuleNewsMenu
 {
     protected function compile(): void
     {
         $this->strUrl = $this->generateCategoryUrl();
 
-        // Support Contao 4.5 news module
         $this->news_order = 'order_date_asc' === $this->news_order ? 'ascending' : $this->news_order;
 
         parent::compile();
@@ -152,7 +156,7 @@ class NewsMenuModule extends ModuleNewsMenu
 
         // Create the date object
         try {
-            $this->Date = Input::get('day') ? new Date(Input::get('day'), 'Ymd') : new Date();
+            $this->Date = Input::get('day') ? new Date((int) Input::get('day'), 'Ymd') : new Date();
         } catch (\OutOfBoundsException) {
             throw new PageNotFoundException('Page not found: '.Environment::get('uri'));
         }
@@ -168,7 +172,7 @@ class NewsMenuModule extends ModuleNewsMenu
         $prevYear = 1 === $intMonth ? $intYear - 1 : $intYear;
         $lblPrevious = $GLOBALS['TL_LANG']['MONTHS'][$prevMonth - 1].' '.$prevYear;
 
-        $this->Template->prevHref = $this->strUrl.'?day='.$prevYear.(\strlen($prevMonth) < 2 ? '0' : '').$prevMonth.'01';
+        $this->Template->prevHref = $this->strUrl.'?day='.$prevYear.str_pad((string) $prevMonth, 2, '0', STR_PAD_LEFT).'01';
         $this->Template->prevTitle = StringUtil::specialchars($lblPrevious);
         $this->Template->prevLink = $GLOBALS['TL_LANG']['MSC']['news_previous'].' '.$lblPrevious;
         $this->Template->prevLabel = $GLOBALS['TL_LANG']['MSC']['news_previous'];
@@ -181,7 +185,7 @@ class NewsMenuModule extends ModuleNewsMenu
         $nextYear = 12 === $intMonth ? $intYear + 1 : $intYear;
         $lblNext = $GLOBALS['TL_LANG']['MONTHS'][$nextMonth - 1].' '.$nextYear;
 
-        $this->Template->nextHref = $this->strUrl.'?day='.$nextYear.(\strlen($nextMonth) < 2 ? '0' : '').$nextMonth.'01';
+        $this->Template->nextHref = $this->strUrl.'?day='.$nextYear.str_pad((string) $nextMonth, 2, '0', STR_PAD_LEFT).$nextMonth.'01';
         $this->Template->nextTitle = StringUtil::specialchars($lblNext);
         $this->Template->nextLink = $lblNext.' '.$GLOBALS['TL_LANG']['MSC']['news_next'];
         $this->Template->nextLabel = $GLOBALS['TL_LANG']['MSC']['news_next'];
@@ -202,10 +206,13 @@ class NewsMenuModule extends ModuleNewsMenu
      */
     protected function generateCategoryUrl(): string
     {
-        /** @var PageModel $target */
-        if ($this->jumpTo && ($target = $this->objModel->getRelated('jumpTo')) instanceof PageModel) {
-            $page = $target;
-        } else {
+        $page = null;
+
+        if ($this->jumpTo) {
+            $page = $this->objModel->getRelated('jumpTo');
+        }
+
+        if (!$page instanceof PageModel) {
             $page = $GLOBALS['objPage'];
         }
 
@@ -230,15 +237,13 @@ class NewsMenuModule extends ModuleNewsMenu
     /**
      * Get the filtered news IDs.
      *
-     * @return array
-     *
      * @throws PageNotFoundException
      */
-    protected function getFilteredNewsIds()
+    protected function getFilteredNewsIds(): array
     {
         try {
             $criteria = System::getContainer()
-                ->get('codefog_news_categories.news_criteria_builder')
+                ->get(NewsCriteriaBuilder::class)
                 ->getCriteriaForMenuModule($this->news_archives, $this)
             ;
         } catch (CategoryNotFoundException $e) {

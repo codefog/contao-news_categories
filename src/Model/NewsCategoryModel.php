@@ -95,7 +95,7 @@ class NewsCategoryModel extends ParentModel
     /**
      * Find published news categories by news criteria.
      *
-     * @return Collection<NewsCategoryModel>|null
+     * @return Collection<static>|null
      */
     public static function findPublishedByArchives(array $archives, array $ids = [], array $aliases = [], array $excludedIds = [], array $arrOptions = []): Collection|null
     {
@@ -192,7 +192,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
     /**
      * Find published news categories.
      *
-     * @return Collection<NewsCategoryModel>|null
+     * @return Collection<static>|null
      */
     public static function findPublished(array $arrOptions = []): Collection|null
     {
@@ -209,7 +209,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
     /**
      * Find published news categories by parent ID and IDs.
      *
-     * @return Collection<NewsCategoryModel>
+     * @return Collection<static>|null
      */
     public static function findPublishedByIds(array $ids, int|null $pid = null, array $arrOptions = []): Collection|null
     {
@@ -238,7 +238,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
     /**
      * Find published news categories by parent ID.
      *
-     * @return Collection<NewsCategoryModel>
+     * @return Collection<static>|null
      */
     public static function findPublishedByPid(int $pid, array $arrOptions = []): Collection|null
     {
@@ -257,7 +257,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
     /**
      * Find the published categories by news.
      *
-     * @return Collection<NewsCategoryModel>|array<NewsCategoryModel>|null
+     * @return Collection<static>|array|null
      */
     public static function findPublishedByNews(array|int $newsId, array $arrOptions = []): Collection|array|null
     {
@@ -344,7 +344,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
     /**
      * Get all subcategory IDs.
      */
-    public static function getAllSubcategoriesIds($category): array
+    public static function getAllSubcategoriesIds(array|int|string $category): array
     {
         $ids = Database::getInstance()->getChildRecords($category, static::$strTable, false, (array) $category, !self::isPreviewMode([]) ? 'published=1' : '');
         $ids = array_map('intval', $ids);
@@ -353,7 +353,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
     }
 
     /**
-     * @return Collection<NewsCategoryModel>|null
+     * @return Collection<static>|null
      */
     public static function findMultipleByIds($arrIds, array $arrOptions = []): Collection|null
     {

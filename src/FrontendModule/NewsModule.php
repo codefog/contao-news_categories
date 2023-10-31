@@ -20,57 +20,54 @@ use Contao\NewsModel;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
+use Contao\Template;
 
 /**
  * @property string|array $news_archives
+ * @property string       $news_order
+ * @property string       $news_featured
  * @property bool         $news_showQuantity
  * @property string|array $news_categories
  * @property bool         $news_customCategories
+ * @property string|array $news_filterCategories
  * @property bool         $news_filterCategoriesCumulative
+ * @property bool         $news_filterCategoriesUnion
  * @property bool         $news_relatedCategories
  * @property string       $news_relatedCategoriesOrder
  * @property bool         $news_includeSubcategories
- * @property bool         $news_filterCategoriesUnion
  * @property string|array $news_filterDefault
  * @property bool         $news_filterPreserve
  * @property bool         $news_resetCategories
  * @property bool         $news_showEmptyCategories
  * @property bool         $news_forceCategoryUrl
+ * @property bool         $news_enableCanonicalUrls
  * @property string|array $news_categoriesRoot
  * @property int          $news_categoryFilterPage
+ * @property string|array $news_categoryImgSize
+ * @property Template     $Template
  */
 abstract class NewsModule extends ModuleNews
 {
     /**
      * Active category.
-     *
-     * @var NewsCategoryModel
      */
-    protected $activeCategory;
+    protected NewsCategoryModel|null $activeCategory = null;
 
     /**
      * Active categories.
      *
      * @var Collection<NewsCategoryModel>|null
      */
-    protected $activeCategories;
+    protected Collection|null $activeCategories = null;
 
     /**
      * News categories of the current news item.
-     *
-     * @var array
      */
-    protected $currentNewsCategories = [];
+    protected array $currentNewsCategories = [];
 
-    /**
-     * @var NewsCategoriesManager
-     */
-    protected $manager;
+    protected NewsCategoriesManager $manager;
 
-    /**
-     * @var PageModel|null
-     */
-    protected $targetPage;
+    protected PageModel|null $targetPage = null;
 
     /**
      * Display a wildcard in the back end.
@@ -111,10 +108,8 @@ abstract class NewsModule extends ModuleNews
 
     /**
      * Get the URL category separator character.
-     *
-     * @return string
      */
-    public static function getCategorySeparator()
+    public static function getCategorySeparator(): string
     {
         return '__';
     }
@@ -202,7 +197,7 @@ abstract class NewsModule extends ModuleNews
      *
      * @return Collection<NewsCategoryModel>|null
      */
-    protected function getInactiveCategories(array $customCategories = [])
+    protected function getInactiveCategories(array $customCategories = []): Collection|null
     {
         $excludedIds = [];
 
@@ -279,10 +274,8 @@ abstract class NewsModule extends ModuleNews
 
     /**
      * Get the target page.
-     *
-     * @return PageModel
      */
-    protected function getTargetPage()
+    protected function getTargetPage(): PageModel
     {
         if (null === $this->targetPage) {
             if (
@@ -302,9 +295,9 @@ abstract class NewsModule extends ModuleNews
     /**
      * Get the category IDs of the current news item.
      *
-     * @return array
+     * @return array<int>
      */
-    protected function getCurrentNewsCategories()
+    protected function getCurrentNewsCategories(): array
     {
         if (
             !($alias = Input::get('auto_item', false, true))
@@ -327,10 +320,8 @@ abstract class NewsModule extends ModuleNews
      * @param string $cssClass
      * @param bool   $isActive
      * @param string $subitems
-     *
-     * @return array
      */
-    protected function generateItem($url, $link, $title, $cssClass, $isActive, $subitems = '', NewsCategoryModel|null $category = null)
+    protected function generateItem($url, $link, $title, $cssClass, $isActive, $subitems = '', NewsCategoryModel|null $category = null): array
     {
         $data = [];
 
@@ -396,10 +387,8 @@ abstract class NewsModule extends ModuleNews
 
     /**
      * Generate the item CSS class.
-     *
-     * @return string
      */
-    protected function generateItemCssClass(NewsCategoryModel $category)
+    protected function generateItemCssClass(NewsCategoryModel $category): string
     {
         $cssClasses = [$category->getCssClass()];
 

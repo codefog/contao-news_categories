@@ -16,6 +16,8 @@ use Codefog\HasteBundle\Model\DcaRelationsModel;
 use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\FrontendModule\CumulativeFilterModule;
+use Codefog\NewsCategoriesBundle\FrontendModule\NewsListModule;
+use Codefog\NewsCategoriesBundle\FrontendModule\NewsModule;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
 use Contao\CoreBundle\Framework\ContaoFramework;
@@ -48,8 +50,7 @@ class NewsCriteriaBuilder
     /**
      * Get the criteria for archive module.
      *
-     * @param int $begin
-     * @param int $end
+     * @param NewsModule $module
      */
     public function getCriteriaForArchiveModule(array $archives, int $begin, int $end, Module $module): NewsCriteria|null
     {
@@ -86,7 +87,7 @@ class NewsCriteriaBuilder
             }
 
             // Set the criteria for related categories
-            if ($module->news_relatedCategories) {
+            if ($module instanceof NewsListModule && $module->news_relatedCategories) {
                 $this->setRelatedListCriteria($criteria, $module);
             } else {
                 // Set the regular list criteria
@@ -101,6 +102,8 @@ class NewsCriteriaBuilder
 
     /**
      * Get the criteria for menu module.
+     *
+     * @param NewsModule $module
      */
     public function getCriteriaForMenuModule(array $archives, Module $module): NewsCriteria|null
     {
@@ -197,7 +200,7 @@ class NewsCriteriaBuilder
      *
      * @throws NoNewsException
      */
-    private function setRelatedListCriteria(NewsCriteria $criteria, Module $module): void
+    private function setRelatedListCriteria(NewsCriteria $criteria, NewsListModule $module): void
     {
         if (null === ($news = $module->currentNews)) {
             throw new NoNewsException();

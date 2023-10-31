@@ -24,7 +24,9 @@ use Contao\NewsModel;
 class NewsCriteria
 {
     private array $columns = [];
+
     private array $values = [];
+
     private array $options = [];
 
     public function __construct(

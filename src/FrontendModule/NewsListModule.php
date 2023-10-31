@@ -25,10 +25,8 @@ class NewsListModule extends ModuleNewsList
 {
     /**
      * Current news for future reference in search builder.
-     *
-     * @var NewsModel
      */
-    public $currentNews;
+    public NewsModel|null $currentNews = null;
 
     /**
      * Set the flag to filter news by categories.

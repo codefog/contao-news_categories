@@ -34,7 +34,7 @@ class NewsDefaultCategoriesListener
     public function __invoke(DataContainer $dc): void
     {
         // Return if the user is allowed to assign categories or the record is not new
-        if ($dc->activeRecord->tstamp > 0 || $this->security->isGranted(NewsCategoriesPermissions::USER_CAN_ASSIGN_CATEGORIES)) {
+        if ($dc->getCurrentRecord()['tstamp'] > 0 || $this->security->isGranted(NewsCategoriesPermissions::USER_CAN_ASSIGN_CATEGORIES)) {
             return;
         }
 
@@ -44,11 +44,12 @@ class NewsDefaultCategoriesListener
             return;
         }
 
+        $field = $dc->field;
         $dc->field = 'categories';
 
         $this->dcaRelationsManager->updateRelatedRecords((array) $user->newscategories_default, $dc);
 
         // Reset back the field property
-        $dc->field = null;
+        $dc->field = $field;
     }
 }

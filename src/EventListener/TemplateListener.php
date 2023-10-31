@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Codefog\NewsCategoriesBundle\EventListener;
 
+use Codefog\NewsCategoriesBundle\FrontendModule\NewsModule;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
@@ -35,6 +36,9 @@ class TemplateListener
     ) {
     }
 
+    /**
+     * @param NewsModule $module
+     */
     public function __invoke(FrontendTemplate $template, array $data, Module $module): void
     {
         /** @var NewsCategoryModel $newsCategoryModelAdapter */
