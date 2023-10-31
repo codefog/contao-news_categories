@@ -34,7 +34,7 @@ class NewsListener
             return 0;
         }
 
-        return $criteria->getNewsModelAdapter()->countBy($criteria->getColumns(), $criteria->getValues());
+        return NewsModel::countBy($criteria->getColumns(), $criteria->getValues());
     }
 
     /**
@@ -50,7 +50,7 @@ class NewsListener
         $criteria->setLimit($limit);
         $criteria->setOffset($offset);
 
-        return $criteria->getNewsModelAdapter()->findBy(
+        return NewsModel::findBy(
             $criteria->getColumns(),
             $criteria->getValues(),
             $criteria->getOptions(),

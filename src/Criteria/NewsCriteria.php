@@ -46,7 +46,7 @@ class NewsCriteria
             throw new NoNewsException();
         }
 
-        $t = $this->getNewsModelAdapter()->getTable();
+        $t = NewsModel::getTable();
 
         $this->columns[] = "$t.pid IN(".implode(',', array_map('intval', $archives)).')';
 
@@ -83,7 +83,7 @@ class NewsCriteria
      */
     public function setFeatured($enable): self
     {
-        $t = $this->getNewsModelAdapter()->getTable();
+        $t = NewsModel::getTable();
 
         if (true === $enable) {
             $this->columns[] = "$t.featured=?";
@@ -104,7 +104,7 @@ class NewsCriteria
      */
     public function setTimeFrame($begin, $end): self
     {
-        $t = $this->getNewsModelAdapter()->getTable();
+        $t = NewsModel::getTable();
 
         $this->columns[] = "$t.date>=? AND $t.date<=?";
         $this->values[] = $begin;
@@ -145,7 +145,7 @@ class NewsCriteria
             throw new NoNewsException();
         }
 
-        $t = $this->getNewsModelAdapter()->getTable();
+        $t = NewsModel::getTable();
 
         $this->columns['defaultCategories'] = "$t.id IN(".implode(',', $newsIds).')';
 
@@ -199,7 +199,7 @@ class NewsCriteria
             unset($this->columns['defaultCategories']);
         }
 
-        $t = $this->getNewsModelAdapter()->getTable();
+        $t = NewsModel::getTable();
 
         $this->columns[] = "$t.id IN(".implode(',', $newsIds).')';
 
@@ -249,7 +249,7 @@ class NewsCriteria
             unset($this->columns['defaultCategories']);
         }
 
-        $t = $this->getNewsModelAdapter()->getTable();
+        $t = NewsModel::getTable();
 
         $this->columns[] = "$t.id IN(".implode(',', $allNewsIds).')';
 
@@ -267,7 +267,7 @@ class NewsCriteria
             throw new NoNewsException();
         }
 
-        $t = $this->getNewsModelAdapter()->getTable();
+        $t = NewsModel::getTable();
 
         $this->columns[] = "$t.id NOT IN (".implode(',', $newsIds).')';
 
@@ -307,17 +307,6 @@ class NewsCriteria
     public function getOptions(): array
     {
         return $this->options;
-    }
-
-    /**
-     * Get the news model adapter.
-     *
-     * @return Adapter<NewsModel>
-     */
-    public function getNewsModelAdapter()
-    {
-        /** @var NewsModel $adapter */
-        return $this->framework->getAdapter(NewsModel::class);
     }
 
     /**
