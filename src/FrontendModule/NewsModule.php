@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
 use Codefog\HasteBundle\Model\DcaRelationsModel;
-use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
+use Codefog\NewsCategoriesBundle\Criteria\NewsCriteriaBuilder;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
@@ -219,17 +219,15 @@ abstract class NewsModule extends ModuleNews
                 // Collect the news that match all active categories
                 /** @var NewsCategoryModel $activeCategory */
                 foreach ($this->activeCategories as $activeCategory) {
-                    $criteria = new NewsCriteria(System::getContainer()->get('contao.framework'));
-
                     try {
-                        $criteria->setBasicCriteria($this->news_archives);
+                        $criteria = System::getContainer()->get(NewsCriteriaBuilder::class)->create($this->news_archives);
                         $criteria->setCategory($activeCategory->id, false, (bool) $this->news_includeSubcategories);
                     } catch (NoNewsException) {
                         continue;
                     }
 
-                    $columns = array_merge($columns, $criteria->getColumns());
-                    $values = array_merge($values, $criteria->getValues());
+                    $columns[] = $criteria->getColumns();
+                    $values = $criteria->getValues();
                 }
 
                 // Should not happen but you never know
@@ -238,8 +236,8 @@ abstract class NewsModule extends ModuleNews
                 }
 
                 $newsIds = Database::getInstance()
-                    ->prepare('SELECT id FROM tl_news WHERE '.implode(' AND ', $columns))
-                    ->execute($values)
+                    ->prepare('SELECT id FROM tl_news WHERE '.implode(' AND ', array_merge(...$columns)))
+                    ->execute(array_merge(...$values))
                     ->fetchEach('id')
                 ;
 

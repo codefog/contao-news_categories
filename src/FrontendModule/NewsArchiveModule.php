@@ -28,9 +28,6 @@ use Contao\System;
 
 class NewsArchiveModule extends ModuleNewsArchive
 {
-    /**
-     * Generate the module.
-     */
     protected function compile(): void
     {
         /** @var PageModel $objPage */
@@ -111,7 +108,7 @@ class NewsArchiveModule extends ModuleNewsArchive
                 }
 
                 // Set limit and offset
-                $limit = $this->perPage;
+                $limit = (int) $this->perPage;
                 $offset = (max($page, 1) - 1) * $this->perPage;
 
                 // Add the pagination menu
@@ -139,15 +136,10 @@ class NewsArchiveModule extends ModuleNewsArchive
 
     /**
      * Count the news items.
-     *
-     * @param int $begin
-     * @param int $end
-     *
-     * @return int
      */
-    protected function countNewsItems($begin, $end)
+    protected function countNewsItems(int $begin, int $end): int
     {
-        if (($criteria = $this->getSearchCriteria($begin, $end)) === null) {
+        if (null === ($criteria = $this->getSearchCriteria($begin, $end))) {
             return 0;
         }
 
@@ -157,14 +149,9 @@ class NewsArchiveModule extends ModuleNewsArchive
     /**
      * Fetch the news items.
      *
-     * @param int $begin
-     * @param int $end
-     * @param int $limit
-     * @param int $offset
-     *
      * @return Collection<NewsModel>|null
      */
-    protected function fetchNewsItems($begin, $end, $limit = null, $offset = null): Collection|null
+    protected function fetchNewsItems(int $begin, int $end, int $limit = null, int $offset = null): Collection|null
     {
         if (null === ($criteria = $this->getSearchCriteria($begin, $end))) {
             return null;
@@ -179,12 +166,9 @@ class NewsArchiveModule extends ModuleNewsArchive
     /**
      * Get the search criteria.
      *
-     * @param int $begin
-     * @param int $end
-     *
      * @throws PageNotFoundException
      */
-    protected function getSearchCriteria($begin, $end): NewsCriteria|null
+    protected function getSearchCriteria(int $begin, int $end): NewsCriteria|null
     {
         try {
             $criteria = System::getContainer()

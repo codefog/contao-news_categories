@@ -24,7 +24,9 @@ use Contao\Input;
 use Contao\Module;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
+#[Autoconfigure(public: true)]
 class NewsCriteriaBuilder
 {
     public function __construct(
@@ -35,13 +37,21 @@ class NewsCriteriaBuilder
     ) {
     }
 
+    public function create(array $archives): NewsCriteria
+    {
+        $criteria = new NewsCriteria($this->framework, $this->tokenChecker);
+        $criteria->setBasicCriteria($archives);
+
+        return $criteria;
+    }
+
     /**
      * Get the criteria for archive module.
      *
      * @param int $begin
      * @param int $end
      */
-    public function getCriteriaForArchiveModule(array $archives, $begin, $end, Module $module): NewsCriteria|null
+    public function getCriteriaForArchiveModule(array $archives, int $begin, int $end, Module $module): NewsCriteria|null
     {
         $criteria = new NewsCriteria($this->framework, $this->tokenChecker);
 

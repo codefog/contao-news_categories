@@ -15,23 +15,16 @@ namespace Codefog\NewsCategoriesBundle\Criteria;
 use Codefog\HasteBundle\Model\DcaRelationsModel;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
-use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
 use Contao\Database;
 use Contao\Date;
 use Contao\NewsModel;
-use Contao\System;
 
 class NewsCriteria
 {
     private array $columns = [];
-
-    /**
-     * @var array
-     */
-    private $values = [];
-
+    private array $values = [];
     private array $options = [];
 
     public function __construct(
@@ -45,7 +38,7 @@ class NewsCriteria
      *
      * @throws NoNewsException
      */
-    public function setBasicCriteria(array $archives, string|null $sorting = null, string|null $featured = null): void
+    public function setBasicCriteria(array $archives, string|null $sorting = null, string|null $featured = null): self
     {
         $archives = $this->parseIds($archives);
 
@@ -79,6 +72,8 @@ class NewsCriteria
             $this->columns[] = "$t.published=? AND ($t.start=? OR $t.start<=?) AND ($t.stop=? OR $t.stop>?)";
             $this->values = array_merge($this->values, [1, '', $time, '', $time]);
         }
+
+        return $this;
     }
 
     /**
@@ -86,7 +81,7 @@ class NewsCriteria
      *
      * @param bool $enable
      */
-    public function setFeatured($enable): void
+    public function setFeatured($enable): self
     {
         $t = $this->getNewsModelAdapter()->getTable();
 
@@ -97,6 +92,8 @@ class NewsCriteria
             $this->columns[] = "$t.featured=?";
             $this->values[] = '';
         }
+
+        return $this;
     }
 
     /**
@@ -105,13 +102,15 @@ class NewsCriteria
      * @param int $begin
      * @param int $end
      */
-    public function setTimeFrame($begin, $end): void
+    public function setTimeFrame($begin, $end): self
     {
         $t = $this->getNewsModelAdapter()->getTable();
 
         $this->columns[] = "$t.date>=? AND $t.date<=?";
         $this->values[] = $begin;
         $this->values[] = $end;
+
+        return $this;
     }
 
     /**
@@ -121,7 +120,7 @@ class NewsCriteria
      *
      * @throws NoNewsException
      */
-    public function setDefaultCategories(array $defaultCategories, $includeSubcategories = true, string|null $order = null): void
+    public function setDefaultCategories(array $defaultCategories, $includeSubcategories = true, string|null $order = null): self
     {
         $defaultCategories = $this->parseIds($defaultCategories);
 
@@ -163,6 +162,8 @@ class NewsCriteria
 
             $this->options['order'] = Database::getInstance()->findInSet("$t.id", array_keys($mapper));
         }
+
+        return $this;
     }
 
     /**
@@ -174,7 +175,7 @@ class NewsCriteria
      *
      * @throws NoNewsException
      */
-    public function setCategory($category, $preserveDefault = false, $includeSubcategories = false): void
+    public function setCategory($category, $preserveDefault = false, $includeSubcategories = false): self
     {
         /** @var DcaRelationsModel $model */
         $model = $this->framework->getAdapter(DcaRelationsModel::class);
@@ -201,6 +202,8 @@ class NewsCriteria
         $t = $this->getNewsModelAdapter()->getTable();
 
         $this->columns[] = "$t.id IN(".implode(',', $newsIds).')';
+
+        return $this;
     }
 
     /**
@@ -212,7 +215,7 @@ class NewsCriteria
      *
      * @throws NoNewsException
      */
-    public function setCategories($categories, $preserveDefault = false, $includeSubcategories = false): void
+    public function setCategories($categories, $preserveDefault = false, $includeSubcategories = false): self
     {
         $allNewsIds = [];
 
@@ -249,64 +252,59 @@ class NewsCriteria
         $t = $this->getNewsModelAdapter()->getTable();
 
         $this->columns[] = "$t.id IN(".implode(',', $allNewsIds).')';
+
+        return $this;
     }
 
     /**
      * Set the excluded news IDs.
      */
-    public function setExcludedNews(array $newsIds): void
+    public function setExcludedNews(array $newsIds): self
     {
         $newsIds = $this->parseIds($newsIds);
 
-        if (0 === \count($newsIds)) {
+        if ([] === $newsIds) {
             throw new NoNewsException();
         }
 
         $t = $this->getNewsModelAdapter()->getTable();
 
         $this->columns[] = "$t.id NOT IN (".implode(',', $newsIds).')';
+
+        return $this;
     }
 
     /**
      * Set the limit.
-     *
-     * @param int $limit
      */
-    public function setLimit($limit): void
+    public function setLimit(int $limit): self
     {
         $this->options['limit'] = $limit;
+
+        return $this;
     }
 
     /**
      * Set the offset.
-     *
-     * @param int $offset
      */
-    public function setOffset($offset): void
+    public function setOffset(int $offset): self
     {
         $this->options['offset'] = $offset;
+
+        return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getColumns()
+    public function getColumns(): array
     {
         return $this->columns;
     }
 
-    /**
-     * @return array
-     */
-    public function getValues()
+    public function getValues(): array
     {
         return $this->values;
     }
 
-    /**
-     * @return array
-     */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
@@ -325,9 +323,9 @@ class NewsCriteria
     /**
      * Parse the record IDs.
      *
-     * @return array
+     * @return array<int>
      */
-    private function parseIds(array $ids)
+    private function parseIds(array $ids): array
     {
         $ids = array_map('intval', $ids);
         $ids = array_filter($ids);
