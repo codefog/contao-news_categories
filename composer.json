@@ -41,6 +41,8 @@
     },
     "config": {
         "allow-plugins": {
+            "contao-components/installer": true,
+            "contao/manager-plugin": true,
             "terminal42/contao-build-tools": true
         }
     }
