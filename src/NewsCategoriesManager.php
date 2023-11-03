@@ -23,7 +23,6 @@ use Contao\ModuleNewsReader;
 use Contao\PageModel;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Contracts\Service\ResetInterface;
-use Terminal42\DcMultilingualBundle\Model\Multilingual;
 
 #[Autoconfigure(public: true)]
 class NewsCategoriesManager implements ResetInterface

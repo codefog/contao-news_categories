@@ -52,22 +52,20 @@ class NewsCategoryModel extends NewsCategoryParentModel
      */
     protected static $strTable = 'tl_news_category';
 
-    public function __get($name)
+    public function __get($strKey)
     {
         // Fix the compatibility with DC_Multilingual v4 (#184)
-        if ('id' === $name && self::isMultilingual() && $this->lid) {
+        if ('id' === $strKey && self::isMultilingual() && $this->lid) {
             return $this->lid;
         }
 
-        return parent::__get($name);
+        return parent::__get($strKey);
     }
 
     /**
      * Get the CSS class.
-     *
-     * @return string
      */
-    public function getCssClass()
+    public function getCssClass(): string
     {
         $cssClasses = [
             'news_category_'.$this->id,
@@ -91,10 +89,8 @@ class NewsCategoryModel extends NewsCategoryParentModel
 
     /**
      * Get the title.
-     *
-     * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->frontendTitle ?: $this->title;
     }
