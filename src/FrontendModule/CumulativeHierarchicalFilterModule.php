@@ -118,7 +118,7 @@ class CumulativeHierarchicalFilterModule extends NewsModule
         if (null !== $activeCategories) {
             /** @var NewsCategoryModel $activeCategory */
             foreach ($activeCategories as $activeCategory) {
-                $activeAliases[] = $this->manager->getCategoryAlias($activeCategory, $GLOBALS['objPage']);
+                $activeAliases[] = $activeCategory->getAlias($GLOBALS['TL_LANGUAGE']);
             }
         }
 
@@ -128,7 +128,7 @@ class CumulativeHierarchicalFilterModule extends NewsModule
         /** @var NewsCategoryModel $category */
         foreach ($categories as $category) {
             // Generate the category individual URL or the filter-link
-            $categoryAlias = $this->manager->getCategoryAlias($category, $GLOBALS['objPage']);
+            $categoryAlias = $category->getAlias($GLOBALS['TL_LANGUAGE']);
 
             // Add/remove the category alias to the active ones
             if (\in_array($categoryAlias, $activeAliases, true)) {

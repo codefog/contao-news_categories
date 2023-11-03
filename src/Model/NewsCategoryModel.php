@@ -27,16 +27,23 @@ use Terminal42\DcMultilingualBundle\Model\Multilingual;
  * Use the multilingual model if available
  */
 if (class_exists(Multilingual::class)) {
-    class ParentModel extends Multilingual
+    class NewsCategoryParentModel extends Multilingual
     {
     }
 } else {
-    class ParentModel extends Model
+    class NewsCategoryParentModel extends Model
     {
+        public function getAlias(): string
+        {
+            return $this->alias;
+        }
     }
 }
 
-class NewsCategoryModel extends ParentModel
+/**
+ * @method string getAlias(string $language)
+ */
+class NewsCategoryModel extends NewsCategoryParentModel
 {
     /**
      * Table name.

@@ -50,7 +50,7 @@ class NewsCategoriesManager implements ResetInterface
         }
 
         $page->loadDetails();
-        $params = sprintf('/%s/%s', $this->getParameterName($page->rootId), $this->getCategoryAlias($category, $page));
+        $params = sprintf('/%s/%s', $this->getParameterName($page->rootId), $category->getAlias($page->language));
         $this->urlCache[$cacheKey] = $absolute ? $page->getAbsoluteUrl($params) : $page->getFrontendUrl($params);
 
         return $this->urlCache[$cacheKey];
@@ -66,18 +66,6 @@ class NewsCategoriesManager implements ResetInterface
         }
 
         return $image;
-    }
-
-    /**
-     * Get the category alias.
-     */
-    public function getCategoryAlias(NewsCategoryModel $category, PageModel $page): string
-    {
-        if ($category instanceof Multilingual) {
-            return $category->getAlias($page->language);
-        }
-
-        return $category->alias;
     }
 
     /**

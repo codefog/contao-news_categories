@@ -177,7 +177,7 @@ abstract class NewsModule extends ModuleNews
 
             /** @var NewsCategoryModel $model */
             foreach ($models as $model) {
-                $realAliases[] = $this->manager->getCategoryAlias($model, $GLOBALS['objPage']);
+                $realAliases[] = $model->getAlias($GLOBALS['TL_LANGUAGE']);
             }
 
             if (\count(array_diff($aliases, $realAliases)) > 0) {
