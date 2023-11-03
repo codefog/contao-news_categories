@@ -16,66 +16,68 @@ use Contao\Config;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Slug\Slug;
 use Contao\DataContainer;
-use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Terminal42\DcMultilingualBundle\Driver;
 
-#[AsCallback('tl_news_categories', 'fields.alias.save')]
 class NewsCategoryAliasListener
 {
     public function __construct(
         private readonly Connection $db,
-        private readonly Slug|null $slug = null,
+        private readonly Slug $slug,
     ) {
     }
 
-    public function __invoke(string $value, DataContainer $dc): string
+    #[AsCallback('tl_news_categories', 'fields.alias.save')]
+    public function validateAlias(string $value, DataContainer $dc): string
     {
-        $autoAlias = false;
-
-        // Generate alias if there is none
-        if (!$value) {
-            $autoAlias = true;
-            $title = $dc->activeRecord->frontendTitle ?: $dc->activeRecord->title;
-
-            if (null !== $this->slug) {
-                $slugOptions = [];
-
-                if (!empty($validChars = Config::get('news_categorySlugSetting'))) {
-                    $slugOptions['validChars'] = $validChars;
-                }
-
-                if ($dc instanceof Driver) {
-                    $slugOptions['locale'] = $dc->getCurrentLanguage();
-                }
-
-                $value = $this->slug->generate($title, $slugOptions);
-            } else {
-                $value = StringUtil::generateAlias($title);
-            }
-        }
-
-        if ($dc instanceof Driver) {
-            $exists = $this->db->fetchOne(
-                "SELECT id FROM {$dc->table} WHERE alias=? AND id!=? AND {$dc->getLanguageColumn()}=?",
-                [$value, $dc->id, $dc->getCurrentLanguage()],
-            );
-        } else {
-            $exists = $this->db->fetchOne(
-                "SELECT id FROM {$dc->table} WHERE alias=? AND id!=?",
-                [$value, $dc->id],
-            );
-        }
-
-        // Check whether the category alias exists
-        if ($exists) {
-            if ($autoAlias) {
-                $value .= '-'.$dc->id;
-            } else {
-                throw new \RuntimeException(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $value));
-            }
+        if ('' !== $value && $this->aliasExists($value, $dc)) {
+            throw new \RuntimeException(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $value));
         }
 
         return $value;
+    }
+
+    #[AsCallback('tl_news_categories', 'config.onbeforesubmit')]
+    public function generateAlias(array $values, DataContainer $dc): array
+    {
+        if (!isset($values['alias']) || '' !== $values['alias']) {
+            return $values;
+        }
+
+        $currentRecord = $dc->getCurrentRecord();
+        $title = ($values['frontendTitle'] ?? $currentRecord['frontendTitle']) ?: ($values['title'] ?? $currentRecord['title']);
+
+        $slugOptions = [];
+
+        if (!empty($validChars = Config::get('news_categorySlugSetting'))) {
+            $slugOptions['validChars'] = $validChars;
+        }
+
+        if ($dc instanceof Driver) {
+            $slugOptions['locale'] = $dc->getCurrentLanguage();
+        }
+
+        $value = $this->slug->generate($title, $slugOptions);
+
+        if ($this->aliasExists($value, $dc)) {
+            $value .= '-'.$dc->id;
+        }
+
+        $values['alias'] = $value;
+
+        return $values;
+    }
+
+    private function aliasExists(string $value, DataContainer $dc): bool
+    {
+        $query = "SELECT id FROM {$dc->table} WHERE alias=? AND id!=?";
+        $params = [$value, $dc->id];
+
+        if ($dc instanceof Driver) {
+            $query .= " AND {$dc->getLanguageColumn()}=?";
+            $params[] = $dc->getCurrentLanguage();
+        }
+
+        return false !== $this->db->fetchOne($query, $params);
     }
 }
