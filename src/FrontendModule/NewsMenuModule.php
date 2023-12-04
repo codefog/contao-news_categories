@@ -254,11 +254,9 @@ class NewsMenuModule extends ModuleNewsMenu
             return [];
         }
 
-        $table = $criteria->getNewsModelAdapter()->getTable();
-
         return Database::getInstance()
-            ->prepare("SELECT id FROM $table WHERE ".implode(' AND ', $criteria->getColumns()))
-            ->execute($criteria->getValues())
+            ->prepare("SELECT id FROM tl_news WHERE ".implode(' AND ', $criteria->getColumns()))
+            ->execute(...$criteria->getValues())
             ->fetchEach('id')
         ;
     }
