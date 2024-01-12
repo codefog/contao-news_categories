@@ -5,6 +5,7 @@ namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+use Contao\CoreBundle\Routing\ResponseContext\HtmlHeadBag\HtmlHeadBag;
 use Contao\Database;
 use Contao\FrontendTemplate;
 use Contao\Input;
