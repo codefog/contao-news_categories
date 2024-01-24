@@ -350,9 +350,8 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
     public static function getAllSubcategoriesIds(array|int|string $category): array
     {
         $ids = Database::getInstance()->getChildRecords($category, static::$strTable, false, (array) $category, !self::isPreviewMode([]) ? 'published=1' : '');
-        $ids = array_map('intval', $ids);
 
-        return $ids;
+        return array_map('intval', $ids);
     }
 
     /**

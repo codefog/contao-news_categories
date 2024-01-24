@@ -18,7 +18,7 @@
 
 <?php if (null !== $this->resetUrl): ?>
     <div class="reset-link">
-        <a href="<?= \Contao\StringUtil::ampersand($this->resetUrl) ?>" class="reset" title="<?= \Contao\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['resetCategoriesCumulative'][1]) ?>"><?= $GLOBALS['TL_LANG']['MSC']['resetCategoriesCumulative'][0] ?></a>
+        <a href="<?= Contao\StringUtil::ampersand($this->resetUrl) ?>" class="reset" title="<?= Contao\StringUtil::specialchars($GLOBALS['TL_LANG']['MSC']['resetCategoriesCumulative'][1]) ?>"><?= $GLOBALS['TL_LANG']['MSC']['resetCategoriesCumulative'][0] ?></a>
     </div>
 <?php endif; ?>
 

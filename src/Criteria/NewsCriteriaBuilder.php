@@ -158,15 +158,12 @@ class NewsCriteriaBuilder
                         $categories[] = (int) $category->id;
                     }
 
-                    if (\count($categories) > 0) {
-                        // Union filtering
-                        if ($module->news_filterCategoriesUnion) {
-                            $criteria->setCategories($categories, (bool) $module->news_filterPreserve, (bool) $module->news_includeSubcategories);
-                        } else {
-                            // Intersection filtering
-                            foreach ($categories as $category) {
-                                $criteria->setCategory($category, (bool) $module->news_filterPreserve, (bool) $module->news_includeSubcategories);
-                            }
+                    if ($module->news_filterCategoriesUnion) {
+                        $criteria->setCategories($categories, (bool) $module->news_filterPreserve, (bool) $module->news_includeSubcategories);
+                    } else {
+                        // Intersection filtering
+                        foreach ($categories as $category) {
+                            $criteria->setCategory($category, (bool) $module->news_filterPreserve, (bool) $module->news_includeSubcategories);
                         }
                     }
                 }

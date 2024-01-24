@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
- * @copyright  Copyright (c) 2023, Codefog
+ * @copyright  Copyright (c) 2024, Codefog
  * @author     Codefog <https://codefog.pl>
  * @license    MIT
  */
@@ -255,7 +255,7 @@ class NewsMenuModule extends ModuleNewsMenu
         }
 
         return Database::getInstance()
-            ->prepare("SELECT id FROM tl_news WHERE ".implode(' AND ', $criteria->getColumns()))
+            ->prepare('SELECT id FROM tl_news WHERE '.implode(' AND ', $criteria->getColumns()))
             ->execute(...$criteria->getValues())
             ->fetchEach('id')
         ;
