@@ -93,7 +93,6 @@ class NewsCategoriesManager implements ResetInterface
             $pid = $category->pid;
 
             do {
-                /** @var NewsCategoryModel $parent */
                 $parent = $category->findByPk($pid);
 
                 if (null !== $parent) {
@@ -125,7 +124,6 @@ class NewsCategoriesManager implements ResetInterface
     public function getTrailIds(NewsCategoryModel $category): array
     {
         if (!isset($this->trailCache[$category->id])) {
-            /** @var Database $db */
             $db = $this->framework->createInstance(Database::class);
 
             $ids = $db->getParentRecords($category->id, $category->getTable());

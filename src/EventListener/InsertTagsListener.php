@@ -33,11 +33,9 @@ class InsertTagsListener
         $chunks = StringUtil::trimsplit('::', $tag);
 
         if ('news_categories' === $chunks[0]) {
-            /** @var Input $input */
             $input = $this->framework->getAdapter(Input::class);
 
             if ($alias = $input->get($this->manager->getParameterName())) {
-                /** @var NewsCategoryModel $model */
                 $model = $this->framework->getAdapter(NewsCategoryModel::class);
 
                 if (null !== ($category = $model->findPublishedByIdOrAlias($alias))) {

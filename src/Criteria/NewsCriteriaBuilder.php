@@ -136,7 +136,6 @@ class NewsCriteriaBuilder
 
         // Filter by multiple active categories
         if ($module->news_filterCategoriesCumulative) {
-            /** @var Input $input */
             $input = $this->framework->getAdapter(Input::class);
             $param = $this->manager->getParameterName();
 
@@ -145,7 +144,6 @@ class NewsCriteriaBuilder
                 $aliases = array_unique(array_filter($aliases));
 
                 if (\count($aliases) > 0) {
-                    /** @var NewsCategoryModel $model */
                     $model = $this->framework->getAdapter(NewsCategoryModel::class);
                     $categories = [];
 
@@ -174,12 +172,10 @@ class NewsCriteriaBuilder
 
         // Filter by active category
         if ($module->news_filterCategories) {
-            /** @var Input $input */
             $input = $this->framework->getAdapter(Input::class);
             $param = $this->manager->getParameterName();
 
             if ($alias = $input->get($param)) {
-                /** @var NewsCategoryModel $model */
                 $model = $this->framework->getAdapter(NewsCategoryModel::class);
 
                 // Return null if the category does not exist
@@ -203,7 +199,6 @@ class NewsCriteriaBuilder
             throw new NoNewsException();
         }
 
-        /** @var DcaRelationsModel $adapter */
         $adapter = $this->framework->getAdapter(DcaRelationsModel::class);
         $categories = array_unique($adapter->getRelatedValues($news->getTable(), 'categories', $news->id));
 

@@ -223,7 +223,6 @@ class NewsMenuModule extends ModuleNewsMenu
             return $page->getFrontendUrl();
         }
 
-        /** @var NewsCategoryModel $category */
         $category = NewsCategoryModel::findPublishedByIdOrAlias($alias);
 
         // Generate the category URL

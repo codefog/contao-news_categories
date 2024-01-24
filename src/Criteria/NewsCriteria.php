@@ -132,7 +132,6 @@ class NewsCriteria
 
         // Include the subcategories
         if ($includeSubcategories) {
-            /** @var NewsCategoryModel $newsCategoryModel */
             $newsCategoryModel = $this->framework->getAdapter(NewsCategoryModel::class);
             $defaultCategories = $newsCategoryModel->getAllSubcategoriesIds($defaultCategories);
         }
@@ -184,7 +183,6 @@ class NewsCriteria
 
         // Include the subcategories
         if ($includeSubcategories) {
-            /** @var NewsCategoryModel $newsCategoryModel */
             $newsCategoryModel = $this->framework->getAdapter(NewsCategoryModel::class);
             $category = $newsCategoryModel->getAllSubcategoriesIds($category);
         }
@@ -221,13 +219,11 @@ class NewsCriteria
     {
         $allNewsIds = [];
 
-        /** @var DcaRelationsModel $model */
         $model = $this->framework->getAdapter(DcaRelationsModel::class);
 
         foreach ($categories as $category) {
             // Include the subcategories
             if ($includeSubcategories) {
-                /** @var NewsCategoryModel $newsCategoryModel */
                 $newsCategoryModel = $this->framework->getAdapter(NewsCategoryModel::class);
                 $category = $newsCategoryModel->getAllSubcategoriesIds($category);
             }

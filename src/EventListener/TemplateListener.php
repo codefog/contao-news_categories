@@ -41,7 +41,6 @@ class TemplateListener
      */
     public function __invoke(FrontendTemplate $template, array $data, Module $module): void
     {
-        /** @var NewsCategoryModel $newsCategoryModelAdapter */
         $newsCategoryModelAdapter = $this->framework->getAdapter(NewsCategoryModel::class);
 
         if (null === ($models = $newsCategoryModelAdapter->findPublishedByNews($data['id']))) {
@@ -110,11 +109,9 @@ class TemplateListener
         $data['hrefWithParam'] = '';
         $data['targetPage'] = null;
 
-        /** @var StringUtil $stringUtilAdapter */
         $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
         $data['linkTitle'] = $stringUtilAdapter->specialchars($data['name']);
 
-        /** @var PageModel $pageAdapter */
         $pageAdapter = $this->framework->getAdapter(PageModel::class);
 
         // Overwrite the category links with filter page set in module

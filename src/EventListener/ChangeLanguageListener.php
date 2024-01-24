@@ -39,9 +39,7 @@ class ChangeLanguageListener
      */
     private function updateAlias(ChangelanguageNavigationEvent $event): void
     {
-        /** @var NewsCategoryModel $modelAdapter */
         $modelAdapter = $this->framework->getAdapter(NewsCategoryModel::class);
-
         $param = $this->manager->getParameterName();
 
         if (!($alias = $event->getUrlParameterBag()->getUrlAttribute($param))) {

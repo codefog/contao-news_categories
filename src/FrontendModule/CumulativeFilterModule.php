@@ -14,7 +14,6 @@ namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Contao\CoreBundle\Routing\ResponseContext\HtmlHeadBag\HtmlHeadBag;
-use Contao\CoreBundle\Routing\ResponseContext\ResponseContext;
 use Contao\FrontendTemplate;
 use Contao\StringUtil;
 use Contao\System;
@@ -62,7 +61,6 @@ class CumulativeFilterModule extends NewsModule
 
             // Set the canonical URL
             if ($this->news_enableCanonicalUrls && ($responseContext = System::getContainer()->get('contao.routing.response_context_accessor')->getResponseContext())) {
-                /** @var ResponseContext $responseContext */
                 if ($responseContext->has(HtmlHeadBag::class)) {
                     /** @var HtmlHeadBag $htmlHeadBag */
                     $htmlHeadBag = $responseContext->get(HtmlHeadBag::class);
