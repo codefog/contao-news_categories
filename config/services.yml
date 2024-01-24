@@ -1,0 +1,11 @@
+services:
+    _defaults:
+        autoconfigure: true
+        autowire: true
+        public: false
+        bind:
+            $projectDir: '%kernel.project_dir%'
+
+    Codefog\NewsCategoriesBundle\:
+        resource: '../src'
+        exclude: '../../{ContentElement,FrontendModule,Model}'

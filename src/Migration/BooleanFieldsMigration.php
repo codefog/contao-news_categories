@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
- * @copyright  Copyright (c) 2021, Codefog
+ * @copyright  Copyright (c) 2024, Codefog
  * @author     Codefog <https://codefog.pl>
  * @license    MIT
  */
@@ -17,31 +19,22 @@ use Doctrine\DBAL\Types\BooleanType;
 
 class BooleanFieldsMigration extends AbstractMigration
 {
-    /**
-     * @var array
-     */
-    private static $fields = [
+    private static array $fields = [
         'tl_content' => ['news_filterPreserve', 'news_filterCategories'],
         'tl_module' => ['news_resetCategories', 'news_filterPreserve', 'news_relatedCategories', 'news_filterCategories', 'news_customCategories'],
         'tl_news_archive' => ['limitCategories'],
         'tl_news_category' => ['excludeInRelated', 'hideInReader', 'hideInList', 'published'],
     ];
 
-    /**
-     * @var Connection
-     */
-    private $db;
-
-    public function __construct(Connection $db)
+    public function __construct(private readonly Connection $db)
     {
-        $this->db = $db;
     }
 
     public function shouldRun(): bool
     {
-        $schemaManager = $this->db->getSchemaManager();
+        $schemaManager = $this->db->createSchemaManager();
 
-        if (!$schemaManager->tablesExist(\array_keys(self::$fields))) {
+        if (!$schemaManager->tablesExist(array_keys(self::$fields))) {
             return false;
         }
 
@@ -71,8 +64,8 @@ class BooleanFieldsMigration extends AbstractMigration
 
     private function needsMigration(string $table, string $field): bool
     {
-        $columns = $this->db->getSchemaManager()->listTableColumns($table);
-        $column = $columns[\strtolower($field)] ?? null;
+        $columns = $this->db->createSchemaManager()->listTableColumns($table);
+        $column = $columns[strtolower($field)] ?? null;
 
         if (null === $column || $column->getType() instanceof BooleanType) {
             return false;

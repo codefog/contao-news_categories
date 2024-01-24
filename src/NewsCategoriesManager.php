@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -11,57 +13,54 @@
 namespace Codefog\NewsCategoriesBundle;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Database;
+use Contao\FilesModel;
 use Contao\Module;
 use Contao\ModuleNewsArchive;
 use Contao\ModuleNewsList;
 use Contao\ModuleNewsReader;
 use Contao\PageModel;
-use Terminal42\DcMultilingualBundle\Model\Multilingual;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Symfony\Contracts\Service\ResetInterface;
 
-class NewsCategoriesManager implements FrameworkAwareInterface
+#[Autoconfigure(public: true)]
+class NewsCategoriesManager implements ResetInterface
 {
-    use FrameworkAwareTrait;
+    private array $urlCache = [];
 
-    /**
-     * @var array
-     */
-    private $urlCache = [];
+    private array $trailCache = [];
+
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly string $projectDir,
+    ) {
+    }
 
     /**
      * Generate the category URL.
-     *
-     * @param NewsCategoryModel $category
-     * @param PageModel         $page
-     * @param bool              $absolute
-     *
-     * @return string
      */
-    public function generateUrl(NewsCategoryModel $category, PageModel $page, $absolute = false)
+    public function generateUrl(NewsCategoryModel $category, PageModel $page, bool $absolute = false): string
     {
-        $page->loadDetails();
-        $cacheKey = $page->id . '-' . ($absolute ? 'abs' : 'rel');
+        $cacheKey = $page->id.'-'.$category->id.'-'.($absolute ? 'abs' : 'rel');
 
-        if (!isset($this->urlCache[$cacheKey])) {
-            $params = '/%s/%s';
-            $this->urlCache[$cacheKey] = $absolute ? $page->getAbsoluteUrl($params) : $page->getFrontendUrl($params);
+        if (isset($this->urlCache[$cacheKey])) {
+            return $this->urlCache[$cacheKey];
         }
 
-        return sprintf($this->urlCache[$cacheKey], $this->getParameterName($page->rootId), $this->getCategoryAlias($category, $page));
+        $page->loadDetails();
+        $params = sprintf('/%s/%s', $this->getParameterName($page->rootId), $category->getAlias($page->language));
+        $this->urlCache[$cacheKey] = $absolute ? $page->getAbsoluteUrl($params) : $page->getFrontendUrl($params);
+
+        return $this->urlCache[$cacheKey];
     }
 
     /**
      * Get the image.
-     *
-     * @param NewsCategoryModel $category
-     *
-     * @return \Contao\FilesModel|null
      */
-    public function getImage(NewsCategoryModel $category)
+    public function getImage(NewsCategoryModel $category): FilesModel|null
     {
-        if (null === ($image = $category->getImage()) || !\is_file(TL_ROOT.'/'.$image->path)) {
+        if (null === ($image = $category->getImage()) || !is_file($this->projectDir.'/'.$image->path)) {
             return null;
         }
 
@@ -69,35 +68,14 @@ class NewsCategoriesManager implements FrameworkAwareInterface
     }
 
     /**
-     * Get the category alias
-     *
-     * @param NewsCategoryModel $category
-     * @param PageModel         $page
-     *
-     * @return string
-     */
-    public function getCategoryAlias(NewsCategoryModel $category, PageModel $page)
-    {
-        if ($category instanceof Multilingual) {
-            return $category->getAlias($page->language);
-        }
-
-        return $category->alias;
-    }
-
-    /**
      * Get the parameter name.
-     *
-     * @param int|null $rootId
-     *
-     * @return string
      */
-    public function getParameterName($rootId = null)
+    public function getParameterName(int|null $rootId = null): string
     {
         $rootId = $rootId ?: $GLOBALS['objPage']->rootId;
 
         if (!$rootId || null === ($rootPage = PageModel::findByPk($rootId))) {
-            return '';
+            return 'category';
         }
 
         return $rootPage->newsCategories_param ?: 'category';
@@ -105,12 +83,8 @@ class NewsCategoriesManager implements FrameworkAwareInterface
 
     /**
      * Get the category target page.
-     *
-     * @param NewsCategoryModel $category
-     *
-     * @return PageModel|null
      */
-    public function getTargetPage(NewsCategoryModel $category)
+    public function getTargetPage(NewsCategoryModel $category): PageModel|null
     {
         $pageId = $category->jumpTo;
 
@@ -119,7 +93,6 @@ class NewsCategoriesManager implements FrameworkAwareInterface
             $pid = $category->pid;
 
             do {
-                /** @var NewsCategoryModel $parent */
                 $parent = $category->findByPk($pid);
 
                 if (null !== $parent) {
@@ -147,40 +120,28 @@ class NewsCategoriesManager implements FrameworkAwareInterface
 
     /**
      * Get the category trail IDs.
-     *
-     * @param NewsCategoryModel $category
-     *
-     * @return array
      */
-    public function getTrailIds(NewsCategoryModel $category)
+    public function getTrailIds(NewsCategoryModel $category): array
     {
-        static $cache;
-
-        if (!isset($cache[$category->id])) {
-            /** @var Database $db */
+        if (!isset($this->trailCache[$category->id])) {
             $db = $this->framework->createInstance(Database::class);
 
             $ids = $db->getParentRecords($category->id, $category->getTable());
-            $ids = \array_map('intval', \array_unique($ids));
+            $ids = array_map('intval', array_unique($ids));
 
             // Remove the current category
-            unset($ids[\array_search($category->id, $ids, true)]);
+            unset($ids[array_search($category->id, $ids, true)]);
 
-            $cache[$category->id] = $ids;
+            $this->trailCache[$category->id] = $ids;
         }
 
-        return $cache[$category->id];
+        return $this->trailCache[$category->id];
     }
 
     /**
      * Return true if the category is visible for module.
-     *
-     * @param NewsCategoryModel $category
-     * @param Module            $module
-     *
-     * @return bool
      */
-    public function isVisibleForModule(NewsCategoryModel $category, Module $module)
+    public function isVisibleForModule(NewsCategoryModel $category, Module $module): bool
     {
         // List or archive module
         if ($category->hideInList && ($module instanceof ModuleNewsList || $module instanceof ModuleNewsArchive)) {
@@ -193,5 +154,11 @@ class NewsCategoriesManager implements FrameworkAwareInterface
         }
 
         return true;
+    }
+
+    public function reset(): void
+    {
+        $this->urlCache = [];
+        $this->trailCache = [];
     }
 }

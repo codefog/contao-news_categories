@@ -1,10 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * News Categories bundle for Contao Open Source CMS.
+ *
+ * @copyright  Copyright (c) 2024, Codefog
+ * @author     Codefog <https://codefog.pl>
+ * @license    MIT
+ */
 
 namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
-
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
 use Contao\CoreBundle\Routing\ResponseContext\HtmlHeadBag\HtmlHeadBag;
 use Contao\Database;
 use Contao\FrontendTemplate;
@@ -23,7 +32,7 @@ class CumulativeHierarchicalFilterModule extends NewsModule
     /**
      * Generate the module.
      */
-    protected function compile()
+    protected function compile(): void
     {
         $categories = $this->getCategories();
 
@@ -35,15 +44,14 @@ class CumulativeHierarchicalFilterModule extends NewsModule
         }
 
         $container = System::getContainer();
-        $param = $container->get('codefog_news_categories.manager')->getParameterName();
+        $param = $container->get(NewsCategoriesManager::class)->getParameterName();
 
         // Get the active category
-        if (null !== ($activeCategory = NewsCategoryModel::findPublishedByIdOrAlias(Input::get($param)))) {
+        if (($alias = Input::get($param)) && null !== ($activeCategory = NewsCategoryModel::findPublishedByIdOrAlias($alias))) {
             $this->activeCategory = $activeCategory;
 
             // Set the canonical URL
             if ($this->news_enableCanonicalUrls && ($responseContext = $container->get('contao.routing.response_context_accessor')->getResponseContext())) {
-                /** @var ResponseContext $responseContext */
                 if ($responseContext->has(HtmlHeadBag::class)) {
                     /** @var HtmlHeadBag $htmlHeadBag */
                     $htmlHeadBag = $responseContext->get(HtmlHeadBag::class);
@@ -60,15 +68,14 @@ class CumulativeHierarchicalFilterModule extends NewsModule
             $ids = array_merge($ids, Database::getInstance()->getParentRecords($category->id, $category->getTable()));
         }
 
-        $this->Template->categories = $this->renderNewsCategories((int)$this->news_categoriesRoot, array_unique($ids));
+        $this->Template->categories = $this->renderNewsCategories((int) $this->news_categoriesRoot, array_unique($ids));
     }
 
     /**
      * Recursively compile the news categories and return it as HTML string.
      *
-     * @param int   $pid
-     * @param array $ids
-     * @param int   $level
+     * @param int $pid
+     * @param int $level
      *
      * @return string
      */
@@ -84,7 +91,7 @@ class CumulativeHierarchicalFilterModule extends NewsModule
         }
 
         $template = new FrontendTemplate($this->navigationTpl);
-        $template->type = get_class($this);
+        $template->type = static::class;
         $template->cssID = $this->cssID;
         $template->level = 'level_'.$level;
         $template->showQuantity = $this->news_showQuantity;
@@ -99,52 +106,52 @@ class CumulativeHierarchicalFilterModule extends NewsModule
                 $GLOBALS['TL_LANG']['MSC']['resetCategories'][0],
                 $GLOBALS['TL_LANG']['MSC']['resetCategories'][1],
                 'reset',
-                null === $activeCategories || 0 === count($activeCategories)
+                null === $activeCategories || 0 === \count($activeCategories),
             );
         }
 
         $activeAliases = [];
 
         // Collect the active category parameters
-        if ($activeCategories !== null) {
+        if (null !== $activeCategories) {
             /** @var NewsCategoryModel $activeCategory */
             foreach ($activeCategories as $activeCategory) {
-                $activeAliases[] = $this->manager->getCategoryAlias($activeCategory, $GLOBALS['objPage']);
+                $activeAliases[] = $activeCategory->getAlias($GLOBALS['TL_LANGUAGE']);
             }
         }
 
-        $pageUrl = $this->getTargetPage()->getFrontendUrl(sprintf('/%s', $this->manager->getParameterName($GLOBALS['objPage']->rootId)) . '/%s');
+        $pageUrl = $this->getTargetPage()->getFrontendUrl(sprintf('/%s', $this->manager->getParameterName($GLOBALS['objPage']->rootId)).'/%s');
         $resetUrl = $this->getTargetPage()->getFrontendUrl();
 
         /** @var NewsCategoryModel $category */
         foreach ($categories as $category) {
             // Generate the category individual URL or the filter-link
-            $categoryAlias = $this->manager->getCategoryAlias($category, $GLOBALS['objPage']);
+            $categoryAlias = $category->getAlias($GLOBALS['TL_LANGUAGE']);
 
             // Add/remove the category alias to the active ones
-            if (in_array($categoryAlias, $activeAliases, true)) {
+            if (\in_array($categoryAlias, $activeAliases, true)) {
                 $aliases = array_diff($activeAliases, [$categoryAlias]);
             } else {
-                $aliases = array_merge($activeAliases, [$categoryAlias]);
+                $aliases = [...$activeAliases, $categoryAlias];
             }
 
             // Get the URL
-            if (count($aliases) > 0) {
+            if (\count($aliases) > 0) {
                 $url = sprintf($pageUrl, implode(static::getCategorySeparator(), $aliases));
             } else {
                 $url = $resetUrl;
             }
 
-            $level++;
+            ++$level;
 
             $items[] = $this->generateItem(
                 $url,
                 $category->getTitle(),
                 $category->getTitle(),
                 $this->generateItemCssClass($category),
-                $activeCategories !== null && in_array($category, $activeCategories->getModels()),
-                (!$this->showLevel || $this->showLevel >= $level) ? $this->renderNewsCategories($category->id, $ids, $level) : '',
-                $category
+                null !== $activeCategories && \in_array($category, $activeCategories->getModels(), true),
+                !$this->showLevel || $this->showLevel >= $level ? $this->renderNewsCategories($category->id, $ids, $level) : '',
+                $category,
             );
         }
 

@@ -1,65 +1,52 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
- * @copyright  Copyright (c) 2017, Codefog
+ * @copyright  Copyright (c) 2024, Codefog
  * @author     Codefog <https://codefog.pl>
  * @license    MIT
  */
 
 namespace Codefog\NewsCategoriesBundle\EventListener;
 
+use Codefog\NewsCategoriesBundle\FrontendModule\NewsModule;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
-use Contao\Controller;
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
+use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Image\Studio\Studio;
 use Contao\FrontendTemplate;
 use Contao\Model\Collection;
 use Contao\Module;
 use Contao\PageModel;
 use Contao\StringUtil;
 
-class TemplateListener implements FrameworkAwareInterface
+#[AsHook('parseArticles')]
+class TemplateListener
 {
-    use FrameworkAwareTrait;
+    private array $urlCache = [];
 
-    /**
-     * @var NewsCategoriesManager
-     */
-    private $manager;
-
-    /**
-     * @var array
-     */
-    private $urlCache = [];
-
-    /**
-     * TemplateListener constructor.
-     *
-     * @param NewsCategoriesManager $manager
-     */
-    public function __construct(NewsCategoriesManager $manager)
-    {
-        $this->manager = $manager;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly NewsCategoriesManager $manager,
+        private readonly Studio $studio,
+    ) {
     }
 
     /**
-     * On parse the articles.
-     *
-     * @param FrontendTemplate $template
-     * @param array            $data
-     * @param Module           $module
+     * @param NewsModule $module
      */
-    public function onParseArticles(FrontendTemplate $template, array $data, Module $module)
+    public function __invoke(FrontendTemplate $template, array $data, Module $module): void
     {
-        /** @var NewsCategoryModel $newsCategoryModelAdapter */
         $newsCategoryModelAdapter = $this->framework->getAdapter(NewsCategoryModel::class);
 
         if (null === ($models = $newsCategoryModelAdapter->findPublishedByNews($data['id']))) {
             $template->categories = [];
             $template->categoriesList = [];
+
             return;
         }
 
@@ -69,15 +56,13 @@ class TemplateListener implements FrameworkAwareInterface
     /**
      * Add categories to the template.
      *
-     * @param FrontendTemplate $template
-     * @param Module           $module
-     * @param Collection       $categories
+     * @param Collection<NewsCategoryModel> $categories
      */
-    private function addCategoriesToTemplate(FrontendTemplate $template, Module $module, Collection $categories)
+    private function addCategoriesToTemplate(FrontendTemplate $template, Module $module, Collection $categories): void
     {
         $data = [];
         $list = [];
-        $cssClasses = trimsplit(' ', $template->class);
+        $cssClasses = StringUtil::trimsplit(' ', $template->class);
 
         /** @var NewsCategoryModel $category */
         foreach ($categories as $category) {
@@ -91,30 +76,25 @@ class TemplateListener implements FrameworkAwareInterface
             $list[$category->id] = $category->getTitle();
 
             // Add the category CSS classes to news class
-            $cssClasses = \array_merge($cssClasses, trimsplit(' ', $category->getCssClass()));
+            $cssClasses = array_merge($cssClasses, StringUtil::trimsplit(' ', $category->getCssClass()));
         }
 
         // Sort the categories data alphabetically
-        \uasort($data, function ($a, $b) {
-            return \strnatcasecmp($a['name'], $b['name']);
-        });
+        uasort($data, static fn ($a, $b) => strnatcasecmp((string) $a['name'], (string) $b['name']));
 
         // Sort the category list alphabetically
-        \asort($list);
+        asort($list);
 
         $template->categories = $data;
         $template->categoriesList = $list;
 
-        if (count($cssClasses = \array_unique($cssClasses)) > 0) {
-            $template->class = ' ' . \implode(' ', $cssClasses);
+        if (\count($cssClasses = array_unique($cssClasses)) > 0) {
+            $template->class = ' '.implode(' ', $cssClasses);
         }
     }
 
     /**
      * Generate the category data.
-     *
-     * @param NewsCategoryModel $category
-     * @param Module            $module
      *
      * @return array
      */
@@ -129,11 +109,9 @@ class TemplateListener implements FrameworkAwareInterface
         $data['hrefWithParam'] = '';
         $data['targetPage'] = null;
 
-        /** @var StringUtil $stringUtilAdapter */
         $stringUtilAdapter = $this->framework->getAdapter(StringUtil::class);
         $data['linkTitle'] = $stringUtilAdapter->specialchars($data['name']);
 
-        /** @var PageModel $pageAdapter */
         $pageAdapter = $this->framework->getAdapter(PageModel::class);
 
         // Overwrite the category links with filter page set in module
@@ -155,16 +133,18 @@ class TemplateListener implements FrameworkAwareInterface
         }
 
         // Register a function to generate category URL manually
-        $data['generateUrl'] = function (PageModel $page, $absolute = false) use ($category) {
-            return $this->manager->generateUrl($category, $page, $absolute);
-        };
+        $data['generateUrl'] = fn (PageModel $page, $absolute = false) => $this->manager->generateUrl($category, $page, $absolute);
 
         // Add the image
         if (null !== ($image = $this->manager->getImage($category))) {
-            /** @var Controller $controllerAdapter */
-            $controllerAdapter = $this->framework->getAdapter(Controller::class);
-            $data['image'] = new \stdClass();
-            $controllerAdapter->addImageToTemplate($data['image'], ['singleSRC' => $image->path, 'size' => $module->news_categoryImgSize]);
+            $data['image'] = $this
+                ->studio
+                ->createFigureBuilder()
+                ->fromFilesModel($image)
+                ->setSize($module->news_categoryImgSize)
+                ->build()
+                ->getLegacyTemplateData()
+            ;
         } else {
             $data['image'] = null;
         }

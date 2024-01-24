@@ -13,20 +13,20 @@
 
 Minimum requirements:
 
- - PHP 5.6
- - [Contao](https://github.com/contao/managed-edition) 4.4
- - [Contao News](https://github.com/contao/news-bundle) 4.4
- - [Haste](https://github.com/codefog/contao-haste) 4.17
+ - PHP 8.1
+ - [Contao](https://github.com/contao/managed-edition) 5.1
+ - [Contao News](https://github.com/contao/news-bundle) 5.1
+ - [Haste](https://github.com/codefog/contao-haste) 5.0
 
 Multilingual features requirements:
 
- - [DC_Multilingual](https://github.com/terminal42/contao-dc_multilingual) 3.0
+ - [DC_Multilingual](https://github.com/terminal42/contao-dc_multilingual) 4.0
  - [ChangeLanguage](https://github.com/terminal42/contao-changelanguage) 3.1 (recommended)
 
 
 ## Install using Composer
 
-Execute the following command in your Contao 4 project folder:
+Execute the following command in your Contao project folder:
 
     $ composer require codefog/contao-news_categories
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -12,54 +14,35 @@ namespace Codefog\NewsCategoriesBundle\EventListener;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Input;
 use Contao\StringUtil;
 
-class InsertTagsListener implements FrameworkAwareInterface
+#[AsHook('replaceInsertTags')]
+class InsertTagsListener
 {
-    use FrameworkAwareTrait;
-
-    /**
-     * @var NewsCategoriesManager
-     */
-    private $manager;
-
-    /**
-     * InsertTagsListener constructor.
-     *
-     * @param NewsCategoriesManager $manager
-     */
-    public function __construct(NewsCategoriesManager $manager)
-    {
-        $this->manager = $manager;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly NewsCategoriesManager $manager,
+    ) {
     }
 
-    /**
-     * On replace the insert tags.
-     *
-     * @param string $tag
-     *
-     * @return string|bool
-     */
-    public function onReplace($tag)
+    public function __invoke(string $tag): string|false
     {
-        $chunks = trimsplit('::', $tag);
+        $chunks = StringUtil::trimsplit('::', $tag);
 
         if ('news_categories' === $chunks[0]) {
-            /** @var Input $input */
             $input = $this->framework->getAdapter(Input::class);
 
             if ($alias = $input->get($this->manager->getParameterName())) {
-                /** @var NewsCategoryModel $model */
                 $model = $this->framework->getAdapter(NewsCategoryModel::class);
 
                 if (null !== ($category = $model->findPublishedByIdOrAlias($alias))) {
                     $value = $category->{$chunks[1]};
 
                     // Convert the binary to UUID for images (#147)
-                    if ($chunks[1] === 'image' && $value) {
+                    if ('image' === $chunks[1] && $value) {
                         return StringUtil::binToUuid($value);
                     }
 

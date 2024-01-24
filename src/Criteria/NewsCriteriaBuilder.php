@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -14,54 +16,45 @@ use Codefog\HasteBundle\Model\DcaRelationsModel;
 use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\FrontendModule\CumulativeFilterModule;
+use Codefog\NewsCategoriesBundle\FrontendModule\NewsListModule;
+use Codefog\NewsCategoriesBundle\FrontendModule\NewsModule;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
+use Contao\CoreBundle\Framework\ContaoFramework;
+use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
 use Contao\Input;
 use Contao\Module;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 
-class NewsCriteriaBuilder implements FrameworkAwareInterface
+#[Autoconfigure(public: true)]
+class NewsCriteriaBuilder
 {
-    use FrameworkAwareTrait;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly TokenChecker $tokenChecker,
+        private readonly Connection $db,
+        private readonly NewsCategoriesManager $manager,
+    ) {
+    }
 
-    /**
-     * @var Connection
-     */
-    private $db;
-
-    /**
-     * @var NewsCategoriesManager
-     */
-    private $manager;
-
-    /**
-     * NewsCriteriaBuilder constructor.
-     *
-     * @param Connection            $db
-     * @param NewsCategoriesManager $manager
-     */
-    public function __construct(Connection $db, NewsCategoriesManager $manager)
+    public function create(array $archives): NewsCriteria
     {
-        $this->db = $db;
-        $this->manager = $manager;
+        $criteria = new NewsCriteria($this->framework, $this->tokenChecker);
+        $criteria->setBasicCriteria($archives);
+
+        return $criteria;
     }
 
     /**
      * Get the criteria for archive module.
      *
-     * @param array  $archives
-     * @param int    $begin
-     * @param int    $end
-     * @param Module $module
-     *
-     * @return NewsCriteria|null
+     * @param NewsModule $module
      */
-    public function getCriteriaForArchiveModule(array $archives, $begin, $end, Module $module)
+    public function getCriteriaForArchiveModule(array $archives, int $begin, int $end, Module $module): NewsCriteria|null
     {
-        $criteria = new NewsCriteria($this->framework);
+        $criteria = new NewsCriteria($this->framework, $this->tokenChecker);
 
         try {
             $criteria->setBasicCriteria($archives, $module->news_order);
@@ -71,7 +64,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
 
             // Set the regular list criteria
             $this->setRegularListCriteria($criteria, $module);
-        } catch (NoNewsException $e) {
+        } catch (NoNewsException) {
             return null;
         }
 
@@ -80,16 +73,10 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
 
     /**
      * Get the criteria for list module.
-     *
-     * @param array     $archives
-     * @param bool|null $featured
-     * @param Module    $module
-     *
-     * @return NewsCriteria|null
      */
-    public function getCriteriaForListModule(array $archives, $featured, Module $module)
+    public function getCriteriaForListModule(array $archives, bool|null $featured, Module $module): NewsCriteria|null
     {
-        $criteria = new NewsCriteria($this->framework);
+        $criteria = new NewsCriteria($this->framework, $this->tokenChecker);
 
         try {
             $criteria->setBasicCriteria($archives, $module->news_order, $module->news_featured);
@@ -100,13 +87,13 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
             }
 
             // Set the criteria for related categories
-            if ($module->news_relatedCategories) {
+            if ($module instanceof NewsListModule && $module->news_relatedCategories) {
                 $this->setRelatedListCriteria($criteria, $module);
             } else {
                 // Set the regular list criteria
                 $this->setRegularListCriteria($criteria, $module);
             }
-        } catch (NoNewsException $e) {
+        } catch (NoNewsException) {
             return null;
         }
 
@@ -116,21 +103,18 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
     /**
      * Get the criteria for menu module.
      *
-     * @param array  $archives
-     * @param Module $module
-     *
-     * @return NewsCriteria|null
+     * @param NewsModule $module
      */
-    public function getCriteriaForMenuModule(array $archives, Module $module)
+    public function getCriteriaForMenuModule(array $archives, Module $module): NewsCriteria|null
     {
-        $criteria = new NewsCriteria($this->framework);
+        $criteria = new NewsCriteria($this->framework, $this->tokenChecker);
 
         try {
             $criteria->setBasicCriteria($archives, $module->news_order);
 
             // Set the regular list criteria
             $this->setRegularListCriteria($criteria, $module);
-        } catch (NoNewsException $e) {
+        } catch (NoNewsException) {
             return null;
         }
 
@@ -140,22 +124,18 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
     /**
      * Set the regular list criteria.
      *
-     * @param NewsCriteria $criteria
-     * @param Module       $module
-     *
      * @throws CategoryNotFoundException
      * @throws NoNewsException
      */
-    private function setRegularListCriteria(NewsCriteria $criteria, Module $module)
+    private function setRegularListCriteria(NewsCriteria $criteria, Module $module): void
     {
         // Filter by default categories
-        if (\count($default = StringUtil::deserialize($module->news_filterDefault, true)) > 0) {
+        if (!empty($default = StringUtil::deserialize($module->news_filterDefault, true))) {
             $criteria->setDefaultCategories($default);
         }
 
         // Filter by multiple active categories
         if ($module->news_filterCategoriesCumulative) {
-            /** @var Input $input */
             $input = $this->framework->getAdapter(Input::class);
             $param = $this->manager->getParameterName();
 
@@ -163,8 +143,7 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
                 $aliases = StringUtil::trimsplit(CumulativeFilterModule::getCategorySeparator(), $aliases);
                 $aliases = array_unique(array_filter($aliases));
 
-                if (count($aliases) > 0) {
-                    /** @var NewsCategoryModel $model */
+                if (\count($aliases) > 0) {
                     $model = $this->framework->getAdapter(NewsCategoryModel::class);
                     $categories = [];
 
@@ -177,15 +156,12 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
                         $categories[] = (int) $category->id;
                     }
 
-                    if (count($categories) > 0) {
-                        // Union filtering
-                        if ($module->news_filterCategoriesUnion) {
-                            $criteria->setCategories($categories, (bool) $module->news_filterPreserve, (bool) $module->news_includeSubcategories);
-                        } else {
-                            // Intersection filtering
-                            foreach ($categories as $category) {
-                                $criteria->setCategory($category, (bool) $module->news_filterPreserve, (bool) $module->news_includeSubcategories);
-                            }
+                    if ($module->news_filterCategoriesUnion) {
+                        $criteria->setCategories($categories, (bool) $module->news_filterPreserve, (bool) $module->news_includeSubcategories);
+                    } else {
+                        // Intersection filtering
+                        foreach ($categories as $category) {
+                            $criteria->setCategory($category, (bool) $module->news_filterPreserve, (bool) $module->news_includeSubcategories);
                         }
                     }
                 }
@@ -196,12 +172,10 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
 
         // Filter by active category
         if ($module->news_filterCategories) {
-            /** @var Input $input */
             $input = $this->framework->getAdapter(Input::class);
             $param = $this->manager->getParameterName();
 
             if ($alias = $input->get($param)) {
-                /** @var NewsCategoryModel $model */
                 $model = $this->framework->getAdapter(NewsCategoryModel::class);
 
                 // Return null if the category does not exist
@@ -217,32 +191,28 @@ class NewsCriteriaBuilder implements FrameworkAwareInterface
     /**
      * Set the related list criteria.
      *
-     * @param NewsCriteria $criteria
-     * @param Module       $module
-     *
      * @throws NoNewsException
      */
-    private function setRelatedListCriteria(NewsCriteria $criteria, Module $module)
+    private function setRelatedListCriteria(NewsCriteria $criteria, NewsListModule $module): void
     {
         if (null === ($news = $module->currentNews)) {
             throw new NoNewsException();
         }
 
-        /** @var DcaRelationsModel $adapter */
         $adapter = $this->framework->getAdapter(DcaRelationsModel::class);
-        $categories = \array_unique($adapter->getRelatedValues($news->getTable(), 'categories', $news->id));
+        $categories = array_unique($adapter->getRelatedValues($news->getTable(), 'categories', $news->id));
 
         // This news has no news categories assigned
         if (0 === \count($categories)) {
             throw new NoNewsException();
         }
 
-        $categories = \array_map('intval', $categories);
+        $categories = array_map('intval', $categories);
         $excluded = $this->db->fetchFirstColumn('SELECT id FROM tl_news_category WHERE excludeInRelated=1');
 
         // Exclude the categories
         foreach ($excluded as $category) {
-            if (false !== ($index = \array_search((int) $category, $categories, true))) {
+            if (false !== ($index = array_search((int) $category, $categories, true))) {
                 unset($categories[$index]);
             }
         }

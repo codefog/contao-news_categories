@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
@@ -13,61 +15,33 @@ namespace Codefog\NewsCategoriesBundle\EventListener;
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteriaBuilder;
 use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Exception\PageNotFoundException;
-use Contao\CoreBundle\Framework\FrameworkAwareInterface;
-use Contao\CoreBundle\Framework\FrameworkAwareTrait;
 use Contao\Model\Collection;
 use Contao\ModuleNewsList;
+use Contao\NewsModel;
 
-class NewsListener implements FrameworkAwareInterface
+class NewsListener
 {
-    use FrameworkAwareTrait;
-
-    /**
-     * @var \Codefog\NewsCategoriesBundle\Criteria\NewsCriteriaBuilder
-     */
-    private $searchBuilder;
-
-    /**
-     * InsertTagsListener constructor.
-     *
-     * @param \Codefog\NewsCategoriesBundle\Criteria\NewsCriteriaBuilder $searchBuilder
-     */
-    public function __construct(NewsCriteriaBuilder $searchBuilder)
+    public function __construct(private readonly NewsCriteriaBuilder $searchBuilder)
     {
-        $this->searchBuilder = $searchBuilder;
     }
 
-    /**
-     * On news list count items.
-     *
-     * @param array          $archives
-     * @param bool|null      $featured
-     * @param ModuleNewsList $module
-     *
-     * @return int
-     */
-    public function onNewsListCountItems(array $archives, $featured, ModuleNewsList $module)
+    #[AsHook('newsListCountItems')]
+    public function onNewsListCountItems(array $archives, bool|null $featured, ModuleNewsList $module): int
     {
         if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
             return 0;
         }
 
-        return $criteria->getNewsModelAdapter()->countBy($criteria->getColumns(), $criteria->getValues());
+        return NewsModel::countBy($criteria->getColumns(), $criteria->getValues());
     }
 
     /**
-     * On news list fetch items.
-     *
-     * @param array          $archives
-     * @param bool|null      $featured
-     * @param int            $limit
-     * @param int            $offset
-     * @param ModuleNewsList $module
-     *
-     * @return Collection|null
+     * @return Collection<NewsModel>|null
      */
-    public function onNewsListFetchItems(array $archives, $featured, $limit, $offset, ModuleNewsList $module)
+    #[AsHook('onNewsListFetchItems')]
+    public function onNewsListFetchItems(array $archives, bool|null $featured, int $limit, int $offset, ModuleNewsList $module): Collection|null
     {
         if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
             return null;
@@ -76,30 +50,19 @@ class NewsListener implements FrameworkAwareInterface
         $criteria->setLimit($limit);
         $criteria->setOffset($offset);
 
-        return $criteria->getNewsModelAdapter()->findBy(
+        return NewsModel::findBy(
             $criteria->getColumns(),
             $criteria->getValues(),
-            $criteria->getOptions()
+            $criteria->getOptions(),
         );
     }
 
-    /**
-     * Get the criteria.
-     *
-     * @param array          $archives
-     * @param bool|null      $featured
-     * @param ModuleNewsList $module
-     *
-     * @return NewsCriteria|null
-     *
-     * @throws PageNotFoundException
-     */
-    private function getCriteria(array $archives, $featured, ModuleNewsList $module)
+    private function getCriteria(array $archives, bool|null $featured, ModuleNewsList $module): NewsCriteria|null
     {
         try {
             $criteria = $this->searchBuilder->getCriteriaForListModule($archives, $featured, $module);
         } catch (CategoryNotFoundException $e) {
-            throw new PageNotFoundException($e->getMessage());
+            throw new PageNotFoundException($e->getMessage(), 0, $e);
         }
 
         return $criteria;

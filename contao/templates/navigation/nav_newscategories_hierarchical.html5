@@ -1,0 +1,27 @@
+<ul class="<?= $this->level ?><?php if ($this->isActiveCategories): ?> active-categories<?php endif; ?>">
+    <?php foreach ($this->items as $item): ?>
+            <li class="<?= $item['class'] ?>">
+	            <?php if (!str_contains((string) $item['class'], 'reset') || !str_contains((string) $item['class'], 'active')): ?>
+                <a href="<?= $item['href'] ?>" class="<?= $item['class'] ?>" title="<?= $item['linkTitle'] ?>" itemprop="url"<?php if ($item['subitems']): ?> aria-haspopup="true"<?php endif; ?>>
+                <?php endif; ?>
+                    <?php if ($item['image']): ?>
+                        <?php $this->insert('picture_default', $item['image']->picture) ?>
+                    <?php endif; ?>
+                    <?php if ($item['isActive']): ?>
+	                    <strong class="<?= $item['class'] ?>"<?php if ($item['subitems']): ?> aria-haspopup="true"<?php endif; ?>>
+	                <?php endif; ?>
+                    <span class="name" itemprop="name"><?= $item['link'] ?></span>
+                    <?php if ($this->showQuantity): ?>
+                        <span class="quantity">(<?= $item['quantity'] ?>)</span>
+                    <?php endif; ?>
+                    <?php if ($item['isActive']): ?>
+	                    </strong>
+                    <?php endif; ?>
+                <?php if (!str_contains((string) $item['class'], 'reset') || !str_contains((string) $item['class'], 'active')): ?>
+                </a>
+	            <?php endif; ?>
+
+                <?= $item['subitems'] ?>
+            </li>
+    <?php endforeach; ?>
+</ul>
