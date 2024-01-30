@@ -275,9 +275,13 @@ class NewsCriteria
     /**
      * Set the limit.
      */
-    public function setLimit(int $limit): self
+    public function setLimit(int|null $limit): self
     {
-        $this->options['limit'] = $limit;
+        if (null === $limit) {
+            unset($this->options['limit']);
+        } else {
+            $this->options['limit'] = $limit;
+        }
 
         return $this;
     }
@@ -285,9 +289,13 @@ class NewsCriteria
     /**
      * Set the offset.
      */
-    public function setOffset(int $offset): self
+    public function setOffset(int|null $offset): self
     {
-        $this->options['offset'] = $offset;
+        if (null === $offset) {
+            unset($this->options['offset']);
+        } else {
+            $this->options['offset'] = $offset;
+        }
 
         return $this;
     }
