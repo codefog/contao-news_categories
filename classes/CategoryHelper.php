@@ -138,7 +138,7 @@ class CategoryHelper
     {
         $category                  = $objCategory->row();
         $category['name']          = $category['frontendTitle'] ?: $category['title'];
-        $category['class']         = 'category_' . $category->id . ($category['cssClass'] ? (' ' . $category['cssClass']) : '');
+        $category['class']         = 'category_' . (is_array($category) ? $category['id'] : $category->id) . ($category['cssClass'] ? (' ' . $category['cssClass']) : '');
         $category['linkTitle']     = specialchars($category['name']);
         $category['href']          = '';
         $category['hrefWithParam'] = '';

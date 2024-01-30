@@ -39,6 +39,6 @@ $GLOBALS['TL_DCA']['tl_news_feed']['fields']['categories_show'] = array
     'inputType'               => 'select',
     'options'                 => array('title', 'text_before', 'text_after'),
     'reference'               => &$GLOBALS['TL_LANG']['tl_news_feed']['categories_show'],
-    'eval'                    => array('includeBlankOption'=>true, 'blankOptionLabel'=>$GLOBALS['TL_LANG']['tl_news_feed']['categories_show']['empty']),
+    'eval'                    => array('includeBlankOption'=>true, 'blankOptionLabel'=>&$GLOBALS['TL_LANG']['tl_news_feed']['categories_show']['empty']),
     'sql'                     => "varchar(16) NOT NULL default ''"
 );
