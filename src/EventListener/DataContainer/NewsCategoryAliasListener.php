@@ -27,7 +27,7 @@ class NewsCategoryAliasListener
     ) {
     }
 
-    #[AsCallback('tl_news_categories', 'fields.alias.save')]
+    #[AsCallback('tl_news_category', 'fields.alias.save')]
     public function validateAlias(string $value, DataContainer $dc): string
     {
         if ('' !== $value && $this->aliasExists($value, $dc)) {
@@ -37,7 +37,7 @@ class NewsCategoryAliasListener
         return $value;
     }
 
-    #[AsCallback('tl_news_categories', 'config.onbeforesubmit')]
+    #[AsCallback('tl_news_category', 'config.onbeforesubmit')]
     public function generateAlias(array $values, DataContainer $dc): array
     {
         if (!isset($values['alias']) || '' !== $values['alias']) {
