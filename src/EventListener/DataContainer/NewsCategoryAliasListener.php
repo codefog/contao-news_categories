@@ -40,12 +40,12 @@ class NewsCategoryAliasListener
     #[AsCallback('tl_news_category', 'config.onbeforesubmit')]
     public function generateAlias(array $values, DataContainer $dc): array
     {
-        if (!isset($values['alias']) || '' !== $values['alias']) {
+        $currentRecord = $this->getCurrentRecord($dc);
+        $title = $values['frontendTitle'] ?? $currentRecord['frontendTitle'] ?: ($values['title'] ?? $currentRecord['title']);
+
+        if ('' !== ($values['alias'] ?? $currentRecord['alias'] ?? '')) {
             return $values;
         }
-
-        $currentRecord = $dc->getCurrentRecord();
-        $title = $values['frontendTitle'] ?? $currentRecord['frontendTitle'] ?: ($values['title'] ?? $currentRecord['title']);
 
         $slugOptions = [];
 
@@ -70,14 +70,35 @@ class NewsCategoryAliasListener
 
     private function aliasExists(string $value, DataContainer $dc): bool
     {
-        $query = "SELECT id FROM {$dc->table} WHERE alias=? AND id!=?";
-        $params = [$value, $dc->id];
+        $query = "SELECT id FROM {$dc->table} WHERE alias=?";
+        $params = [$value];
 
         if ($dc instanceof Driver) {
-            $query .= " AND {$dc->getLanguageColumn()}=?";
+            if ('' !== $dc->getCurrentLanguage()) {
+                $query .= " AND {$dc->getPidColumn()}!=? AND {$dc->getLanguageColumn()}=?";
+            } else {
+                $query .= " AND id!=? AND {$dc->getLanguageColumn()}=?";
+            }
+
+            $params[] = $dc->id;
             $params[] = $dc->getCurrentLanguage();
+        } else {
+            $query .= ' AND id!=?';
+            $params[] = $dc->id;
         }
 
         return false !== $this->db->fetchOne($query, $params);
+    }
+
+    private function getCurrentRecord(DataContainer $dc): array
+    {
+        if ($dc instanceof Driver && '' !== $dc->getCurrentLanguage()) {
+            return $this->db->fetchAssociative(
+                "SELECT * FROM {$dc->table} WHERE {$dc->getPidColumn()}=? AND {$dc->getLanguageColumn()}=?",
+                [$dc->id, $dc->getCurrentLanguage()]
+            );
+        }
+
+        return $dc->getCurrentRecord();
     }
 }

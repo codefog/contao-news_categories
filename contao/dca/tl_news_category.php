@@ -101,8 +101,8 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
             'inputType' => 'text',
             'eval' => [
                 'rgxp' => 'alias',
-                'unique' => true,
-                'spaceToUnderscore' => true,
+                'doNotCopy'=>true,
+                'alwaysSave' => true,
                 'maxlength' => 128,
                 'tl_class' => 'w50',
             ],
