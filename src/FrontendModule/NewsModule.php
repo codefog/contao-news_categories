@@ -222,7 +222,7 @@ abstract class NewsModule extends ModuleNews
                     }
 
                     $columns[] = $criteria->getColumns();
-                    $values = $criteria->getValues();
+                    $values[] = $criteria->getValues();
                 }
 
                 // Should not happen but you never know
@@ -232,7 +232,7 @@ abstract class NewsModule extends ModuleNews
 
                 $newsIds = Database::getInstance()
                     ->prepare('SELECT id FROM tl_news WHERE '.implode(' AND ', array_merge(...$columns)))
-                    ->execute(array_merge(...$values))
+                    ->execute(...array_merge(...$values))
                     ->fetchEach('id')
                 ;
 
