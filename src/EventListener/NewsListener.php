@@ -3,7 +3,7 @@
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
- * @copyright  Copyright (c) 2017, Codefog
+ * @copyright  Copyright (c) 2017-2024, Codefog
  * @author     Codefog <https://codefog.pl>
  * @license    MIT
  */
@@ -69,6 +69,10 @@ class NewsListener implements FrameworkAwareInterface
      */
     public function onNewsListFetchItems(array $archives, $featured, $limit, $offset, ModuleNewsList $module)
     {
+        if (empty(Input::get('category'))) {
+            return false;
+        }
+ 
         if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
             return null;
         }
