@@ -40,7 +40,7 @@ class NewsListener
     /**
      * @return Collection<NewsModel>|null
      */
-    #[AsHook('onNewsListFetchItems')]
+    #[AsHook('newsListFetchItems')]
     public function onNewsListFetchItems(array $archives, bool|null $featured, int $limit, int $offset, ModuleNewsList $module): Collection|null
     {
         if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
