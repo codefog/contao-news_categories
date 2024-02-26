@@ -12,6 +12,7 @@ namespace Codefog\NewsCategoriesBundle\EventListener;
 
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteriaBuilder;
+use Codefog\NewsCategoriesBundle\Exception\CategoryFilteringNotAppliedException;
 use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Framework\FrameworkAwareInterface;
@@ -49,8 +50,12 @@ class NewsListener implements FrameworkAwareInterface
      */
     public function onNewsListCountItems(array $archives, $featured, ModuleNewsList $module)
     {
-        if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
-            return 0;
+        try {
+            if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
+                return 0;
+            }
+        } catch (CategoryFilteringNotAppliedException $e) {
+            return false;
         }
 
         return $criteria->getNewsModelAdapter()->countBy($criteria->getColumns(), $criteria->getValues());
@@ -69,8 +74,12 @@ class NewsListener implements FrameworkAwareInterface
      */
     public function onNewsListFetchItems(array $archives, $featured, $limit, $offset, ModuleNewsList $module)
     {
-        if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
-            return null;
+        try {
+            if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
+                return null;
+            }
+        } catch (CategoryFilteringNotAppliedException $e) {
+            return false;
         }
 
         $criteria->setLimit($limit);
@@ -97,7 +106,7 @@ class NewsListener implements FrameworkAwareInterface
     private function getCriteria(array $archives, $featured, ModuleNewsList $module)
     {
         try {
-            $criteria = $this->searchBuilder->getCriteriaForListModule($archives, $featured, $module);
+            $criteria = $this->searchBuilder->getCriteriaForListModule($archives, $featured, $module, true);
         } catch (CategoryNotFoundException $e) {
             throw new PageNotFoundException($e->getMessage());
         }
