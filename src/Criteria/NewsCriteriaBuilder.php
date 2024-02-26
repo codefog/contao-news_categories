@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Codefog\NewsCategoriesBundle\Criteria;
 
 use Codefog\HasteBundle\Model\DcaRelationsModel;
+use Codefog\NewsCategoriesBundle\Exception\CategoryFilteringNotAppliedException;
 use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\FrontendModule\CumulativeFilterModule;
@@ -66,6 +67,8 @@ class NewsCriteriaBuilder
             $this->setRegularListCriteria($criteria, $module);
         } catch (NoNewsException) {
             return null;
+        } catch (CategoryFilteringNotAppliedException $e) {
+            // noop
         }
 
         return $criteria;
@@ -74,7 +77,7 @@ class NewsCriteriaBuilder
     /**
      * Get the criteria for list module.
      */
-    public function getCriteriaForListModule(array $archives, bool|null $featured, Module $module): NewsCriteria|null
+    public function getCriteriaForListModule(array $archives, bool|null $featured, Module $module, bool $throwOnFilteringNotApplied = false): NewsCriteria|null
     {
         $criteria = new NewsCriteria($this->framework, $this->tokenChecker);
 
@@ -91,10 +94,14 @@ class NewsCriteriaBuilder
                 $this->setRelatedListCriteria($criteria, $module);
             } else {
                 // Set the regular list criteria
-                $this->setRegularListCriteria($criteria, $module);
+                $this->setRegularListCriteria($criteria, $module, $throwOnFilteringNotApplied);
             }
         } catch (NoNewsException) {
             return null;
+        } catch (CategoryFilteringNotAppliedException $e) {
+            if ($throwOnFilteringNotApplied) {
+                throw $e;
+            }
         }
 
         return $criteria;
@@ -116,6 +123,8 @@ class NewsCriteriaBuilder
             $this->setRegularListCriteria($criteria, $module);
         } catch (NoNewsException) {
             return null;
+        } catch (CategoryFilteringNotAppliedException $e) {
+            // noop
         }
 
         return $criteria;
@@ -129,9 +138,12 @@ class NewsCriteriaBuilder
      */
     private function setRegularListCriteria(NewsCriteria $criteria, Module $module): void
     {
+        $filteringApplied = false;
+
         // Filter by default categories
         if (!empty($default = StringUtil::deserialize($module->news_filterDefault, true))) {
             $criteria->setDefaultCategories($default);
+            $filteringApplied = true;
         }
 
         // Filter by multiple active categories
@@ -165,13 +177,13 @@ class NewsCriteriaBuilder
                         }
                     }
                 }
+
+                $filteringApplied = true;
             }
-
-            return;
         }
-
         // Filter by active category
-        if ($module->news_filterCategories) {
+        elseif ($module->news_filterCategories) {
+            /** @var Input $input */
             $input = $this->framework->getAdapter(Input::class);
             $param = $this->manager->getParameterName();
 
@@ -184,7 +196,13 @@ class NewsCriteriaBuilder
                 }
 
                 $criteria->setCategory($category->id, (bool) $module->news_filterPreserve, (bool) $module->news_includeSubcategories);
+
+                $filteringApplied = true;
             }
+        }
+
+        if (!$filteringApplied) {
+            throw new CategoryFilteringNotAppliedException();
         }
     }
 
