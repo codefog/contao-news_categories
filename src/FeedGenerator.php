@@ -208,7 +208,7 @@ class FeedGenerator extends News
 
                     if ($objFile !== null)
                     {
-                        $objItem->addEnclosure($objFile->path, $strLink);
+                        $objItem->addEnclosure($objFile->path, $strLink, 'media:content');
                     }
                 }
 
