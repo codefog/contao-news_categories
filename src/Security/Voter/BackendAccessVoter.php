@@ -48,7 +48,7 @@ class BackendAccessVoter implements CacheableVoterInterface, ResetInterface
         return true;
     }
 
-    public function vote(TokenInterface $token, mixed $subject, array $attributes)
+    public function vote(TokenInterface $token, mixed $subject, array $attributes): int
     {
         $user = $token->getUser();
 
