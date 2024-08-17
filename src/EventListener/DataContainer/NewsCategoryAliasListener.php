@@ -31,7 +31,7 @@ class NewsCategoryAliasListener
     public function validateAlias(string $value, DataContainer $dc): string
     {
         if ('' !== $value && $this->aliasExists($value, $dc)) {
-            throw new \RuntimeException(sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $value));
+            throw new \RuntimeException(\sprintf($GLOBALS['TL_LANG']['ERR']['aliasExists'], $value));
         }
 
         return $value;
@@ -95,7 +95,7 @@ class NewsCategoryAliasListener
         if ($dc instanceof Driver && '' !== $dc->getCurrentLanguage()) {
             return $this->db->fetchAssociative(
                 "SELECT * FROM {$dc->table} WHERE {$dc->getPidColumn()}=? AND {$dc->getLanguageColumn()}=?",
-                [$dc->id, $dc->getCurrentLanguage()]
+                [$dc->id, $dc->getCurrentLanguage()],
             );
         }
 

@@ -49,7 +49,7 @@ class NewsCategoriesManager implements ResetInterface
         }
 
         $page->loadDetails();
-        $params = sprintf('/%s/%s', $this->getParameterName($page->rootId), $category->getAlias($page->language));
+        $params = \sprintf('/%s/%s', $this->getParameterName($page->rootId), $category->getAlias($page->language));
         $this->urlCache[$cacheKey] = $absolute ? $page->getAbsoluteUrl($params) : $page->getFrontendUrl($params);
 
         return $this->urlCache[$cacheKey];
@@ -74,7 +74,7 @@ class NewsCategoriesManager implements ResetInterface
     {
         $rootId = $rootId ?: $GLOBALS['objPage']->rootId;
 
-        if (!$rootId || null === ($rootPage = PageModel::findByPk($rootId))) {
+        if (!$rootId || null === ($rootPage = PageModel::findById($rootId))) {
             return 'category';
         }
 
@@ -93,7 +93,7 @@ class NewsCategoriesManager implements ResetInterface
             $pid = $category->pid;
 
             do {
-                $parent = $category->findByPk($pid);
+                $parent = $category->findById($pid);
 
                 if (null !== $parent) {
                     $pid = $parent->pid;

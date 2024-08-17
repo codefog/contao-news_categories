@@ -71,11 +71,11 @@ class NewsFeedListener
 
         switch ($page->newsCategories_show) {
             case 'title':
-                $feedItem->setTitle(sprintf('[%s] %s', $categories, $feedItem->getTitle()));
+                $feedItem->setTitle(\sprintf('[%s] %s', $categories, $feedItem->getTitle()));
                 break;
 
             case 'text_before':
-                $feedItem->setContent(sprintf(
+                $feedItem->setContent(\sprintf(
                     "%s\n<p>%s %s</p>",
                     (string) $feedItem->getContent(),
                     $this->translator->trans('MSC.newsCategories', [], 'contao_default'),
@@ -84,7 +84,7 @@ class NewsFeedListener
                 break;
 
             case 'text_after':
-                $feedItem->setContent(sprintf(
+                $feedItem->setContent(\sprintf(
                     "<p>%s %s</p>\n%s",
                     $this->translator->trans('MSC.newsCategories', [], 'contao_default'),
                     $categories,

@@ -181,7 +181,7 @@ abstract class NewsModule extends ModuleNews
             }
 
             if (\count(array_diff($aliases, $realAliases)) > 0) {
-                Controller::redirect($this->getTargetPage()->getFrontendUrl(sprintf(
+                Controller::redirect($this->getTargetPage()->getFrontendUrl(\sprintf(
                     '/%s/%s',
                     $this->manager->getParameterName($GLOBALS['objPage']->rootId),
                     implode(static::getCategorySeparator(), $realAliases),

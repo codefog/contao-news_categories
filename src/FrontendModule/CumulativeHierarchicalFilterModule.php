@@ -120,7 +120,7 @@ class CumulativeHierarchicalFilterModule extends NewsModule
             }
         }
 
-        $pageUrl = $this->getTargetPage()->getFrontendUrl(sprintf('/%s', $this->manager->getParameterName($GLOBALS['objPage']->rootId)).'/%s');
+        $pageUrl = $this->getTargetPage()->getFrontendUrl(\sprintf('/%s', $this->manager->getParameterName($GLOBALS['objPage']->rootId)).'/%s');
         $resetUrl = $this->getTargetPage()->getFrontendUrl();
 
         /** @var NewsCategoryModel $category */
@@ -137,7 +137,7 @@ class CumulativeHierarchicalFilterModule extends NewsModule
 
             // Get the URL
             if (\count($aliases) > 0) {
-                $url = sprintf($pageUrl, implode(static::getCategorySeparator(), $aliases));
+                $url = \sprintf($pageUrl, implode(static::getCategorySeparator(), $aliases));
             } else {
                 $url = $resetUrl;
             }

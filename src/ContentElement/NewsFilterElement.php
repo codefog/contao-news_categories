@@ -44,7 +44,7 @@ class NewsFilterElement extends ContentModule
         }
 
         // Return if the module could not be found
-        if (null === ($moduleModel = ModuleModel::findByPk($this->news_module))) {
+        if (null === ($moduleModel = ModuleModel::findById($this->news_module))) {
             return '';
         }
 

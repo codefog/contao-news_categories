@@ -84,7 +84,7 @@ class NewsCategoryModel extends NewsCategoryParentModel
      */
     public function getImage(): FilesModel|null
     {
-        return $this->image ? FilesModel::findByPk($this->image) : null;
+        return $this->image ? FilesModel::findById($this->image) : null;
     }
 
     /**

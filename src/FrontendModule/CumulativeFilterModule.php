@@ -122,7 +122,7 @@ class CumulativeFilterModule extends NewsModule
         }
 
         $resetUrl = $this->getTargetPage()->getFrontendUrl();
-        $pageUrl = $this->getTargetPage()->getFrontendUrl(sprintf('/%s', $this->manager->getParameterName($GLOBALS['objPage']->rootId)).'/%s');
+        $pageUrl = $this->getTargetPage()->getFrontendUrl(\sprintf('/%s', $this->manager->getParameterName($GLOBALS['objPage']->rootId)).'/%s');
 
         /** @var NewsCategoryModel $category */
         foreach ($categories as $category) {
@@ -137,7 +137,7 @@ class CumulativeFilterModule extends NewsModule
 
             // Generate the category URL if there are any aliases to add, otherwise use the reset URL
             if (\count($aliases) > 0) {
-                $url = sprintf($pageUrl, implode(static::getCategorySeparator(), $aliases));
+                $url = \sprintf($pageUrl, implode(static::getCategorySeparator(), $aliases));
             } else {
                 $url = $resetUrl;
             }

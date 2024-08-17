@@ -67,7 +67,7 @@ class NewsMenuModule extends ModuleNewsMenu
         // Prepare the navigation
         foreach ($arrData as $intYear => $intCount) {
             $intDate = $intYear;
-            $quantity = sprintf($intCount < 2 ? $GLOBALS['TL_LANG']['MSC']['entry'] : $GLOBALS['TL_LANG']['MSC']['entries'], $intCount);
+            $quantity = \sprintf($intCount < 2 ? $GLOBALS['TL_LANG']['MSC']['entry'] : $GLOBALS['TL_LANG']['MSC']['entries'], $intCount);
 
             $arrItems[$intYear]['date'] = $intDate;
             $arrItems[$intYear]['link'] = $intYear;
@@ -117,7 +117,7 @@ class NewsMenuModule extends ModuleNewsMenu
                 $intDate = $intYear.$intMonth;
                 $intMonth = (int) $intMonth - 1;
 
-                $quantity = sprintf($intCount < 2 ? $GLOBALS['TL_LANG']['MSC']['entry'] : $GLOBALS['TL_LANG']['MSC']['entries'], $intCount);
+                $quantity = \sprintf($intCount < 2 ? $GLOBALS['TL_LANG']['MSC']['entry'] : $GLOBALS['TL_LANG']['MSC']['entries'], $intCount);
 
                 $arrItems[$intYear][$intMonth]['date'] = $intDate;
                 $arrItems[$intYear][$intMonth]['link'] = $GLOBALS['TL_LANG']['MONTHS'][$intMonth].' '.$intYear;
