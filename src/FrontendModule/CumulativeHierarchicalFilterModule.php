@@ -5,11 +5,11 @@ namespace Codefog\NewsCategoriesBundle\FrontendModule;
 
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+use Contao\CoreBundle\Routing\ResponseContext\HtmlHeadBag\HtmlHeadBag;
 use Contao\Database;
 use Contao\FrontendTemplate;
 use Contao\System;
 use Haste\Generator\RowClass;
-use Haste\Input\Input;
 
 class CumulativeHierarchicalFilterModule extends NewsModule
 {
@@ -35,23 +35,17 @@ class CumulativeHierarchicalFilterModule extends NewsModule
         }
 
         $container = System::getContainer();
-        $param = $container->get('codefog_news_categories.manager')->getParameterName();
 
-        // Get the active category
-        if (null !== ($activeCategory = NewsCategoryModel::findPublishedByIdOrAlias(Input::get($param)))) {
-            $this->activeCategory = $activeCategory;
-
-            // Add the canonical URL tag
-            if ($this->news_enableCanonicalUrls) {
-                if (!$container->has('contao.routing.response_context_accessor')) {
-                    $GLOBALS['TL_HEAD'][] = \sprintf('<link rel="canonical" href="%s">', $GLOBALS['objPage']->getAbsoluteUrl());
-                } elseif ($responseContext = $container->get('contao.routing.response_context_accessor')->getResponseContext()) {
-                    /** @var ResponseContext $responseContext */
-                    if ($responseContext->has(HtmlHeadBag::class)) {
-                        /** @var HtmlHeadBag $htmlHeadBag */
-                        $htmlHeadBag = $responseContext->get(HtmlHeadBag::class);
-                        $htmlHeadBag->setCanonicalUri($GLOBALS['objPage']->getAbsoluteUrl());
-                    }
+        // Check if the canonical URL should be added when there are active categories
+        if ($this->news_enableCanonicalUrls && $this->getActiveCategories()) {
+            if (!$container->has('contao.routing.response_context_accessor')) {
+                $GLOBALS['TL_HEAD'][] = \sprintf('<link rel="canonical" href="%s">', $GLOBALS['objPage']->getAbsoluteUrl());
+            } elseif ($responseContext = $container->get('contao.routing.response_context_accessor')->getResponseContext()) {
+                /** @var ResponseContext $responseContext */
+                if ($responseContext->has(HtmlHeadBag::class)) {
+                    /** @var HtmlHeadBag $htmlHeadBag */
+                    $htmlHeadBag = $responseContext->get(HtmlHeadBag::class);
+                    $htmlHeadBag->setCanonicalUri($GLOBALS['objPage']->getAbsoluteUrl());
                 }
             }
         }
