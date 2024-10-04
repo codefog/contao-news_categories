@@ -29,7 +29,7 @@ class NewsListener
     }
 
     #[AsHook('newsListCountItems')]
-    public function onNewsListCountItems(array $archives, bool|null $featured, ModuleNewsList $module): int
+    public function onNewsListCountItems(array $archives, bool|null $featured, ModuleNewsList $module): int|false
     {
         try {
             if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
@@ -43,10 +43,10 @@ class NewsListener
     }
 
     /**
-     * @return Collection<NewsModel>|null
+     * @return Collection<NewsModel>|null|false
      */
     #[AsHook('newsListFetchItems')]
-    public function onNewsListFetchItems(array $archives, bool|null $featured, int $limit, int $offset, ModuleNewsList $module): Collection|null
+    public function onNewsListFetchItems(array $archives, bool|null $featured, int $limit, int $offset, ModuleNewsList $module): Collection|null|false
     {
         try {
             if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
