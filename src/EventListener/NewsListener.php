@@ -14,6 +14,7 @@ namespace Codefog\NewsCategoriesBundle\EventListener;
 
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteria;
 use Codefog\NewsCategoriesBundle\Criteria\NewsCriteriaBuilder;
+use Codefog\NewsCategoriesBundle\Exception\CategoryFilteringNotAppliedException;
 use Codefog\NewsCategoriesBundle\Exception\CategoryNotFoundException;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Exception\PageNotFoundException;
@@ -28,23 +29,31 @@ class NewsListener
     }
 
     #[AsHook('newsListCountItems')]
-    public function onNewsListCountItems(array $archives, bool|null $featured, ModuleNewsList $module): int
+    public function onNewsListCountItems(array $archives, bool|null $featured, ModuleNewsList $module): int|false
     {
-        if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
-            return 0;
+        try {
+            if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
+                return 0;
+            }
+        } catch (CategoryFilteringNotAppliedException $e) {
+            return false;
         }
 
         return NewsModel::countBy($criteria->getColumns(), $criteria->getValues());
     }
 
     /**
-     * @return Collection<NewsModel>|null
+     * @return Collection<NewsModel>|null|false
      */
     #[AsHook('newsListFetchItems')]
-    public function onNewsListFetchItems(array $archives, bool|null $featured, int $limit, int $offset, ModuleNewsList $module): Collection|null
+    public function onNewsListFetchItems(array $archives, bool|null $featured, int $limit, int $offset, ModuleNewsList $module): Collection|null|false
     {
-        if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
-            return null;
+        try {
+            if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
+                return null;
+            }
+        } catch (CategoryFilteringNotAppliedException $e) {
+            return false;
         }
 
         $criteria->setLimit($limit);
@@ -60,7 +69,7 @@ class NewsListener
     private function getCriteria(array $archives, bool|null $featured, ModuleNewsList $module): NewsCriteria|null
     {
         try {
-            $criteria = $this->searchBuilder->getCriteriaForListModule($archives, $featured, $module);
+            $criteria = $this->searchBuilder->getCriteriaForListModule($archives, $featured, $module, true);
         } catch (CategoryNotFoundException $e) {
             throw new PageNotFoundException($e->getMessage(), 0, $e);
         }
