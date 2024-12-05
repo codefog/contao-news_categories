@@ -8,4 +8,4 @@ services:
 
     Codefog\NewsCategoriesBundle\:
         resource: '../src'
-        exclude: '../../{ContentElement,FrontendModule,Model}'
+        exclude: '../src/{ContaoManager,DependencyInjection,ContentElement,Exception,FrontendModule,Model,CodefogNewsCategoriesBundle.php}'
