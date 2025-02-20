@@ -88,7 +88,7 @@ abstract class NewsModule extends ModuleNews
             $template->title = $this->headline;
             $template->id = $this->id;
             $template->link = $this->name;
-            $template->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id='.$this->id;
+            $template->href = $container->get('router')->generate('contao_backend', ['do' => 'themes', 'table' => 'tl_module', 'act' => 'edit', 'id' => $this->id]);
 
             return $template->parse();
         }
