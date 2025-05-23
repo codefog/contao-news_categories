@@ -4,7 +4,7 @@
         <?php if ($item['isActive']): ?>
             <li class="<?= $item['class'] ?>">
                 <?php if ($item['image']): ?>
-                    <?php $this->insert('picture_default', $item['image']->picture) ?>
+                    <?php $this->insert('picture_default', $item['image']['picture']) ?>
                 <?php endif; ?>
 
                 <strong class="<?= $item['class'] ?>"<?php if ($item['subitems']): ?> aria-haspopup="true"<?php endif; ?>>
@@ -21,7 +21,7 @@
             <li class="<?= $item['class'] ?>">
                 <a href="<?= $item['href'] ?>" class="<?= $item['class'] ?>" title="<?= $item['linkTitle'] ?>" itemprop="url"<?php if ($item['subitems']): ?> aria-haspopup="true"<?php endif; ?>>
                     <?php if ($item['image']): ?>
-                        <?php $this->insert('picture_default', $item['image']->picture) ?>
+                        <?php $this->insert('picture_default', $item['image']['picture']) ?>
                     <?php endif; ?>
 
                     <span class="name" itemprop="name"><?= $item['link'] ?></span>

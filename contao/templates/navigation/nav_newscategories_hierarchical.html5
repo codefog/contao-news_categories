@@ -5,7 +5,7 @@
                 <a href="<?= $item['href'] ?>" class="<?= $item['class'] ?>" title="<?= $item['linkTitle'] ?>" itemprop="url"<?php if ($item['subitems']): ?> aria-haspopup="true"<?php endif; ?>>
                 <?php endif; ?>
                     <?php if ($item['image']): ?>
-                        <?php $this->insert('picture_default', $item['image']->picture) ?>
+                        <?php $this->insert('picture_default', $item['image']['picture']) ?>
                     <?php endif; ?>
                     <?php if ($item['isActive']): ?>
 	                    <strong class="<?= $item['class'] ?>"<?php if ($item['subitems']): ?> aria-haspopup="true"<?php endif; ?>>

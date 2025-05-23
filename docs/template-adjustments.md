@@ -29,7 +29,7 @@ Example:
             <li class="<?= $category['class'] ?>">
                 <?php if ($category['image']): ?>
                     <figure class="image_container">
-                        <?php $this->insert('picture_default', $category['image']->picture) ?>
+                        <?php $this->insert('picture_default', $category['image']['picture']) ?>
                     </figure>
                 <?php endif; ?>
 
