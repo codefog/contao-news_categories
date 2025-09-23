@@ -47,8 +47,12 @@ class NewsCategoriesModule extends NewsModule
         $container = System::getContainer();
         $param = $container->get(NewsCategoriesManager::class)->getParameterName();
 
+        // Keep the parameter unused, if a target page is set
+        $currentPage = $GLOBALS['objPage'];
+        $keepUnused = (int) $currentPage->id !== (int) $this->getTargetPage()->id;
+
         // Get the active category
-        if (($alias = Input::get($param)) && null !== ($activeCategory = NewsCategoryModel::findPublishedByIdOrAlias($alias))) {
+        if (($alias = Input::get($param, false, $keepUnused)) && null !== ($activeCategory = NewsCategoryModel::findPublishedByIdOrAlias($alias))) {
             $this->activeCategory = $activeCategory;
 
             // Set the canonical URL
@@ -57,7 +61,7 @@ class NewsCategoriesModule extends NewsModule
                 if ($responseContext->has(HtmlHeadBag::class)) {
                     /** @var HtmlHeadBag $htmlHeadBag */
                     $htmlHeadBag = $responseContext->get(HtmlHeadBag::class);
-                    $htmlHeadBag->setCanonicalUri($GLOBALS['objPage']->getAbsoluteUrl());
+                    $htmlHeadBag->setCanonicalUri($currentPage->getAbsoluteUrl());
                 }
             }
         }
