@@ -42,7 +42,7 @@ class NewsFeedListener
         foreach ($articles as $k => $article) {
             $categories = array_map(
                 static fn (NewsCategoryModel $category) => $category->id,
-                NewsCategoryModel::findPublishedByNews($article->id, ['return' => 'Array']),
+                NewsCategoryModel::findPublishedByNews($article->id, ['return' => 'Array']) ?? [],
             );
 
             if (!array_intersect($ids, $categories)) {
@@ -62,7 +62,7 @@ class NewsFeedListener
         if (
             !$feedItem
             || !$page->newsCategories_show
-            || null === ($categoryModels = NewsCategoryModel::findPublishedByNews($event->getArticle()->id))
+            || null === ($categoryModels = NewsCategoryModel::findPublishedByNews($event->getArticle()->id, ['return' => 'Array']))
         ) {
             return;
         }
