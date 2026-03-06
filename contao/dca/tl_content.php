@@ -11,8 +11,8 @@
 use Contao\Controller;
 use Contao\System;
 
-Controller::loadDataContainer('tl_module');
 System::loadLanguageFile('tl_module');
+Controller::loadDataContainer('tl_module');
 
 /*
  * Add palettes

@@ -12,8 +12,8 @@ use Contao\Controller;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\System;
 
-Controller::loadDataContainer('tl_user');
 System::loadLanguageFile('tl_user');
+Controller::loadDataContainer('tl_user');
 
 /*
  * Extend palettes
