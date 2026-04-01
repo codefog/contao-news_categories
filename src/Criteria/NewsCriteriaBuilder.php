@@ -21,6 +21,7 @@ use Codefog\NewsCategoriesBundle\FrontendModule\NewsListModule;
 use Codefog\NewsCategoriesBundle\FrontendModule\NewsModule;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
 use Codefog\NewsCategoriesBundle\NewsCategoriesManager;
+use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
 use Contao\Input;
@@ -67,7 +68,7 @@ class NewsCriteriaBuilder
             $this->setRegularListCriteria($criteria, $module);
         } catch (NoNewsException) {
             return null;
-        } catch (CategoryFilteringNotAppliedException $e) {
+        } catch (CategoryFilteringNotAppliedException) {
             // noop
         }
 
@@ -94,7 +95,7 @@ class NewsCriteriaBuilder
                 $this->setRelatedListCriteria($criteria, $module);
             } else {
                 // Set the regular list criteria
-                $this->setRegularListCriteria($criteria, $module, $throwOnFilteringNotApplied);
+                $this->setRegularListCriteria($criteria, $module);
             }
         } catch (NoNewsException) {
             return null;
@@ -123,7 +124,7 @@ class NewsCriteriaBuilder
             $this->setRegularListCriteria($criteria, $module);
         } catch (NoNewsException) {
             return null;
-        } catch (CategoryFilteringNotAppliedException $e) {
+        } catch (CategoryFilteringNotAppliedException) {
             // noop
         }
 
@@ -134,6 +135,7 @@ class NewsCriteriaBuilder
      * Set the regular list criteria.
      *
      * @throws CategoryNotFoundException
+     * @throws CategoryFilteringNotAppliedException
      * @throws NoNewsException
      */
     private function setRegularListCriteria(NewsCriteria $criteria, Module $module): void
@@ -183,7 +185,7 @@ class NewsCriteriaBuilder
         }
         // Filter by active category
         elseif ($module->news_filterCategories) {
-            /** @var Input $input */
+            /** @var Adapter<Input> $input */
             $input = $this->framework->getAdapter(Input::class);
             $param = $this->manager->getParameterName();
 
@@ -225,7 +227,7 @@ class NewsCriteriaBuilder
             throw new NoNewsException();
         }
 
-        $categories = array_map('intval', $categories);
+        $categories = array_map(intval(...), $categories);
         $excluded = $this->db->fetchFirstColumn('SELECT id FROM tl_news_category WHERE excludeInRelated=1');
 
         // Exclude the categories

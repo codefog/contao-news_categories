@@ -100,7 +100,7 @@ class NewsCategoriesVoter implements CacheableVoterInterface
         /** @var AttributeBag $bag */
         $bag = $this->requestStack->getSession()->getBag('contao_backend');
         $newRecords = $bag->get('new_records', [])['tl_news_category'] ?? [];
-        $newRecords = array_map('intval', $newRecords);
+        $newRecords = array_map(intval(...), $newRecords);
 
         return \in_array((int) $recordId, $newRecords, true);
     }

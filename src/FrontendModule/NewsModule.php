@@ -84,7 +84,7 @@ abstract class NewsModule extends ModuleNews
         ) {
             $template = new BackendTemplate('be_wildcard');
 
-            $template->wildcard = '### '.mb_strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0] ?? '').' ###';
+            $template->wildcard = '### '.strtoupper($GLOBALS['TL_LANG']['FMD'][$this->type][0] ?? '').' ###';
             $template->title = $this->headline;
             $template->id = $this->id;
             $template->link = $this->name;
@@ -167,26 +167,24 @@ abstract class NewsModule extends ModuleNews
         $models = NewsCategoryModel::findPublishedByArchives($this->news_archives, $customCategories, $aliases);
 
         // No models have been found but there are some aliases present
-        if (null === $models && 0 !== \count($aliases)) {
+        if (null === $models) {
             Controller::redirect($this->getTargetPage()->getFrontendUrl());
         }
 
         // Validate the provided aliases with the categories found
-        if (null !== $models) {
-            $realAliases = [];
+        $realAliases = [];
 
-            /** @var NewsCategoryModel $model */
-            foreach ($models as $model) {
-                $realAliases[] = $model->getAlias($GLOBALS['TL_LANGUAGE']);
-            }
+        /** @var NewsCategoryModel $model */
+        foreach ($models as $model) {
+            $realAliases[] = $model->getAlias($GLOBALS['TL_LANGUAGE']);
+        }
 
-            if (\count(array_diff($aliases, $realAliases)) > 0) {
-                Controller::redirect($this->getTargetPage()->getFrontendUrl(\sprintf(
-                    '/%s/%s',
-                    $this->manager->getParameterName($GLOBALS['objPage']->rootId),
-                    implode(static::getCategorySeparator(), $realAliases),
-                )));
-            }
+        if (\count(array_diff($aliases, $realAliases)) > 0) {
+            Controller::redirect($this->getTargetPage()->getFrontendUrl(\sprintf(
+                '/%s/%s',
+                $this->manager->getParameterName($GLOBALS['objPage']->rootId),
+                implode(static::getCategorySeparator(), $realAliases),
+            )));
         }
 
         return $models;
@@ -241,13 +239,13 @@ abstract class NewsModule extends ModuleNews
                 }
 
                 $categoryIds = DcaRelationsModel::getRelatedValues('tl_news', 'categories', $newsIds);
-                $categoryIds = array_map('intval', $categoryIds);
+                $categoryIds = array_map(intval(...), $categoryIds);
                 $categoryIds = array_unique(array_filter($categoryIds));
 
                 // Include the parent categories
                 if ($this->news_includeSubcategories) {
                     foreach ($categoryIds as $categoryId) {
-                        $categoryIds = array_merge($categoryIds, array_map('intval', Database::getInstance()->getParentRecords($categoryId, 'tl_news_category')));
+                        $categoryIds = array_merge($categoryIds, array_map(intval(...), Database::getInstance()->getParentRecords($categoryId, 'tl_news_category')));
                     }
                 }
 
@@ -308,7 +306,7 @@ abstract class NewsModule extends ModuleNews
 
         $ids = DcaRelationsModel::getRelatedValues('tl_news', 'categories', $news->id);
 
-        return array_map('intval', array_unique($ids));
+        return array_map(intval(...), array_unique($ids));
     }
 
     /**
@@ -368,7 +366,7 @@ abstract class NewsModule extends ModuleNews
         if (null !== $category && null !== ($image = $this->manager->getImage($category))) {
             $data['image'] = System::getContainer()
                 ->get('contao.image.studio')
-                ?->createFigureBuilder()
+                ->createFigureBuilder()
                 ->fromFilesModel($image)
                 ->setSize($this->news_categoryImgSize)
                 ->setMetadata(new Metadata([

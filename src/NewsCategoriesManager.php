@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Codefog\NewsCategoriesBundle;
 
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Database;
 use Contao\FilesModel;
@@ -107,7 +108,7 @@ class NewsCategoriesManager implements ResetInterface
             static $pageCache = [];
 
             if (!isset($pageCache[$pageId])) {
-                /** @var PageModel $pageAdapter */
+                /** @var Adapter<PageModel> $pageAdapter */
                 $pageAdapter = $this->framework->getAdapter(PageModel::class);
                 $pageCache[$pageId] = $pageAdapter->findPublishedById($pageId);
             }
@@ -127,7 +128,7 @@ class NewsCategoriesManager implements ResetInterface
             $db = $this->framework->createInstance(Database::class);
 
             $ids = $db->getParentRecords($category->id, $category->getTable());
-            $ids = array_map('intval', array_unique($ids));
+            $ids = array_map(intval(...), array_unique($ids));
 
             // Remove the current category
             unset($ids[array_search($category->id, $ids, true)]);

@@ -35,7 +35,7 @@ class NewsListener
             if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
                 return 0;
             }
-        } catch (CategoryFilteringNotAppliedException $e) {
+        } catch (CategoryFilteringNotAppliedException) {
             return false;
         }
 
@@ -43,16 +43,16 @@ class NewsListener
     }
 
     /**
-     * @return Collection<NewsModel>|null|false
+     * @return Collection<NewsModel>|false|null
      */
     #[AsHook('newsListFetchItems')]
-    public function onNewsListFetchItems(array $archives, bool|null $featured, int $limit, int $offset, ModuleNewsList $module): Collection|null|false
+    public function onNewsListFetchItems(array $archives, bool|null $featured, int $limit, int $offset, ModuleNewsList $module): Collection|false|null
     {
         try {
             if (null === ($criteria = $this->getCriteria($archives, $featured, $module))) {
                 return null;
             }
-        } catch (CategoryFilteringNotAppliedException $e) {
+        } catch (CategoryFilteringNotAppliedException) {
             return false;
         }
 

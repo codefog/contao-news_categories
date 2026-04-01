@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
- * @copyright  Copyright (c) 2024, Codefog
+ * @copyright  Copyright (c) 2026, Codefog
  * @author     Codefog <https://codefog.pl>
  * @license    MIT
  */
@@ -71,7 +71,7 @@ class NewsFilterElement extends ContentModule
 
         // Tag the content element (see #2137)
         if (null !== $this->objModel) {
-            System::getContainer()->get('contao.cache.entity_tags')?->tagWithModelInstance($this->objModel);
+            System::getContainer()->get('contao.cache.entity_tags')->tagWithModelInstance($this->objModel);
         }
 
         return Controller::getFrontendModule($objModel, $this->strColumn);

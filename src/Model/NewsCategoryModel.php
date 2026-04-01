@@ -118,7 +118,7 @@ class NewsCategoryModel extends NewsCategoryParentModel
         // Start sub select query for relations
         $subSelect = "SELECT {$relation['related_field']}
 FROM {$relation['table']}
-WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".implode(',', array_map('intval', $archives)).')';
+WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".implode(',', array_map(intval(...), $archives)).')';
 
         // Include only the published news items
         if (!self::isPreviewMode($arrOptions)) {
@@ -135,12 +135,12 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
 
         // Filter by custom categories
         if (\count($ids) > 0) {
-            $columns[] = "$t.id IN (".implode(',', array_map('intval', $ids)).')';
+            $columns[] = "$t.id IN (".implode(',', array_map(intval(...), $ids)).')';
         }
 
         // Filter by excluded IDs
         if (\count($excludedIds) > 0) {
-            $columns[] = "$t.id NOT IN (".implode(',', array_map('intval', $excludedIds)).')';
+            $columns[] = "$t.id NOT IN (".implode(',', array_map(intval(...), $excludedIds)).')';
         }
 
         // Filter by custom aliases
@@ -221,7 +221,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
         }
 
         $t = static::getTable();
-        $columns = ["$t.id IN (".implode(',', array_map('intval', $ids)).')'];
+        $columns = ["$t.id IN (".implode(',', array_map(intval(...), $ids)).')'];
         $values = [];
 
         // Filter by pid
@@ -269,7 +269,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
         }
 
         $t = static::getTable();
-        $columns = ["$t.id IN (".implode(',', array_map('intval', array_unique($ids))).')'];
+        $columns = ["$t.id IN (".implode(',', array_map(intval(...), array_unique($ids))).')'];
         $values = [];
 
         if (!self::isPreviewMode($arrOptions)) {
@@ -298,7 +298,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
         }
 
         $ids = DcaRelationsModel::getReferenceValues($t, 'categories', $category);
-        $ids = array_map('intval', $ids);
+        $ids = array_map(intval(...), $ids);
 
         // Also filter by cumulative categories
         if (\count($cumulativeCategories) > 0) {
@@ -311,7 +311,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
                 }
 
                 $newsIds = DcaRelationsModel::getReferenceValues($t, 'categories', $cumulativeCategory);
-                $newsIds = array_map('intval', $newsIds);
+                $newsIds = array_map(intval(...), $newsIds);
 
                 if (null === $cumulativeIds) {
                     $cumulativeIds = $newsIds;
@@ -332,7 +332,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
 
         // Filter by archives
         if (\count($archives)) {
-            $columns[] = "$t.pid IN (".implode(',', array_map('intval', $archives)).')';
+            $columns[] = "$t.pid IN (".implode(',', array_map(intval(...), $archives)).')';
         }
 
         if (!self::isPreviewMode($arrOptions)) {
@@ -351,7 +351,7 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
     {
         $ids = Database::getInstance()->getChildRecords($category, static::$strTable, false, (array) $category, !self::isPreviewMode([]) ? 'published=1' : '');
 
-        return array_map('intval', $ids);
+        return array_map(intval(...), $ids);
     }
 
     /**
@@ -369,11 +369,12 @@ WHERE {$relation['reference_field']} IN (SELECT id FROM tl_news WHERE pid IN (".
             $arrOptions['order'] = Database::getInstance()->findInSet("$t.id", $arrIds);
         }
 
-        return static::findBy(["$t.id IN (".implode(',', array_map('intval', $arrIds)).')'], null, $arrOptions);
+        return static::findBy(["$t.id IN (".implode(',', array_map(intval(...), $arrIds)).')'], null, $arrOptions);
     }
 
     private static function isMultilingual(): bool
     {
+        /** @phpstan-ignore-next-line */
         return is_a(self::class, Multilingual::class, true);
     }
 }

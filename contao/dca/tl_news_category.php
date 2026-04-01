@@ -3,12 +3,11 @@
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
- * @copyright  Copyright (c) 2024, Codefog
+ * @copyright  Copyright (c) 2026, Codefog
  * @author     Codefog <https://codefog.pl>
  * @license    MIT
  */
 
-use Contao\Config;
 use Contao\DataContainer;
 use Contao\DC_Table;
 use Contao\System;
@@ -130,7 +129,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
                 'files' => true,
                 'filesOnly' => true,
                 'fieldType' => 'radio',
-                'extensions' => Config::get('validImageTypes'),
+                'extensions' => '%contao.image.valid_extensions%',
                 'tl_class' => 'clr',
             ],
             'sql' => ['type' => 'binary', 'length' => 16, 'notnull' => false],

@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * News Categories bundle for Contao Open Source CMS.
  *
- * @copyright  Copyright (c) 2024, Codefog
+ * @copyright  Copyright (c) 2026, Codefog
  * @author     Codefog <https://codefog.pl>
  * @license    MIT
  */
@@ -16,6 +16,7 @@ use Contao\BackendUser;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\DataContainer;
 use Contao\StringUtil;
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -43,11 +44,11 @@ class CategoryPermissionListener
         /** @var AttributeBag $bag */
         $bag = $this->requestStack->getSession()->getBag('contao_backend');
         $newRecords = $bag->get('new_records', [])['tl_news_category'] ?? [];
-        $newRecords = array_map('intval', $newRecords);
+        $newRecords = array_map(intval(...), $newRecords);
 
         if (
             !\in_array($categoryId, $newRecords, true)
-            || \in_array($categoryId, array_map('intval', $user->newscategories_roots), true)
+            || \in_array($categoryId, array_map(intval(...), $user->newscategories_roots), true)
         ) {
             return;
         }
@@ -55,7 +56,9 @@ class CategoryPermissionListener
         // Add the permissions on group level
         if ('custom' !== $user->inherit) {
             $groups = $this->connection->fetchAllAssociative(
-                'SELECT id, newscategories, newscategories_roots FROM tl_user_group WHERE id IN('.implode(',', array_map('intval', $user->groups)).')',
+                'SELECT id, newscategories, newscategories_roots FROM tl_user_group WHERE id IN(?)',
+                [$user->groups],
+                [ArrayParameterType::INTEGER],
             );
 
             foreach ($groups as $group) {

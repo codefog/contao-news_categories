@@ -15,6 +15,7 @@ namespace Codefog\NewsCategoriesBundle\Criteria;
 use Codefog\HasteBundle\Model\DcaRelationsModel;
 use Codefog\NewsCategoriesBundle\Exception\NoNewsException;
 use Codefog\NewsCategoriesBundle\Model\NewsCategoryModel;
+use Contao\CoreBundle\Framework\Adapter;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Security\Authentication\Token\TokenChecker;
 use Contao\Database;
@@ -50,7 +51,7 @@ class NewsCriteria
 
         $t = NewsModel::getTable();
 
-        $this->columns[] = "$t.pid IN(".implode(',', array_map('intval', $archives)).')';
+        $this->columns[] = "$t.pid IN(".implode(',', array_map(intval(...), $archives)).')';
 
         $order = '';
 
@@ -136,7 +137,7 @@ class NewsCriteria
             $defaultCategories = $newsCategoryModel->getAllSubcategoriesIds($defaultCategories);
         }
 
-        /** @var DcaRelationsModel $model */
+        /** @var Adapter<DcaRelationsModel> $model */
         $model = $this->framework->getAdapter(DcaRelationsModel::class);
 
         $newsIds = $model->getReferenceValues('tl_news', 'categories', $defaultCategories);
@@ -178,7 +179,7 @@ class NewsCriteria
      */
     public function setCategory($category, $preserveDefault = false, $includeSubcategories = false): self
     {
-        /** @var DcaRelationsModel $model */
+        /** @var Adapter<DcaRelationsModel> $model */
         $model = $this->framework->getAdapter(DcaRelationsModel::class);
 
         // Include the subcategories
@@ -322,7 +323,7 @@ class NewsCriteria
      */
     private function parseIds(array $ids): array
     {
-        $ids = array_map('intval', $ids);
+        $ids = array_map(intval(...), $ids);
         $ids = array_filter($ids);
         $ids = array_unique($ids);
 
