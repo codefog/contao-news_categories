@@ -54,8 +54,7 @@ class NewsFilterElement extends ContentModule
         $this->mergeCssId($objModel);
 
         if (!empty($this->headline) && !empty($this->hl)) {
-            $objModel->hl = $this->hl;
-            $objModel->headline = $this->headline;
+            $objModel->headline = serialize(['value' => $this->headline, 'unit' => $this->hl]);
         }
 
         // Override news filter settings
