@@ -85,7 +85,7 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
             'search' => true,
             'inputType' => 'text',
             'eval' => ['mandatory' => true, 'tl_class' => 'w50'],
-            'sql' => ['type' => 'string', 'default' => ''],
+            'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
         ],
         'frontendTitle' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['frontendTitle'],
