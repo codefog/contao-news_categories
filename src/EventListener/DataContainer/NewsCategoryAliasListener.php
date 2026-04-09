@@ -96,9 +96,9 @@ class NewsCategoryAliasListener
             return $this->db->fetchAssociative(
                 "SELECT * FROM {$dc->table} WHERE {$dc->getPidColumn()}=? AND {$dc->getLanguageColumn()}=?",
                 [$dc->id, $dc->getCurrentLanguage()],
-            );
+            ) ?: [];
         }
-
+    
         return $dc->getCurrentRecord();
     }
 }
