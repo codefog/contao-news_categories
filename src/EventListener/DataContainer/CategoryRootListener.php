@@ -47,7 +47,7 @@ class CategoryRootListener implements ResetInterface
         if (!isset($this->rootNodesCache[$id])) {
             $archive = $this->connection->fetchAssociative('SELECT limitCategories, categories FROM tl_news_archive WHERE id=?', [$id]);
 
-            if (!$archive['limitCategories']) {
+            if (!$archive || !$archive['limitCategories']) {
                 $this->rootNodesCache[$id] = false;
             } else {
                 $this->rootNodesCache[$id] = StringUtil::deserialize($archive['categories']);
