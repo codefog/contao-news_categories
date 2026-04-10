@@ -15,7 +15,7 @@
         "contao/core-bundle": "^5.1.9",
         "contao/news-bundle": "^5.1.9",
         "codefog/contao-haste": "^5.0",
-        "doctrine/dbal": "^3.0",
+        "doctrine/dbal": "^3.6 || ^4.3",
         "symfony/config": "^6.0 || ^7.0",
         "symfony/dependency-injection": "^6.0 || ^7.0",
         "symfony/event-dispatcher": "^6.0 || ^7.0",
