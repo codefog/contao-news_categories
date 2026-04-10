@@ -69,10 +69,7 @@ class CategoryPermissionListener
                     $categoryIds = StringUtil::deserialize($group['newscategories_roots'], true);
                     $categoryIds[] = $categoryId;
 
-                    $this->connection->executeStatement(
-                        'UPDATE tl_user_group SET newscategories_roots=? WHERE id=?',
-                        [serialize($categoryIds), $group['id']],
-                    );
+                    $this->connection->update('tl_user_group', ['newscategories_roots' => serialize($categoryIds)], ['id' => $group['id']]);
                 }
             }
         }
@@ -86,10 +83,7 @@ class CategoryPermissionListener
                 $categoryIds = StringUtil::deserialize($user->newscategories_roots, true);
                 $categoryIds[] = $categoryId;
 
-                $this->connection->executeStatement(
-                    'UPDATE tl_user SET newscategories_roots=? WHERE id=?',
-                    [serialize($categoryIds), $user->id],
-                );
+                $this->connection->update('tl_user', ['newscategories_roots' => serialize($categoryIds)], ['id' => $user->id]);
             }
         }
 

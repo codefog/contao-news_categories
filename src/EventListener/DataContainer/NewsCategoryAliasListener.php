@@ -98,7 +98,7 @@ class NewsCategoryAliasListener
                 [$dc->id, $dc->getCurrentLanguage()],
             ) ?: [];
         }
-    
+
         return $dc->getCurrentRecord();
     }
 }
