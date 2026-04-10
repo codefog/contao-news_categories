@@ -35,8 +35,7 @@ class NewsArchiveOperationListener
                 'categories' => [
                     'label' => &$GLOBALS['TL_LANG']['tl_news_archive']['categories'],
                     'href' => 'table=tl_news_category',
-                    'icon' => 'bundles/codefognewscategories/icon.png',
-                    'attributes' => 'onclick="Backend.getScrollOffset()"',
+                    'icon' => 'bundles/codefognewscategories/icon.svg',
                 ],
             ],
         );

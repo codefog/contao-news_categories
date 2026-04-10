@@ -21,7 +21,6 @@ System::loadLanguageFile('tl_news_archive');
 $GLOBALS['TL_DCA']['tl_news_category'] = [
     // Config
     'config' => [
-        'label' => $GLOBALS['TL_LANG']['tl_news_archive']['categories'][0],
         'dataContainer' => DC_Table::class,
         'enableVersioning' => true,
         'backlink' => 'do=news',
@@ -39,7 +38,6 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
         'sorting' => [
             'mode' => DataContainer::MODE_TREE,
             'rootPaste' => true,
-            'icon' => 'bundles/codefognewscategories/icon.png',
             'panelLayout' => 'filter;search',
         ],
         'label' => [
