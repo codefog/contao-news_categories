@@ -15,6 +15,8 @@ use Terminal42\DcMultilingualBundle\Driver;
 
 System::loadLanguageFile('tl_news_archive');
 
+$GLOBALS['TL_CSS'][] = 'bundles/codefognewscategories/backend.css';
+
 /*
  * Table tl_news_category
  */
@@ -23,7 +25,6 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
     'config' => [
         'dataContainer' => DC_Table::class,
         'enableVersioning' => true,
-        'backlink' => 'do=news',
         'sql' => [
             'keys' => [
                 'id' => 'primary',

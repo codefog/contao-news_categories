@@ -8,6 +8,7 @@
  * @license    MIT
  */
 
+use Codefog\NewsCategoriesBundle\Picker\NewsCategoriesPickerProvider;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
 $GLOBALS['TL_DCA']['tl_module']['palettes']['__selector__'][] = 'news_customCategories';
@@ -65,7 +66,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_categories'] = [
     'exclude' => true,
     'inputType' => 'picker',
     'foreignKey' => 'tl_news_category.title',
-    'eval' => ['multiple' => true, 'fieldType' => 'checkbox'],
+    'eval' => ['multiple' => true, 'fieldType' => 'checkbox', 'context' => NewsCategoriesPickerProvider::CONTEXT],
     'sql' => ['type' => 'blob', 'notnull' => false],
     'relation' => ['type' => 'hasMany', 'load' => 'lazy'],
 ];
@@ -141,7 +142,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_filterDefault'] = [
     'exclude' => true,
     'inputType' => 'picker',
     'foreignKey' => 'tl_news_category.title',
-    'eval' => ['multiple' => true, 'fieldType' => 'checkbox', 'tl_class' => 'clr'],
+    'eval' => ['multiple' => true, 'fieldType' => 'checkbox', 'context' => NewsCategoriesPickerProvider::CONTEXT, 'tl_class' => 'clr'],
     'sql' => ['type' => 'blob', 'notnull' => false],
     'relation' => ['type' => 'hasMany', 'load' => 'lazy'],
 ];
@@ -183,7 +184,7 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['news_categoriesRoot'] = [
     'exclude' => true,
     'inputType' => 'picker',
     'foreignKey' => 'tl_news_category.title',
-    'eval' => ['fieldType' => 'radio', 'tl_class' => 'clr'],
+    'eval' => ['fieldType' => 'radio', 'context' => NewsCategoriesPickerProvider::CONTEXT, 'tl_class' => 'clr'],
     'sql' => ['type' => 'integer', 'unsigned' => true, 'default' => 0],
     'relation' => ['type' => 'hasMany', 'load' => 'lazy'],
 ];

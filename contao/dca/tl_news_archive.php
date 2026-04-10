@@ -8,6 +8,7 @@
  * @license    MIT
  */
 
+use Codefog\NewsCategoriesBundle\Picker\NewsCategoriesPickerProvider;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
 /*
@@ -40,7 +41,7 @@ $GLOBALS['TL_DCA']['tl_news_archive']['fields']['categories'] = [
     'inputType' => 'picker',
     'foreignKey' => 'tl_news_category.title',
     // 'options_callback' => NewsCategoriesOptionsListener
-    'eval' => ['mandatory' => true, 'multiple' => true, 'fieldType' => 'checkbox'],
+    'eval' => ['mandatory' => true, 'multiple' => true, 'fieldType' => 'checkbox', 'context' => NewsCategoriesPickerProvider::CONTEXT],
     'sql' => ['type' => 'blob', 'notnull' => false],
     'relation' => ['type' => 'hasMany', 'load' => 'lazy'],
 ];
