@@ -83,14 +83,14 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['title'],
             'search' => true,
             'inputType' => 'text',
-            'eval' => ['mandatory' => true, 'tl_class' => 'w50'],
-            'sql' => ['type' => 'string', 'default' => ''],
+            'eval' => ['mandatory' => true, 'tl_class' => 'w50', 'maxlength' => 255],
+            'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
         ],
         'frontendTitle' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['frontendTitle'],
             'search' => true,
             'inputType' => 'text',
-            'eval' => ['tl_class' => 'w50'],
+            'eval' => ['tl_class' => 'w50', 'maxlength' => 64],
             'sql' => ['type' => 'string', 'length' => 64, 'default' => ''],
         ],
         'alias' => [
@@ -110,8 +110,8 @@ $GLOBALS['TL_DCA']['tl_news_category'] = [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['cssClass'],
             'search' => true,
             'inputType' => 'text',
-            'eval' => ['tl_class' => 'w50'],
-            'sql' => ['type' => 'string', 'default' => ''],
+            'eval' => ['tl_class' => 'w50', 'maxlength' => 255],
+            'sql' => ['type' => 'string', 'length' => 255, 'default' => ''],
         ],
         'description' => [
             'label' => &$GLOBALS['TL_LANG']['tl_news_category']['description'],
