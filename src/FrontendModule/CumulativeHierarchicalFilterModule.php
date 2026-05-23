@@ -137,7 +137,7 @@ class CumulativeHierarchicalFilterModule extends NewsModule
 
             // Get the URL
             if (\count($aliases) > 0) {
-                $url = \sprintf($pageUrl, implode(static::getCategorySeparator(), $aliases));
+                $url = \sprintf(urldecode($pageUrl), implode(static::getCategorySeparator(), $aliases));
             } else {
                 $url = $resetUrl;
             }
