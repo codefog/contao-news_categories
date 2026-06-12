@@ -27,7 +27,7 @@ $GLOBALS['TL_LANG']['tl_module']['news_showEmptyCategories'] = ['Leere Kategorie
 $GLOBALS['TL_LANG']['tl_module']['news_forceCategoryUrl'] = ['Kategorie-URL erzwingen', 'Nutzt die Zielseite der Kategorie (falls gesetzt) statt die reguläre Filter-URL.'];
 $GLOBALS['TL_LANG']['tl_module']['news_categoriesRoot'] = ['Referenz-Kategorie (Root)', 'Hier kann die Referenzkategorie ausgewählt werden. Diese wird als Startpunkt benutzt (ähnlich zum Navigationsmodul).'];
 $GLOBALS['TL_LANG']['tl_module']['news_categoryFilterPage'] = ['Kategorie-Zielseite', 'Hier kann die Zielseite für die Kategorie-Filterung festgelegt werden. Dies überschreibt die Kategorie-Zielseite.'];
-$GLOBALS['TL_LANG']['tl_module']['news_categoryImgSize'] = ['Bildgröße für Nachrichten-Kategorien', &$GLOBALS['TL_LANG']['tl_module']['imgSize'][1]];
+$GLOBALS['TL_LANG']['tl_module']['news_categoryImgSize'] = ['Bildgröße für Nachrichten-Kategorien', &$GLOBALS['TL_LANG']['MSC']['imgSize'][1]];
 
 /*
  * Reference.
