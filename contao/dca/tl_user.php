@@ -10,6 +10,7 @@
 
 use Codefog\NewsCategoriesBundle\Picker\NewsCategoriesPickerProvider;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
+use Doctrine\DBAL\Platforms\AbstractMySQLPlatform;
 
 PaletteManipulator::create()
     ->addLegend('newsCategories_legend', 'news_legend', PaletteManipulator::POSITION_AFTER)
@@ -30,7 +31,7 @@ $GLOBALS['TL_DCA']['tl_user']['fields']['newscategories'] = [
     'options' => ['manage'],
     'reference' => &$GLOBALS['TL_LANG']['tl_user']['newscategoriesRef'],
     'eval' => ['multiple' => true, 'tl_class' => 'clr'],
-    'sql' => ['type' => 'string', 'length' => 32, 'default' => ''],
+    'sql' => ['type' => 'blob', 'length' => AbstractMySQLPlatform::LENGTH_LIMIT_BLOB, 'notnull' => false],
 ];
 
 $GLOBALS['TL_DCA']['tl_user']['fields']['newscategories_roots'] = [
