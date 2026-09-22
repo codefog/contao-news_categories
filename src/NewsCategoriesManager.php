@@ -73,7 +73,9 @@ class NewsCategoriesManager implements ResetInterface
      */
     public function getParameterName(int|null $rootId = null): string
     {
-        $rootId = $rootId ?: $GLOBALS['objPage']->rootId;
+        if (!$rootId && isset($GLOBALS['objPage'])) {
+            $rootId = $GLOBALS['objPage']->rootId;
+        }
 
         if (!$rootId || null === ($rootPage = PageModel::findById($rootId))) {
             return 'category';
